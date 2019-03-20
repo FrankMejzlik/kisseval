@@ -103,7 +103,7 @@ for (var i = 0; i < data.length; ++i)
   { %>
 
     {
-      "vecIndex": "<%= data[i].vecIndex %>#<%= j %>",
+      "vecIndex": "<%= data[i].wordnetId %>#<%= j %>",
       "description": "<%= arrDesc[j] %>"
     },
 
@@ -115,27 +115,27 @@ for (var i = 0; i < data.length; ++i)
   { %>
 
   {
-    "vecIndex": "(",
+    "vecIndex": "(<%= k %>",
     "description": "("
   },
   {
-    "vecIndex": ")",
+    "vecIndex": ")<%= k %>",
     "description": ")"
   },
   {
-    "vecIndex": "&",
+    "vecIndex": "&<%= k %>",
     "description": "&"
   },
   {
-    "vecIndex": "|",
+    "vecIndex": "|<%= k %>",
     "description": "|"
   },
 
   <% } %>
 
   {
-    "vecIndex": "&",
-    "description": "&"
+    "vecIndex": "&999",
+    "description": "&" 
   }
 ];
 </script>

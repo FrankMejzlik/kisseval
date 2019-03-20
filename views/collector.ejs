@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <link href="https://cdn.syncfusion.com/ej2/material.css" rel="stylesheet">
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js" type="text/javascript"></script>
+  <link href="/stylesheets/index.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <section class="header main">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+          <a class="navbar-brand" href="#"><%= title %></a>
+
+          <ul class="navigation main">
+            <li><a href="/">Home</a></li>
+            <li><a class="active" href="/collector/">Collector</a></li>
+          </ul>
+        </nav>
+    </section>
+
+    <section class="how-to-use-tip">
+        <div class="row center">
+
+            <h4>
+              If you need to know how to use this, please take a look <a href="/">HERE</a>.
+            </h4>
+
+        </div>
+      </section>
+
+  <section class="main-image-query">
+    <div class="row center">
+
+      <div class="main-image-container">
+        <img src="https://via.placeholder.com/500" />
+      </div>
+
+    </div>
+
+
+    <div class="row center">
+      <div class="query-form">
+
+        <form class="send-image-query-form" action="/collector/" method="POST">
+          <div class="control-wrapper">
+
+              <input type="text" id="games" tabindex="1">
+            
+          </div>
+          <input type="submit" value="Submit">
+        </form>
+
+      </div>
+
+    </div>
+  </section>
+
+
+
+  <ul>
+
+    <!-- <% for (i = 0; i < keywords.length; ++i) {%>
+
+        <li><%= keywords[i] %> </li>
+
+      <% } %> -->
+
+  </ul>
+
+</body>
+
+
+<script src="/javascripts/index.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+  integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+</html>

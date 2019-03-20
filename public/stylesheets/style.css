@@ -1,0 +1,93 @@
+body {
+  padding: 0px;
+  margin: 0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+h3 {
+  font-size: 22px;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.header {
+  background: #a3f5e7;
+}
+.navbar {
+  padding: 5px 5px 5px 5px;
+  margin-bottom: 29px;
+}
+
+.navbar > *{
+  display: inline-block;
+}
+
+.navbar-brand {
+  font-size: 22px;
+  color: black;
+  text-decoration: none;
+  padding: 7px 28px 8px 25px;
+  font-weight: 600;
+}
+
+.navbar ul {
+
+}
+
+.navbar ul li {
+  display: inline-block;
+  padding: 10px 10px 10px 10px;
+}
+
+.navbar ul li a {
+  color: #000;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.navbar ul li a.active {
+  color: #0126e6;
+}
+
+.row {
+  padding: 20px 20px 20px 20px;
+  max-width: 1200px;
+  margin: 0 auto 0 auto;
+}
+
+.center {
+  text-align: center;
+}
+
+.how-to-use-tip {
+  background-color: #ffb5b5;
+}
+
+.query-form {
+  max-width: 600px;
+  margin: 0 auto 0 auto;
+}
+
+.column {
+  
+}
+
+.large-12 {
+  width: 100%;
+}
+
+.instructions-section {
+  background-color: #c2ddde;
+  display: block;
+}

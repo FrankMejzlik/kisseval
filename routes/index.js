@@ -8,11 +8,8 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-  var textData = fs.readFileSync(path.join(__dirname, "../data/data.csv"), {encoding: "ascii"});
-
   var data = { 
-    title: 'ImageRankingCollector' ,
-    keywords: textData.split(";") 
+    title: 'ImageRankingCollector'
   };
 
   res.render('index', data);

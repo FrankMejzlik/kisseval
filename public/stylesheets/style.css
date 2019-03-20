@@ -1,5 +1,5 @@
 body {
-  padding: 0px;
+  padding: 0px 0 50px 0;
   margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -74,6 +74,11 @@ a {
   background-color: #ffb5b5;
 }
 
+.main-query {
+  background-color: #b6ffb5;
+  padding-top: 20px;
+}
+
 .query-form {
   max-width: 600px;
   margin: 0 auto 0 auto;
@@ -90,4 +95,15 @@ a {
 .instructions-section {
   background-color: #c2ddde;
   display: block;
+}
+
+.main-image-query .main-image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.main-image-query .main-image-container img {
+  width: auto;
+  display: inline-block;
+  max-height: 400px;
 }

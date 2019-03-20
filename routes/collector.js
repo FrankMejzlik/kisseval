@@ -5,15 +5,49 @@ var fs = require('fs');
 
 var router = express.Router();
 
+var idSrcData;
+var numImages
+
+var idMultiplier = 50;
+
+function getRandomInt(max) 
+{
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+function GetRandomImageSrcPair() 
+{
+  // Get random ID
+  var randImgId = getRandomInt(numImages - 1);
+  var record = idSrcData.idSrcPairs[randImgId];
+  return record;
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) 
 {
+  // Load data about ID => src 
+  idSrcData = JSON.parse(fs.readFileSync(path.join(__dirname, "../data/images.in"), 'ascii'));
+  // Get their number
 
-  var textData = fs.readFileSync(path.join(__dirname, "../data/data.csv"), {encoding: "ascii"});
+  numImages = idSrcData.idSrcPairs.length;
+  console.log("numImages = " + numImages);
 
+  // Load data about vecIndex => description
+  indexDescData = JSON.parse(fs.readFileSync(path.join(__dirname, "../data/vecIndexToDescription.in"), 'ascii'));
+
+
+  // Get random image
+  var newImageObj = GetRandomImageSrcPair();
+  console.log(newImageObj.id);
+  console.log(newImageObj.src);
+
+  // Final data instance being send to front end
   var data = { 
     title: 'ImageRankingCollector' ,
-    keywords: textData.split(";") 
+    pathToImages: "../images/",
+    newImageObj,
+    indexDescData
   };
 
   res.render('collector', data);

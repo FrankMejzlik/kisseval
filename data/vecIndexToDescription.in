@@ -1,0 +1,4976 @@
+{
+	 "vecIndexToDescription": [
+		 {
+			 "vecIndex": "407",
+			 "description": "cosmetic"
+		 },
+		 {
+			 "vecIndex": "1124",
+			 "description": "river"
+		 },
+		 {
+			 "vecIndex": "8",
+			 "description": "snorkeling#snorkel diving"
+		 },
+		 {
+			 "vecIndex": "463",
+			 "description": "fabric#cloth#material#textile"
+		 },
+		 {
+			 "vecIndex": "1116",
+			 "description": "massif"
+		 },
+		 {
+			 "vecIndex": "64",
+			 "description": "crocodilian reptile#crocodilian"
+		 },
+		 {
+			 "vecIndex": "399",
+			 "description": "conference room"
+		 },
+		 {
+			 "vecIndex": "1052",
+			 "description": "schnitzel#Wiener schnitzel"
+		 },
+		 {
+			 "vecIndex": "0",
+			 "description": "person#individual#someone#somebody#mortal#soul"
+		 },
+		 {
+			 "vecIndex": "944",
+			 "description": "muffin#gem"
+		 },
+		 {
+			 "vecIndex": "1",
+			 "description": "rock climbing"
+		 },
+		 {
+			 "vecIndex": "393",
+			 "description": "computer circuit"
+		 },
+		 {
+			 "vecIndex": "1054",
+			 "description": "burrito"
+		 },
+		 {
+			 "vecIndex": "2",
+			 "description": "gymnastics#gymnastic exercise"
+		 },
+		 {
+			 "vecIndex": "3",
+			 "description": "skiing"
+		 },
+		 {
+			 "vecIndex": "387",
+			 "description": "combine"
+		 },
+		 {
+			 "vecIndex": "4",
+			 "description": "cross-country skiing"
+		 },
+		 {
+			 "vecIndex": "948",
+			 "description": "hotdog#hot dog#red hot"
+		 },
+		 {
+			 "vecIndex": "5",
+			 "description": "ski jumping"
+		 },
+		 {
+			 "vecIndex": "397",
+			 "description": "concrete mixer#cement mixer"
+		 },
+		 {
+			 "vecIndex": "6",
+			 "description": "swimming#swim"
+		 },
+		 {
+			 "vecIndex": "7",
+			 "description": "scuba diving"
+		 },
+		 {
+			 "vecIndex": "952",
+			 "description": "tortilla chip"
+		 },
+		 {
+			 "vecIndex": "9",
+			 "description": "surfing#surfboarding#surfriding"
+		 },
+		 {
+			 "vecIndex": "401",
+			 "description": "convenience store"
+		 },
+		 {
+			 "vecIndex": "1126",
+			 "description": "sandbank"
+		 },
+		 {
+			 "vecIndex": "10",
+			 "description": "water-skiing"
+		 },
+		 {
+			 "vecIndex": "11",
+			 "description": "rowing#row"
+		 },
+		 {
+			 "vecIndex": "395",
+			 "description": "computer monitor"
+		 },
+		 {
+			 "vecIndex": "12",
+			 "description": "boxing#pugilism#fisticuffs"
+		 },
+		 {
+			 "vecIndex": "956",
+			 "description": "brussels sprouts"
+		 },
+		 {
+			 "vecIndex": "13",
+			 "description": "archery"
+		 },
+		 {
+			 "vecIndex": "405",
+			 "description": "cord#electric cord"
+		 },
+		 {
+			 "vecIndex": "14",
+			 "description": "sledding"
+		 },
+		 {
+			 "vecIndex": "15",
+			 "description": "skating"
+		 },
+		 {
+			 "vecIndex": "415",
+			 "description": "crayon#wax crayon"
+		 },
+		 {
+			 "vecIndex": "1132",
+			 "description": "swamp#swampland"
+		 },
+		 {
+			 "vecIndex": "16",
+			 "description": "riding#horseback riding#equitation"
+		 },
+		 {
+			 "vecIndex": "896",
+			 "description": "wing"
+		 },
+		 {
+			 "vecIndex": "17",
+			 "description": "cycling"
+		 },
+		 {
+			 "vecIndex": "409",
+			 "description": "cotton"
+		 },
+		 {
+			 "vecIndex": "1134",
+			 "description": "volcano"
+		 },
+		 {
+			 "vecIndex": "18",
+			 "description": "hunt#hunting"
+		 },
+		 {
+			 "vecIndex": "19",
+			 "description": "fishing#sportfishing"
+		 },
+		 {
+			 "vecIndex": "403",
+			 "description": "cookie cutter"
+		 },
+		 {
+			 "vecIndex": "20",
+			 "description": "ice hockey#hockey#hockey game"
+		 },
+		 {
+			 "vecIndex": "900",
+			 "description": "wrapping#wrap#wrapper"
+		 },
+		 {
+			 "vecIndex": "21",
+			 "description": "golf#golf game"
+		 },
+		 {
+			 "vecIndex": "413",
+			 "description": "courthouse"
+		 },
+		 {
+			 "vecIndex": "22",
+			 "description": "football#football game"
+		 },
+		 {
+			 "vecIndex": "23",
+			 "description": "American football#American football game"
+		 },
+		 {
+			 "vecIndex": "487",
+			 "description": "football stadium"
+		 },
+		 {
+			 "vecIndex": "1140",
+			 "description": "Black#Black person#blackamoor#Negro#Negroid"
+		 },
+		 {
+			 "vecIndex": "24",
+			 "description": "baseball#baseball game"
+		 },
+		 {
+			 "vecIndex": "904",
+			 "description": "newspaper#paper"
+		 },
+		 {
+			 "vecIndex": "25",
+			 "description": "soccer#association football"
+		 },
+		 {
+			 "vecIndex": "481",
+			 "description": "flag"
+		 },
+		 {
+			 "vecIndex": "1142",
+			 "description": "alpinist"
+		 },
+		 {
+			 "vecIndex": "26",
+			 "description": "handball"
+		 },
+		 {
+			 "vecIndex": "27",
+			 "description": "squash#squash racquets#squash rackets"
+		 },
+		 {
+			 "vecIndex": "1024",
+			 "description": "scrambled eggs"
+		 },
+		 {
+			 "vecIndex": "411",
+			 "description": "court"
+		 },
+		 {
+			 "vecIndex": "28",
+			 "description": "volleyball#volleyball game"
+		 },
+		 {
+			 "vecIndex": "908",
+			 "description": "magazine#mag"
+		 },
+		 {
+			 "vecIndex": "29",
+			 "description": "badminton"
+		 },
+		 {
+			 "vecIndex": "485",
+			 "description": "flute#transverse flute"
+		 },
+		 {
+			 "vecIndex": "30",
+			 "description": "basketball#basketball game#hoops"
+		 },
+		 {
+			 "vecIndex": "31",
+			 "description": "tennis#lawn tennis"
+		 },
+		 {
+			 "vecIndex": "431",
+			 "description": "destroyer#guided missile destroyer"
+		 },
+		 {
+			 "vecIndex": "1084",
+			 "description": "amusement park#funfair#pleasure ground"
+		 },
+		 {
+			 "vecIndex": "32",
+			 "description": "rodeo"
+		 },
+		 {
+			 "vecIndex": "848",
+			 "description": "tractor"
+		 },
+		 {
+			 "vecIndex": "33",
+			 "description": "judo"
+		 },
+		 {
+			 "vecIndex": "728",
+			 "description": "satellite#artificial satellite#orbiter"
+		 },
+		 {
+			 "vecIndex": "425",
+			 "description": "curtain#drape#drapery#mantle#pall"
+		 },
+		 {
+			 "vecIndex": "1086",
+			 "description": "desert"
+		 },
+		 {
+			 "vecIndex": "34",
+			 "description": "camping#encampment#bivouacking#tenting"
+		 },
+		 {
+			 "vecIndex": "35",
+			 "description": "puppy"
+		 },
+		 {
+			 "vecIndex": "419",
+			 "description": "crossing#crosswalk#crossover"
+		 },
+		 {
+			 "vecIndex": "36",
+			 "description": "carp"
+		 },
+		 {
+			 "vecIndex": "852",
+			 "description": "train#railroad train"
+		 },
+		 {
+			 "vecIndex": "37",
+			 "description": "goldfish#Carassius auratus"
+		 },
+		 {
+			 "vecIndex": "732",
+			 "description": "saw"
+		 },
+		 {
+			 "vecIndex": "429",
+			 "description": "desk"
+		 },
+		 {
+			 "vecIndex": "38",
+			 "description": "fetus#foetus"
+		 },
+		 {
+			 "vecIndex": "39",
+			 "description": "shark"
+		 },
+		 {
+			 "vecIndex": "439",
+			 "description": "display#video display"
+		 },
+		 {
+			 "vecIndex": "1028",
+			 "description": "whipping cream#light whipping cream"
+		 },
+		 {
+			 "vecIndex": "40",
+			 "description": "ray"
+		 },
+		 {
+			 "vecIndex": "856",
+			 "description": "treadmill#treadwheel#tread-wheel"
+		 },
+		 {
+			 "vecIndex": "41",
+			 "description": "bird"
+		 },
+		 {
+			 "vecIndex": "433",
+			 "description": "diaper#nappy#napkin"
+		 },
+		 {
+			 "vecIndex": "1030",
+			 "description": "Camembert"
+		 },
+		 {
+			 "vecIndex": "42",
+			 "description": "nestling#baby bird"
+		 },
+		 {
+			 "vecIndex": "43",
+			 "description": "cock"
+		 },
+		 {
+			 "vecIndex": "427",
+			 "description": "dam#dike#dyke"
+		 },
+		 {
+			 "vecIndex": "44",
+			 "description": "hen"
+		 },
+		 {
+			 "vecIndex": "860",
+			 "description": "typewriter"
+		 },
+		 {
+			 "vecIndex": "45",
+			 "description": "ostrich#Struthio camelus"
+		 },
+		 {
+			 "vecIndex": "437",
+			 "description": "dish"
+		 },
+		 {
+			 "vecIndex": "46",
+			 "description": "emu#Dromaius novaehollandiae#Emu novaehollandiae"
+		 },
+		 {
+			 "vecIndex": "47",
+			 "description": "finch"
+		 },
+		 {
+			 "vecIndex": "447",
+			 "description": "drilling platform#offshore rig"
+		 },
+		 {
+			 "vecIndex": "1036",
+			 "description": "cannelloni"
+		 },
+		 {
+			 "vecIndex": "48",
+			 "description": "canary#canary bird"
+		 },
+		 {
+			 "vecIndex": "928",
+			 "description": "candy bar"
+		 },
+		 {
+			 "vecIndex": "49",
+			 "description": "raven#Corvus corax"
+		 },
+		 {
+			 "vecIndex": "441",
+			 "description": "dome"
+		 },
+		 {
+			 "vecIndex": "1038",
+			 "description": "chow mein"
+		 },
+		 {
+			 "vecIndex": "50",
+			 "description": "hawk"
+		 },
+		 {
+			 "vecIndex": "51",
+			 "description": "falcon"
+		 },
+		 {
+			 "vecIndex": "435",
+			 "description": "dinner jacket#tux#tuxedo#black tie"
+		 },
+		 {
+			 "vecIndex": "52",
+			 "description": "eagle#bird of Jove"
+		 },
+		 {
+			 "vecIndex": "932",
+			 "description": "dessert#sweet#afters"
+		 },
+		 {
+			 "vecIndex": "53",
+			 "description": "vulture"
+		 },
+		 {
+			 "vecIndex": "445",
+			 "description": "dress#frock"
+		 },
+		 {
+			 "vecIndex": "54",
+			 "description": "owl#bird of Minerva#bird of night#hooter"
+		 },
+		 {
+			 "vecIndex": "55",
+			 "description": "salamander"
+		 },
+		 {
+			 "vecIndex": "391",
+			 "description": "compressor"
+		 },
+		 {
+			 "vecIndex": "1044",
+			 "description": "French toast"
+		 },
+		 {
+			 "vecIndex": "56",
+			 "description": "frog#toad#toad frog#anuran#batrachian#salientian"
+		 },
+		 {
+			 "vecIndex": "936",
+			 "description": "creme brulee"
+		 },
+		 {
+			 "vecIndex": "57",
+			 "description": "turtle"
+		 },
+		 {
+			 "vecIndex": "385",
+			 "description": "column#pillar"
+		 },
+		 {
+			 "vecIndex": "1046",
+			 "description": "kabob#kebab#shish kebab"
+		 },
+		 {
+			 "vecIndex": "58",
+			 "description": "sea turtle#marine turtle"
+		 },
+		 {
+			 "vecIndex": "59",
+			 "description": "tortoise"
+		 },
+		 {
+			 "vecIndex": "443",
+			 "description": "drawer"
+		 },
+		 {
+			 "vecIndex": "60",
+			 "description": "lizard"
+		 },
+		 {
+			 "vecIndex": "940",
+			 "description": "bread#breadstuff#staff of life"
+		 },
+		 {
+			 "vecIndex": "61",
+			 "description": "gecko"
+		 },
+		 {
+			 "vecIndex": "389",
+			 "description": "compact disk#compact disc#CD"
+		 },
+		 {
+			 "vecIndex": "62",
+			 "description": "chameleon#chamaeleon"
+		 },
+		 {
+			 "vecIndex": "63",
+			 "description": "Komodo dragon#Komodo lizard#dragon lizard#giant lizard#Varanus komodoensis"
+		 },
+		 {
+			 "vecIndex": "1008",
+			 "description": "pear"
+		 },
+		 {
+			 "vecIndex": "65",
+			 "description": "crocodile"
+		 },
+		 {
+			 "vecIndex": "457",
+			 "description": "engine"
+		 },
+		 {
+			 "vecIndex": "1118",
+			 "description": "ocean"
+		 },
+		 {
+			 "vecIndex": "66",
+			 "description": "tyrannosaur#tyrannosaurus#Tyrannosaurus rex"
+		 },
+		 {
+			 "vecIndex": "67",
+			 "description": "snake#serpent#ophidian"
+		 },
+		 {
+			 "vecIndex": "451",
+			 "description": "dry dock#drydock#graving dock"
+		 },
+		 {
+			 "vecIndex": "68",
+			 "description": "colubrid snake#colubrid"
+		 },
+		 {
+			 "vecIndex": "1012",
+			 "description": "rice"
+		 },
+		 {
+			 "vecIndex": "69",
+			 "description": "green snake#grass snake"
+		 },
+		 {
+			 "vecIndex": "461",
+			 "description": "exhaust fan"
+		 },
+		 {
+			 "vecIndex": "70",
+			 "description": "boa"
+		 },
+		 {
+			 "vecIndex": "71",
+			 "description": "anaconda#Eunectes murinus"
+		 },
+		 {
+			 "vecIndex": "471",
+			 "description": "ferry#ferryboat"
+		 },
+		 {
+			 "vecIndex": "1188",
+			 "description": "steward#flight attendant"
+		 },
+		 {
+			 "vecIndex": "72",
+			 "description": "cobra"
+		 },
+		 {
+			 "vecIndex": "1016",
+			 "description": "catsup#ketchup#cetchup#tomato ketchup"
+		 },
+		 {
+			 "vecIndex": "73",
+			 "description": "rattlesnake#rattler"
+		 },
+		 {
+			 "vecIndex": "465",
+			 "description": "fan"
+		 },
+		 {
+			 "vecIndex": "1190",
+			 "description": "surgeon#operating surgeon#sawbones"
+		 },
+		 {
+			 "vecIndex": "74",
+			 "description": "scorpion"
+		 },
+		 {
+			 "vecIndex": "75",
+			 "description": "spider"
+		 },
+		 {
+			 "vecIndex": "459",
+			 "description": "eraser"
+		 },
+		 {
+			 "vecIndex": "76",
+			 "description": "tick"
+		 },
+		 {
+			 "vecIndex": "1020",
+			 "description": "tomato sauce"
+		 },
+		 {
+			 "vecIndex": "77",
+			 "description": "chicken#Gallus gallus"
+		 },
+		 {
+			 "vecIndex": "469",
+			 "description": "fence#fencing"
+		 },
+		 {
+			 "vecIndex": "78",
+			 "description": "chick#biddy"
+		 },
+		 {
+			 "vecIndex": "79",
+			 "description": "cock#rooster"
+		 },
+		 {
+			 "vecIndex": "479",
+			 "description": "fishing rod#fishing pole"
+		 },
+		 {
+			 "vecIndex": "1196",
+			 "description": "woman#adult female"
+		 },
+		 {
+			 "vecIndex": "801",
+			 "description": "step#stair"
+		 },
+		 {
+			 "vecIndex": "80",
+			 "description": "turkey#Meleagris gallopavo"
+		 },
+		 {
+			 "vecIndex": "960",
+			 "description": "pepper"
+		 },
+		 {
+			 "vecIndex": "81",
+			 "description": "grouse"
+		 },
+		 {
+			 "vecIndex": "473",
+			 "description": "fire"
+		 },
+		 {
+			 "vecIndex": "1198",
+			 "description": "pine#pine tree#true pine"
+		 },
+		 {
+			 "vecIndex": "82",
+			 "description": "peacock"
+		 },
+		 {
+			 "vecIndex": "83",
+			 "description": "pigeon"
+		 },
+		 {
+			 "vecIndex": "467",
+			 "description": "farm"
+		 },
+		 {
+			 "vecIndex": "805",
+			 "description": "stocking"
+		 },
+		 {
+			 "vecIndex": "84",
+			 "description": "dove"
+		 },
+		 {
+			 "vecIndex": "964",
+			 "description": "salad green#salad greens"
+		 },
+		 {
+			 "vecIndex": "85",
+			 "description": "parrot"
+		 },
+		 {
+			 "vecIndex": "477",
+			 "description": "fire station#firehouse"
+		 },
+		 {
+			 "vecIndex": "86",
+			 "description": "cuckoo"
+		 },
+		 {
+			 "vecIndex": "87",
+			 "description": "toucan"
+		 },
+		 {
+			 "vecIndex": "809",
+			 "description": "street"
+		 },
+		 {
+			 "vecIndex": "88",
+			 "description": "aquatic bird"
+		 },
+		 {
+			 "vecIndex": "968",
+			 "description": "carrot"
+		 },
+		 {
+			 "vecIndex": "89",
+			 "description": "duck"
+		 },
+		 {
+			 "vecIndex": "90",
+			 "description": "goose"
+		 },
+		 {
+			 "vecIndex": "91",
+			 "description": "swan"
+		 },
+		 {
+			 "vecIndex": "475",
+			 "description": "fire extinguisher#extinguisher#asphyxiator"
+		 },
+		 {
+			 "vecIndex": "813",
+			 "description": "suit#suit of clothes"
+		 },
+		 {
+			 "vecIndex": "92",
+			 "description": "kangaroo"
+		 },
+		 {
+			 "vecIndex": "972",
+			 "description": "tomato"
+		 },
+		 {
+			 "vecIndex": "93",
+			 "description": "koala#koala bear#kangaroo bear#native bear#Phascolarctos cinereus"
+		 },
+		 {
+			 "vecIndex": "94",
+			 "description": "livestock#stock#farm animal"
+		 },
+		 {
+			 "vecIndex": "95",
+			 "description": "bull"
+		 },
+		 {
+			 "vecIndex": "495",
+			 "description": "fuselage"
+		 },
+		 {
+			 "vecIndex": "1148",
+			 "description": "basketball player#basketeer#cager"
+		 },
+		 {
+			 "vecIndex": "96",
+			 "description": "cow"
+		 },
+		 {
+			 "vecIndex": "912",
+			 "description": "traffic light#traffic signal#stoplight"
+		 },
+		 {
+			 "vecIndex": "97",
+			 "description": "jellyfish"
+		 },
+		 {
+			 "vecIndex": "489",
+			 "description": "fountain"
+		 },
+		 {
+			 "vecIndex": "1150",
+			 "description": "bride"
+		 },
+		 {
+			 "vecIndex": "98",
+			 "description": "coral"
+		 },
+		 {
+			 "vecIndex": "99",
+			 "description": "worm"
+		 },
+		 {
+			 "vecIndex": "483",
+			 "description": "flashlight#torch"
+		 },
+		 {
+			 "vecIndex": "100",
+			 "description": "snail"
+		 },
+		 {
+			 "vecIndex": "916",
+			 "description": "canned food#canned foods#canned goods#tinned goods"
+		 },
+		 {
+			 "vecIndex": "101",
+			 "description": "clam"
+		 },
+		 {
+			 "vecIndex": "493",
+			 "description": "frying pan#frypan#skillet"
+		 },
+		 {
+			 "vecIndex": "102",
+			 "description": "octopus#devilfish"
+		 },
+		 {
+			 "vecIndex": "103",
+			 "description": "crab"
+		 },
+		 {
+			 "vecIndex": "503",
+			 "description": "glass#drinking glass"
+		 },
+		 {
+			 "vecIndex": "1092",
+			 "description": "park#commons#common#green"
+		 },
+		 {
+			 "vecIndex": "104",
+			 "description": "lobster"
+		 },
+		 {
+			 "vecIndex": "920",
+			 "description": "buffet"
+		 },
+		 {
+			 "vecIndex": "105",
+			 "description": "shrimp"
+		 },
+		 {
+			 "vecIndex": "497",
+			 "description": "garage"
+		 },
+		 {
+			 "vecIndex": "1094",
+			 "description": "resort#resort hotel#holiday resort"
+		 },
+		 {
+			 "vecIndex": "106",
+			 "description": "stork"
+		 },
+		 {
+			 "vecIndex": "107",
+			 "description": "flamingo"
+		 },
+		 {
+			 "vecIndex": "491",
+			 "description": "frigate"
+		 },
+		 {
+			 "vecIndex": "108",
+			 "description": "seabird#sea bird#seafowl"
+		 },
+		 {
+			 "vecIndex": "924",
+			 "description": "stew"
+		 },
+		 {
+			 "vecIndex": "109",
+			 "description": "shorebird#shore bird#limicoline bird"
+		 },
+		 {
+			 "vecIndex": "501",
+			 "description": "gate"
+		 },
+		 {
+			 "vecIndex": "110",
+			 "description": "gull#seagull#sea gull"
+		 },
+		 {
+			 "vecIndex": "111",
+			 "description": "pelican"
+		 },
+		 {
+			 "vecIndex": "511",
+			 "description": "greenhouse#nursery#glasshouse"
+		 },
+		 {
+			 "vecIndex": "1100",
+			 "description": "cave"
+		 },
+		 {
+			 "vecIndex": "112",
+			 "description": "penguin"
+		 },
+		 {
+			 "vecIndex": "992",
+			 "description": "plum"
+		 },
+		 {
+			 "vecIndex": "113",
+			 "description": "whale"
+		 },
+		 {
+			 "vecIndex": "505",
+			 "description": "glove"
+		 },
+		 {
+			 "vecIndex": "1102",
+			 "description": "cloud"
+		 },
+		 {
+			 "vecIndex": "114",
+			 "description": "blue whale#sulfur bottom#Balaenoptera musculus"
+		 },
+		 {
+			 "vecIndex": "115",
+			 "description": "dolphin"
+		 },
+		 {
+			 "vecIndex": "499",
+			 "description": "garden"
+		 },
+		 {
+			 "vecIndex": "116",
+			 "description": "killer whale#killer#orca#grampus#sea wolf#Orcinus orca"
+		 },
+		 {
+			 "vecIndex": "996",
+			 "description": "passion fruit"
+		 },
+		 {
+			 "vecIndex": "117",
+			 "description": "seal"
+		 },
+		 {
+			 "vecIndex": "509",
+			 "description": "golf club#golf-club#club"
+		 },
+		 {
+			 "vecIndex": "118",
+			 "description": "sea lion"
+		 },
+		 {
+			 "vecIndex": "119",
+			 "description": "dog#domestic dog#Canis familiaris"
+		 },
+		 {
+			 "vecIndex": "455",
+			 "description": "electric fan#blower"
+		 },
+		 {
+			 "vecIndex": "1108",
+			 "description": "geyser"
+		 },
+		 {
+			 "vecIndex": "120",
+			 "description": "hound#hound dog"
+		 },
+		 {
+			 "vecIndex": "1000",
+			 "description": "papaya"
+		 },
+		 {
+			 "vecIndex": "121",
+			 "description": "terrier"
+		 },
+		 {
+			 "vecIndex": "449",
+			 "description": "drugstore#apothecary's shop#chemist's#chemist's shop#pharmacy"
+		 },
+		 {
+			 "vecIndex": "1110",
+			 "description": "hill"
+		 },
+		 {
+			 "vecIndex": "122",
+			 "description": "retriever"
+		 },
+		 {
+			 "vecIndex": "123",
+			 "description": "golden retriever"
+		 },
+		 {
+			 "vecIndex": "507",
+			 "description": "go-kart"
+		 },
+		 {
+			 "vecIndex": "124",
+			 "description": "setter"
+		 },
+		 {
+			 "vecIndex": "1004",
+			 "description": "mango"
+		 },
+		 {
+			 "vecIndex": "125",
+			 "description": "shepherd dog#sheepdog#sheep dog"
+		 },
+		 {
+			 "vecIndex": "453",
+			 "description": "dump truck#dumper#tipper truck#tipper lorry#tip truck#tipper"
+		 },
+		 {
+			 "vecIndex": "126",
+			 "description": "German shepherd#German shepherd dog#German police dog#alsatian"
+		 },
+		 {
+			 "vecIndex": "127",
+			 "description": "police dog"
+		 },
+		 {
+			 "vecIndex": "785",
+			 "description": "space rocket"
+		 },
+		 {
+			 "vecIndex": "128",
+			 "description": "bulldog#English bulldog"
+		 },
+		 {
+			 "vecIndex": "314",
+			 "description": "briefcase"
+		 },
+		 {
+			 "vecIndex": "129",
+			 "description": "sled dog#sledge dog"
+		 },
+		 {
+			 "vecIndex": "130",
+			 "description": "Siberian husky"
+		 },
+		 {
+			 "vecIndex": "260",
+			 "description": "ballroom#dance hall#dance palace"
+		 },
+		 {
+			 "vecIndex": "1207",
+			 "description": "orchid#orchidaceous plant"
+		 },
+		 {
+			 "vecIndex": "131",
+			 "description": "dalmatian#coach dog#carriage dog"
+		 },
+		 {
+			 "vecIndex": "789",
+			 "description": "spatula"
+		 },
+		 {
+			 "vecIndex": "132",
+			 "description": "pug#pug-dog"
+		 },
+		 {
+			 "vecIndex": "318",
+			 "description": "building#edifice"
+		 },
+		 {
+			 "vecIndex": "1193",
+			 "description": "tourist#tourer#holidaymaker"
+		 },
+		 {
+			 "vecIndex": "133",
+			 "description": "wolf"
+		 },
+		 {
+			 "vecIndex": "134",
+			 "description": "wild dog"
+		 },
+		 {
+			 "vecIndex": "312",
+			 "description": "brick"
+		 },
+		 {
+			 "vecIndex": "135",
+			 "description": "hyena#hyaena"
+		 },
+		 {
+			 "vecIndex": "793",
+			 "description": "sportswear#athletic wear#activewear"
+		 },
+		 {
+			 "vecIndex": "136",
+			 "description": "fox"
+		 },
+		 {
+			 "vecIndex": "258",
+			 "description": "ball"
+		 },
+		 {
+			 "vecIndex": "137",
+			 "description": "domestic cat#house cat#Felis domesticus#Felis catus"
+		 },
+		 {
+			 "vecIndex": "138",
+			 "description": "kitten#kitty"
+		 },
+		 {
+			 "vecIndex": "268",
+			 "description": "basketball"
+		 },
+		 {
+			 "vecIndex": "1215",
+			 "description": "begonia"
+		 },
+		 {
+			 "vecIndex": "139",
+			 "description": "cougar#puma#catamount#mountain lion#painter#panther#Felis concolor"
+		 },
+		 {
+			 "vecIndex": "797",
+			 "description": "stairway#staircase"
+		 },
+		 {
+			 "vecIndex": "140",
+			 "description": "leopard#Panthera pardus"
+		 },
+		 {
+			 "vecIndex": "262",
+			 "description": "bar"
+		 },
+		 {
+			 "vecIndex": "1201",
+			 "description": "pink#garden pink"
+		 },
+		 {
+			 "vecIndex": "141",
+			 "description": "jaguar#panther#Panthera onca#Felis onca"
+		 },
+		 {
+			 "vecIndex": "142",
+			 "description": "lion#king of beasts#Panthera leo"
+		 },
+		 {
+			 "vecIndex": "256",
+			 "description": "balcony"
+		 },
+		 {
+			 "vecIndex": "143",
+			 "description": "tiger#Panthera tigris"
+		 },
+		 {
+			 "vecIndex": "865",
+			 "description": "vacuum#vacuum cleaner"
+		 },
+		 {
+			 "vecIndex": "144",
+			 "description": "cheetah#chetah#Acinonyx jubatus"
+		 },
+		 {
+			 "vecIndex": "266",
+			 "description": "barrow#garden cart#lawn cart#wheelbarrow"
+		 },
+		 {
+			 "vecIndex": "145",
+			 "description": "bear"
+		 },
+		 {
+			 "vecIndex": "146",
+			 "description": "brown bear#bruin#Ursus arctos"
+		 },
+		 {
+			 "vecIndex": "276",
+			 "description": "beacon#lighthouse#beacon light#pharos"
+		 },
+		 {
+			 "vecIndex": "1159",
+			 "description": "electrician#lineman#linesman"
+		 },
+		 {
+			 "vecIndex": "147",
+			 "description": "grizzly#grizzly bear#silvertip#silver-tip#Ursus horribilis#Ursus arctos horribilis"
+		 },
+		 {
+			 "vecIndex": "869",
+			 "description": "vehicle"
+		 },
+		 {
+			 "vecIndex": "148",
+			 "description": "ice bear#polar bear#Ursus Maritimus#Thalarctos maritimus"
+		 },
+		 {
+			 "vecIndex": "270",
+			 "description": "bathrobe"
+		 },
+		 {
+			 "vecIndex": "1209",
+			 "description": "wheat"
+		 },
+		 {
+			 "vecIndex": "149",
+			 "description": "bat#chiropteran"
+		 },
+		 {
+			 "vecIndex": "150",
+			 "description": "beetle"
+		 },
+		 {
+			 "vecIndex": "264",
+			 "description": "barbershop"
+		 },
+		 {
+			 "vecIndex": "151",
+			 "description": "ladybug#ladybeetle#lady beetle#ladybird#ladybird beetle"
+		 },
+		 {
+			 "vecIndex": "873",
+			 "description": "villa"
+		 },
+		 {
+			 "vecIndex": "152",
+			 "description": "fly"
+		 },
+		 {
+			 "vecIndex": "274",
+			 "description": "battleship#battlewagon"
+		 },
+		 {
+			 "vecIndex": "153",
+			 "description": "mosquito"
+		 },
+		 {
+			 "vecIndex": "154",
+			 "description": "bee"
+		 },
+		 {
+			 "vecIndex": "284",
+			 "description": "bicycle#bike#wheel#cycle"
+		 },
+		 {
+			 "vecIndex": "1167",
+			 "description": "guitarist#guitar player"
+		 },
+		 {
+			 "vecIndex": "155",
+			 "description": "honeybee#Apis mellifera"
+		 },
+		 {
+			 "vecIndex": "877",
+			 "description": "walkie-talkie#walky-talky"
+		 },
+		 {
+			 "vecIndex": "156",
+			 "description": "wasp"
+		 },
+		 {
+			 "vecIndex": "278",
+			 "description": "bedroom#sleeping room#sleeping accommodation#chamber#bedchamber"
+		 },
+		 {
+			 "vecIndex": "1153",
+			 "description": "child#kid"
+		 },
+		 {
+			 "vecIndex": "157",
+			 "description": "hornet"
+		 },
+		 {
+			 "vecIndex": "158",
+			 "description": "ant#emmet#pismire"
+		 },
+		 {
+			 "vecIndex": "272",
+			 "description": "bathtub#bathing tub#bath#tub"
+		 },
+		 {
+			 "vecIndex": "159",
+			 "description": "grasshopper#hopper"
+		 },
+		 {
+			 "vecIndex": "817",
+			 "description": "supporting tower"
+		 },
+		 {
+			 "vecIndex": "160",
+			 "description": "cockroach#roach"
+		 },
+		 {
+			 "vecIndex": "976",
+			 "description": "spinach"
+		 },
+		 {
+			 "vecIndex": "161",
+			 "description": "butterfly"
+		 },
+		 {
+			 "vecIndex": "162",
+			 "description": "moth"
+		 },
+		 {
+			 "vecIndex": "292",
+			 "description": "birdhouse"
+		 },
+		 {
+			 "vecIndex": "1111",
+			 "description": "hot spring#thermal spring"
+		 },
+		 {
+			 "vecIndex": "163",
+			 "description": "caterpillar"
+		 },
+		 {
+			 "vecIndex": "821",
+			 "description": "swimming trunks#bathing trunks"
+		 },
+		 {
+			 "vecIndex": "164",
+			 "description": "larva"
+		 },
+		 {
+			 "vecIndex": "980",
+			 "description": "cranberry"
+		 },
+		 {
+			 "vecIndex": "165",
+			 "description": "starfish#sea star"
+		 },
+		 {
+			 "vecIndex": "166",
+			 "description": "rabbit#coney#cony"
+		 },
+		 {
+			 "vecIndex": "167",
+			 "description": "hare"
+		 },
+		 {
+			 "vecIndex": "825",
+			 "description": "table"
+		 },
+		 {
+			 "vecIndex": "168",
+			 "description": "mouse"
+		 },
+		 {
+			 "vecIndex": "290",
+			 "description": "biology lab#biology laboratory#bio lab"
+		 },
+		 {
+			 "vecIndex": "984",
+			 "description": "citrus#citrus fruit#citrous fruit"
+		 },
+		 {
+			 "vecIndex": "169",
+			 "description": "rat"
+		 },
+		 {
+			 "vecIndex": "170",
+			 "description": "hamster"
+		 },
+		 {
+			 "vecIndex": "300",
+			 "description": "bookcase"
+		 },
+		 {
+			 "vecIndex": "1119",
+			 "description": "ocean floor#sea floor#ocean bottom#seabed#sea bottom#Davy Jones's locker#Davy Jones"
+		 },
+		 {
+			 "vecIndex": "171",
+			 "description": "squirrel"
+		 },
+		 {
+			 "vecIndex": "829",
+			 "description": "tape#tapeline#tape measure"
+		 },
+		 {
+			 "vecIndex": "172",
+			 "description": "chipmunk"
+		 },
+		 {
+			 "vecIndex": "294",
+			 "description": "blanket#cover"
+		 },
+		 {
+			 "vecIndex": "1105",
+			 "description": "fishpond"
+		 },
+		 {
+			 "vecIndex": "988",
+			 "description": "lime"
+		 },
+		 {
+			 "vecIndex": "173",
+			 "description": "beaver"
+		 },
+		 {
+			 "vecIndex": "174",
+			 "description": "guinea pig#Cavia cobaya"
+		 },
+		 {
+			 "vecIndex": "288",
+			 "description": "bin"
+		 },
+		 {
+			 "vecIndex": "175",
+			 "description": "horse#Equus caballus"
+		 },
+		 {
+			 "vecIndex": "769",
+			 "description": "skyscraper"
+		 },
+		 {
+			 "vecIndex": "176",
+			 "description": "pony"
+		 },
+		 {
+			 "vecIndex": "298",
+			 "description": "bomber"
+		 },
+		 {
+			 "vecIndex": "177",
+			 "description": "racehorse#race horse#bangtail"
+		 },
+		 {
+			 "vecIndex": "178",
+			 "description": "farm horse#dobbin"
+		 },
+		 {
+			 "vecIndex": "308",
+			 "description": "bowling alley"
+		 },
+		 {
+			 "vecIndex": "1191",
+			 "description": "teacher#instructor"
+		 },
+		 {
+			 "vecIndex": "179",
+			 "description": "zebra"
+		 },
+		 {
+			 "vecIndex": "773",
+			 "description": "slot machine#coin machine"
+		 },
+		 {
+			 "vecIndex": "180",
+			 "description": "rhinoceros#rhino"
+		 },
+		 {
+			 "vecIndex": "302",
+			 "description": "bookshop#bookstore#bookstall"
+		 },
+		 {
+			 "vecIndex": "1113",
+			 "description": "icecap#ice cap"
+		 },
+		 {
+			 "vecIndex": "181",
+			 "description": "hog#pig#grunter#squealer#Sus scrofa"
+		 },
+		 {
+			 "vecIndex": "182",
+			 "description": "boar"
+		 },
+		 {
+			 "vecIndex": "296",
+			 "description": "block"
+		 },
+		 {
+			 "vecIndex": "183",
+			 "description": "hippopotamus#hippo#river horse#Hippopotamus amphibius"
+		 },
+		 {
+			 "vecIndex": "777",
+			 "description": "snowplow#snowplough"
+		 },
+		 {
+			 "vecIndex": "184",
+			 "description": "cattle#cows#kine#oxen#Bos taurus"
+		 },
+		 {
+			 "vecIndex": "306",
+			 "description": "bow"
+		 },
+		 {
+			 "vecIndex": "185",
+			 "description": "bull"
+		 },
+		 {
+			 "vecIndex": "186",
+			 "description": "cow#moo-cow"
+		 },
+		 {
+			 "vecIndex": "316",
+			 "description": "brush"
+		 },
+		 {
+			 "vecIndex": "1199",
+			 "description": "spruce"
+		 },
+		 {
+			 "vecIndex": "187",
+			 "description": "bison"
+		 },
+		 {
+			 "vecIndex": "781",
+			 "description": "solar array#solar battery#solar panel"
+		 },
+		 {
+			 "vecIndex": "188",
+			 "description": "sheep"
+		 },
+		 {
+			 "vecIndex": "310",
+			 "description": "box office#ticket office#ticket booth"
+		 },
+		 {
+			 "vecIndex": "1185",
+			 "description": "soccer player"
+		 },
+		 {
+			 "vecIndex": "189",
+			 "description": "goat#caprine animal"
+		 },
+		 {
+			 "vecIndex": "190",
+			 "description": "antelope"
+		 },
+		 {
+			 "vecIndex": "304",
+			 "description": "bottle opener"
+		 },
+		 {
+			 "vecIndex": "191",
+			 "description": "gazelle"
+		 },
+		 {
+			 "vecIndex": "849",
+			 "description": "tractor"
+		 },
+		 {
+			 "vecIndex": "192",
+			 "description": "deer#cervid"
+		 },
+		 {
+			 "vecIndex": "378",
+			 "description": "clothing store#haberdashery#haberdashery store#mens store"
+		 },
+		 {
+			 "vecIndex": "193",
+			 "description": "camel"
+		 },
+		 {
+			 "vecIndex": "194",
+			 "description": "giraffe#camelopard#Giraffa camelopardalis"
+		 },
+		 {
+			 "vecIndex": "324",
+			 "description": "cabin"
+		 },
+		 {
+			 "vecIndex": "195",
+			 "description": "otter"
+		 },
+		 {
+			 "vecIndex": "853",
+			 "description": "trampoline"
+		 },
+		 {
+			 "vecIndex": "196",
+			 "description": "skunk#polecat#wood pussy"
+		 },
+		 {
+			 "vecIndex": "382",
+			 "description": "coffin#casket"
+		 },
+		 {
+			 "vecIndex": "197",
+			 "description": "sloth#tree sloth"
+		 },
+		 {
+			 "vecIndex": "198",
+			 "description": "orangutan#orang#orangutang#Pongo pygmaeus"
+		 },
+		 {
+			 "vecIndex": "376",
+			 "description": "clock"
+		 },
+		 {
+			 "vecIndex": "199",
+			 "description": "gorilla#Gorilla gorilla"
+		 },
+		 {
+			 "vecIndex": "857",
+			 "description": "trombone"
+		 },
+		 {
+			 "vecIndex": "200",
+			 "description": "chimpanzee#chimp#Pan troglodytes"
+		 },
+		 {
+			 "vecIndex": "322",
+			 "description": "cab#hack#taxi#taxicab"
+		 },
+		 {
+			 "vecIndex": "201",
+			 "description": "monkey"
+		 },
+		 {
+			 "vecIndex": "202",
+			 "description": "lemur"
+		 },
+		 {
+			 "vecIndex": "332",
+			 "description": "camouflage"
+		 },
+		 {
+			 "vecIndex": "203",
+			 "description": "elephant"
+		 },
+		 {
+			 "vecIndex": "861",
+			 "description": "umbrella"
+		 },
+		 {
+			 "vecIndex": "204",
+			 "description": "raccoon#racoon"
+		 },
+		 {
+			 "vecIndex": "326",
+			 "description": "cable#line#transmission line"
+		 },
+		 {
+			 "vecIndex": "205",
+			 "description": "giant panda#panda#panda bear#coon bear#Ailuropoda melanoleuca"
+		 },
+		 {
+			 "vecIndex": "206",
+			 "description": "fish"
+		 },
+		 {
+			 "vecIndex": "320",
+			 "description": "bus#autobus#coach#charabanc#double-decker#jitney#motorbus#motorcoach#omnibus#passenger vehicle"
+		 },
+		 {
+			 "vecIndex": "207",
+			 "description": "salmon"
+		 },
+		 {
+			 "vecIndex": "929",
+			 "description": "chewing gum#gum"
+		 },
+		 {
+			 "vecIndex": "208",
+			 "description": "trout"
+		 },
+		 {
+			 "vecIndex": "330",
+			 "description": "calculator#calculating machine"
+		 },
+		 {
+			 "vecIndex": "209",
+			 "description": "piranha#pirana#caribe"
+		 },
+		 {
+			 "vecIndex": "210",
+			 "description": "clown anemone fish#Amphiprion percula"
+		 },
+		 {
+			 "vecIndex": "549",
+			 "description": "igloo#iglu"
+		 },
+		 {
+			 "vecIndex": "340",
+			 "description": "capitol"
+		 },
+		 {
+			 "vecIndex": "1223",
+			 "description": "fruit tree"
+		 },
+		 {
+			 "vecIndex": "211",
+			 "description": "tuna#tunny"
+		 },
+		 {
+			 "vecIndex": "933",
+			 "description": "whip"
+		 },
+		 {
+			 "vecIndex": "212",
+			 "description": "abbey"
+		 },
+		 {
+			 "vecIndex": "334",
+			 "description": "can#tin#tin can"
+		 },
+		 {
+			 "vecIndex": "213",
+			 "description": "air conditioner#air conditioning"
+		 },
+		 {
+			 "vecIndex": "214",
+			 "description": "aircraft"
+		 },
+		 {
+			 "vecIndex": "328",
+			 "description": "cafe#coffeehouse#coffee shop#coffee bar"
+		 },
+		 {
+			 "vecIndex": "215",
+			 "description": "aircraft carrier#carrier#flattop#attack aircraft carrier"
+		 },
+		 {
+			 "vecIndex": "937",
+			 "description": "ice-cream cake#icebox cake"
+		 },
+		 {
+			 "vecIndex": "216",
+			 "description": "aircraft engine"
+		 },
+		 {
+			 "vecIndex": "338",
+			 "description": "canoe"
+		 },
+		 {
+			 "vecIndex": "217",
+			 "description": "airdock#hangar#repair shed"
+		 },
+		 {
+			 "vecIndex": "218",
+			 "description": "airliner"
+		 },
+		 {
+			 "vecIndex": "557",
+			 "description": "jeep#landrover"
+		 },
+		 {
+			 "vecIndex": "348",
+			 "description": "car seat"
+		 },
+		 {
+			 "vecIndex": "1231",
+			 "description": "agaric"
+		 },
+		 {
+			 "vecIndex": "219",
+			 "description": "airplane#aeroplane#plane"
+		 },
+		 {
+			 "vecIndex": "941",
+			 "description": "bun#roll"
+		 },
+		 {
+			 "vecIndex": "220",
+			 "description": "airport#airdrome#aerodrome#drome"
+		 },
+		 {
+			 "vecIndex": "342",
+			 "description": "car#railcar#railway car#railroad car"
+		 },
+		 {
+			 "vecIndex": "1217",
+			 "description": "violet"
+		 },
+		 {
+			 "vecIndex": "221",
+			 "description": "airship#dirigible"
+		 },
+		 {
+			 "vecIndex": "222",
+			 "description": "air terminal#airport terminal"
+		 },
+		 {
+			 "vecIndex": "545",
+			 "description": "hovercraft#ground-effect machine"
+		 },
+		 {
+			 "vecIndex": "336",
+			 "description": "candle#taper#wax light"
+		 },
+		 {
+			 "vecIndex": "223",
+			 "description": "alarm clock#alarm"
+		 },
+		 {
+			 "vecIndex": "881",
+			 "description": "warplane#military plane"
+		 },
+		 {
+			 "vecIndex": "224",
+			 "description": "alley#alleyway#back street"
+		 },
+		 {
+			 "vecIndex": "282",
+			 "description": "belt"
+		 },
+		 {
+			 "vecIndex": "225",
+			 "description": "altar"
+		 },
+		 {
+			 "vecIndex": "226",
+			 "description": "altar#communion table#Lord's table"
+		 },
+		 {
+			 "vecIndex": "356",
+			 "description": "catapult#arbalest#arbalist#ballista#bricole#mangonel#onager#trebuchet#trebucket"
+		 },
+		 {
+			 "vecIndex": "1175",
+			 "description": "nurse"
+		 },
+		 {
+			 "vecIndex": "227",
+			 "description": "ambulance"
+		 },
+		 {
+			 "vecIndex": "885",
+			 "description": "watering can#watering pot"
+		 },
+		 {
+			 "vecIndex": "228",
+			 "description": "amphitheater#amphitheatre#coliseum"
+		 },
+		 {
+			 "vecIndex": "286",
+			 "description": "billboard#hoarding"
+		 },
+		 {
+			 "vecIndex": "1161",
+			 "description": "fireman#firefighter#fire fighter#fire-eater"
+		 },
+		 {
+			 "vecIndex": "229",
+			 "description": "amusement arcade"
+		 },
+		 {
+			 "vecIndex": "230",
+			 "description": "android#humanoid#mechanical man"
+		 },
+		 {
+			 "vecIndex": "280",
+			 "description": "beer garden"
+		 },
+		 {
+			 "vecIndex": "231",
+			 "description": "antenna#aerial#transmitting aerial"
+		 },
+		 {
+			 "vecIndex": "889",
+			 "description": "wind farm#wind park#wind energy facility"
+		 },
+		 {
+			 "vecIndex": "232",
+			 "description": "anteroom#antechamber#entrance hall#hall#foyer#lobby#vestibule"
+		 },
+		 {
+			 "vecIndex": "354",
+			 "description": "castle"
+		 },
+		 {
+			 "vecIndex": "233",
+			 "description": "apartment#flat"
+		 },
+		 {
+			 "vecIndex": "234",
+			 "description": "apartment building#apartment house"
+		 },
+		 {
+			 "vecIndex": "364",
+			 "description": "chair"
+		 },
+		 {
+			 "vecIndex": "1183",
+			 "description": "serviceman#military man#man#military personnel"
+		 },
+		 {
+			 "vecIndex": "235",
+			 "description": "aquarium#fish tank#marine museum"
+		 },
+		 {
+			 "vecIndex": "893",
+			 "description": "window"
+		 },
+		 {
+			 "vecIndex": "236",
+			 "description": "aqueduct"
+		 },
+		 {
+			 "vecIndex": "358",
+			 "description": "CD player"
+		 },
+		 {
+			 "vecIndex": "1169",
+			 "description": "homeless#homeless person"
+		 },
+		 {
+			 "vecIndex": "237",
+			 "description": "arch"
+		 },
+		 {
+			 "vecIndex": "238",
+			 "description": "archive"
+		 },
+		 {
+			 "vecIndex": "352",
+			 "description": "casino#gambling casino"
+		 },
+		 {
+			 "vecIndex": "239",
+			 "description": "armchair"
+		 },
+		 {
+			 "vecIndex": "833",
+			 "description": "television camera#tv camera#camera"
+		 },
+		 {
+			 "vecIndex": "240",
+			 "description": "armored vehicle#armoured vehicle"
+		 },
+		 {
+			 "vecIndex": "362",
+			 "description": "chain"
+		 },
+		 {
+			 "vecIndex": "241",
+			 "description": "assault rifle#assault gun"
+		 },
+		 {
+			 "vecIndex": "242",
+			 "description": "atom bomb#atomic bomb#A-bomb#fission bomb#plutonium bomb"
+		 },
+		 {
+			 "vecIndex": "372",
+			 "description": "circus tent#big top#round top#top"
+		 },
+		 {
+			 "vecIndex": "243",
+			 "description": "attic"
+		 },
+		 {
+			 "vecIndex": "837",
+			 "description": "thermometer"
+		 },
+		 {
+			 "vecIndex": "244",
+			 "description": "auditorium"
+		 },
+		 {
+			 "vecIndex": "366",
+			 "description": "chateau"
+		 },
+		 {
+			 "vecIndex": "1177",
+			 "description": "pharmacist#druggist#chemist#apothecary#pill pusher#pill roller"
+		 },
+		 {
+			 "vecIndex": "245",
+			 "description": "automatic firearm#automatic gun#automatic weapon"
+		 },
+		 {
+			 "vecIndex": "246",
+			 "description": "automobile engine"
+		 },
+		 {
+			 "vecIndex": "360",
+			 "description": "cellar#wine cellar"
+		 },
+		 {
+			 "vecIndex": "247",
+			 "description": "ax#axe"
+		 },
+		 {
+			 "vecIndex": "841",
+			 "description": "tomahawk#hatchet"
+		 },
+		 {
+			 "vecIndex": "248",
+			 "description": "baby bed#baby's bed"
+		 },
+		 {
+			 "vecIndex": "370",
+			 "description": "cigar lighter#cigarette lighter#pocket lighter"
+		 },
+		 {
+			 "vecIndex": "249",
+			 "description": "baby buggy#baby carriage#carriage#perambulator#pram#stroller#go-cart#pushchair#pusher"
+		 },
+		 {
+			 "vecIndex": "250",
+			 "description": "backhoe"
+		 },
+		 {
+			 "vecIndex": "380",
+			 "description": "cockpit"
+		 },
+		 {
+			 "vecIndex": "251",
+			 "description": "backpack#back pack#knapsack#packsack#rucksack#haversack"
+		 },
+		 {
+			 "vecIndex": "845",
+			 "description": "towel"
+		 },
+		 {
+			 "vecIndex": "252",
+			 "description": "bag"
+		 },
+		 {
+			 "vecIndex": "374",
+			 "description": "classroom#schoolroom"
+		 },
+		 {
+			 "vecIndex": "253",
+			 "description": "baggage#luggage"
+		 },
+		 {
+			 "vecIndex": "254",
+			 "description": "bait#decoy#lure"
+		 },
+		 {
+			 "vecIndex": "368",
+			 "description": "child's room"
+		 },
+		 {
+			 "vecIndex": "255",
+			 "description": "bakery#bakeshop#bakehouse"
+		 },
+		 {
+			 "vecIndex": "688",
+			 "description": "razor"
+		 },
+		 {
+			 "vecIndex": "257",
+			 "description": "bale"
+		 },
+		 {
+			 "vecIndex": "259",
+			 "description": "balloon"
+		 },
+		 {
+			 "vecIndex": "692",
+			 "description": "refinery"
+		 },
+		 {
+			 "vecIndex": "261",
+			 "description": "bandage#patch"
+		 },
+		 {
+			 "vecIndex": "263",
+			 "description": "barbecue#barbeque"
+		 },
+		 {
+			 "vecIndex": "696",
+			 "description": "restaurant#eating house#eating place#eatery"
+		 },
+		 {
+			 "vecIndex": "265",
+			 "description": "barn"
+		 },
+		 {
+			 "vecIndex": "267",
+			 "description": "basement#cellar"
+		 },
+		 {
+			 "vecIndex": "700",
+			 "description": "robe"
+		 },
+		 {
+			 "vecIndex": "269",
+			 "description": "bat"
+		 },
+		 {
+			 "vecIndex": "271",
+			 "description": "bathroom#bath"
+		 },
+		 {
+			 "vecIndex": "640",
+			 "description": "palace"
+		 },
+		 {
+			 "vecIndex": "273",
+			 "description": "battery#electric battery"
+		 },
+		 {
+			 "vecIndex": "275",
+			 "description": "bazaar#bazar"
+		 },
+		 {
+			 "vecIndex": "644",
+			 "description": "peeler"
+		 },
+		 {
+			 "vecIndex": "277",
+			 "description": "bed"
+		 },
+		 {
+			 "vecIndex": "279",
+			 "description": "beer bottle"
+		 },
+		 {
+			 "vecIndex": "648",
+			 "description": "perfume#essence"
+		 },
+		 {
+			 "vecIndex": "281",
+			 "description": "bell"
+		 },
+		 {
+			 "vecIndex": "283",
+			 "description": "bench"
+		 },
+		 {
+			 "vecIndex": "652",
+			 "description": "picture frame"
+		 },
+		 {
+			 "vecIndex": "285",
+			 "description": "bikini#two-piece"
+		 },
+		 {
+			 "vecIndex": "287",
+			 "description": "billiard ball"
+		 },
+		 {
+			 "vecIndex": "592",
+			 "description": "magnetic disk#magnetic disc#disk#disc"
+		 },
+		 {
+			 "vecIndex": "289",
+			 "description": "binder#ring-binder"
+		 },
+		 {
+			 "vecIndex": "291",
+			 "description": "bird feeder#birdfeeder#feeder"
+		 },
+		 {
+			 "vecIndex": "596",
+			 "description": "marketplace#market place#mart#market"
+		 },
+		 {
+			 "vecIndex": "293",
+			 "description": "blackboard#chalkboard"
+		 },
+		 {
+			 "vecIndex": "295",
+			 "description": "blender#liquidizer#liquidiser"
+		 },
+		 {
+			 "vecIndex": "600",
+			 "description": "megaphone"
+		 },
+		 {
+			 "vecIndex": "297",
+			 "description": "boat"
+		 },
+		 {
+			 "vecIndex": "299",
+			 "description": "book"
+		 },
+		 {
+			 "vecIndex": "604",
+			 "description": "meter"
+		 },
+		 {
+			 "vecIndex": "301",
+			 "description": "bookshelf"
+		 },
+		 {
+			 "vecIndex": "303",
+			 "description": "bottle"
+		 },
+		 {
+			 "vecIndex": "672",
+			 "description": "production line#assembly line#line"
+		 },
+		 {
+			 "vecIndex": "305",
+			 "description": "bouquet#corsage#posy#nosegay"
+		 },
+		 {
+			 "vecIndex": "307",
+			 "description": "bowl"
+		 },
+		 {
+			 "vecIndex": "676",
+			 "description": "public house#pub#saloon#pothouse#gin mill#taphouse"
+		 },
+		 {
+			 "vecIndex": "309",
+			 "description": "box"
+		 },
+		 {
+			 "vecIndex": "311",
+			 "description": "brassiere#bra#bandeau"
+		 },
+		 {
+			 "vecIndex": "680",
+			 "description": "pylon#power pylon"
+		 },
+		 {
+			 "vecIndex": "313",
+			 "description": "bridge#span"
+		 },
+		 {
+			 "vecIndex": "315",
+			 "description": "broadcasting studio"
+		 },
+		 {
+			 "vecIndex": "684",
+			 "description": "radio telescope#radio reflector"
+		 },
+		 {
+			 "vecIndex": "317",
+			 "description": "bucket#pail"
+		 },
+		 {
+			 "vecIndex": "319",
+			 "description": "bulldozer#dozer"
+		 },
+		 {
+			 "vecIndex": "752",
+			 "description": "shopping bag"
+		 },
+		 {
+			 "vecIndex": "321",
+			 "description": "butcher shop#meat market"
+		 },
+		 {
+			 "vecIndex": "323",
+			 "description": "cabin"
+		 },
+		 {
+			 "vecIndex": "756",
+			 "description": "shot glass#jigger#pony"
+		 },
+		 {
+			 "vecIndex": "325",
+			 "description": "cabinet"
+		 },
+		 {
+			 "vecIndex": "327",
+			 "description": "cable car#car"
+		 },
+		 {
+			 "vecIndex": "760",
+			 "description": "sidewalk#pavement"
+		 },
+		 {
+			 "vecIndex": "329",
+			 "description": "cage#coop"
+		 },
+		 {
+			 "vecIndex": "331",
+			 "description": "camera#photographic camera"
+		 },
+		 {
+			 "vecIndex": "764",
+			 "description": "skateboard"
+		 },
+		 {
+			 "vecIndex": "333",
+			 "description": "camper#camping bus#motor home"
+		 },
+		 {
+			 "vecIndex": "335",
+			 "description": "canal"
+		 },
+		 {
+			 "vecIndex": "704",
+			 "description": "rope"
+		 },
+		 {
+			 "vecIndex": "337",
+			 "description": "cannon"
+		 },
+		 {
+			 "vecIndex": "1062",
+			 "description": "liqueur#cordial"
+		 },
+		 {
+			 "vecIndex": "339",
+			 "description": "canteen"
+		 },
+		 {
+			 "vecIndex": "708",
+			 "description": "router"
+		 },
+		 {
+			 "vecIndex": "341",
+			 "description": "car#auto#automobile#machine#motorcar"
+		 },
+		 {
+			 "vecIndex": "343",
+			 "description": "cardiograph#electrocardiograph"
+		 },
+		 {
+			 "vecIndex": "1060",
+			 "description": "champagne#bubbly"
+		 },
+		 {
+			 "vecIndex": "553",
+			 "description": "iron#smoothing iron"
+		 },
+		 {
+			 "vecIndex": "344",
+			 "description": "cargo container"
+		 },
+		 {
+			 "vecIndex": "712",
+			 "description": "ruin"
+		 },
+		 {
+			 "vecIndex": "345",
+			 "description": "cargo ship#cargo vessel"
+		 },
+		 {
+			 "vecIndex": "1070",
+			 "description": "coffee bean#coffee berry#coffee"
+		 },
+		 {
+			 "vecIndex": "346",
+			 "description": "carousel#carrousel#merry-go-round#roundabout#whirligig"
+		 },
+		 {
+			 "vecIndex": "347",
+			 "description": "carriage#equipage#rig"
+		 },
+		 {
+			 "vecIndex": "716",
+			 "description": "sack#poke#paper bag#carrier bag"
+		 },
+		 {
+			 "vecIndex": "349",
+			 "description": "car tire#automobile tire#auto tire#rubber tire"
+		 },
+		 {
+			 "vecIndex": "350",
+			 "description": "case"
+		 },
+		 {
+			 "vecIndex": "1225",
+			 "description": "willow#willow tree"
+		 },
+		 {
+			 "vecIndex": "351",
+			 "description": "cash machine#cash dispenser#automated teller machine#automatic teller machine#automated teller#automatic teller#ATM"
+		 },
+		 {
+			 "vecIndex": "1068",
+			 "description": "cola#dope"
+		 },
+		 {
+			 "vecIndex": "656",
+			 "description": "pistol#handgun#side arm#shooting iron"
+		 },
+		 {
+			 "vecIndex": "353",
+			 "description": "cassette"
+		 },
+		 {
+			 "vecIndex": "355",
+			 "description": "catacomb"
+		 },
+		 {
+			 "vecIndex": "660",
+			 "description": "plug#stopper#stopple"
+		 },
+		 {
+			 "vecIndex": "357",
+			 "description": "cathedral#duomo"
+		 },
+		 {
+			 "vecIndex": "359",
+			 "description": "cell#jail cell#prison cell"
+		 },
+		 {
+			 "vecIndex": "664",
+			 "description": "portable computer"
+		 },
+		 {
+			 "vecIndex": "361",
+			 "description": "cellular telephone#cellular phone#cellphone#cell#mobile phone"
+		 },
+		 {
+			 "vecIndex": "363",
+			 "description": "chain saw#chainsaw"
+		 },
+		 {
+			 "vecIndex": "668",
+			 "description": "power saw#saw#sawing machine"
+		 },
+		 {
+			 "vecIndex": "365",
+			 "description": "chairlift#chair lift"
+		 },
+		 {
+			 "vecIndex": "367",
+			 "description": "chemistry lab#chemistry laboratory#chem lab"
+		 },
+		 {
+			 "vecIndex": "736",
+			 "description": "scarf"
+		 },
+		 {
+			 "vecIndex": "369",
+			 "description": "church#church building"
+		 },
+		 {
+			 "vecIndex": "371",
+			 "description": "cinema#movie theater#movie theatre#movie house#picture palace"
+		 },
+		 {
+			 "vecIndex": "740",
+			 "description": "scoreboard"
+		 },
+		 {
+			 "vecIndex": "373",
+			 "description": "clarinet"
+		 },
+		 {
+			 "vecIndex": "375",
+			 "description": "clean room#white room"
+		 },
+		 {
+			 "vecIndex": "744",
+			 "description": "seat"
+		 },
+		 {
+			 "vecIndex": "377",
+			 "description": "clock tower"
+		 },
+		 {
+			 "vecIndex": "379",
+			 "description": "coat"
+		 },
+		 {
+			 "vecIndex": "748",
+			 "description": "shirt"
+		 },
+		 {
+			 "vecIndex": "381",
+			 "description": "coffee maker"
+		 },
+		 {
+			 "vecIndex": "383",
+			 "description": "color television#colour television#color television system#colour television system#color TV#colour TV"
+		 },
+		 {
+			 "vecIndex": "529",
+			 "description": "helicopter#chopper#whirlybird#eggbeater"
+		 },
+		 {
+			 "vecIndex": "384",
+			 "description": "Colt"
+		 },
+		 {
+			 "vecIndex": "386",
+			 "description": "comb"
+		 },
+		 {
+			 "vecIndex": "533",
+			 "description": "highway#main road"
+		 },
+		 {
+			 "vecIndex": "388",
+			 "description": "comforter#pacifier#baby's dummy#teething ring"
+		 },
+		 {
+			 "vecIndex": "390",
+			 "description": "compass"
+		 },
+		 {
+			 "vecIndex": "537",
+			 "description": "hospital room"
+		 },
+		 {
+			 "vecIndex": "392",
+			 "description": "computer#computing machine#computing device#data processor#electronic computer#information processing system"
+		 },
+		 {
+			 "vecIndex": "394",
+			 "description": "computer keyboard#keypad"
+		 },
+		 {
+			 "vecIndex": "541",
+			 "description": "house"
+		 },
+		 {
+			 "vecIndex": "396",
+			 "description": "computer screen#computer display"
+		 },
+		 {
+			 "vecIndex": "398",
+			 "description": "confectionery#confectionary#candy store"
+		 },
+		 {
+			 "vecIndex": "609",
+			 "description": "military uniform"
+		 },
+		 {
+			 "vecIndex": "400",
+			 "description": "container"
+		 },
+		 {
+			 "vecIndex": "402",
+			 "description": "cooker"
+		 },
+		 {
+			 "vecIndex": "613",
+			 "description": "mixer"
+		 },
+		 {
+			 "vecIndex": "404",
+			 "description": "cooling tower"
+		 },
+		 {
+			 "vecIndex": "406",
+			 "description": "cork#bottle cork"
+		 },
+		 {
+			 "vecIndex": "617",
+			 "description": "mouse#computer mouse"
+		 },
+		 {
+			 "vecIndex": "408",
+			 "description": "costume"
+		 },
+		 {
+			 "vecIndex": "410",
+			 "description": "court#courtyard"
+		 },
+		 {
+			 "vecIndex": "621",
+			 "description": "nail polish#nail enamel#nail varnish"
+		 },
+		 {
+			 "vecIndex": "412",
+			 "description": "court#courtroom"
+		 },
+		 {
+			 "vecIndex": "414",
+			 "description": "crane"
+		 },
+		 {
+			 "vecIndex": "561",
+			 "description": "keg"
+		 },
+		 {
+			 "vecIndex": "416",
+			 "description": "cream#ointment#emollient"
+		 },
+		 {
+			 "vecIndex": "720",
+			 "description": "sail#canvas#canvass#sheet"
+		 },
+		 {
+			 "vecIndex": "417",
+			 "description": "cross"
+		 },
+		 {
+			 "vecIndex": "1078",
+			 "description": "crowd"
+		 },
+		 {
+			 "vecIndex": "418",
+			 "description": "crossbow"
+		 },
+		 {
+			 "vecIndex": "565",
+			 "description": "kitchenware"
+		 },
+		 {
+			 "vecIndex": "420",
+			 "description": "crown jewels"
+		 },
+		 {
+			 "vecIndex": "1239",
+			 "description": "soil#dirt"
+		 },
+		 {
+			 "vecIndex": "724",
+			 "description": "sandal"
+		 },
+		 {
+			 "vecIndex": "421",
+			 "description": "cruise ship#cruise liner"
+		 },
+		 {
+			 "vecIndex": "422",
+			 "description": "cue#cue stick#pool cue#pool stick"
+		 },
+		 {
+			 "vecIndex": "1233",
+			 "description": "tree"
+		 },
+		 {
+			 "vecIndex": "423",
+			 "description": "cup"
+		 },
+		 {
+			 "vecIndex": "1076",
+			 "description": "book#rule book"
+		 },
+		 {
+			 "vecIndex": "569",
+			 "description": "lamp"
+		 },
+		 {
+			 "vecIndex": "424",
+			 "description": "curler#hair curler#roller#crimper"
+		 },
+		 {
+			 "vecIndex": "426",
+			 "description": "cutter#cutlery#cutting tool"
+		 },
+		 {
+			 "vecIndex": "573",
+			 "description": "lawn mower#mower"
+		 },
+		 {
+			 "vecIndex": "428",
+			 "description": "delicatessen#deli#food shop"
+		 },
+		 {
+			 "vecIndex": "430",
+			 "description": "desktop computer"
+		 },
+		 {
+			 "vecIndex": "1241",
+			 "description": "sand"
+		 },
+		 {
+			 "vecIndex": "513",
+			 "description": "grocery store#grocery#food market#market"
+		 },
+		 {
+			 "vecIndex": "432",
+			 "description": "dialog box#panel"
+		 },
+		 {
+			 "vecIndex": "434",
+			 "description": "dining room#dining-room"
+		 },
+		 {
+			 "vecIndex": "517",
+			 "description": "gymnasium#gym"
+		 },
+		 {
+			 "vecIndex": "436",
+			 "description": "disco#discotheque"
+		 },
+		 {
+			 "vecIndex": "438",
+			 "description": "dishwasher#dish washer#dishwashing machine"
+		 },
+		 {
+			 "vecIndex": "521",
+			 "description": "handsaw#hand saw#carpenter's saw"
+		 },
+		 {
+			 "vecIndex": "440",
+			 "description": "dogsled#dog sled#dog sleigh"
+		 },
+		 {
+			 "vecIndex": "442",
+			 "description": "door"
+		 },
+		 {
+			 "vecIndex": "525",
+			 "description": "hat#chapeau#lid"
+		 },
+		 {
+			 "vecIndex": "444",
+			 "description": "drawers#underdrawers#shorts#boxers#boxershorts"
+		 },
+		 {
+			 "vecIndex": "446",
+			 "description": "drill"
+		 },
+		 {
+			 "vecIndex": "593",
+			 "description": "magnifier"
+		 },
+		 {
+			 "vecIndex": "448",
+			 "description": "drill rig#drilling rig#oilrig#oil rig"
+		 },
+		 {
+			 "vecIndex": "450",
+			 "description": "drum#membranophone#tympan"
+		 },
+		 {
+			 "vecIndex": "597",
+			 "description": "mask"
+		 },
+		 {
+			 "vecIndex": "452",
+			 "description": "dryer#drier"
+		 },
+		 {
+			 "vecIndex": "454",
+			 "description": "earphone#earpiece#headphone#phone"
+		 },
+		 {
+			 "vecIndex": "601",
+			 "description": "memorial#monument"
+		 },
+		 {
+			 "vecIndex": "456",
+			 "description": "elevator#lift"
+		 },
+		 {
+			 "vecIndex": "458",
+			 "description": "envelope"
+		 },
+		 {
+			 "vecIndex": "605",
+			 "description": "metro#tube#underground#subway system#subway"
+		 },
+		 {
+			 "vecIndex": "460",
+			 "description": "escalator#moving staircase#moving stairway"
+		 },
+		 {
+			 "vecIndex": "462",
+			 "description": "external drive"
+		 },
+		 {
+			 "vecIndex": "673",
+			 "description": "projector"
+		 },
+		 {
+			 "vecIndex": "464",
+			 "description": "factory#mill#manufacturing plant#manufactory"
+		 },
+		 {
+			 "vecIndex": "466",
+			 "description": "fan blade"
+		 },
+		 {
+			 "vecIndex": "677",
+			 "description": "public transport"
+		 },
+		 {
+			 "vecIndex": "468",
+			 "description": "farmer's market#green market#greenmarket"
+		 },
+		 {
+			 "vecIndex": "470",
+			 "description": "Ferris wheel"
+		 },
+		 {
+			 "vecIndex": "681",
+			 "description": "racket#racquet"
+		 },
+		 {
+			 "vecIndex": "472",
+			 "description": "fighter#fighter aircraft#attack aircraft"
+		 },
+		 {
+			 "vecIndex": "474",
+			 "description": "fire engine#fire truck"
+		 },
+		 {
+			 "vecIndex": "685",
+			 "description": "raft"
+		 },
+		 {
+			 "vecIndex": "476",
+			 "description": "fireplace#hearth#open fireplace"
+		 },
+		 {
+			 "vecIndex": "478",
+			 "description": "first-aid kit"
+		 },
+		 {
+			 "vecIndex": "625",
+			 "description": "net"
+		 },
+		 {
+			 "vecIndex": "480",
+			 "description": "fishnet#fishing net"
+		 },
+		 {
+			 "vecIndex": "482",
+			 "description": "flash#photoflash#flash lamp#flashgun#flashbulb#flash bulb"
+		 },
+		 {
+			 "vecIndex": "629",
+			 "description": "office#business office"
+		 },
+		 {
+			 "vecIndex": "484",
+			 "description": "florist#florist shop#flower store"
+		 },
+		 {
+			 "vecIndex": "486",
+			 "description": "food court"
+		 },
+		 {
+			 "vecIndex": "633",
+			 "description": "organ#pipe organ"
+		 },
+		 {
+			 "vecIndex": "488",
+			 "description": "fortress#fort"
+		 },
+		 {
+			 "vecIndex": "490",
+			 "description": "frame#framing"
+		 },
+		 {
+			 "vecIndex": "637",
+			 "description": "paddle#boat paddle"
+		 },
+		 {
+			 "vecIndex": "492",
+			 "description": "Frisbee"
+		 },
+		 {
+			 "vecIndex": "494",
+			 "description": "fur"
+		 },
+		 {
+			 "vecIndex": "577",
+			 "description": "lifeboat"
+		 },
+		 {
+			 "vecIndex": "496",
+			 "description": "gallery#art gallery#picture gallery"
+		 },
+		 {
+			 "vecIndex": "498",
+			 "description": "garbage truck#dustcart"
+		 },
+		 {
+			 "vecIndex": "581",
+			 "description": "lighter#light#igniter#ignitor"
+		 },
+		 {
+			 "vecIndex": "500",
+			 "description": "gasoline station#gas station#filling station#petrol station"
+		 },
+		 {
+			 "vecIndex": "502",
+			 "description": "gearshift#gearstick#shifter#gear lever"
+		 },
+		 {
+			 "vecIndex": "585",
+			 "description": "lock"
+		 },
+		 {
+			 "vecIndex": "504",
+			 "description": "glider#sailplane"
+		 },
+		 {
+			 "vecIndex": "506",
+			 "description": "goblet"
+		 },
+		 {
+			 "vecIndex": "589",
+			 "description": "lookout#observation tower#lookout station#observatory"
+		 },
+		 {
+			 "vecIndex": "508",
+			 "description": "golf bag"
+		 },
+		 {
+			 "vecIndex": "510",
+			 "description": "gramophone#acoustic gramophone"
+		 },
+		 {
+			 "vecIndex": "512",
+			 "description": "grocery bag"
+		 },
+		 {
+			 "vecIndex": "514",
+			 "description": "grove#woodlet#orchard#plantation"
+		 },
+		 {
+			 "vecIndex": "515",
+			 "description": "guitar"
+		 },
+		 {
+			 "vecIndex": "516",
+			 "description": "gun"
+		 },
+		 {
+			 "vecIndex": "518",
+			 "description": "hall"
+		 },
+		 {
+			 "vecIndex": "519",
+			 "description": "hammer"
+		 },
+		 {
+			 "vecIndex": "520",
+			 "description": "handkerchief#hankie#hanky#hankey"
+		 },
+		 {
+			 "vecIndex": "522",
+			 "description": "harbor#harbour"
+		 },
+		 {
+			 "vecIndex": "523",
+			 "description": "hard disc#hard disk#fixed disk"
+		 },
+		 {
+			 "vecIndex": "524",
+			 "description": "harvester#reaper"
+		 },
+		 {
+			 "vecIndex": "526",
+			 "description": "headscarf"
+		 },
+		 {
+			 "vecIndex": "527",
+			 "description": "health spa#spa#health club"
+		 },
+		 {
+			 "vecIndex": "528",
+			 "description": "heater#warmer"
+		 },
+		 {
+			 "vecIndex": "530",
+			 "description": "helmet"
+		 },
+		 {
+			 "vecIndex": "531",
+			 "description": "hi-fi#high fidelity sound system"
+		 },
+		 {
+			 "vecIndex": "532",
+			 "description": "highlighter"
+		 },
+		 {
+			 "vecIndex": "534",
+			 "description": "hip boot#thigh boot"
+		 },
+		 {
+			 "vecIndex": "535",
+			 "description": "hood"
+		 },
+		 {
+			 "vecIndex": "536",
+			 "description": "hook#claw"
+		 },
+		 {
+			 "vecIndex": "538",
+			 "description": "hostel#hostelry#inn#lodge#auberge"
+		 },
+		 {
+			 "vecIndex": "539",
+			 "description": "hot-air balloon"
+		 },
+		 {
+			 "vecIndex": "540",
+			 "description": "hourglass"
+		 },
+		 {
+			 "vecIndex": "542",
+			 "description": "house"
+		 },
+		 {
+			 "vecIndex": "543",
+			 "description": "houseboat"
+		 },
+		 {
+			 "vecIndex": "544",
+			 "description": "housing#lodging#living accommodations"
+		 },
+		 {
+			 "vecIndex": "546",
+			 "description": "hydraulic press"
+		 },
+		 {
+			 "vecIndex": "547",
+			 "description": "hypermarket"
+		 },
+		 {
+			 "vecIndex": "548",
+			 "description": "ice rink#ice-skating rink#ice"
+		 },
+		 {
+			 "vecIndex": "550",
+			 "description": "integrated circuit#microcircuit"
+		 },
+		 {
+			 "vecIndex": "1216",
+			 "description": "viola"
+		 },
+		 {
+			 "vecIndex": "551",
+			 "description": "intersection#crossroad#crossway#crossing#carrefour"
+		 },
+		 {
+			 "vecIndex": "552",
+			 "description": "iPod"
+		 },
+		 {
+			 "vecIndex": "554",
+			 "description": "jacket"
+		 },
+		 {
+			 "vecIndex": "555",
+			 "description": "jar"
+		 },
+		 {
+			 "vecIndex": "556",
+			 "description": "jean#blue jean#denim"
+		 },
+		 {
+			 "vecIndex": "558",
+			 "description": "jet#jet plane#jet-propelled plane"
+		 },
+		 {
+			 "vecIndex": "1224",
+			 "description": "citrus#citrus tree"
+		 },
+		 {
+			 "vecIndex": "559",
+			 "description": "jet engine"
+		 },
+		 {
+			 "vecIndex": "560",
+			 "description": "jukebox#nickelodeon"
+		 },
+		 {
+			 "vecIndex": "562",
+			 "description": "kettle#boiler"
+		 },
+		 {
+			 "vecIndex": "563",
+			 "description": "kitchen"
+		 },
+		 {
+			 "vecIndex": "564",
+			 "description": "kitchen table"
+		 },
+		 {
+			 "vecIndex": "566",
+			 "description": "knife"
+		 },
+		 {
+			 "vecIndex": "1232",
+			 "description": "succulent"
+		 },
+		 {
+			 "vecIndex": "567",
+			 "description": "knife"
+		 },
+		 {
+			 "vecIndex": "568",
+			 "description": "knot"
+		 },
+		 {
+			 "vecIndex": "570",
+			 "description": "lamp"
+		 },
+		 {
+			 "vecIndex": "571",
+			 "description": "laptop#laptop computer"
+		 },
+		 {
+			 "vecIndex": "572",
+			 "description": "laser#optical maser"
+		 },
+		 {
+			 "vecIndex": "574",
+			 "description": "lens#lense#lens system"
+		 },
+		 {
+			 "vecIndex": "1240",
+			 "description": "paper"
+		 },
+		 {
+			 "vecIndex": "575",
+			 "description": "library"
+		 },
+		 {
+			 "vecIndex": "576",
+			 "description": "library"
+		 },
+		 {
+			 "vecIndex": "578",
+			 "description": "life jacket#life vest#cork jacket"
+		 },
+		 {
+			 "vecIndex": "579",
+			 "description": "light#light source"
+		 },
+		 {
+			 "vecIndex": "580",
+			 "description": "light bulb#lightbulb#bulb#incandescent lamp#electric light#electric-light bulb"
+		 },
+		 {
+			 "vecIndex": "582",
+			 "description": "lingerie#intimate apparel"
+		 },
+		 {
+			 "vecIndex": "583",
+			 "description": "lipstick#lip rouge"
+		 },
+		 {
+			 "vecIndex": "584",
+			 "description": "living room#living-room#sitting room#front room#parlor#parlour"
+		 },
+		 {
+			 "vecIndex": "586",
+			 "description": "lock#lock chamber"
+		 },
+		 {
+			 "vecIndex": "587",
+			 "description": "locker room"
+		 },
+		 {
+			 "vecIndex": "588",
+			 "description": "locomotive#engine#locomotive engine#railway locomotive"
+		 },
+		 {
+			 "vecIndex": "590",
+			 "description": "lotion"
+		 },
+		 {
+			 "vecIndex": "591",
+			 "description": "LP#L-P"
+		 },
+		 {
+			 "vecIndex": "594",
+			 "description": "mailbox#letter box"
+		 },
+		 {
+			 "vecIndex": "595",
+			 "description": "marina"
+		 },
+		 {
+			 "vecIndex": "598",
+			 "description": "match#lucifer#friction match"
+		 },
+		 {
+			 "vecIndex": "599",
+			 "description": "meat grinder"
+		 },
+		 {
+			 "vecIndex": "602",
+			 "description": "memory#computer memory#storage#computer storage#store#memory board"
+		 },
+		 {
+			 "vecIndex": "603",
+			 "description": "menagerie#zoo#zoological garden"
+		 },
+		 {
+			 "vecIndex": "606",
+			 "description": "microphone#mike"
+		 },
+		 {
+			 "vecIndex": "607",
+			 "description": "microscope"
+		 },
+		 {
+			 "vecIndex": "608",
+			 "description": "microwave#microwave oven"
+		 },
+		 {
+			 "vecIndex": "610",
+			 "description": "military vehicle"
+		 },
+		 {
+			 "vecIndex": "611",
+			 "description": "mirror"
+		 },
+		 {
+			 "vecIndex": "612",
+			 "description": "missile"
+		 },
+		 {
+			 "vecIndex": "614",
+			 "description": "mosque"
+		 },
+		 {
+			 "vecIndex": "615",
+			 "description": "mosquito net"
+		 },
+		 {
+			 "vecIndex": "616",
+			 "description": "motorcycle#bike"
+		 },
+		 {
+			 "vecIndex": "618",
+			 "description": "mug"
+		 },
+		 {
+			 "vecIndex": "619",
+			 "description": "museum"
+		 },
+		 {
+			 "vecIndex": "620",
+			 "description": "nail"
+		 },
+		 {
+			 "vecIndex": "622",
+			 "description": "necklace"
+		 },
+		 {
+			 "vecIndex": "623",
+			 "description": "necktie#tie"
+		 },
+		 {
+			 "vecIndex": "624",
+			 "description": "net"
+		 },
+		 {
+			 "vecIndex": "626",
+			 "description": "newsstand"
+		 },
+		 {
+			 "vecIndex": "627",
+			 "description": "obelisk"
+		 },
+		 {
+			 "vecIndex": "628",
+			 "description": "observatory"
+		 },
+		 {
+			 "vecIndex": "630",
+			 "description": "office building#office block"
+		 },
+		 {
+			 "vecIndex": "631",
+			 "description": "operating room#OR#operating theater#operating theatre#surgery"
+		 },
+		 {
+			 "vecIndex": "632",
+			 "description": "orchestra pit#pit"
+		 },
+		 {
+			 "vecIndex": "634",
+			 "description": "oscilloscope#scope#cathode-ray oscilloscope#CRO"
+		 },
+		 {
+			 "vecIndex": "635",
+			 "description": "oven"
+		 },
+		 {
+			 "vecIndex": "636",
+			 "description": "oxygen mask"
+		 },
+		 {
+			 "vecIndex": "638",
+			 "description": "padlock"
+		 },
+		 {
+			 "vecIndex": "639",
+			 "description": "pagoda"
+		 },
+		 {
+			 "vecIndex": "641",
+			 "description": "pan#cooking pan"
+		 },
+		 {
+			 "vecIndex": "642",
+			 "description": "pantie#panty#scanty#step-in"
+		 },
+		 {
+			 "vecIndex": "643",
+			 "description": "parachute#chute"
+		 },
+		 {
+			 "vecIndex": "645",
+			 "description": "pen"
+		 },
+		 {
+			 "vecIndex": "646",
+			 "description": "pencil"
+		 },
+		 {
+			 "vecIndex": "647",
+			 "description": "pencil sharpener"
+		 },
+		 {
+			 "vecIndex": "649",
+			 "description": "personal digital assistant#PDA#personal organizer#personal organiser#organizer#organiser"
+		 },
+		 {
+			 "vecIndex": "650",
+			 "description": "piano#pianoforte#forte-piano"
+		 },
+		 {
+			 "vecIndex": "651",
+			 "description": "pickup#pickup truck"
+		 },
+		 {
+			 "vecIndex": "653",
+			 "description": "pier#wharf#wharfage#dock"
+		 },
+		 {
+			 "vecIndex": "654",
+			 "description": "pier"
+		 },
+		 {
+			 "vecIndex": "655",
+			 "description": "pillow"
+		 },
+		 {
+			 "vecIndex": "657",
+			 "description": "plane seat"
+		 },
+		 {
+			 "vecIndex": "658",
+			 "description": "playground"
+		 },
+		 {
+			 "vecIndex": "659",
+			 "description": "plaza#mall#center#shopping mall#shopping center#shopping centre"
+		 },
+		 {
+			 "vecIndex": "661",
+			 "description": "pocketknife#pocket knife"
+		 },
+		 {
+			 "vecIndex": "662",
+			 "description": "police van#police wagon#paddy wagon#patrol wagon#wagon#black Maria"
+		 },
+		 {
+			 "vecIndex": "663",
+			 "description": "porch"
+		 },
+		 {
+			 "vecIndex": "665",
+			 "description": "pot#flowerpot"
+		 },
+		 {
+			 "vecIndex": "666",
+			 "description": "power drill"
+		 },
+		 {
+			 "vecIndex": "667",
+			 "description": "power mower#motor mower"
+		 },
+		 {
+			 "vecIndex": "669",
+			 "description": "power shovel#excavator#digger#shovel"
+		 },
+		 {
+			 "vecIndex": "670",
+			 "description": "printer#printing machine"
+		 },
+		 {
+			 "vecIndex": "671",
+			 "description": "printer"
+		 },
+		 {
+			 "vecIndex": "674",
+			 "description": "projector"
+		 },
+		 {
+			 "vecIndex": "675",
+			 "description": "propeller plane"
+		 },
+		 {
+			 "vecIndex": "678",
+			 "description": "purse"
+		 },
+		 {
+			 "vecIndex": "679",
+			 "description": "puzzle"
+		 },
+		 {
+			 "vecIndex": "682",
+			 "description": "radiator"
+		 },
+		 {
+			 "vecIndex": "683",
+			 "description": "radio#wireless"
+		 },
+		 {
+			 "vecIndex": "686",
+			 "description": "railroad track#railroad#railway"
+		 },
+		 {
+			 "vecIndex": "687",
+			 "description": "railway station#railroad station#railroad terminal#train station#train depot"
+		 },
+		 {
+			 "vecIndex": "689",
+			 "description": "reception room"
+		 },
+		 {
+			 "vecIndex": "690",
+			 "description": "recorder#recording equipment#recording machine"
+		 },
+		 {
+			 "vecIndex": "691",
+			 "description": "recycling bin"
+		 },
+		 {
+			 "vecIndex": "693",
+			 "description": "refrigerator#icebox"
+		 },
+		 {
+			 "vecIndex": "694",
+			 "description": "remote control#remote"
+		 },
+		 {
+			 "vecIndex": "695",
+			 "description": "reservoir"
+		 },
+		 {
+			 "vecIndex": "697",
+			 "description": "rifle"
+		 },
+		 {
+			 "vecIndex": "698",
+			 "description": "rig"
+		 },
+		 {
+			 "vecIndex": "699",
+			 "description": "road#route"
+		 },
+		 {
+			 "vecIndex": "701",
+			 "description": "rocket#rocket engine"
+		 },
+		 {
+			 "vecIndex": "702",
+			 "description": "roller coaster#big dipper#chute-the-chute"
+		 },
+		 {
+			 "vecIndex": "703",
+			 "description": "roof"
+		 },
+		 {
+			 "vecIndex": "705",
+			 "description": "rope bridge"
+		 },
+		 {
+			 "vecIndex": "706",
+			 "description": "rotor blade#rotary wing"
+		 },
+		 {
+			 "vecIndex": "707",
+			 "description": "roulette wheel#wheel"
+		 },
+		 {
+			 "vecIndex": "709",
+			 "description": "rowing boat"
+		 },
+		 {
+			 "vecIndex": "710",
+			 "description": "rubber boot#gum boot"
+		 },
+		 {
+			 "vecIndex": "711",
+			 "description": "rug#carpet#carpeting"
+		 },
+		 {
+			 "vecIndex": "1061",
+			 "description": "vodka"
+		 },
+		 {
+			 "vecIndex": "713",
+			 "description": "running shoe"
+		 },
+		 {
+			 "vecIndex": "714",
+			 "description": "runway"
+		 },
+		 {
+			 "vecIndex": "715",
+			 "description": "sachet"
+		 },
+		 {
+			 "vecIndex": "717",
+			 "description": "saddle"
+		 },
+		 {
+			 "vecIndex": "718",
+			 "description": "saddlebag"
+		 },
+		 {
+			 "vecIndex": "719",
+			 "description": "safe"
+		 },
+		 {
+			 "vecIndex": "1069",
+			 "description": "tonic#tonic water#quinine water"
+		 },
+		 {
+			 "vecIndex": "721",
+			 "description": "sail"
+		 },
+		 {
+			 "vecIndex": "722",
+			 "description": "sailboat#sailing boat"
+		 },
+		 {
+			 "vecIndex": "723",
+			 "description": "salon#beauty salon#beauty parlor#beauty parlour#beauty shop"
+		 },
+		 {
+			 "vecIndex": "725",
+			 "description": "sandbag"
+		 },
+		 {
+			 "vecIndex": "726",
+			 "description": "sandbox#sandpile#sandpit"
+		 },
+		 {
+			 "vecIndex": "727",
+			 "description": "sandbox"
+		 },
+		 {
+			 "vecIndex": "1077",
+			 "description": "jewelry dealer#jewelry store"
+		 },
+		 {
+			 "vecIndex": "729",
+			 "description": "saucepan"
+		 },
+		 {
+			 "vecIndex": "730",
+			 "description": "sauna#sweat room"
+		 },
+		 {
+			 "vecIndex": "731",
+			 "description": "savings bank#coin bank#money box#bank"
+		 },
+		 {
+			 "vecIndex": "733",
+			 "description": "sax#saxophone"
+		 },
+		 {
+			 "vecIndex": "734",
+			 "description": "scale#weighing machine"
+		 },
+		 {
+			 "vecIndex": "735",
+			 "description": "scanner#digital scanner#image scanner"
+		 },
+		 {
+			 "vecIndex": "1085",
+			 "description": "bush"
+		 },
+		 {
+			 "vecIndex": "737",
+			 "description": "school#schoolhouse"
+		 },
+		 {
+			 "vecIndex": "738",
+			 "description": "school bus"
+		 },
+		 {
+			 "vecIndex": "739",
+			 "description": "scissors#pair of scissors"
+		 },
+		 {
+			 "vecIndex": "741",
+			 "description": "screen#CRT screen"
+		 },
+		 {
+			 "vecIndex": "742",
+			 "description": "screw"
+		 },
+		 {
+			 "vecIndex": "743",
+			 "description": "screwdriver"
+		 },
+		 {
+			 "vecIndex": "745",
+			 "description": "shelf"
+		 },
+		 {
+			 "vecIndex": "746",
+			 "description": "ship"
+		 },
+		 {
+			 "vecIndex": "747",
+			 "description": "shipwreck"
+		 },
+		 {
+			 "vecIndex": "749",
+			 "description": "shoe"
+		 },
+		 {
+			 "vecIndex": "750",
+			 "description": "shoe shop#shoe-shop#shoe store"
+		 },
+		 {
+			 "vecIndex": "751",
+			 "description": "shop#store"
+		 },
+		 {
+			 "vecIndex": "753",
+			 "description": "shopping basket"
+		 },
+		 {
+			 "vecIndex": "754",
+			 "description": "shopping cart"
+		 },
+		 {
+			 "vecIndex": "755",
+			 "description": "short pants#shorts#trunks"
+		 },
+		 {
+			 "vecIndex": "757",
+			 "description": "shovel"
+		 },
+		 {
+			 "vecIndex": "758",
+			 "description": "shower"
+		 },
+		 {
+			 "vecIndex": "759",
+			 "description": "shredder"
+		 },
+		 {
+			 "vecIndex": "761",
+			 "description": "signboard#sign"
+		 },
+		 {
+			 "vecIndex": "762",
+			 "description": "silo"
+		 },
+		 {
+			 "vecIndex": "763",
+			 "description": "skate"
+		 },
+		 {
+			 "vecIndex": "765",
+			 "description": "ski"
+		 },
+		 {
+			 "vecIndex": "766",
+			 "description": "ski boot"
+		 },
+		 {
+			 "vecIndex": "767",
+			 "description": "skirt"
+		 },
+		 {
+			 "vecIndex": "768",
+			 "description": "ski tow#ski lift#lift"
+		 },
+		 {
+			 "vecIndex": "770",
+			 "description": "sleeping bag"
+		 },
+		 {
+			 "vecIndex": "771",
+			 "description": "slide#playground slide#sliding board"
+		 },
+		 {
+			 "vecIndex": "1202",
+			 "description": "poppy"
+		 },
+		 {
+			 "vecIndex": "772",
+			 "description": "slot#one-armed bandit"
+		 },
+		 {
+			 "vecIndex": "774",
+			 "description": "sniper rifle#precision rifle"
+		 },
+		 {
+			 "vecIndex": "775",
+			 "description": "snowbank#snow bank"
+		 },
+		 {
+			 "vecIndex": "776",
+			 "description": "snowmobile"
+		 },
+		 {
+			 "vecIndex": "778",
+			 "description": "snow thrower#snow blower"
+		 },
+		 {
+			 "vecIndex": "779",
+			 "description": "sock"
+		 },
+		 {
+			 "vecIndex": "1210",
+			 "description": "bamboo"
+		 },
+		 {
+			 "vecIndex": "780",
+			 "description": "sofa#couch#lounge"
+		 },
+		 {
+			 "vecIndex": "782",
+			 "description": "solar cell#photovoltaic cell"
+		 },
+		 {
+			 "vecIndex": "783",
+			 "description": "sombrero"
+		 },
+		 {
+			 "vecIndex": "784",
+			 "description": "spacecraft#ballistic capsule#space vehicle"
+		 },
+		 {
+			 "vecIndex": "786",
+			 "description": "spacesuit"
+		 },
+		 {
+			 "vecIndex": "787",
+			 "description": "spade"
+		 },
+		 {
+			 "vecIndex": "1154",
+			 "description": "child#baby"
+		 },
+		 {
+			 "vecIndex": "788",
+			 "description": "spatula"
+		 },
+		 {
+			 "vecIndex": "790",
+			 "description": "speedboat"
+		 },
+		 {
+			 "vecIndex": "791",
+			 "description": "spoon"
+		 },
+		 {
+			 "vecIndex": "792",
+			 "description": "sports car#sport car"
+		 },
+		 {
+			 "vecIndex": "794",
+			 "description": "stable#stalls#horse barn"
+		 },
+		 {
+			 "vecIndex": "795",
+			 "description": "stadium#bowl#arena#sports stadium"
+		 },
+		 {
+			 "vecIndex": "1162",
+			 "description": "monk#monastic"
+		 },
+		 {
+			 "vecIndex": "796",
+			 "description": "stage"
+		 },
+		 {
+			 "vecIndex": "798",
+			 "description": "steam engine"
+		 },
+		 {
+			 "vecIndex": "799",
+			 "description": "steamer#steamship"
+		 },
+		 {
+			 "vecIndex": "800",
+			 "description": "steering wheel#wheel"
+		 },
+		 {
+			 "vecIndex": "802",
+			 "description": "stereo#stereophony#stereo system#stereophonic system"
+		 },
+		 {
+			 "vecIndex": "803",
+			 "description": "stethoscope"
+		 },
+		 {
+			 "vecIndex": "1106",
+			 "description": "floor"
+		 },
+		 {
+			 "vecIndex": "804",
+			 "description": "stewing pan#stewpan"
+		 },
+		 {
+			 "vecIndex": "806",
+			 "description": "stove"
+		 },
+		 {
+			 "vecIndex": "807",
+			 "description": "stove#kitchen stove#range#kitchen range#cooking stove"
+		 },
+		 {
+			 "vecIndex": "808",
+			 "description": "street"
+		 },
+		 {
+			 "vecIndex": "810",
+			 "description": "streetcar#tram#tramcar#trolley#trolley car"
+		 },
+		 {
+			 "vecIndex": "811",
+			 "description": "streetlight#street lamp"
+		 },
+		 {
+			 "vecIndex": "1114",
+			 "description": "lake"
+		 },
+		 {
+			 "vecIndex": "812",
+			 "description": "submarine#pigboat#sub#U-boat"
+		 },
+		 {
+			 "vecIndex": "814",
+			 "description": "sundial"
+		 },
+		 {
+			 "vecIndex": "815",
+			 "description": "sunglasses#dark glasses#shades"
+		 },
+		 {
+			 "vecIndex": "816",
+			 "description": "supercomputer"
+		 },
+		 {
+			 "vecIndex": "818",
+			 "description": "suspension bridge"
+		 },
+		 {
+			 "vecIndex": "819",
+			 "description": "sweater#jumper"
+		 },
+		 {
+			 "vecIndex": "1186",
+			 "description": "soldier"
+		 },
+		 {
+			 "vecIndex": "820",
+			 "description": "swimming pool#swimming bath#natatorium"
+		 },
+		 {
+			 "vecIndex": "822",
+			 "description": "swimsuit#swimwear#bathing suit#swimming costume#bathing costume"
+		 },
+		 {
+			 "vecIndex": "823",
+			 "description": "sword#blade#brand#steel"
+		 },
+		 {
+			 "vecIndex": "824",
+			 "description": "syringe"
+		 },
+		 {
+			 "vecIndex": "826",
+			 "description": "table knife"
+		 },
+		 {
+			 "vecIndex": "827",
+			 "description": "tachometer#tach"
+		 },
+		 {
+			 "vecIndex": "1194",
+			 "description": "traffic cop"
+		 },
+		 {
+			 "vecIndex": "828",
+			 "description": "tank#army tank#armored combat vehicle#armoured combat vehicle"
+		 },
+		 {
+			 "vecIndex": "830",
+			 "description": "teakettle"
+		 },
+		 {
+			 "vecIndex": "831",
+			 "description": "teapot"
+		 },
+		 {
+			 "vecIndex": "832",
+			 "description": "telephone booth#phone booth#call box#telephone box#telephone kiosk"
+		 },
+		 {
+			 "vecIndex": "834",
+			 "description": "tennis ball"
+		 },
+		 {
+			 "vecIndex": "835",
+			 "description": "tent#collapsible shelter"
+		 },
+		 {
+			 "vecIndex": "836",
+			 "description": "theater#theatre#house"
+		 },
+		 {
+			 "vecIndex": "838",
+			 "description": "timer"
+		 },
+		 {
+			 "vecIndex": "839",
+			 "description": "toaster"
+		 },
+		 {
+			 "vecIndex": "840",
+			 "description": "toilet#lavatory#lav#can#john#privy#bathroom"
+		 },
+		 {
+			 "vecIndex": "842",
+			 "description": "toothbrush"
+		 },
+		 {
+			 "vecIndex": "843",
+			 "description": "toothpick"
+		 },
+		 {
+			 "vecIndex": "844",
+			 "description": "torch"
+		 },
+		 {
+			 "vecIndex": "846",
+			 "description": "toyshop"
+		 },
+		 {
+			 "vecIndex": "847",
+			 "description": "track#rail#rails#runway"
+		 },
+		 {
+			 "vecIndex": "850",
+			 "description": "trailer"
+		 },
+		 {
+			 "vecIndex": "1059",
+			 "description": "white wine"
+		 },
+		 {
+			 "vecIndex": "851",
+			 "description": "trailer truck#tractor trailer#trucking rig#rig#articulated lorry#semi"
+		 },
+		 {
+			 "vecIndex": "1218",
+			 "description": "elm#elm tree"
+		 },
+		 {
+			 "vecIndex": "854",
+			 "description": "tramway#tram#aerial tramway#cable tramway#ropeway"
+		 },
+		 {
+			 "vecIndex": "855",
+			 "description": "tray"
+		 },
+		 {
+			 "vecIndex": "858",
+			 "description": "truck#motortruck"
+		 },
+		 {
+			 "vecIndex": "1067",
+			 "description": "pop#soda#soda pop#soda water#tonic"
+		 },
+		 {
+			 "vecIndex": "859",
+			 "description": "tugboat#tug#towboat#tower"
+		 },
+		 {
+			 "vecIndex": "1226",
+			 "description": "maple"
+		 },
+		 {
+			 "vecIndex": "862",
+			 "description": "underpants"
+		 },
+		 {
+			 "vecIndex": "863",
+			 "description": "underwear#underclothes#underclothing"
+		 },
+		 {
+			 "vecIndex": "864",
+			 "description": "university"
+		 },
+		 {
+			 "vecIndex": "866",
+			 "description": "valve"
+		 },
+		 {
+			 "vecIndex": "867",
+			 "description": "van"
+		 },
+		 {
+			 "vecIndex": "1170",
+			 "description": "juggler"
+		 },
+		 {
+			 "vecIndex": "868",
+			 "description": "vault#bank vault"
+		 },
+		 {
+			 "vecIndex": "870",
+			 "description": "vending machine"
+		 },
+		 {
+			 "vecIndex": "871",
+			 "description": "ventilator"
+		 },
+		 {
+			 "vecIndex": "872",
+			 "description": "viaduct"
+		 },
+		 {
+			 "vecIndex": "874",
+			 "description": "vineyard#vinery"
+		 },
+		 {
+			 "vecIndex": "875",
+			 "description": "violin#fiddle"
+		 },
+		 {
+			 "vecIndex": "1178",
+			 "description": "president"
+		 },
+		 {
+			 "vecIndex": "876",
+			 "description": "wagon#waggon"
+		 },
+		 {
+			 "vecIndex": "878",
+			 "description": "wall"
+		 },
+		 {
+			 "vecIndex": "879",
+			 "description": "wand"
+		 },
+		 {
+			 "vecIndex": "880",
+			 "description": "wardrobe#closet#press"
+		 },
+		 {
+			 "vecIndex": "882",
+			 "description": "washer#automatic washer#washing machine"
+		 },
+		 {
+			 "vecIndex": "883",
+			 "description": "watch#ticker"
+		 },
+		 {
+			 "vecIndex": "884",
+			 "description": "water bottle"
+		 },
+		 {
+			 "vecIndex": "886",
+			 "description": "water tower"
+		 },
+		 {
+			 "vecIndex": "887",
+			 "description": "web#entanglement"
+		 },
+		 {
+			 "vecIndex": "888",
+			 "description": "whistle"
+		 },
+		 {
+			 "vecIndex": "890",
+			 "description": "wind instrument#wind"
+		 },
+		 {
+			 "vecIndex": "891",
+			 "description": "windmill"
+		 },
+		 {
+			 "vecIndex": "892",
+			 "description": "window"
+		 },
+		 {
+			 "vecIndex": "894",
+			 "description": "windshield#windscreen"
+		 },
+		 {
+			 "vecIndex": "895",
+			 "description": "wineglass"
+		 },
+		 {
+			 "vecIndex": "897",
+			 "description": "wire"
+		 },
+		 {
+			 "vecIndex": "898",
+			 "description": "wire#conducting wire"
+		 },
+		 {
+			 "vecIndex": "1043",
+			 "description": "cheese fondue"
+		 },
+		 {
+			 "vecIndex": "899",
+			 "description": "wire cutter"
+		 },
+		 {
+			 "vecIndex": "901",
+			 "description": "wreck"
+		 },
+		 {
+			 "vecIndex": "902",
+			 "description": "wrench#spanner"
+		 },
+		 {
+			 "vecIndex": "903",
+			 "description": "yacht#racing yacht"
+		 },
+		 {
+			 "vecIndex": "905",
+			 "description": "high-definition television#HDTV"
+		 },
+		 {
+			 "vecIndex": "906",
+			 "description": "web site#website#internet site#site"
+		 },
+		 {
+			 "vecIndex": "1051",
+			 "description": "risotto#Italian rice"
+		 },
+		 {
+			 "vecIndex": "907",
+			 "description": "document#written document#papers"
+		 },
+		 {
+			 "vecIndex": "909",
+			 "description": "comic book"
+		 },
+		 {
+			 "vecIndex": "910",
+			 "description": "sign"
+		 },
+		 {
+			 "vecIndex": "911",
+			 "description": "street sign"
+		 },
+		 {
+			 "vecIndex": "913",
+			 "description": "concert"
+		 },
+		 {
+			 "vecIndex": "914",
+			 "description": "artwork#art#graphics#nontextual matter"
+		 },
+		 {
+			 "vecIndex": "1123",
+			 "description": "ridge#ridgeline"
+		 },
+		 {
+			 "vecIndex": "915",
+			 "description": "wave#moving ridge"
+		 },
+		 {
+			 "vecIndex": "917",
+			 "description": "breakfast"
+		 },
+		 {
+			 "vecIndex": "918",
+			 "description": "lunch#luncheon#tiffin#dejeuner"
+		 },
+		 {
+			 "vecIndex": "919",
+			 "description": "dinner"
+		 },
+		 {
+			 "vecIndex": "921",
+			 "description": "chicken cacciatore#chicken cacciatora#hunter's chicken"
+		 },
+		 {
+			 "vecIndex": "922",
+			 "description": "dip"
+		 },
+		 {
+			 "vecIndex": "1131",
+			 "description": "slope#incline#side"
+		 },
+		 {
+			 "vecIndex": "923",
+			 "description": "chicken soup"
+		 },
+		 {
+			 "vecIndex": "925",
+			 "description": "goulash#Hungarian goulash#gulyas"
+		 },
+		 {
+			 "vecIndex": "926",
+			 "description": "beef stew"
+		 },
+		 {
+			 "vecIndex": "927",
+			 "description": "candy#confect"
+		 },
+		 {
+			 "vecIndex": "930",
+			 "description": "cotton candy#spun sugar#candyfloss"
+		 },
+		 {
+			 "vecIndex": "1075",
+			 "description": "drinking water"
+		 },
+		 {
+			 "vecIndex": "931",
+			 "description": "lollipop#sucker#all-day sucker"
+		 },
+		 {
+			 "vecIndex": "1234",
+			 "description": "bean"
+		 },
+		 {
+			 "vecIndex": "934",
+			 "description": "pudding#pud"
+		 },
+		 {
+			 "vecIndex": "935",
+			 "description": "ice cream#icecream"
+		 },
+		 {
+			 "vecIndex": "938",
+			 "description": "jam"
+		 },
+		 {
+			 "vecIndex": "1083",
+			 "description": "rain forest#rainforest"
+		 },
+		 {
+			 "vecIndex": "939",
+			 "description": "buffalo wing"
+		 },
+		 {
+			 "vecIndex": "1242",
+			 "description": "toilet tissue#toilet paper#bathroom tissue"
+		 },
+		 {
+			 "vecIndex": "942",
+			 "description": "toast"
+		 },
+		 {
+			 "vecIndex": "943",
+			 "description": "baguet#baguette"
+		 },
+		 {
+			 "vecIndex": "945",
+			 "description": "pretzel"
+		 },
+		 {
+			 "vecIndex": "946",
+			 "description": "sandwich"
+		 },
+		 {
+			 "vecIndex": "1027",
+			 "description": "milk"
+		 },
+		 {
+			 "vecIndex": "947",
+			 "description": "hamburger#beefburger#burger"
+		 },
+		 {
+			 "vecIndex": "949",
+			 "description": "spaghetti"
+		 },
+		 {
+			 "vecIndex": "950",
+			 "description": "potato#white potato#Irish potato#murphy#spud#tater"
+		 },
+		 {
+			 "vecIndex": "951",
+			 "description": "french fries#french-fried potatoes#fries#chips"
+		 },
+		 {
+			 "vecIndex": "953",
+			 "description": "cabbage#chou"
+		 },
+		 {
+			 "vecIndex": "954",
+			 "description": "broccoli"
+		 },
+		 {
+			 "vecIndex": "1035",
+			 "description": "pasta"
+		 },
+		 {
+			 "vecIndex": "955",
+			 "description": "cauliflower"
+		 },
+		 {
+			 "vecIndex": "957",
+			 "description": "squash"
+		 },
+		 {
+			 "vecIndex": "958",
+			 "description": "cucumber#cuke"
+		 },
+		 {
+			 "vecIndex": "959",
+			 "description": "asparagus"
+		 },
+		 {
+			 "vecIndex": "961",
+			 "description": "sweet pepper"
+		 },
+		 {
+			 "vecIndex": "962",
+			 "description": "hot pepper"
+		 },
+		 {
+			 "vecIndex": "1107",
+			 "description": "forest#woodland#timberland#timber"
+		 },
+		 {
+			 "vecIndex": "963",
+			 "description": "onion"
+		 },
+		 {
+			 "vecIndex": "965",
+			 "description": "lettuce"
+		 },
+		 {
+			 "vecIndex": "966",
+			 "description": "bean#edible bean"
+		 },
+		 {
+			 "vecIndex": "967",
+			 "description": "pea"
+		 },
+		 {
+			 "vecIndex": "969",
+			 "description": "celery"
+		 },
+		 {
+			 "vecIndex": "970",
+			 "description": "corn#edible corn"
+		 },
+		 {
+			 "vecIndex": "1115",
+			 "description": "landfill"
+		 },
+		 {
+			 "vecIndex": "971",
+			 "description": "popcorn"
+		 },
+		 {
+			 "vecIndex": "973",
+			 "description": "mushroom"
+		 },
+		 {
+			 "vecIndex": "974",
+			 "description": "pumpkin"
+		 },
+		 {
+			 "vecIndex": "975",
+			 "description": "radish"
+		 },
+		 {
+			 "vecIndex": "977",
+			 "description": "apple"
+		 },
+		 {
+			 "vecIndex": "978",
+			 "description": "berry"
+		 },
+		 {
+			 "vecIndex": "1187",
+			 "description": "speaker#talker#utterer#verbalizer#verbaliser"
+		 },
+		 {
+			 "vecIndex": "979",
+			 "description": "blueberry"
+		 },
+		 {
+			 "vecIndex": "981",
+			 "description": "blackberry"
+		 },
+		 {
+			 "vecIndex": "982",
+			 "description": "raspberry"
+		 },
+		 {
+			 "vecIndex": "983",
+			 "description": "strawberry"
+		 },
+		 {
+			 "vecIndex": "985",
+			 "description": "orange"
+		 },
+		 {
+			 "vecIndex": "986",
+			 "description": "mandarin#mandarin orange"
+		 },
+		 {
+			 "vecIndex": "1195",
+			 "description": "violist"
+		 },
+		 {
+			 "vecIndex": "987",
+			 "description": "lemon"
+		 },
+		 {
+			 "vecIndex": "989",
+			 "description": "apricot"
+		 },
+		 {
+			 "vecIndex": "990",
+			 "description": "peach"
+		 },
+		 {
+			 "vecIndex": "991",
+			 "description": "nectarine"
+		 },
+		 {
+			 "vecIndex": "993",
+			 "description": "fig"
+		 },
+		 {
+			 "vecIndex": "994",
+			 "description": "pineapple#ananas"
+		 },
+		 {
+			 "vecIndex": "1139",
+			 "description": "worker"
+		 },
+		 {
+			 "vecIndex": "995",
+			 "description": "banana"
+		 },
+		 {
+			 "vecIndex": "997",
+			 "description": "melon"
+		 },
+		 {
+			 "vecIndex": "998",
+			 "description": "cherry"
+		 },
+		 {
+			 "vecIndex": "999",
+			 "description": "grape"
+		 },
+		 {
+			 "vecIndex": "1001",
+			 "description": "durian"
+		 },
+		 {
+			 "vecIndex": "1002",
+			 "description": "kiwi#kiwi fruit#Chinese gooseberry"
+		 },
+		 {
+			 "vecIndex": "1147",
+			 "description": "bartender#barman#barkeep#barkeeper#mixologist"
+		 },
+		 {
+			 "vecIndex": "1003",
+			 "description": "mangosteen"
+		 },
+		 {
+			 "vecIndex": "1005",
+			 "description": "avocado#alligator pear#avocado pear#aguacate"
+		 },
+		 {
+			 "vecIndex": "1006",
+			 "description": "date"
+		 },
+		 {
+			 "vecIndex": "1007",
+			 "description": "olive"
+		 },
+		 {
+			 "vecIndex": "1009",
+			 "description": "hay"
+		 },
+		 {
+			 "vecIndex": "1010",
+			 "description": "barley#barleycorn"
+		 },
+		 {
+			 "vecIndex": "1091",
+			 "description": "junkyard"
+		 },
+		 {
+			 "vecIndex": "1011",
+			 "description": "wheat#wheat berry"
+		 },
+		 {
+			 "vecIndex": "1013",
+			 "description": "salad"
+		 },
+		 {
+			 "vecIndex": "1014",
+			 "description": "spice"
+		 },
+		 {
+			 "vecIndex": "1015",
+			 "description": "garlic#ail"
+		 },
+		 {
+			 "vecIndex": "1017",
+			 "description": "cayenne#cayenne pepper#red pepper"
+		 },
+		 {
+			 "vecIndex": "1018",
+			 "description": "chili sauce"
+		 },
+		 {
+			 "vecIndex": "1099",
+			 "description": "canyon#canon"
+		 },
+		 {
+			 "vecIndex": "1019",
+			 "description": "salsa"
+		 },
+		 {
+			 "vecIndex": "1021",
+			 "description": "egg#eggs"
+		 },
+		 {
+			 "vecIndex": "1022",
+			 "description": "boiled egg#coddled egg"
+		 },
+		 {
+			 "vecIndex": "1023",
+			 "description": "hard-boiled egg#hard-cooked egg"
+		 },
+		 {
+			 "vecIndex": "1025",
+			 "description": "omelet#omelette"
+		 },
+		 {
+			 "vecIndex": "1026",
+			 "description": "fried egg"
+		 },
+		 {
+			 "vecIndex": "1029",
+			 "description": "yogurt#yoghurt#yoghourt"
+		 },
+		 {
+			 "vecIndex": "1031",
+			 "description": "honey"
+		 },
+		 {
+			 "vecIndex": "1032",
+			 "description": "syrup#sirup"
+		 },
+		 {
+			 "vecIndex": "1033",
+			 "description": "dough"
+		 },
+		 {
+			 "vecIndex": "1034",
+			 "description": "barbecued spareribs#spareribs"
+		 },
+		 {
+			 "vecIndex": "1037",
+			 "description": "chili#chili con carne"
+		 },
+		 {
+			 "vecIndex": "1039",
+			 "description": "croquette"
+		 },
+		 {
+			 "vecIndex": "1040",
+			 "description": "egg roll#spring roll"
+		 },
+		 {
+			 "vecIndex": "1041",
+			 "description": "enchilada"
+		 },
+		 {
+			 "vecIndex": "1042",
+			 "description": "fish and chips"
+		 },
+		 {
+			 "vecIndex": "1045",
+			 "description": "fried rice#Chinese fried rice"
+		 },
+		 {
+			 "vecIndex": "1047",
+			 "description": "lasagna#lasagne"
+		 },
+		 {
+			 "vecIndex": "1048",
+			 "description": "meat loaf#meatloaf"
+		 },
+		 {
+			 "vecIndex": "1049",
+			 "description": "pizza#pizza pie"
+		 },
+		 {
+			 "vecIndex": "1050",
+			 "description": "porridge"
+		 },
+		 {
+			 "vecIndex": "1053",
+			 "description": "taco"
+		 },
+		 {
+			 "vecIndex": "1055",
+			 "description": "beverage#drink#drinkable#potable"
+		 },
+		 {
+			 "vecIndex": "1056",
+			 "description": "beer"
+		 },
+		 {
+			 "vecIndex": "1057",
+			 "description": "wine#vino"
+		 },
+		 {
+			 "vecIndex": "1058",
+			 "description": "red wine"
+		 },
+		 {
+			 "vecIndex": "1063",
+			 "description": "absinth#absinthe"
+		 },
+		 {
+			 "vecIndex": "1064",
+			 "description": "cocktail"
+		 },
+		 {
+			 "vecIndex": "1065",
+			 "description": "juice"
+		 },
+		 {
+			 "vecIndex": "1066",
+			 "description": "fruit juice#fruit crush"
+		 },
+		 {
+			 "vecIndex": "1071",
+			 "description": "coffee#java"
+		 },
+		 {
+			 "vecIndex": "1072",
+			 "description": "tea#tea leaf"
+		 },
+		 {
+			 "vecIndex": "1073",
+			 "description": "tea"
+		 },
+		 {
+			 "vecIndex": "1074",
+			 "description": "bottled water"
+		 },
+		 {
+			 "vecIndex": "1079",
+			 "description": "village#small town#settlement"
+		 },
+		 {
+			 "vecIndex": "1080",
+			 "description": "concert band#military band"
+		 },
+		 {
+			 "vecIndex": "1081",
+			 "description": "banquet#feast"
+		 },
+		 {
+			 "vecIndex": "1082",
+			 "description": "wedding#wedding party"
+		 },
+		 {
+			 "vecIndex": "1087",
+			 "description": "bus stop"
+		 },
+		 {
+			 "vecIndex": "1088",
+			 "description": "campsite#campground#camping site#camping ground#bivouac#encampment#camping area"
+		 },
+		 {
+			 "vecIndex": "1089",
+			 "description": "cemetery#graveyard#burial site#burial ground#burying ground#memorial park#necropolis"
+		 },
+		 {
+			 "vecIndex": "1090",
+			 "description": "playing field#athletic field#playing area#field"
+		 },
+		 {
+			 "vecIndex": "1093",
+			 "description": "parking lot#car park#park#parking area"
+		 },
+		 {
+			 "vecIndex": "1095",
+			 "description": "resort area#playground#vacation spot"
+		 },
+		 {
+			 "vecIndex": "1096",
+			 "description": "slum#slum area"
+		 },
+		 {
+			 "vecIndex": "1097",
+			 "description": "beach"
+		 },
+		 {
+			 "vecIndex": "1098",
+			 "description": "brook#creek"
+		 },
+		 {
+			 "vecIndex": "1101",
+			 "description": "cliff#drop#drop-off"
+		 },
+		 {
+			 "vecIndex": "1103",
+			 "description": "coral reef"
+		 },
+		 {
+			 "vecIndex": "1104",
+			 "description": "dune#sand dune"
+		 },
+		 {
+			 "vecIndex": "1109",
+			 "description": "glacier"
+		 },
+		 {
+			 "vecIndex": "1112",
+			 "description": "iceberg#berg"
+		 },
+		 {
+			 "vecIndex": "1117",
+			 "description": "mountain#mount"
+		 },
+		 {
+			 "vecIndex": "1120",
+			 "description": "plain#field#champaign"
+		 },
+		 {
+			 "vecIndex": "1121",
+			 "description": "range#mountain range#range of mountains#chain#mountain chain#chain of mountains"
+		 },
+		 {
+			 "vecIndex": "1122",
+			 "description": "reef"
+		 },
+		 {
+			 "vecIndex": "1125",
+			 "description": "rock#stone"
+		 },
+		 {
+			 "vecIndex": "1127",
+			 "description": "seashore#coast#seacoast#sea-coast"
+		 },
+		 {
+			 "vecIndex": "1128",
+			 "description": "shore"
+		 },
+		 {
+			 "vecIndex": "1129",
+			 "description": "ski slope"
+		 },
+		 {
+			 "vecIndex": "1130",
+			 "description": "sky"
+		 },
+		 {
+			 "vecIndex": "1133",
+			 "description": "valley#vale"
+		 },
+		 {
+			 "vecIndex": "1135",
+			 "description": "waterfall#falls"
+		 },
+		 {
+			 "vecIndex": "1136",
+			 "description": "face"
+		 },
+		 {
+			 "vecIndex": "1137",
+			 "description": "female#female person"
+		 },
+		 {
+			 "vecIndex": "1138",
+			 "description": "male#male person"
+		 },
+		 {
+			 "vecIndex": "1141",
+			 "description": "actor#doer#worker"
+		 },
+		 {
+			 "vecIndex": "1143",
+			 "description": "anchor#anchorman#anchorperson"
+		 },
+		 {
+			 "vecIndex": "1144",
+			 "description": "astronaut#spaceman#cosmonaut"
+		 },
+		 {
+			 "vecIndex": "1145",
+			 "description": "athlete#jock"
+		 },
+		 {
+			 "vecIndex": "1146",
+			 "description": "baby"
+		 },
+		 {
+			 "vecIndex": "1149",
+			 "description": "blacksmith"
+		 },
+		 {
+			 "vecIndex": "1151",
+			 "description": "cardiologist#heart specialist#heart surgeon"
+		 },
+		 {
+			 "vecIndex": "1152",
+			 "description": "cheerleader"
+		 },
+		 {
+			 "vecIndex": "1155",
+			 "description": "clown#buffoon#goof#goofball#merry andrew"
+		 },
+		 {
+			 "vecIndex": "1156",
+			 "description": "dancer#social dancer"
+		 },
+		 {
+			 "vecIndex": "1157",
+			 "description": "diver#plunger"
+		 },
+		 {
+			 "vecIndex": "1158",
+			 "description": "economist#economic expert"
+		 },
+		 {
+			 "vecIndex": "1160",
+			 "description": "female child#girl#little girl"
+		 },
+		 {
+			 "vecIndex": "1163",
+			 "description": "garbage man#garbageman#garbage collector#garbage carter#garbage hauler#refuse collector#dustman"
+		 },
+		 {
+			 "vecIndex": "1164",
+			 "description": "grandfather#gramps#granddad#grandad#granddaddy#grandpa"
+		 },
+		 {
+			 "vecIndex": "1165",
+			 "description": "grandma#grandmother#granny#grannie#gran#nan#nanna"
+		 },
+		 {
+			 "vecIndex": "1166",
+			 "description": "groom#bridegroom"
+		 },
+		 {
+			 "vecIndex": "1168",
+			 "description": "gymnast"
+		 },
+		 {
+			 "vecIndex": "1171",
+			 "description": "lawman#law officer#peace officer"
+		 },
+		 {
+			 "vecIndex": "1172",
+			 "description": "lifeguard#lifesaver"
+		 },
+		 {
+			 "vecIndex": "1173",
+			 "description": "motorcyclist"
+		 },
+		 {
+			 "vecIndex": "1174",
+			 "description": "musician#instrumentalist#player"
+		 },
+		 {
+			 "vecIndex": "1176",
+			 "description": "patient"
+		 },
+		 {
+			 "vecIndex": "1179",
+			 "description": "press photographer"
+		 },
+		 {
+			 "vecIndex": "1180",
+			 "description": "priest"
+		 },
+		 {
+			 "vecIndex": "1181",
+			 "description": "puppeteer"
+		 },
+		 {
+			 "vecIndex": "1182",
+			 "description": "redhead#redheader#red-header#carrottop"
+		 },
+		 {
+			 "vecIndex": "1184",
+			 "description": "singer#vocalist#vocalizer#vocaliser"
+		 },
+		 {
+			 "vecIndex": "1189",
+			 "description": "student#pupil#educatee"
+		 },
+		 {
+			 "vecIndex": "1192",
+			 "description": "therapist#healer"
+		 },
+		 {
+			 "vecIndex": "1197",
+			 "description": "aquatic"
+		 },
+		 {
+			 "vecIndex": "1200",
+			 "description": "flower"
+		 },
+		 {
+			 "vecIndex": "1203",
+			 "description": "aster"
+		 },
+		 {
+			 "vecIndex": "1204",
+			 "description": "daisy"
+		 },
+		 {
+			 "vecIndex": "1205",
+			 "description": "thistle"
+		 },
+		 {
+			 "vecIndex": "1206",
+			 "description": "sunflower#helianthus"
+		 },
+		 {
+			 "vecIndex": "1208",
+			 "description": "grass"
+		 },
+		 {
+			 "vecIndex": "1211",
+			 "description": "herb#herbaceous plant"
+		 },
+		 {
+			 "vecIndex": "1212",
+			 "description": "oak#oak tree"
+		 },
+		 {
+			 "vecIndex": "1213",
+			 "description": "olive tree"
+		 },
+		 {
+			 "vecIndex": "1214",
+			 "description": "olive"
+		 },
+		 {
+			 "vecIndex": "1219",
+			 "description": "daffodil#Narcissus pseudonarcissus"
+		 },
+		 {
+			 "vecIndex": "1220",
+			 "description": "tulip"
+		 },
+		 {
+			 "vecIndex": "1221",
+			 "description": "palm#palm tree"
+		 },
+		 {
+			 "vecIndex": "1222",
+			 "description": "apple tree"
+		 },
+		 {
+			 "vecIndex": "1227",
+			 "description": "forget-me-not#mouse ear#Myosotis scorpiodes"
+		 },
+		 {
+			 "vecIndex": "1228",
+			 "description": "lichen"
+		 },
+		 {
+			 "vecIndex": "1229",
+			 "description": "fungus"
+		 },
+		 {
+			 "vecIndex": "1230",
+			 "description": "mushroom"
+		 },
+		 {
+			 "vecIndex": "1235",
+			 "description": "nut"
+		 },
+		 {
+			 "vecIndex": "1236",
+			 "description": "berry"
+		 },
+		 {
+			 "vecIndex": "1237",
+			 "description": "rock#stone"
+		 },
+		 {
+			 "vecIndex": "1238",
+			 "description": "gravel#crushed rock"
+		 }
+	 ]
+}

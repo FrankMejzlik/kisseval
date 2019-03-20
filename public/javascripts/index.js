@@ -8,6 +8,7 @@ ej.base.enableRipple(window.ripple)
         //set the data to dataSource property
         dataSource: vecIndexToDescData,
         //openOnClick: false,
+        sortOrder: "Ascending",
         fields: { text: 'description', value: 'vecIndex' },
         placeholder: 'e.g. ( Dog | Wolf ) & Snowman & Cake',
         ignoreAccent: true

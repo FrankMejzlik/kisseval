@@ -70,6 +70,10 @@ a {
   text-align: center;
 }
 
+.instructions {
+  text-align: left;
+}
+
 .how-to-use-tip {
   background-color: #ffb5b5;
 }

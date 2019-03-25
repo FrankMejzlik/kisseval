@@ -17,7 +17,7 @@ const b = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\VBS2019_c
 const c = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\VBS2019_classification_NasNetMobile_20000.deep-features";
 const d = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\keyword_classes.txt";
 
-const prevInstance = new imageRanker.ImageRankerWrapper(a,b,c,d);
+const autocompleteSuggestions = new imageRanker.ImageRankerWrapper(a,b,c,d);
 
 var idMultiplier = 50;
 
@@ -37,13 +37,15 @@ function GetRandomImageSrcPair()
 /* GET home page. */
 router.get('/', function(req, res, next) 
 {
-  for (var j = 0; j < 10000; ++j) 
+  for (var j = 0; j < 100; ++j) 
   {
-    var arrayIds = prevInstance.GetNearKeywords("do");
+    var arrayIds = autocompleteSuggestions.GetNearKeywords("do");
   
     for (var i = 0; i < arrayIds.length; ++i) 
     {
-        console.log(arrayIds[i]);
+        console.log("wordnetId = " + arrayIds[i][0]);
+        console.log("word = " + arrayIds[i][1]);
+        console.log("description = " + arrayIds[i][2]);
     }
   }
 

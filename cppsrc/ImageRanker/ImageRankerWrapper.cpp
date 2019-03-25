@@ -57,27 +57,42 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) 
 
   Napi::String prefix = info[0].As<Napi::String>();
 
-  std::vector<size_t> ids = this->actualClass_->GetNearKeywords("do");
+  // Get suggested keywords
+  std::vector< std::tuple<size_t, std::string, std::string> > keywordData = this->actualClass_->GetNearKeywords(prefix);
 
+
+  // Final return structure
   napi_value result;
   napi_create_array(env, &result);
 
-
-  napi_value num_result;
+  
 
   size_t i = 0ULL;
-  for (auto&& id : ids) {
-      napi_create_uint32(env, id, &num_result);
+  // Iterate through all results
+  for (auto&& keyword : keywordData) 
+  {
+      // Temp array structure
+      napi_value tempArray;
+      napi_create_array(env, &tempArray);
 
-      napi_set_element(env, result, i, num_result);
+      napi_value wordnetId;
+      napi_value word;
+      napi_value description;
+
+      napi_create_uint32(env, std::get<0>(keyword), &wordnetId);
+      napi_create_string_utf8(env, std::get<1>(keyword).data(), std::get<1>(keyword).size(), &word);
+      napi_create_string_utf8(env, std::get<2>(keyword).data(), std::get<2>(keyword).size(), &description);
+
+      napi_set_element(env, tempArray, 0, wordnetId);
+      napi_set_element(env, tempArray, 1, word);
+      napi_set_element(env, tempArray, 2, description);
+
+      napi_set_element(env, result, i, tempArray);
+
       ++i;
   }
 
-  //return Napi::Value::Value(env, result);
-
-  Napi::Object oooobl(env, result);
-
-  return oooobl;
+  return Napi::Object(env, result);
 }
 
 

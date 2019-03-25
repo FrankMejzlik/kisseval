@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <windows.h>
 #include <map>
+#include <locale>
 
 #include "config.h"
 
@@ -77,7 +78,7 @@ public:
     std::sort(_keywords.begin(), _keywords.end(), KeywordLessThan);
   }
 
-  std::vector<size_t> GetNearKeywords(const std::string& prefix);
+  std::vector<std::tuple<size_t, std::string, std::string>> GetNearKeywords(const std::string& prefix);
 
   Keyword* MapDescIndexToKeyword() const;
 
@@ -92,6 +93,25 @@ public:
     }
     
     return resultIt->second->m_word;
+  }
+
+  std::string GetKeywordDescriptionByWordnetId(size_t wordnetId)
+  {
+
+    auto resultIt = _wordnetIdToKeywords.find(wordnetId);
+
+    if (resultIt == _wordnetIdToKeywords.end())
+    {
+      std::string("NOT FOUND");
+    }
+
+    size_t startDescIndex = resultIt->second->m_descStartIndex;
+    //size_t endDescIndex = resultIt->second->m_descEndIndex;
+
+    char* pDesc = (_allDescriptions.data()) + startDescIndex;
+
+
+    return std::string(pDesc);
   }
 
 private:
@@ -156,15 +176,29 @@ public:
   size_t GetRandomImageId() const;
   
 
-  std::vector<size_t> GetNearKeywords(const std::string& prefix)
+  std::vector< std::tuple<size_t, std::string, std::string> > GetNearKeywords(const std::string& prefix)
   {
-    return _keywords.GetNearKeywords(prefix);
+    // Force lowercase
+    std::locale loc;
+    std::string lower;
+
+    for (auto elem : prefix)
+    {
+      lower.push_back(std::tolower(elem,loc));
+    }
+
+    return _keywords.GetNearKeywords(lower);
   }
 
 
   std::string GetKeywordByWordnetId(size_t wordnetId)
   {
     return _keywords.GetKeywordByWordnetId(wordnetId);
+  }
+
+  std::string GetKeywordDescriptionByWordnetId(size_t wordnetId)
+  {
+    return _keywords.GetKeywordDescriptionByWordnetId(wordnetId);
   }
 
   std::string GetImageFilepathByIndex(size_t imgIndex, bool relativePaths = false) const;

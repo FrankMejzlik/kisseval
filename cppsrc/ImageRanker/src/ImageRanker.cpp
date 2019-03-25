@@ -49,7 +49,7 @@ bool KeywordsContainer::ParseKeywordClassesFile(std::string_view filepath)
 
     // Append description to all of them
     _allDescriptions.append(tokens[5]);
-
+    _allDescriptions.push_back('\0');
     
     vectIndSs >> vectorIndex;
     wordnetIdSs >> wordnetId;
@@ -75,7 +75,7 @@ bool KeywordsContainer::ParseKeywordClassesFile(std::string_view filepath)
 }
 
 
-std::vector<size_t> KeywordsContainer::GetNearKeywords(const std::string& prefix)
+std::vector< std::tuple<size_t, std::string, std::string> > KeywordsContainer::GetNearKeywords(const std::string& prefix)
 {
   KeywordsContainer::KeywordLessThanStringComparator comparator;
   size_t left = 0ULL;
@@ -106,13 +106,13 @@ std::vector<size_t> KeywordsContainer::GetNearKeywords(const std::string& prefix
 
   }
   
-  std::vector<size_t> resultWordnetIds;
+  std::vector< std::tuple<size_t, std::string, std::string> > resultWordnetIds;
   resultWordnetIds.reserve(NUM_SUGESTIONS);
 
   // Get desired number of results
   for (size_t j = 0ULL; j < NUM_SUGESTIONS; ++j)
   {
-    resultWordnetIds.push_back(_keywords[left + j]->m_wordnetId);
+    resultWordnetIds.push_back(std::make_tuple(_keywords[left + j]->m_wordnetId, _keywords[left + j]->m_word, GetKeywordDescriptionByWordnetId(_keywords[left + j]->m_wordnetId)));
   }
   
   return resultWordnetIds;

@@ -1,84 +1,111 @@
-<!DOCTYPE html>
-<html>
+<!-- Include header -->
+<%- include common/header.ejs %>
 
-<head>
-  <title><%= title %></title>
-  <link href="/stylesheets/material.css" rel="stylesheet">
-  <link rel='stylesheet' href='/stylesheets/style.css' />
+<section class="how-to-use-tip">
+  <div class="row center">
 
-  <script src="/javascripts/jquery-3.3.1.min.js"></script>
-  <script src="/javascripts/ej2.min.js" type="text/javascript"></script>
-  <link href="/stylesheets/index.css" rel="stylesheet">
+    <h4>
+      If you need to know how to use this, please take a look <a href="/">HERE</a>.
+    </h4>
 
-</head>
+  </div>
+</section>
 
-<body>
-    <section class="header main">
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-          <a class="navbar-brand" href="#"><%= title %></a>
+<section class="main-image-query grid-container">
+  <div class="grid-x grid-padding-x">
 
-          <ul class="navigation main">
-            <li><a href="/">Home</a></li>
-            <li><a class="active" href="/collector/">Collector</a></li>
-          </ul>
-        </nav>
-    </section>
+    <div class="large-6 cell">
+      <img src="<%= pathToImages %><%= newImageObj.src %>" />
+    </div>
 
-    <section class="how-to-use-tip">
-        <div class="row center">
+    <div class="autocomplete-keywords-container large-6 cell">
 
-            <h4>
-              If you need to know how to use this, please take a look <a href="/">HERE</a>.
-            </h4>
+      <form class="autocomplete-form" action="/collector/" method="POST">
+        <div class="control-wrapper">
+
+          <input type="text" id="query" tabindex="1" name="query">
+
+          <div class="ui-widget" style="margin-top:2em; font-family:Arial">
+            Result:
+            <div id="log" style="height: 200px; width: 300px; overflow: auto;" class="ui-widget-content"></div>
+          </div>
 
         </div>
-      </section>
+        <input type="submit" class="button success" id="sendQuery" value="Send query">
+      </form>
 
-  <section class="main-image-query">
-    <div class="row center">
+      <!-- Autocomplete AJAX script -->
+      <script>
 
-      <div class="main-image-container">
-        <img src="<%= pathToImages %><%= newImageObj.src %>" />
-      </div>
+        function log( message ) {
+          $( "<div>" ).text( message ).prependTo( "#log" );
+          $( "#log" ).scrollTop( 0 );
+        }  
 
-    </div>
-  </section>
+        $('#query').autocomplete({
+          delay: 10,
+          source: function (req, res) {
+            $.ajax({
+              url: "/collector_ajax/",
+              dataType: "jsonp",
+              type: "GET",
+              data: {
+                term: req.term
+              },
+              success: function (data) {
+                res($.map(data, function (item) {
+                  return {
+                    id: item[0],
+                    label: item[1], 
+                    value: item[1],
+                    desc: item[2]
+                  };      
+                }));
 
-<script>
-
-jQuery(document).ready(function() {
-    jQuery("#submitBtn").click(function(){
-        var countries = [];
-        jQuery.each(jQuery(".e-multi-hidden[name=games]"), function(){         
-          
-            countries.push(jQuery(this).val());
+                //console.log(data);
+                //res(data);
+              },
+              error: function (xhr) {
+                alert(xhr.status + ' : ' + xhr.statusText);
+              }
+            });
+          },
+          select: function (event, ui) 
+          {
+            log( "Selected: id = " + ui.item.id + ", label =  " + ui.item.label + "desc: " + ui.item.desc );
+          }
         });
-        console.log(countries);
-        console.log(countries.length);
 
-        alert("Query for validation is:" + countries.join(";"));
-    });
-  });
-    
-</script>
 
-  <section class="main-query">
-    <div class="row center">
-      <div class="query-form">
+      </script>
 
-        <form class="send-image-query-form" action="/collector/" method="POST">
-          <div class="control-wrapper">
-              <input type="hidden" id="imgId" name="imgId" value="<%= newImageObj.id %>">
-              <input type="text" id="games" tabindex="1" >
-            
-          </div>
-          <input type="submit" id="submitBtn" value="Submit">
-        </form>
 
-      </div>
 
     </div>
-  </section>
+
+  </div>
+</section>
+
+
+
+
+<section class="main-query">
+  <div class="row center">
+    <div class="query-form">
+
+      <form class="send-image-query-form" action="/collector/" method="POST">
+        <div class="control-wrapper">
+          <input type="hidden" id="imgId" name="imgId" value="<%= newImageObj.id %>">
+          <input type="text" id="games" tabindex="1">
+
+        </div>
+        <input type="submit" id="submitBtn" value="Submit">
+      </form>
+
+    </div>
+
+  </div>
+</section>
 
 </body>
 
@@ -86,8 +113,8 @@ jQuery(document).ready(function() {
 
 
 
-// define the array of data
-var vecIndexToDescData = [
+  // define the array of data
+  var vecIndexToDescData = [
   
 
 
@@ -95,52 +122,48 @@ var vecIndexToDescData = [
 
 <% 
 var data = indexDescData.vecIndexToDescription;
-for (var i = 0; i < data.length; ++i) 
-{ 
-  var arrDesc = data[i].description.split("#");
+  for (var i = 0; i < data.length; ++i) {
+    var arrDesc = data[i].description.split("#");
 
-  for (var j = 0; j < arrDesc.length; ++j) 
-  { %>
+    for (var j = 0; j < arrDesc.length; ++j) { %>
 
-    {
-      "vecIndex": "<%= data[i].wordnetId %>#<%= j %>",
-      "description": "<%= arrDesc[j] %>"
-    },
+      {
+        "vecIndex": "<%= data[i].wordnetId %>#<%= j %>",
+        "description": "<%= arrDesc[j] %>"
+      },
 
   <%}
-}%>
+  }%>
 
   <% 
-  for (var k = 0; k < 20; ++k) 
-  { %>
+  for (var k = 0; k < 20; ++k) { %>
 
-  {
-    "vecIndex": "(<%= k %>",
-    "description": "("
-  },
-  {
-    "vecIndex": ")<%= k %>",
-    "description": ")"
-  },
-  {
-    "vecIndex": "&<%= k %>",
-    "description": "&"
-  },
-  {
-    "vecIndex": "|<%= k %>",
-    "description": "|"
-  },
+    {
+      "vecIndex": "(<%= k %>",
+      "description": "("
+    },
+    {
+      "vecIndex": ")<%= k %>",
+      "description": ")"
+    },
+    {
+      "vecIndex": "&<%= k %>",
+      "description": "&"
+    },
+    {
+      "vecIndex": "|<%= k %>",
+      "description": "|"
+    },
 
   <% } %>
 
-  {
-    "vecIndex": "&999",
-    "description": "&" 
-  }
+    {
+      "vecIndex": "&999",
+      "description": "&"
+    }
 ];
 </script>
 
-<script src="/javascripts/index.js"></script>
 
-
-</html>
+<!-- Include footer -->
+<%- include common/footer.ejs %>

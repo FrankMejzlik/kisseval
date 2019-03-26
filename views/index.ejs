@@ -1,77 +1,57 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link href="/stylesheets/material.css" rel="stylesheet">
-  <link rel='stylesheet' href='/stylesheets/style.css' />
+<!-- Include header -->
+<%- include common/header.ejs %>
 
-  <script src="/javascripts/jquery-3.3.1.min.js"></script>
-  <script src="/javascripts/ej2.min.js" type="text/javascript"></script>
-  <link href="/stylesheets/index.css" rel="stylesheet">
+<section class="welcome-section">
 
-  </head>
-  <body>
+  <div class="row center">
+    <div class="welcome">
+      <h1><%= title %></h1>
+      <p>Welcome to data collecting interface for improving our video retrieval tool.</p>
+    </div>
+  </div>
+</section>
 
-    <section class="header main">
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-          <a class="navbar-brand" href="#"><%= title %></a>
+<section class="instructions-section">
+  <div class="row center">
 
-          <ul class="navigation main">
-            <li><a class="active" href="/">Home</a></li>
-            <li><a href="/collector/">Collector</a></li>
-          </ul>
-        </nav>
-    </section>
+    <div class="instructions-container column large-12">
+      <div class="instructions">
 
-    <section class="welcome-section">
+        <h3>How to use this?</h3>
+        <p>
+          Look at picture you're seeing and try to fill into input field as much keywords describing objects that are
+          present in picture.</p>
+        <p>You can use parentheses and logical operators & (logical AND) and | (logical OR) to better describe what your
+          seeing if you're not sure what that is.
 
-        <div class="row center">
-          <div class="welcome">
-              <h1><%= title %></h1>
-              <p>Welcome to data collecting interface for improving our video retrieval tool.</p>
-          </div>
-        </div>
-    </section>
-      
-    <section class="instructions-section">
-      <div class="row center">
 
-        <div class="instructions-container column large-12">
-          <div class="instructions">
-            
-              <h3>How to use this?</h3>
-              <p>
-                Look at picture you're seeing and try to fill into input field as much keywords describing objects that are present in picture.</p>
-                <p>You can use parentheses and logical operators & (logical AND) and | (logical OR) to better describe what your seeing if you're not sure what that is.
 
-                  
+          You're alowed to use only keywords that are present in our database. There is autocomplete implemented in the
+          input field.</p>
 
-                  You're alowed to use only keywords that are present in our database. There  is autocomplete implemented in the input field.</p> 
-                  
-                  <p>Just type few letters from wor you want to use
-                  and see it that keywors is present or not. If it is just press ENTER and keyword will be selected.
-                </p>
+        <p>Just type few letters from wor you want to use
+          and see it that keywors is present or not. If it is just press ENTER and keyword will be selected.
+        </p>
 
-                <p>Logical operators behave like standalone keywords. In case you'd need to use OR operator, you have to enclose keywords you want to OR into parentheses so operator precedence is 
-                  evaluated correctly. </p>
+        <p>Logical operators behave like standalone keywords. In case you'd need to use OR operator, you have to enclose
+          keywords you want to OR into parentheses so operator precedence is
+          evaluated correctly. </p>
 
-                <p>For example:<br />
-                There is bike in the picture and a tree. There is also some animal that you're not sure if it's a caguar or a cheetah.</p>
-              
-                <p>So your query could look like: <br/>
-                <br> cage & zoo & ( caguar | cheetah )</br>
-                </p>
+        <p>For example:<br />
+          There is bike in the picture and a tree. There is also some animal that you're not sure if it's a caguar or a
+          cheetah.</p>
 
-              </p>
+        <p>So your query could look like: <br />
+          <br> cage & zoo & ( caguar | cheetah )</br>
+        </p>
 
-            </div>
-        </div>
+        </p>
 
       </div>
-    </section>
-  </body>
+    </div>
 
+  </div>
+</section>
 
-  <script src="/javascripts/index.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-</html>
+<!-- Include footer -->
+<%- include common/footer.ejs %>

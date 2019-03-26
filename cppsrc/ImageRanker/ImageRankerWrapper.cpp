@@ -54,18 +54,15 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) 
   if (length != 1) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
-
+  
   Napi::String prefix = info[0].As<Napi::String>();
 
   // Get suggested keywords
   std::vector< std::tuple<size_t, std::string, std::string> > keywordData = this->actualClass_->GetNearKeywords(prefix);
 
-
   // Final return structure
   napi_value result;
   napi_create_array(env, &result);
-
-  
 
   size_t i = 0ULL;
   // Iterate through all results

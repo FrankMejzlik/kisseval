@@ -20,74 +20,13 @@
 
     <div class="autocomplete-keywords-container large-6 cell">
 
-      <form class="autocomplete-form" action="/collector/" method="POST">
-        <div class="control-wrapper">
-
-          <input type="text" id="query" tabindex="1" name="query">
-
-          <div class="ui-widget" style="margin-top:2em; font-family:Arial">
-            Result:
-            <div id="log" style="height: 200px; width: 300px; overflow: auto;" class="ui-widget-content"></div>
-          </div>
-
-        </div>
-        <input type="submit" class="button success" id="sendQuery" value="Send query">
-      </form>
-
-      <!-- Autocomplete AJAX script -->
-      <script>
-
-        function log( message ) {
-          $( "<div>" ).text( message ).prependTo( "#log" );
-          $( "#log" ).scrollTop( 0 );
-        }  
-
-        $('#query').autocomplete({
-          delay: 10,
-          source: function (req, res) {
-            $.ajax({
-              url: "/collector_ajax/",
-              dataType: "jsonp",
-              type: "GET",
-              data: {
-                term: req.term
-              },
-              success: function (data) {
-                res($.map(data, function (item) {
-                  return {
-                    id: item[0],
-                    label: item[1], 
-                    value: item[1],
-                    desc: item[2]
-                  };      
-                }));
-
-                //console.log(data);
-                //res(data);
-              },
-              error: function (xhr) {
-                alert(xhr.status + ' : ' + xhr.statusText);
-              }
-            });
-          },
-          select: function (event, ui) 
-          {
-            log( "Selected: id = " + ui.item.id + ", label =  " + ui.item.label + "desc: " + ui.item.desc );
-          }
-        });
-
-
-      </script>
-
-
+      <!-- Include autocomplete module -->
+      <%- include common/footer.ejs %>
 
     </div>
 
   </div>
 </section>
-
-
-
 
 <section class="main-query">
   <div class="row center">
@@ -111,15 +50,9 @@
 
 <script>
 
-
-
   // define the array of data
   var vecIndexToDescData = [
   
-
-
-
-
 <% 
 var data = indexDescData.vecIndexToDescription;
   for (var i = 0; i < data.length; ++i) {

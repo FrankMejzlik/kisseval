@@ -1,0 +1,34 @@
+{
+    "development": {
+        "config_id": "development",
+        "log_all": true,
+        "app_name": "ImageRankerCollector",
+        "app_desc": "ImageRanker data collecting application.",
+        "node_port": 8080,
+        "json_indentation": 4,
+        "database_host": "localhost",
+        "database_port": "3306",
+        "database_username": "image-ranker",
+        "database_password": "s5XurJ3uS3E52Gzm",
+        "database_name": "image-ranker-collector-data"
+    },
+    "staging": {
+        "config_id": "staging",
+        "node_port": 8080,
+        "database_host": "li1504-72.members.linode.com",
+        "database_port": "3306",
+        "database_username": "image-ranker",
+        "database_password": "s5XurJ3uS3E52Gzm",
+        "database_name": "image-ranker-collector-data"
+    },
+    "production": {
+        "config_id": "production",
+        "node_port": 8080,
+        "log_all": false,
+        "database_host": "li1504-72.members.linode.com",
+        "database_port": "3306",
+        "database_username": "image-ranker",
+        "database_password": "---",
+        "database_name": "image-ranker-collector-data-prod"
+    }
+}

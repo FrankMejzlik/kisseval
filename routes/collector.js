@@ -63,19 +63,21 @@ router.get('/', function(req, res, next)
     indexDescData
   };
 
+  console.log(global.gConfig);
+
   res.render('collector', data);
 });
    
 router.post('/', function(req, res, next) 
 {
-  console.log(req.body.games);
+  console.log(req.body.query);
 
-  var finalString = req.body.games;
+  var finalString = req.body.query;
   
   // If more than one keyword provided
   if (finalString instanceof Array) 
   {
-    finalString = finalString.join(";");
+    finalString = finalString.join("&");
   }
 
   fs.writeFileSync(path.join(__dirname, "../data/userInput.txt"), finalString + '\n', {encoding: "ascii", flag: "a"} );
@@ -84,5 +86,23 @@ router.post('/', function(req, res, next)
 
 });
 
+process.on('SIGTERM', shutDown);
+process.on('SIGINT', shutDown);
+
+function shutDown() {
+  console.log('Received kill signal, shutting down gracefully');
+  server.close(() => {
+      console.log('Closed out remaining connections');
+      process.exit(0);
+  });
+
+  setTimeout(() => {
+      console.error('Could not close connections in time, forcefully shutting down');
+      process.exit(1);
+  }, 10000);
+
+  connections.forEach(curr => curr.end());
+  setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
+}
 
 module.exports = router;

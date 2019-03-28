@@ -1,18 +1,28 @@
+
+// Require modules for server run
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// Load global config
+var config = require("./config/config");
+
+// Require routers
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var collectorRouter = require('./routes/collector');
 var collectorAjax = require('./routes/collector_ajax');
 
+
+// Instantiate app
 var app = express();
 
-// view engine setup
+// Setup views path
 app.set('views', path.join(__dirname, 'views'));
+
+// Setup it's engine
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
@@ -38,17 +48,24 @@ const d = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\keyword_c
 // const d = path.join(__dirname, "../data/keyword_classes.txt");
 
 // Create global instance if ImageRanker
-global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d);;
-console.log(global.imageRanker);
+global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d);
 
+if (global.gConfig.log_all == true)
+{
+  console.log(global.imageRanker);
+}
 
+// Push all routers into express middleware stack
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/collector', collectorRouter);
+
+// Allow only GET requests to 'collector_ajax' router
 app.get('/collector_ajax', collectorAjax.find);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+// Catch 404 and forward to error handler
+app.use(function(req, res, next) 
+{
   next(createError(404));
 });
 

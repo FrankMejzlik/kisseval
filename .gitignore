@@ -2,3 +2,6 @@
 /public/images/
 /build
 data/
+data2/
+.vscode/
+.vs/

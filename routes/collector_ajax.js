@@ -42,7 +42,7 @@ exports.find = function(req, res)
   //     });
   // });
 
-  var word = req.query.term;
+  var word = req.query.queryValue;
   //console.log(global.imageRanker);
 
   //console.log(util.inspect(req, {showHidden: false, depth: null}))

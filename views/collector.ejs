@@ -15,31 +15,13 @@
   <div class="grid-x grid-padding-x">
 
     <div class="large-6 cell">
-      <img src="<%= pathToImages %><%= newImageObj.src %>" />
+      <img src="<%= global.gConfig.pathToImages %><%= newImage.filename %>" />
     </div>
 
     <div class="autocomplete-keywords-container large-6 cell">
 
       <!-- Include autocomplete module -->
-      <%- include common/footer.ejs %>
-
-    </div>
-
-  </div>
-</section>
-
-<section class="main-query">
-  <div class="row center">
-    <div class="query-form">
-
-      <form class="send-image-query-form" action="/collector/" method="POST">
-        <div class="control-wrapper">
-          <input type="hidden" id="imgId" name="imgId" value="<%= newImageObj.id %>">
-          <input type="text" id="games" tabindex="1">
-
-        </div>
-        <input type="submit" id="submitBtn" value="Submit">
-      </form>
+      <%- include modules/autocomplete.ejs %>
 
     </div>
 
@@ -47,56 +29,6 @@
 </section>
 
 </body>
-
-<script>
-
-  // define the array of data
-  var vecIndexToDescData = [
-  
-<% 
-var data = indexDescData.vecIndexToDescription;
-  for (var i = 0; i < data.length; ++i) {
-    var arrDesc = data[i].description.split("#");
-
-    for (var j = 0; j < arrDesc.length; ++j) { %>
-
-      {
-        "vecIndex": "<%= data[i].wordnetId %>#<%= j %>",
-        "description": "<%= arrDesc[j] %>"
-      },
-
-  <%}
-  }%>
-
-  <% 
-  for (var k = 0; k < 20; ++k) { %>
-
-    {
-      "vecIndex": "(<%= k %>",
-      "description": "("
-    },
-    {
-      "vecIndex": ")<%= k %>",
-      "description": ")"
-    },
-    {
-      "vecIndex": "&<%= k %>",
-      "description": "&"
-    },
-    {
-      "vecIndex": "|<%= k %>",
-      "description": "|"
-    },
-
-  <% } %>
-
-    {
-      "vecIndex": "&999",
-      "description": "&"
-    }
-];
-</script>
-
 
 <!-- Include footer -->
 <%- include common/footer.ejs %>

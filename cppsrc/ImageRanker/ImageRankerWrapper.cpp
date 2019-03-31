@@ -6,8 +6,8 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::HandleScope scope(env);
 
   Napi::Function func = DefineClass(env, "ImageRankerWrapper", {
-    InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords)
-    //InstanceMethod("GetImageFilepathByIndex", &ImageRankerWrapper::GetImageFilepathByIndex),
+    InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
+    InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage)
     //InstanceMethod("GetRandomInteger", &ImageRankerWrapper::GetRandomInteger),
   });
 
@@ -15,6 +15,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
   constructor.SuppressDestruct();
 
   exports.Set("ImageRankerWrapper", func);
+ 
   return exports;
 }
 
@@ -43,6 +44,50 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
     keywordClassesFilepath.Utf8Value()
   );
 }
+
+
+Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 0)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
+  }
+
+  // Call native method
+  ImageRanker::ImageReference image{ this->actualClass_->GetRandomImage() };
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // Set "imageId"
+  {
+    napi_value imageIdKey;
+    napi_create_string_utf8(env, "imageId", 8, &imageIdKey);
+    napi_value imageId;
+    napi_create_uint32(env, std::get<0>(image), &imageId);
+
+    napi_set_property(env, result, imageIdKey, imageId);
+  }
+
+  // Set "filename"
+  {
+    napi_value filenameKey;
+    napi_create_string_utf8(env, "filename", 8, &filenameKey);
+    napi_value filename;
+    napi_create_string_utf8(env, std::get<1>(image).data(), std::get<1>(image).size(), &filename);
+
+    napi_set_property(env, result, filenameKey, filename);
+  }
+
+  return Napi::Object(env, result);
+}
+
 
 Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();

@@ -1,133 +1,64 @@
 #include "ImageRanker.h"
 
 
-
-bool KeywordsContainer::ParseKeywordClassesFile(std::string_view filepath)
-{
-  // Open file with list of files in images dir
-  std::ifstream inFile(filepath.data(), std::ios::in);
-
-  // If failed to open file
-  if (!inFile)
-  {
-    throw std::runtime_error(std::string("Error opening file :") + filepath.data());
-  }
-
-  std::string lineBuffer;
-
-  // While there is something to read
-  while (std::getline(inFile, lineBuffer))
-  {
-
-    // Extract file name
-    std::stringstream lineBufferStream(lineBuffer);
-
-    std::vector<std::string> tokens;
-    std::string token;
-    size_t i = 0ULL;
-
-    while (std::getline(lineBufferStream, token, CSV_DELIMITER))
-    {
-      tokens.push_back(token);
-
-      ++i;
-    }
-
-
-    // Index of vector
-    std::stringstream vectIndSs(tokens[0]);
-    std::stringstream wordnetIdSs(tokens[1]);
-
-    size_t vectorIndex;
-    size_t wordnetId;
-    std::string indexClassname = tokens[2];
-
-    
-    // Get index that this description starts
-    size_t descStartIndex = _allDescriptions.size();
-    size_t descEndIndex = descStartIndex + tokens[5].size() - 1ULL;
-
-    // Append description to all of them
-    _allDescriptions.append(tokens[5]);
-    _allDescriptions.push_back('\0');
-    
-    vectIndSs >> vectorIndex;
-    wordnetIdSs >> wordnetId;
-
-    
-
-    // Create sstream from concatenated string of synonyms
-    std::stringstream classnames(indexClassname);
-    std::string finalWord;
-
-
-    // Insert all synonyms as well
-    while (std::getline(classnames, finalWord, SYNONYM_DELIMITER))
-    {
-      // Insert this record into table
-      _keywords.emplace_back(std::make_unique<Keyword>(wordnetId, vectorIndex, std::move(finalWord), descStartIndex, tokens[3].size()));  
-
-      // Insert into wordnetId -> Keyword
-      _wordnetIdToKeywords.insert(std::make_pair(wordnetId, _keywords.back().get()));
-    }
-  }
-  return true;
-}
-
-
-std::vector< std::tuple<size_t, std::string, std::string> > KeywordsContainer::GetNearKeywords(const std::string& prefix)
-{
-  KeywordsContainer::KeywordLessThanStringComparator comparator;
-  size_t left = 0ULL;
-  size_t right = _keywords.size() - 1ULL;
-
-  size_t i = right / 2;
-
-  while (true)
-  {
-    // Test if middle one is less than
-    bool leftIsLess = comparator(_keywords[i]->m_word, prefix);
-
-    if (leftIsLess)
-    {
-      left = i + 1;
-    }
-    else
-    {
-      right = i;
-    }
-
-    if (right - left < 1)
-    {
-      break;
-    }
-
-    i = (right + left) / 2;
-
-  }
-  
-  std::vector< std::tuple<size_t, std::string, std::string> > resultWordnetIds;
-  resultWordnetIds.reserve(NUM_SUGESTIONS);
-
-  // Get desired number of results
-  for (size_t j = 0ULL; j < NUM_SUGESTIONS; ++j)
-  {
-    resultWordnetIds.push_back(std::make_tuple(_keywords[left + j]->m_wordnetId, _keywords[left + j]->m_word, GetKeywordDescriptionByWordnetId(_keywords[left + j]->m_wordnetId)));
-  }
-  
-  return resultWordnetIds;
-}
-
-
-
 ImageRanker::ImageRanker(
   std::string_view imagesPath,
   std::string_view probabilityVectorFilepath,
   std::string_view deepFeaturesFilepath,
   std::string_view keywordClassesFilepath
 ):
-  _keywords(keywordClassesFilepath)
-{}
+  // Parse keywords from file
+  _keywords(keywordClassesFilepath),
+
+  // Parse images and probabilities from file
+  _images(ParseSoftmaxBinFile(probabilityVectorFilepath)),
+  _primaryDb(PRIMARY_DB_HOST, PRIMARY_DB_PORT, PRIMARY_DB_USERNAME, PRIMARY_DB_PASSWORD, PRIMARY_DB_DB_NAME),
+  _secondaryDb(SECONDARY_DB_HOST, SECONDARY_DB_PORT, SECONDARY_DB_USERNAME, SECONDARY_DB_PASSWORD, SECONDARY_DB_DB_NAME)
+{
+
+  // Connect to database
+  auto result{ _primaryDb.EstablishConnection() };
+  if (result != 0ULL)
+  {
+    LOG("Connecting to primary DB failed.");
+  }
+
+#if PUSH_DATA_TO_DB
+
+  PushDataToDatabase();
+
+#endif
+ 
+}
+
+ImageRanker::ImageRanker(
+  std::string_view imagesPath
+) :
+  _primaryDb(PRIMARY_DB_HOST, PRIMARY_DB_PORT, PRIMARY_DB_USERNAME, PRIMARY_DB_PASSWORD, PRIMARY_DB_DB_NAME),
+  _secondaryDb(SECONDARY_DB_HOST, SECONDARY_DB_PORT, SECONDARY_DB_USERNAME, SECONDARY_DB_PASSWORD, SECONDARY_DB_DB_NAME)
+{
+  // Connect to database
+  auto result{ _primaryDb.EstablishConnection() };
+  if (result != 0ULL)
+  {
+    LOG("Connecting to primary DB failed.");
+  }
+
+#if USE_SECONDARY_DB
+
+  // Connect to secondary database
+  auto result{ _secondaryDb.EstablishConnection() };
+  if (result != 0ULL)
+  {
+    LOG("Connecting to secondary DB failed.");
+  }
+
+#endif
+
+  // Load from database
+  LoadKeywordsFromDatabase(DATA_SOURCE_DB);
+  LoadImagesFromDatabase(DATA_SOURCE_DB);
+}
 
 size_t ImageRanker::GetRandomImageId() const
 { 
@@ -136,9 +67,143 @@ size_t ImageRanker::GetRandomImageId() const
 }
 
 
+ImageRanker::ImageReference ImageRanker::GetRandomImage() const
+{
+  size_t imageId{GetRandomImageId()};
+
+  return ImageReference{ imageId, GetImageFilenameById(imageId) };
+}
 
 
-std::vector< std::pair< size_t, std::vector<float> > > ImageRanker::ParseSoftmaxBinFile(std::string_view filepath) const
+ImageRanker::KeywordReference ImageRanker::GetNearKeywords(const std::string& prefix)
+{
+  // Force lowercase
+  std::locale loc;
+  std::string lower;
+
+  for (auto elem : prefix)
+  {
+    lower.push_back(std::tolower(elem, loc));
+  }
+
+  return _keywords.GetNearKeywords(lower);
+}
+
+std::vector<ImageRanker::GameSessionQueryResult> ImageRanker::SubmitUserQueriesWithResults(std::vector<ImageRanker::GameSessionInputQuery> inputQueries, QueryOrigin origin)
+{
+  /******************************
+    Save query to database
+  *******************************/
+  // Input format:
+  // <SessionID, ImageID, User query - "k_1&k_2& ... &k_n">
+
+  // Resolve query origin
+  size_t originNumber{ static_cast<size_t>(origin) };
+
+  // Store it into database
+  std::string sqlQuery{ "INSERT INTO `queries` (query, image_id, type) VALUES " };
+
+  for (auto&& query : inputQueries)
+  {
+    // Get image ID
+    size_t imageId = std::get<1>(query);
+    std::string queryString = std::get<2>(query);
+
+    sqlQuery += "('"s + queryString + "', "+ std::to_string(imageId) + ", "s + std::to_string(originNumber) + "),"s;
+  }
+
+  sqlQuery.pop_back();
+  sqlQuery += ";";
+
+  auto result = _primaryDb.NoResultQuery(sqlQuery);
+  if (result != 0)
+  {
+    LOG("Inserting queries into DB failed");
+  }
+
+  /******************************
+    Construct result for user
+  *******************************/
+  std::vector<ImageRanker::GameSessionQueryResult> userResult;
+  userResult.reserve(inputQueries.size());
+
+  for (auto&& query : inputQueries)
+  {
+    // Get user keywords tokens
+    std::vector<std::string> userKeywords{ TokenizeAndQuery(std::get<2>(query)) };
+
+    // Get image ID
+    size_t imageId = std::get<1>(query);
+
+    // Get image filename
+    std::string imageFilename{ GetImageFilenameById(imageId)};
+
+    std::vector<std::pair<std::string, float>> netKeywordsProbs{};
+
+    userResult.emplace_back(std::get<0>(query), std::move(imageFilename), std::move(userKeywords), GetHighestProbKeywords(imageId, 10ULL));
+  }
+
+  return userResult;
+}
+
+std::vector<std::pair<std::string, float>> ImageRanker::GetHighestProbKeywords(size_t imageId, size_t N) const
+{
+  // Find image in map
+  auto imagePair = _images.find(imageId);
+
+  // If no such image
+  if (imagePair == _images.end())
+  {
+    LOG("No image found!");
+    return std::vector<std::pair<std::string, float>>();
+  }
+
+  // Construct new subvector
+  std::vector<std::pair<std::string, float>> result;
+  result.reserve(N);
+
+  auto probabilites = imagePair->second._probabilityVector;
+
+  // Get first N highest probabilites
+  for (size_t i = 0ULL; i < N; ++i)
+  {
+    size_t index{ probabilites[i].first };
+    float probability{ probabilites[i].second };
+
+    // Get keyword string
+    std::string keyword{ _keywords.GetKeywordByVectorIndex(index) }; ;
+
+    // Place it into result vector
+    result.emplace_back(std::pair(keyword, probability));
+  }
+
+  return result;
+}
+
+std::vector<std::string> ImageRanker::TokenizeAndQuery(std::string_view query) const
+{
+  // Create sstram from query
+  std::stringstream querySs{query.data()};
+
+  std::vector<std::string> resultTokens;
+  std::string tokenString;
+
+  while (std::getline(querySs, tokenString, '&'))
+  {
+    // If empty string
+    if (tokenString.empty())
+    {
+      continue;
+    }
+
+    // Push new token into result
+    resultTokens.emplace_back(std::move(tokenString));
+  }
+
+  return resultTokens;
+}
+
+std::map<size_t, Image> ImageRanker::ParseSoftmaxBinFile(std::string_view filepath) const
 {
   // Create buffer from file
   Buffer buffer = LoadFileToBuffer(filepath);
@@ -152,10 +217,9 @@ std::vector< std::pair< size_t, std::vector<float> > > ImageRanker::ParseSoftmax
   // Where rows data start
   size_t currOffset = 40ULL;
 
-  // Declare vector of pairs
-  std::vector< std::pair< size_t, std::vector<float> > > rows;
-  // Reserve space for it to aproximate number of wors
-  rows.reserve(NUM_ROWS);
+  // Declare result vector
+  std::map<size_t, Image> images;
+
 
   // Size of buffer in bytes
   size_t bufferSize = buffer.size();
@@ -170,7 +234,7 @@ std::vector< std::pair< size_t, std::vector<float> > > ImageRanker::ParseSoftmax
     currOffset += sizeof(float);
 
     // Initialize vector of floats for this row
-    std::vector<float> floats;
+    std::vector<std::pair<size_t, float>> floats;
     // Reserve exact capacitys
     floats.reserve(numFloats);
 
@@ -178,17 +242,31 @@ std::vector< std::pair< size_t, std::vector<float> > > ImageRanker::ParseSoftmax
     for (size_t i = 0; i < numFloats; ++i)
     {
       // Push float value in
-      floats.push_back(ParseFloatLE(buffer, currOffset));
+      floats.push_back(std::make_pair(i, ParseFloatLE(buffer, currOffset)));
 
       // Stride in bytes
       currOffset += sizeof(float);
     }
 
+    // Get image filename 
+    std::string filename{ GetImageFilepathByIndex(id / INDEX_OFFSET, true) };
+
+    // Sort probabilites
+    std::sort(
+      floats.begin(), floats.end(), 
+      [](const std::pair<size_t, float>& a, const std::pair<size_t, float> & b) -> bool
+      {
+        return a.second > b.second;
+      }
+    );
+
     // Push final row
-    rows.push_back(std::make_pair(id, floats));
+    images.emplace(std::make_pair(id, Image(id, std::move(filename), std::move(floats))));
   }
 
-  return rows;
+  
+
+  return images;
 }
 
 std::vector< std::pair< size_t, std::unordered_map<size_t, float> > > ImageRanker::ParseSoftmaxBinFileFiltered(std::string_view filepath, float minProbabilty) const 
@@ -250,10 +328,6 @@ std::vector< std::pair< size_t, std::unordered_map<size_t, float> > > ImageRanke
 
   return rows;
 }
-
-
-
-
 
 std::unordered_map<size_t, std::pair<size_t, std::string> > ImageRanker::ParseKeywordClassesTextFile(std::string_view filepath) const
 {
@@ -379,6 +453,19 @@ std::unordered_map<size_t, std::pair<size_t, std::string> > ImageRanker::ParseHy
   return keywordTable;
 }
 
+std::string ImageRanker::GetImageFilenameById(size_t imageId) const
+{
+  auto imgPair = _images.find(imageId);
+
+  if (imgPair == _images.end())
+  {
+    LOG("Image not found");
+  }
+
+  return imgPair->second._filename;
+}
+
+
 std::string ImageRanker::GetImageFilepathByIndex(size_t imgIndex, bool relativePaths) const
 {
   constexpr const char fileFilepath[] = DATA_PATH IMAGES_LIST_FILENAME;
@@ -392,8 +479,10 @@ std::string ImageRanker::GetImageFilepathByIndex(size_t imgIndex, bool relativeP
     throw std::runtime_error(std::string("Error opening file :") + fileFilepath);
   }
 
-  size_t desiredByteIndex = imgIndex * 90ULL;
+  size_t desiredByteIndex = imgIndex * FILES_FILE_LINE_LENGTH;
 
+  //size_t desiredByteIndex = 0ULL;
+  
   // Every line has 90 bytes
   // Jump to correct line
   inFile.seekg(desiredByteIndex);
@@ -406,8 +495,13 @@ std::string ImageRanker::GetImageFilepathByIndex(size_t imgIndex, bool relativeP
   std::stringstream ss(line);
 
   std::string columnData;
-  // Throw away 4 columns
-  ss >> columnData; ss >> columnData; ss >> columnData; ss >> columnData;
+
+  // Throw away correct number of columns
+  for (size_t i = 0ULL; i < COLUMN_INDEX_OF_FILENAME; ++i)
+  {
+    ss >> columnData;
+  }
+    
   // Get file name
   ss >> columnData;
 
@@ -475,6 +569,131 @@ std::vector<std::byte> ImageRanker::LoadFileToBuffer(std::string_view filepath) 
 }
 
 
+bool ImageRanker::LoadKeywordsFromDatabase(Database::Type type)
+{
+  Database* pDb{nullptr};
+
+  if (type == Database::cPrimary)
+  {
+    pDb = &_primaryDb;
+  }
+  else if (type == Database::cSecondary)
+  {
+    pDb = &_secondaryDb;
+  }
+  else
+  {
+    LOG("NOT IMPLEMENTED!");
+    return false;
+  }
+  
+  std::string query{"SELECT `keywords`.`wordnet_id`, `keywords`.`vector_index`, `words`.`word`, `keywords`.`description` FROM `keywords` INNER JOIN `keyword_word` ON `keywords`.`wordnet_id` = `keyword_word`.`keyword_id` INNER JOIN `words` ON `keyword_word`.`word_id` = `words`.`id`;"};
+
+  auto result = pDb->ResultQuery(query);
+
+  // Add hypernym and hyponym data to id
+  for (auto&& row : result.second)
+  {
+    // Hypernyms
+    std::string queryHypernyms{ "SELECT `hypernym_id` FROM `keywords_hypernyms` WHERE `keyword_id` = " + row[0] + ";" };
+    auto resultHyper = pDb->ResultQuery(queryHypernyms);
+    std::string hypernyms{ "" };
+    for (auto&& hyper : resultHyper.second)
+    {
+      hypernyms += hyper.front();
+      hypernyms += ";";
+    }
+
+    row.push_back(hypernyms);
+    
+
+    // Hyponyms
+    std::string queryHyponyms{ "SELECT `hyponyms_id` FROM `keywords_hyponyms` WHERE `keyword_id` = " + row[0] + ";" };
+    auto resultHypo = pDb->ResultQuery(queryHyponyms);
+    std::string hyponyms{ "" };
+    for (auto&& hypo : resultHypo.second)
+    {
+      hyponyms += hypo.front();
+      hyponyms += ";";
+    }
+
+    row.push_back(hyponyms);
+  }
+
+  // Load Keywords into data structures
+  _keywords = KeywordsContainer(std::move(result.second));
+
+
+  return true;
+}
+
+bool ImageRanker::LoadImagesFromDatabase(Database::Type type)
+{
+  Database* pDb{ nullptr };
+
+  if (type == Database::cPrimary)
+  {
+    pDb = &_primaryDb;
+  }
+  else if (type == Database::cSecondary)
+  {
+    pDb = &_secondaryDb;
+  }
+  else
+  {
+    LOG("NOT IMPLEMENTED!");
+    return false;
+  }
+
+  // Fetch data from db
+  std::string query{ "SELECT * FROM `images`;" };
+  auto result = pDb->ResultQuery(query);
+
+  // Iterate through all images
+  for (auto&& row : result.second)
+  {
+    std::stringstream imageIdSs{ row[0] };
+    size_t imageId;
+    imageIdSs >> imageId;
+      
+    std::string filename{ row[1] };
+
+    std::vector<std::pair<size_t, float>> probabilityVector;
+
+    std::string queryProVec{ "SELECT `probability` FROM `probability_vectors` WHERE `image_id` = " + std::to_string(imageId) + " ORDER BY `vector_index`;" };
+    auto resultProbVec = pDb->ResultQuery(queryProVec);
+
+    // Construct probability vector
+    size_t i = 0ULL;
+    for (auto&& prob : resultProbVec.second)
+    {
+      std::stringstream probSs{ prob.front() };
+
+      float probability;
+      probSs >> probability;
+
+      size_t i = 0ULL;
+      probabilityVector.push_back(std::pair(i, probability));
+      
+      ++i;
+    }
+
+    // Sort probabilities
+    std::sort(
+      probabilityVector.begin(), probabilityVector.end(), 
+      [](const std::pair<size_t, float>& a, const std::pair<size_t, float>& b)
+    {
+      return a.second > b.second;
+    }
+    );
+
+    _images.insert(std::make_pair(imageId, Image{ imageId, std::move(filename), std::move(probabilityVector) }));
+
+  }
+  return false;
+}
+
+
 int32_t ImageRanker::ParseIntegerLE(const Buffer& buffer, size_t startIndex) const
 {
   // Get pointer to starting array byte field
@@ -505,3 +724,88 @@ float ImageRanker::ParseFloatLE(const Buffer& buffer, size_t startIndex) const
   // Return reinterpreted data
   return *(reinterpret_cast<float*>(&byteFloat));
 }
+
+
+#if PUSH_DATA_TO_DB
+
+bool ImageRanker::PushImagesToDatabase()
+{
+  /*===========================
+  Push into `images` & `probability_vectors` table
+  ===========================*/
+  {
+    // Start query
+    std::string queryImages{ "INSERT IGNORE INTO images (`id`, `filename`) VALUES" };
+    
+
+    // Keywords then
+    for (auto&& idImagePair : _images)
+    {
+      std::string filename{ _primaryDb.EscapeString(idImagePair.second._filename) };
+
+      queryImages.append("(");
+      queryImages.append(std::to_string(idImagePair.second._imageId));
+      queryImages.append(", '");
+      queryImages.append(filename);
+      queryImages.append("'),");
+    }
+
+    // Delete last comma
+    queryImages.pop_back();
+    // Add semicolon
+    queryImages.append(";");
+
+    // Send query
+    _primaryDb.NoResultQuery(queryImages);
+
+
+    for (auto&& idImagePair : _images)
+    {
+      std::string filename{ _primaryDb.EscapeString(idImagePair.second._filename) };
+
+      std::string queryProbs{ "INSERT IGNORE INTO probability_vectors (`image_id`, `vector_index`, `probability`) VALUES" };
+
+      // Iterate through probability vector
+      size_t i = 0ULL;
+      for (auto&& prob : idImagePair.second._probabilityVector)
+      {
+        queryProbs.append("(");
+        queryProbs.append(std::to_string(idImagePair.second._imageId));
+        queryProbs.append(", ");
+        queryProbs.append(std::to_string(prob.first));
+        queryProbs.append(", ");
+        queryProbs.append(std::to_string(prob.second));
+        queryProbs.append("),");
+
+        ++i;
+      }
+      // Delete last comma
+      queryProbs.pop_back();
+      // Add semicolon
+      queryProbs.append(";");
+      _primaryDb.NoResultQuery(queryProbs);
+    }
+  }
+
+  return true;
+}
+
+
+bool ImageRanker::PushDataToDatabase()
+{
+  bool result{true};
+
+  result = PushKeywordsToDatabase();
+  result = PushImagesToDatabase();
+
+  return result;
+}
+
+bool ImageRanker::PushKeywordsToDatabase()
+{
+  bool result = _keywords.PushKeywordsToDatabase(_primaryDb);
+
+  return false;
+}
+
+#endif

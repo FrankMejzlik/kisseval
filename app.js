@@ -33,13 +33,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Get ImageRanker C++ library
-const imageRanker = require('./build/Release/image_ranker.node');
+const imageRanker = require(path.join(__dirname, 'build/Release/image_ranker.node'));
+
+
 
 // Local version
-const a = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\images\\";
-const b = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\VBS2019_classification_NasNetLarge_20000.softmax";
-const c = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\VBS2019_classification_NasNetMobile_20000.deep-features";
-const d = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\keyword_classes.txt";
+const a = path.join(__dirname, "./public/images/");
+const b = path.join(__dirname, "./data2/Studenti_NasNetLarge.pre-softmax");
+const c = path.join(__dirname, "./data2/Studenti_NasNetLarge.deep-features");
+const d = path.join(__dirname, "./data2/keyword_classes.txt");
+
+console.log(a);
+console.log(b);
+console.log(c);
+console.log(d);
 
 // Live version
 // const a = path.join(__dirname, "../public/images/");
@@ -49,6 +56,8 @@ const d = "C:\\Users\\devwe\\source\\repos\\blog-addons-example\\data\\keyword_c
 
 // Create global instance if ImageRanker
 global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d);
+
+
 
 if (global.gConfig.log_all == true)
 {

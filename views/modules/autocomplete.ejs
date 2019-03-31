@@ -9,10 +9,73 @@
     It is mainly used with nodeJS backend to which we do AJAX 
     requests and response contains data to show to user.
 -->
-<form class="autocomplete-form" action="/collector/" method="POST">
-    <div class="control-wrapper">
 
-        <input type="text" id="query" tabindex="1" name="query">
+<style>
+* { box-sizing: border-box; }
+body {
+  font: 16px Arial; 
+}
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+}
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+}
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9; 
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+.control-wrapper.main-query-input-wrapper {
+    position: relative;
+}
+
+</style>
+
+<form class="autocomplete-form" action="/collector/" method="POST">
+
+    <div class="selected-keyword-container" id="selectedKeywordsList">
+        <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
+
+    </div>
+
+    <div class="main-query-input-wrapper control-wrapper">
+
+        <input type="text" id="queryInput" tabindex="1" name="query">
 
     </div>
     <input type="submit" class="button success" id="sendQuery" value="Send query">
@@ -20,5 +83,177 @@
 
 <!-- Autocomplete AJAX script -->
 <script>
+  function autocomplete(inp, selectedContainer) {
 
+  var currentFocus;
+
+  // Execute a function when someone writes in the text field
+  inp.addEventListener("input", function(e) {
+      var a, b, i;
+
+      // Get current value in input
+      const val = this.value;
+
+      // Close any already open lists of autocompleted values
+      closeAllLists();
+
+      // If empty input
+      if (!val) 
+      { 
+        // Do nothing
+        return false;
+      }
+      // Set current focus to nothing
+      currentFocus = -1;
+
+      // Create a <div> element that will contain the items (values)
+      a = document.createElement("dev");
+      // Set it's attributes
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+
+      // Create AJAX call to get appropriate data
+      get('/collector_ajax?queryValue=' + val)
+        // If response OK
+        .then((data) => {
+
+          data = JSON.parse(data);
+
+          // Append the DIV element as a child of the autocomplete container
+          this.parentNode.appendChild(a);
+
+          // For each item in the returned array
+          for (i = 0; i < data.length; i++) 
+          {
+            // Create a DIV element for each element
+            b = document.createElement("div");
+
+            // Make the matching letters bold
+            //b.innerHTML = "<strong>" + data[i].substr(0, val.length) + "</strong>";
+            //b.innerHTML += data[i].substr(val.length);
+
+            b.innerHTML += "\
+              <span class=\"keyword-title\">" + data[i][1] + "</span><small>" + data[i][2] + "</small>\
+              <small class='wordnet-id'>" + data[i][0] + "</small>";
+
+
+            // Insert a input field that will hold the current array item's value
+            b.innerHTML += "<input type='hidden' name='keyword' value='" + data[i][1] + "'>";
+            b.innerHTML += "<input type='hidden' name='wordnetId' value='" + data[i][0] + "'>";
+
+            // Execute a function when someone clicks on the item value (DIV element)
+            b.addEventListener("click", function(e) 
+            {
+              // Clear input field
+              inp.value = "";
+              
+              // Increment counter
+              selectedCounter.val = selectedCounter.val + 1;
+
+              let selVal = '';
+              let selValWord = '';
+
+              for (var i = 0; i < this.childNodes.length; i++) {
+                if (this.childNodes[i].className == "wordnet-id") {
+                  selVal = this.childNodes[i].innerHTML;
+                  continue;
+                }        
+
+                if (this.childNodes[i].className == "keyword-title") {
+                  selValWord = this.childNodes[i].innerHTML;
+                  continue;
+                }     
+              }
+
+              chechkboxCont = document.createElement("div");
+              chechkboxCont.setAttribute("id", "keyword-" + selectedCounter.val );
+              chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
+
+              chechkboxCont.innerHTML += "<input type='checkbox' name='keyword-" + selectedCounter.val + "' value='" + selVal + "' checked>\
+                <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this);'> X</a>"
+
+              selectedContainer.appendChild(chechkboxCont);
+
+              
+
+
+              // Close the list of autocompleted values,(or any other open lists of autocompleted values)
+              closeAllLists();
+            });
+
+            a.appendChild(b);
+
+          }
+        })
+        // If error occured
+        .catch((err) => {
+            // Do stuff on error...
+        });
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+      x[i].parentNode.removeChild(x[i]);
+    }
+  }
+}
+/*execute a function when someone clicks in the document:*/
+document.addEventListener("click", function (e) {
+    closeAllLists(e.target);
+});
+}
+
+// Call autocomplete on desired input field
+autocomplete(document.getElementById("queryInput"), document.getElementById("selectedKeywordsList"));
+
+
+
+function removeKeyword(e, t) 
+{
+  $(t).parent().remove();
+}
 </script>

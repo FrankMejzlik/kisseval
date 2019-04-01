@@ -1,0 +1,70 @@
+<!-- Include header -->
+<%- include ../common/header.ejs %>
+
+<section class="how-to-use-tip">
+  <div class="grid-x grid-padding-x">
+
+    <div class="tutorial-instructions-main callout primary cell">
+      <h4>
+        This is first tutorial image showing you how to play the game.
+      </h4>
+      <h5>
+        This is not part of the game yet.
+      </h5>
+    </div>
+
+  </div>
+</section>
+
+<section class="main-image-query grid-container">
+  <div class="grid-x grid-padding-x">
+
+    <div class="tutorial-instructions large-12 cell">
+      <p>All you have to do is look at the picture and write what is in the picture.</p>
+
+    
+      <p>Start clicking to input field and type first few letters of word you want to use and see if we have such word in database.</p>
+      <small>You're allowed to use just keywords we have in database.</small>
+
+      <p>Sometimes you'll be offered same keyword more than once. Just read description and choose what fits the best.</p>
+
+      <p>Each game session has {N} images prepared for you and when you're finished you'll see how your doing compared to neual network.</p>
+
+      <p>Here is first example of how your description could look like.</p>
+    </div>
+
+    <div class="large-6 cell">
+      <img src="../images/tutorials/tutorial_pic1.jpg" />
+    </div>
+
+    <div class="autocomplete-keywords-container large-6 cell">
+
+    <div id="tip1_1" class="tutorial-instructions absolute popup">
+      <p>Feel free to try autocomplete.</p>
+    </div>
+
+    <div id="tip1_2" class="tutorial-instructions absolute popup">
+      <p>You can use arrows to navigate through suggestions and ENTER to select it.</p>
+    </div>
+
+    <div id="tip1_3" class="tutorial-instructions absolute popup">
+      <p>If you want to delete some selected keywords, just click cros icon on them.</p>
+    </div>
+
+      <!-- Include autocomplete module -->
+      <%- include ../modules/autocomplete.ejs %>
+
+
+      <div id="tip1_10" class="tutorial-instructions absolute popup">
+        <p>When you're happy with your description, just submit it and next picture will be shown.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+</body>
+
+<!-- Include footer -->
+<%- include ../common/footer.ejs %>

@@ -163,7 +163,7 @@
 
   #if DEVELOPMENT
 
-    #define SOLUTION_PATH "c:\\Users\\frank\\source\\repos\\ImageRanker\\"
+    #define SOLUTION_PATH "c:\\Users\\devwe\\source\\repos\\ImageRanker\\"
     #define DATA_PATH SOLUTION_PATH "data\\"
     #define IMAGES_PATH SOLUTION_PATH "images\\"
     #define COLLECTOR_INPUT_OUTPUT_DATA_PATH SOLUTION_PATH "data\\to_collector\\"
@@ -199,7 +199,7 @@
 
   #if DEVELOPMENT
 
-    #define SOLUTION_PATH "c:\\Users\\frank\\source\\repos\\ImageRanker\\"
+    #define SOLUTION_PATH "c:\\Users\\devwe\\source\\repos\\ImageRanker\\"
     #define DATA_PATH SOLUTION_PATH "data2\\"
     #define IMAGES_PATH SOLUTION_PATH "images\\"
     #define COLLECTOR_INPUT_OUTPUT_DATA_PATH SOLUTION_PATH "data\\to_collector\\"

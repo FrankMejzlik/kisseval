@@ -1,24 +1,19 @@
 <!-- Include header -->
 <%- include common/header.ejs %>
 
-<section class="how-to-use-tip">
-  <div class="row center">
-
-    <h4>
-      If you need to know how to use this, please take a look <a href="/">HERE</a>.
-    </h4>
-
-  </div>
-</section>
-
 <section class="main-image-query grid-container">
   <div class="grid-x grid-padding-x">
 
     <div class="large-6 cell">
-      <img src="<%= global.gConfig.pathToImages %><%= newImage.filename %>" />
+      <img src="<%= "../images/"  %><%= newImage.filename %>" />
     </div>
 
     <div class="autocomplete-keywords-container large-6 cell">
+
+
+    <% if (phonyQuery == true) {%>
+    <input type='hidden' id="phonyQuery" name='phonyQuery' value='true'>
+    <% } %>
 
       <!-- Include autocomplete module -->
       <%- include modules/autocomplete.ejs %>

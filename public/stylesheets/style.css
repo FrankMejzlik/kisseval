@@ -2,6 +2,7 @@ body {
   padding: 0px 0 50px 0;
   margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  position: relative;
 }
 
 
@@ -75,7 +76,9 @@ a {
 }
 
 .how-to-use-tip {
-  background-color: #ffb5b5;
+  /* background-color: #ffb5b5; */
+  text-align: center;
+  padding: 50px 30px;
 }
 
 .main-query {
@@ -110,4 +113,168 @@ a {
   width: auto;
   display: inline-block;
   max-height: 400px;
+}
+
+.feedback-popup {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 80px;
+  height: 80px;
+  background: #EEB121;
+  text-align: center;
+  padding: 16px 5px 5px 5px;
+  font-size: 8px;
+  position: fixed !important;
+}
+
+.menu-item a {
+  color: #313524;
+  padding: 21px 28px !important;
+  font-size: 18px;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.tutorial-instructions.popup {
+  z-index: 2;
+  background-color: #FFDCA2;
+  padding: 13px 20px 0px 20px;
+  width: 300px;
+  right: 0;
+}
+
+.autocomplete-keywords-container {
+  position:relative;
+}
+
+.menu-item a:hover,
+.menu-item a:focus {
+  color: #EE9834;
+  padding: 21px 28px !important;
+  font-size: 18px;
+}
+
+
+.top-bar ul {
+  background-color: #CDD6D5;
+}
+.top-bar {
+  background-color: #CDD6D5;
+  box-shadow: 2px -2px 18px #000000a1;
+  margin-bottom: 20px;
+}
+
+.menu .menu-text .title {
+  font-size: 20px;
+  display: block;
+  color: #7B9BA6;
+}
+.menu .menu-text .subtitle {
+  font-size: 18px;
+  color: #233656;
+}
+
+.menu .menu-text {
+  padding: 0;
+  margin-right: 40px;
+}
+
+#tip1_1 {
+  top: -87px;
+  right: 30px;
+}
+
+#tip1_2 {
+  top: 47px;
+  right: -180px;
+}
+
+#tip1_3 {
+  top: 128px;
+  right: -180px;
+}
+
+#tip1_4 {
+  top: 217px;
+  right: -180px;
+}
+
+#tip1_10 {
+  top: 217px;
+  right: -80px;
+}
+
+.callout.primary {
+    background-color: #FFDCA2;
+    color: #0a0a0a;
+}
+
+
+/*****************************
+    Autocomplete module
+********************************/
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+}
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+}
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9; 
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+.control-wrapper.main-query-input-wrapper {
+    position: relative;
+}
+
+
+.scoreboard-result-list {
+
+  
+}
+
+.scoreboard-result-list .result-item {
+
+}
+
+.scoreboard-result-list .result-item img {
+  max-height: 100px;
 }

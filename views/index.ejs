@@ -5,53 +5,43 @@
 
   <div class="row center">
     <div class="welcome">
-      <h1><%= title %></h1>
-      <p>Welcome to data collecting interface for improving our video retrieval tool.</p>
+      <h1><%= global.gConfig.subtitle %></h1>
+      <p>Welcome to game where you'll find out if you can see like neural network.</p>
     </div>
   </div>
 </section>
 
-<section class="instructions-section">
-  <div class="row center">
+<section class="welcome-instructions grid-container">
+  <div class="grid-x grid-padding-x">
 
-    <div class="instructions-container column large-12">
-      <div class="instructions">
+    <div class="what-are-data-for large-12 cell">
+      <p class="t1">
+        Data we're collecting are used as real user data to compare how our interactive video/image browsing tools are doing.
+      <p>
+      </p class="t2">
+        In other words, we use them to measure how close our tools ranked images based on what you were actually looking for.
+      </p>
+    </div>
 
-        <h3>How to use this?</h3>
-        <p>
-          Look at picture you're seeing and try to fill into input field as much keywords describing objects that are
-          present in picture.</p>
-        <p>You can use parentheses and logical operators & (logical AND) and | (logical OR) to better describe what your
-          seeing if you're not sure what that is.
-
-
-
-          You're alowed to use only keywords that are present in our database. There is autocomplete implemented in the
-          input field.</p>
-
-        <p>Just type few letters from wor you want to use
-          and see it that keywors is present or not. If it is just press ENTER and keyword will be selected.
-        </p>
-
-        <p>Logical operators behave like standalone keywords. In case you'd need to use OR operator, you have to enclose
-          keywords you want to OR into parentheses so operator precedence is
-          evaluated correctly. </p>
-
-        <p>For example:<br />
-          There is bike in the picture and a tree. There is also some animal that you're not sure if it's a caguar or a
-          cheetah.</p>
-
-        <p>So your query could look like: <br />
-          <br> cage & zoo & ( caguar | cheetah )</br>
-        </p>
-
-        </p>
-
-      </div>
+    <div class="cta play large-12 cell">
+      <a class="button success" id="playAgain" href="/collector?startGame=true">Play</a>
     </div>
 
   </div>
 </section>
+
+<section class="constact-block grid-container">
+  <div class="grid-x grid-padding-x">
+
+    <div class="cta play large-12 cell">
+      <p>If you have any questions, feel free to <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#102;&#114;&#97;&#110;&#116;&#105;&#115;&#101;&#107;&#46;&#109;&#101;&#106;&#122;&#108;&#105;&#107;&#64;&#109;&#97;&#116;&#102;&#121;&#122;&#46;&#99;&#122;">contact us</a>.</p>
+    </div>
+
+  </div>
+</section>
+
+
+
 
 <!-- Include footer -->
 <%- include common/footer.ejs %>

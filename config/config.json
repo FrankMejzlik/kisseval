@@ -12,7 +12,22 @@
         "database_password": "s5XurJ3uS3E52Gzm",
         "database_name": "image-ranker-collector-data",
         "title": "ImageRankerCollector",
-        "pathToImages": "../images/"
+        "subtitle": "Can you see as neural network?",
+        "pathToImages": "/public/images/",
+        "pathData": "/data/",
+        "softmaxFilename": "VBS2019_classification_NasNetLarge_20000.softmax",
+        "deepFeaturesFilename": "VBS2019_classification_NasNetMobile_20000.deep-features",
+        "keywordClassesFilename": "keyword_classes.txt",
+        "imagesDirList": "dir_images.txt",
+        "pathData2": "/data2/",
+        "softmaxFilename2": "Studenti_NasNetLarge.pre-softmax",
+        "deepFeaturesFilename2": "Studenti_NasNetLarge.deep-features",
+        "keywordClassesFilename2": "keyword_classes.txt",
+        "imagesDirList2": "dir_images.txt",
+
+
+        "gameLength": 3,
+        "tutorialLength": 2
     },
     "staging": {
         "config_id": "staging",

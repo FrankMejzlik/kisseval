@@ -68,7 +68,7 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
   // Set "imageId"
   {
     napi_value imageIdKey;
-    napi_create_string_utf8(env, "imageId", 8, &imageIdKey);
+    napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
     napi_value imageId;
     napi_create_uint32(env, std::get<0>(image), &imageId);
 

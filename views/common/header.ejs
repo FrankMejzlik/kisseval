@@ -6,7 +6,7 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title><%= global.gConfig.title %></title>
+  <title><%= global.gConfig.title %> | <%= global.gConfig.title %></title>
   
   <!-- Foundation styles -->
   <link rel="stylesheet" href="/stylesheets/foundation.css">
@@ -19,16 +19,16 @@
   <div class="top-bar header main">
     <div class="top-bar-left">
       <ul class="dropdown menu" data-dropdown-menu>
-        <li class="menu-text"><a href="/"><%= global.gConfig.title %></a></li>
-        <li>
-          <a href="/collector/">Collector</a>
+        <li class="menu-text"><a href="/">
+          <span class="title"><%= global.gConfig.title %></span>  
+          <span class="subtitle"><%= global.gConfig.subtitle %></span>  
+        </a></li>
+        <li class="menu-item">
+          <a href="/collector/">Play</a>
         </li>
       </ul>
     </div>
     <div class="top-bar-right">
-      <ul class="menu">
-        <li><input type="search" placeholder="Search"></li>
-        <li><button type="button" class="button">Search</button></li>
-      </ul>
+
     </div>
   </div>

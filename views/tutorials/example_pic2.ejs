@@ -1,0 +1,54 @@
+<!-- Include header -->
+<%- include ../common/header.ejs %>
+
+<section class="how-to-use-tip">
+  <div class="grid-x grid-padding-x">
+
+    <div class="tutorial-instructions-main callout primary cell">
+      <h4>
+        This is second tutorial image showing you how to play the game.
+      </h4>
+      <h5>
+        This is not part of the game yet.
+      </h5>
+    </div>
+
+  </div>
+</section>
+
+<section class="main-image-query grid-container">
+  <div class="grid-x grid-padding-x">
+
+    <div class="tutorial-instructions large-12 cell">
+      <p>As you can see, some images are quite hard to describe with words.</p>
+
+      <p>Please try to describe these as well with at least few words.</p>
+    </div>
+
+    <div class="large-6 cell">
+      <img src="../images/tutorials/tutorial_pic2.jpg" />
+    </div>
+
+    <div class="autocomplete-keywords-container large-6 cell">
+
+    <div id="tip2_1" class="tutorial-instructions absolute popup">
+      <p>You can try to use some more general words.</p>
+    </div>
+
+      <!-- Include autocomplete module -->
+      <%- include ../modules/autocomplete_tutorial.ejs %>
+
+
+      <div id="tip2_10" class="alert tutorial-instructions absolute popup">
+        <p>After submiting this one, game will start! Are you ready?</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+</body>
+
+<!-- Include footer -->
+<%- include ../common/footer.ejs %>

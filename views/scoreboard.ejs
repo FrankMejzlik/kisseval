@@ -1,0 +1,39 @@
+<!-- Include header -->
+<%- include common/header.ejs %>
+
+
+<section class="scoreboard-main grid-container">
+  <div class="grid-x grid-padding-x">
+
+  <div class=" cell large-12">
+
+    <h1>GAME COMPLETE!!!!</h1>
+    
+    <ul class="scoreboard-result-list">
+
+
+    <% for (var i = 0; i < gameWalkthrough.length; ++i) { %>
+
+      <li class="result-item"><img src='../images/<%= gameWalkthrough[i].image.filename %>' />
+
+      <%= gameWalkthrough[i].image.imageId%>
+      <%- JSON.stringify(gameWalkthrough[i].image) %>
+
+      <%= gameWalkthrough[i].userKeywords %>
+      
+      </li>
+
+    <% } %>
+
+    </ul>
+    </div>
+<div class=" cell large-12">
+    <a class="button success" id="playAgain" href="/collector?startGame=true">Play again</a>
+    </div>
+  </div>
+</section>
+
+</body>
+
+<!-- Include footer -->
+<%- include common/footer.ejs %>

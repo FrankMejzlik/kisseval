@@ -1,10 +1,17 @@
 
+<!--
+    Autocomplete module
+
+    This autocomplete is not usual implementation of it.
+    It does NOT do any search in provided data, it just takes
+    data it gets from source and displays it as options.
+
+    It is mainly used with nodeJS backend to which we do AJAX 
+    requests and response contains data to show to user.
+-->
+
 <form autocomplete="off" class="autocomplete-form" action="/collector/" method="POST">
-
-    <% if (phonyQuery == "true") {%>
-      <input type='hidden' id="phonyQuery" name='phonyQuery' value='true'>
-    <% } %>
-
+    
     <div class="selected-keyword-container" id="selectedKeywordsList">
         <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
 
@@ -15,7 +22,7 @@
         <input type="text" id="queryInput" tabindex="1" name="query">
 
     </div>
-    <input type="submit" class="button success" id="sendQuery" value="Send query">
+    <input type="submit" class="button success" id="sendQuery" value="Send query" onclick="processTutorialSubmit(event, this); return false;">
 </form>
 
 <!-- Autocomplete AJAX script -->

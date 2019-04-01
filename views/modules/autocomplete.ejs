@@ -166,10 +166,9 @@ input[type=submit] {
               }
 
               chechkboxCont = document.createElement("div");
-              chechkboxCont.setAttribute("id", "keyword-" + selectedCounter.val );
               chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
 
-              chechkboxCont.innerHTML += "<input type='checkbox' name='keyword-" + selectedCounter.val + "' value='" + selVal + "' checked>\
+              chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + selVal + "' checked>\
                 <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this);'> X</a>"
 
               selectedContainer.appendChild(chechkboxCont);

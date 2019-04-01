@@ -2,6 +2,8 @@
 // Require modules for server run
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session');
+var FileStore = require('session-file-store')(session);
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -18,6 +20,18 @@ var collectorAjax = require('./routes/collector_ajax');
 
 // Instantiate app
 var app = express();
+
+app.use(session({
+  name: 'server-session-cookie-id',
+  secret: 'my express secret',
+  saveUninitialized: true,
+  resave: true,
+  store: new FileStore()
+}));
+// app.use(function printSession(req, res, next) {
+//   console.log('req.session', req.session);
+//   return next();
+// });
 
 // Setup views path
 app.set('views', path.join(__dirname, 'views'));

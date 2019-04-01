@@ -16,17 +16,25 @@ function getRandomInt(max)
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-function GetRandomImageSrcPair() 
-{
-  // Get random ID
-  var randImgId = getRandomInt(numImages - 1);
-  var record = idSrcData.idSrcPairs[randImgId];
-  return record;
-}
 
 // GET request on '/'
 router.get('/', function(req, res, next) 
 {
+  const sess = req.session;
+
+  if (typeof sess.gameProgress === 'undefined') {
+    sess.gameProgress = 0;
+  } else {
+
+  }
+  console.log("SessionId: " + sess.id + " PROGRESS : " + sess.gameProgress + "/10")
+
+
+if (sess.gameProgress >= 10) {
+  res.render('collector_done', data);
+  return;
+}
+
   // Get next image
   /*{
       "imageId": 123,
@@ -44,21 +52,32 @@ router.get('/', function(req, res, next)
     newImage
   };
 
+
+
   res.render('collector', data);
 });
    
 router.post('/', function(req, res, next) 
 {
-  console.log(req.body.query);
+  console.log(req.body.keyword);
 
-  var finalString = req.body.query;
-  
-  // If more than one keyword provided
-  if (finalString instanceof Array) 
+  var keywords = req.body.keyword;
+
+  const sess = req.session;
+  if (typeof keywords !== 'undefined' && keywords.length > 0) 
   {
-    finalString = finalString.join("&");
+    ++sess.gameProgress;
+
+    console.log("Incrementing game progress for session " + sess.id + " to " + sess.gameProgress );    
   }
 
+  let finalString = "";
+
+  if (finalString instanceof Array) 
+  {
+    finalString = keywords.join('&');
+  }
+  
   fs.writeFileSync(path.join(__dirname, "../data/userInput.txt"), finalString + '\n', {encoding: "ascii", flag: "a"} );
 
   res.redirect(301, "/collector/");

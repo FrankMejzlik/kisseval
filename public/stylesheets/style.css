@@ -150,6 +150,10 @@ a {
   position:relative;
 }
 
+ul {
+  margin: 0 !important;
+}
+
 .menu-item a:hover,
 .menu-item a:focus {
   color: #EE9834;
@@ -265,6 +269,47 @@ input[type=submit] {
     position: relative;
 }
 
+.column-headings {
+
+}
+
+.result-item {
+
+}
+
+.result-item .net-keywords-list {
+  
+}
+
+.result-item .net-keywords-list .keyword {
+  font-size: 18px;
+}
+
+.result-item .net-keywords-list .probability {
+  display: none;
+  
+}
+
+.result-item .user-keywords-list {
+  font-size: 18px;
+}
+
+
+.result-item .user-keywords-list > li {
+  
+}
+
+
+
+.finished-note {
+  text-align: center;
+  margin: 30px 0px 40px 0pc;
+  
+}
+
+.column-headings .image-thumb {
+  font-size: 20px;
+}
 
 .scoreboard-result-list {
 
@@ -273,8 +318,17 @@ input[type=submit] {
 
 .scoreboard-result-list .result-item {
 
+border-bottom: 1px solid #aaa;
+
+padding:  10px 10px;
+
+margin-bottom: 30px;
 }
 
 .scoreboard-result-list .result-item img {
-  max-height: 100px;
+  /* max-height: 100px; */
+}
+
+.cta-play-again-section {
+  margin: 60px auto 30px auto;
 }

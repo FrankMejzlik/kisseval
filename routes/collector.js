@@ -90,39 +90,65 @@ router.get('/', function(req, res, next)
   return;
 });
    
+// Process POST from autocomplete form
 router.post('/', function(req, res, next) 
 {
-  console.log(req.body.keyword);
-
+  // Get keywords user provided
   var keywords = req.body.keyword;
 
+  // Get this session 
   const sess = req.session;
   
-
+  // Initialize final string
   let finalString = "";
 
-  if (keywords instanceof Array) 
-  {
-    finalString = keywords.join('&');
-  }
-  
-
+  // If at least one keyword provided
   if (typeof keywords !== 'undefined' && keywords.length > 0) 
   {
-    // Process in backend
-    // PushQueryWithResults();
-    
-    if (sess.gameProgress > 2)
+    // If more than one
+    if (keywords instanceof Array) 
     {
-      const doneImageStruct = new Object();
-      
-      doneImageStruct.image = sess.gameImage;
-      doneImageStruct.userKeywords = keywords;
-
-      // Mark it into session.
-      sess.gameWalkthrough.push(doneImageStruct);
+      // Concatenate them
+      finalString = keywords.join('&');
+    }
+    else {
+      finalString = keywords;
     }
 
+    // If player out of tutorial
+    if (sess.gameProgress > 2)
+    {
+
+      let sessionId = sess.id;
+      let imageId = sess.gameImage.imageId;
+
+      // Parameters: SessionID, ImageID, string query
+      const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString);
+      /* RETURN OBJECT:
+        [
+          {
+            "sessionId": "332e3f4",
+            "imageFilename": "file2.jpg",
+            "keywords": [ "k1", "k2" ,... ]
+            "netProbabilites": [
+                {
+                  "netKeyword": 1222,
+                  "netProbability": 0.444,
+                },
+                ...
+            ]
+
+          }
+          ...
+        ]
+      */
+
+
+      // Mark it into session
+      sess.gameWalkthrough.push(userImageResult);
+    }
+
+    // Increment game progress counter
     ++sess.gameProgress;
     
     // Reset image
@@ -131,12 +157,13 @@ router.post('/', function(req, res, next)
     console.log("Incrementing game progress for session " + sess.id + " to " + sess.gameProgress );    
   }
 
+  // If was not PHONY query (e.g. test or tutorial onw)
+  if (req.body.phonyQuery !== "true") 
+  {
 
-  if (req.body.phonyQuery !== "true") {
-    fs.writeFileSync(path.join(__dirname, "../data/userInput.txt"), finalString + '\n', {encoding: "ascii", flag: "a"} );
   }
   
-  
+  // Redirect user back to game page
   res.redirect(301, "/collector/");
 });
 

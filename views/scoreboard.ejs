@@ -5,31 +5,76 @@
 <section class="scoreboard-main grid-container">
   <div class="grid-x grid-padding-x">
 
-  <div class=" cell large-12">
+  <div class="callout success finished-note cell large-12">
+    <h1>Game completed!</h1>
+  </div>
+</section>
 
-    <h1>GAME COMPLETE!!!!</h1>
-    
-    <ul class="scoreboard-result-list">
+
+<section class="results-section grid-container">
+  <div class="grid-x grid-padding-x">
+    <div class=" cell large-12">
+
+      <table>
+        <thead>
+          <tr>
+            <th width="30%">Image</th>
+            <th width="30%">You see</th>
+            <th>Neural network sees</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        <% for (var i = 0; i < gameWalkthrough.length; ++i) { %>
+
+          <tr class="result-item">
+              <td class="image-thumb ">
+                <img src='../images/<%= gameWalkthrough[i][0].imageFilename %>' />
+              </td>
+
+              <td class="user-keywords-list">
 
 
-    <% for (var i = 0; i < gameWalkthrough.length; ++i) { %>
+              <% for (var j = 0; j < gameWalkthrough[i][0].keywords.length; ++j) { %>
 
-      <li class="result-item"><img src='../images/<%= gameWalkthrough[i].image.filename %>' />
+                <li><%= gameWalkthrough[i][0].keywords[j] %></li>
 
-      <%= gameWalkthrough[i].image.imageId%>
-      <%- JSON.stringify(gameWalkthrough[i].image) %>
+              <% } %>
 
-      <%= gameWalkthrough[i].userKeywords %>
-      
-      </li>
+              </td>
 
-    <% } %>
+              <td class="net-keywords-list">
 
-    </ul>
+              <% for (var j = 0; j < gameWalkthrough[i][0].netProbabilites.length; ++j) { %>
+
+                <li>
+                  <span class="keyword"><%= gameWalkthrough[i][0].netProbabilites[j].netKeyword %>
+                  <span class="probability"><%= gameWalkthrough[i][0].netProbabilites[j].netProbability %>
+                </li>
+
+              <% } %>
+
+              </td>
+
+          </tr>
+
+        <% } %>
+
+        </tbody>
+      </table>
+
     </div>
-<div class=" cell large-12">
-    <a class="button success" id="playAgain" href="/collector?startGame=true">Play again</a>
+  </div>
+</section>
+
+<section class="cta-play-again-section grid-container">
+  <div class="grid-x grid-padding-x">
+
+    <div class="callout alert cell large-12 text-center">
+      <h3>Want to go again? We'd be gratefull!</h3>
+      <a class="button success" id="playAgain" href="/collector?startGame=true">Play again</a>
     </div>
+
   </div>
 </section>
 

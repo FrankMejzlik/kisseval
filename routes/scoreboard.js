@@ -11,6 +11,11 @@ router.get('/', function(req, res, next)
 {
   const sess = req.session;
 
+  if (typeof sess.gameProgress === 'undefined') 
+  {
+    res.redirect('/collector');
+  }
+
   const gameWalkthrough = sess.gameWalkthrough;
 
   console.log(JSON.stringify(gameWalkthrough));

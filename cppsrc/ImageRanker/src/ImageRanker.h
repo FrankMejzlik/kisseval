@@ -45,9 +45,9 @@ public:
   using Buffer = std::vector<std::byte>;
   //! This is returned to front end app when some quesries are submited
   //! <SessionID, image filename, user keywords, net <keyword, probability> >
-  using GameSessionQueryResult = std::tuple<size_t, std::string, std::vector<std::string>, std::vector<std::pair<std::string, float>>>;
+  using GameSessionQueryResult = std::tuple<std::string, std::string, std::vector<std::string>, std::vector<std::pair<std::string, float>>>;
   //! Array of those is submited from front-end app game
-  using GameSessionInputQuery = std::tuple<size_t, size_t, std::string>;
+  using GameSessionInputQuery = std::tuple<std::string, size_t, std::string>;
 
   using ImageReference = std::pair<size_t, std::string>;
 

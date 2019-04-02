@@ -1,39 +1,38 @@
 <!-- Include header -->
 <%- include common/header.ejs %>
 
-<section class="welcome-section">
-
-  <div class="row center">
-    <div class="welcome">
+<section class="welcome-section grid-container text-center">
+  <div class="grid-x grid-padding-x">
+    <div class="welcome callout success cell large-12">
       <h1><%= global.gConfig.subtitle %></h1>
       <p>Welcome to game where you'll find out if you can see like neural network.</p>
     </div>
   </div>
 </section>
-
-<section class="welcome-instructions grid-container">
+<section class="welcome-instructions grid-container text-center">
   <div class="grid-x grid-padding-x">
 
-    <div class="what-are-data-for large-12 cell">
+    <div class="what-are-data-for large-12 cell ">
       <p class="t1">
         Data we're collecting are used as real user data to compare how our interactive video/image browsing tools are doing.
-      <p>
-      </p class="t2">
+      </p>
+      <p class="t2">
         In other words, we use them to measure how close our tools ranked images based on what you were actually looking for.
       </p>
     </div>
 
     <div class="cta play large-12 cell">
-      <a class="button success" id="playAgain" href="/collector?startGame=true">Play</a>
+      <a class="button success large" id="playAgain" href="/collector?startGame=true">Play</a>
     </div>
 
   </div>
 </section>
+<hr />
 
-<section class="constact-block grid-container">
+<section class="constact-block grid-container text-center">
   <div class="grid-x grid-padding-x">
 
-    <div class="cta play large-12 cell">
+    <div class="callout warning cta play large-12 cell">
       <p>If you have any questions, feel free to <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#102;&#114;&#97;&#110;&#116;&#105;&#115;&#101;&#107;&#46;&#109;&#101;&#106;&#122;&#108;&#105;&#107;&#64;&#109;&#97;&#116;&#102;&#121;&#122;&#46;&#99;&#122;">contact us</a>.</p>
     </div>
 

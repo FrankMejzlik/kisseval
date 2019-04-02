@@ -45,6 +45,7 @@ const imageRanker = require(path.join(__dirname, 'build/Release/image_ranker.nod
 
 const a = path.join(global.rootDir, global.gConfig.pathToImages);
 const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
+//const b = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.softmaxFilename);
 const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
 const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
 
@@ -62,7 +63,7 @@ if (global.gConfig.log_all == true)
 {
   console.log(global.imageRanker);
 }
-  
+
 // Push all routers into express middleware stack
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

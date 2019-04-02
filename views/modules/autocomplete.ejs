@@ -5,9 +5,14 @@
       <input type='hidden' id="phonyQuery" name='phonyQuery' value='true'>
     <% } %>
 
-    <div class="selected-keyword-container" id="selectedKeywordsList">
-        <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
+    <div class="selected-keyword-container">
+      <h3>Selected keywords</h3>
 
+      <ul id="selectedKeywordsList">
+    
+      </ul>
+
+        <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
     </div>
 
     <div class="main-query-input-wrapper control-wrapper">
@@ -102,7 +107,7 @@
                 }     
               }
 
-              chechkboxCont = document.createElement("div");
+              chechkboxCont = document.createElement("li");
               chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
 
               chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + selValWord + "' checked>\

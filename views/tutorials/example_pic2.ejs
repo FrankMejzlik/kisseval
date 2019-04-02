@@ -17,29 +17,30 @@
 </section>
 
 <section class="main-image-query grid-container">
-  <div class="grid-x grid-padding-x">
+  <div class="grid-x grid-padding-x align-center">
 
-    <div class="tutorial-instructions large-12 cell">
+  <div id="tip1_00" class="tutorial-instructions absolute popup">
       <p>As you can see, some images are quite hard to describe with words.</p>
-
+  </div>
+  <div id="tip1_00" class="tutorial-instructions absolute popup important">
       <p>Please try to describe these as well with at least few words.</p>
-    </div>
+    </div>  
 
-    <div class="large-6 cell">
+    <div class="main-image small-12 cell">
       <img src="../images/tutorials/tutorial_pic2.jpg" />
     </div>
 
-    <div class="autocomplete-keywords-container large-6 cell">
+    <div class="autocomplete-keywords-container small-12 cell">
 
     <div id="tip2_1" class="tutorial-instructions absolute popup">
       <p>You can try to use some more general words.</p>
     </div>
 
       <!-- Include autocomplete module -->
-      <%- include ../modules/autocomplete_tutorial.ejs %>
+      <%- include ../modules/autocomplete.ejs %>
 
 
-      <div id="tip2_10" class="alert tutorial-instructions absolute popup">
+      <div id="tip2_10" class="alert tutorial-instructions absolute popup superimportant">
         <p>After submiting this one, game will start! Are you ready?</p>
       </div>
 

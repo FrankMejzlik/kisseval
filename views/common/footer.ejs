@@ -1,6 +1,43 @@
 
     <div class="feedback-popup absolute">
-        <p>FEEDBACK FORM TBD<p>
+        <button class="button" data-open="exampleModal1"></button>
+    </div>
+
+    <div class="reveal text-center" id="exampleModal1" data-reveal >
+        <h1>Tell us what you think</h1>
+        <p>Please, tell us your feedback or share with us with something didn't work.</p>
+
+        <form class="feedback-form" action="/feedback" action="POST">
+            <div class="grid-container">
+                <div class="grid-x grid-padding-x">
+                    <div class="medium-6 cell">
+                        <label>
+                            <p>Your name/nick</p>
+                            <small>Whatever you want us to address you</small>
+                            <input type="text" placeholder="Frank">
+                        </label>
+                    </div>
+                    <div class="medium-6 cell">
+                        <label>
+                            <p>Your email</p>
+                            <small>So we can get back to you</small>
+                            <input type="email" placeholder="frank@email.com">
+                        </label>
+                    </div>
+
+                    <div class="small-12 cell">
+                        <label>
+                            Your message
+                            <textarea placeholder="None"></textarea>
+                        </label>
+                    </div>
+                    <div class="small-12 cell">
+                        <input type="submit" class="button success" value="Send">
+                    </div>
+                </div>
+                
+            </div>
+        </form>
     </div>
 
     <!-- Include jQuery v3.3.1 -->

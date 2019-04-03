@@ -116,6 +116,7 @@
                   continue;
                 }     
               }
+              selValWord = selValWord.replace(/(<([^>]+)>)/ig,"");
 
               chechkboxCont = document.createElement("li");
               chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');

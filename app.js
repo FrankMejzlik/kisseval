@@ -48,24 +48,24 @@ const a = path.join(global.rootDir, global.gConfig.pathToImages);
 
 // Dataset specific properties
 // DATASET 2
-const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
-const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
-const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
-const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
-const f = global.gConfig.columnIndexOfFilename2;
-const g = global.gConfig.imagesDirListFileLineLength2;
-const h = global.gConfig.numRows2;
-const i = global.gConfig.idOffset2;
+// const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
+// const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
+// const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
+// const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
+// const f = global.gConfig.columnIndexOfFilename2;
+// const g = global.gConfig.imagesDirListFileLineLength2;
+// const h = global.gConfig.numRows2;
+// const i = global.gConfig.idOffset2;
 
 // DATASET 1
-// const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename);
-// const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename);
-// const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename);
-// const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList);
-// const f = global.gConfig.columnIndexOfFilename;
-// const g = global.gConfig.imagesDirListFileLineLength;
-// const h = global.gConfig.numRows;
-// const i = global.gConfig.idOffset;
+const b = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.softmaxFilename);
+const c = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.deepFeaturesFilename);
+const d = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.keywordClassesFilename);
+const e = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.imagesDirList);
+const f = global.gConfig.columnIndexOfFilename;
+const g = global.gConfig.imagesDirListFileLineLength;
+const h = global.gConfig.numRows;
+const i = global.gConfig.idOffset;
 
 console.log(a);
 console.log(b);

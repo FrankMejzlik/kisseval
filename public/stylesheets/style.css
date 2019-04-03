@@ -395,6 +395,11 @@ input[type=submit] {
   text-align: left;
 }
 
+.autocomplete-items strong {
+  font-weight: 900;
+  color: #233656;
+}
+
 .autocomplete-items .keyword-title {
   font-size: 18px;
   display: block;

@@ -19,7 +19,7 @@
 #define NUM_SUGESTIONS 5ULL
 
 //! If set to 1, loaded data from files will be inserted into PRIMARY db
-#define PUSH_DATA_TO_DB 1
+#define PUSH_DATA_TO_DB 0
 
 //! If 1, data will be loaded from database(s)
 #define GET_DATA_FROM_DB 0

@@ -23,18 +23,21 @@
       <p>All you have to do is look at the picture and write what is in the picture.</p>
     </div>
 
-    <div id="tip1_01" class="tutorial-instructions absolute popup important">
-      <p>Start clicking to input field and type first few letters of word you want to use and see if we have such word in database.</p>
-      <small>You're allowed to use just keywords we have in database.</small>
-    </div>
+
     <div id="tip1_02" class="tutorial-instructions absolute popup">
       <p>Sometimes you'll be offered same keyword more than once. Just read description and choose what fits the best.</p>
     </div>
     <div id="tip1_03" class="tutorial-instructions absolute popup important">
-      <p>Each game session has {N} images prepared for you and when you're finished you'll see how your doing compared to neual network.</p>
+      <p>Each game session has few images prepared for you and when you're finished you'll see how your doing compared to neural network.</p>
     </div>
     <div id="tip1_04" class="tutorial-instructions absolute popup">
       <p>Here is first example of how your description could look like.</p>
+    </div>
+
+    <div class="progerss-bar small-12 cell">
+      <span class="curr"><%= gameProgress.curr %></span>
+      <span class="separator">/</span>
+      <span class="total"><%= gameProgress.total %></span>
     </div>
 
     <div class="main-image large-12 cell">
@@ -43,17 +46,17 @@
 
     <div class="autocomplete-keywords-container large-12 cell">
 
-    <div id="tip1_1" class="tutorial-instructions absolute popup">
-      <p>Feel free to try autocomplete.</p>
-    </div>
+      <div id="tip1_1" class="tutorial-instructions absolute popup">
+        <p>Feel free to try autocomplete.</p>
+      </div>
 
-    <div id="tip1_2" class="tutorial-instructions absolute popup important">
-      <p>You can use arrows to navigate through suggestions and ENTER to select it.</p>
-    </div>
+      <div id="tip1_2" class="tutorial-instructions absolute popup important">
+        <p>You can use arrows to navigate through suggestions and ENTER to select it.</p>
+      </div>
 
-    <div id="tip1_3" class="tutorial-instructions absolute popup">
-      <p>If you want to delete some selected keywords, just click cros icon on them.</p>
-    </div>
+      <div id="tip1_3" class="tutorial-instructions absolute popup">
+        <p>If you want to delete some selected keywords, just click cros icon on them.</p>
+      </div>
 
       <!-- Include autocomplete module -->
       <%- include ../modules/autocomplete.ejs %>

@@ -26,7 +26,7 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
   // Process arguments
   int length = info.Length();
   
-  if (length != 4) {
+  if (length != 9) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
 
@@ -35,13 +35,34 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
   Napi::String probabilityVectorFilepath = info[1].As<Napi::String>();
   Napi::String deepFeaturesFilepath = info[2].As<Napi::String>();
   Napi::String keywordClassesFilepath = info[3].As<Napi::String>();
+  Napi::String imagesDirList = info[4].As<Napi::String>();
+  Napi::Number columnIndexOfFilename = info[5].As<Napi::Number>();
+  Napi::Number imagesDirListFileLineLength = info[6].As<Napi::Number>();
+  Napi::Number numRows = info[7].As<Napi::Number>();
+  Napi::Number idOffset = info[8].As<Napi::Number>();
+
+  std::cout << imagesPath.Utf8Value() << std::endl;
+  std::cout << probabilityVectorFilepath.Utf8Value() << std::endl;
+  std::cout << deepFeaturesFilepath.Utf8Value() << std::endl;
+  std::cout << keywordClassesFilepath.Utf8Value() << std::endl;
+  std::cout << imagesDirList.Utf8Value() << std::endl;
+
+  std::cout << columnIndexOfFilename.Int64Value() << std::endl;
+  std::cout << imagesDirListFileLineLength.Int64Value() << std::endl;
+  std::cout << numRows.Int64Value() << std::endl;
+  std::cout << idOffset.Int64Value() << std::endl;
 
 
   this->actualClass_ = new ImageRanker(
     imagesPath.Utf8Value(),
     probabilityVectorFilepath.Utf8Value(),
     deepFeaturesFilepath.Utf8Value(),
-    keywordClassesFilepath.Utf8Value()
+    keywordClassesFilepath.Utf8Value(),
+    imagesDirList.Utf8Value(),
+    columnIndexOfFilename.Int64Value(),
+    imagesDirListFileLineLength.Int64Value(),
+    numRows.Int64Value(),
+    idOffset.Int64Value()
   );
 }
 
@@ -54,7 +75,7 @@ Napi::Value ImageRankerWrapper::SubmitUserQueriesWithResults(const Napi::Callbac
 
   // Process arguments
   int length = info.Length();
-  if (length != 3)
+  if (length != 4)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::SubmitUserQueriesWithResults)").ThrowAsJavaScriptException();
   }
@@ -63,14 +84,16 @@ Napi::Value ImageRankerWrapper::SubmitUserQueriesWithResults(const Napi::Callbac
   Napi::String sessionId = info[0].As<Napi::String>();
   Napi::Number imageId = info[1].As<Napi::Number>();
   Napi::String stringQuery = info[2].As<Napi::String>();
+  Napi::Number queryType = info[3].As<Napi::Number>();
 
   // Initialize input structure
   std::vector<ImageRanker::GameSessionInputQuery> methodInput;
   methodInput.push_back(ImageRanker::GameSessionInputQuery(sessionId.Utf8Value(), imageId.Int64Value(), stringQuery.Utf8Value()));
+  size_t queryOrigin = queryType.Int64Value();
 
   // Call native method
   // RETURN: std::tuple<size_t, std::string, std::vector<std::string>, std::vector<std::pair<std::string, float>>>
-  std::vector<ImageRanker::GameSessionQueryResult> queryResults{ this->actualClass_->SubmitUserQueriesWithResults(methodInput) };
+  std::vector<ImageRanker::GameSessionQueryResult> queryResults{ this->actualClass_->SubmitUserQueriesWithResults(methodInput, static_cast<ImageRanker::QueryOrigin>(queryOrigin)) };
 
   // Construct NAPI return object 
   napi_value resultArray;

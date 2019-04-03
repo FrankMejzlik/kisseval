@@ -35,13 +35,10 @@
                     "defines": [
                     ],
                     "architecture": "i386",
-                    "xcode_settings": {
-                        "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
-                    },
+
                     "link_settings": {
                         "libraries": [
-                            "-lmariadbclient",
-                            "-lmariadb",   
+                            "-lmariadbclient"
                         ],
                         "configurations": {
                             "Debug": {

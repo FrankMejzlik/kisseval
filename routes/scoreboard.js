@@ -17,12 +17,11 @@ router.get('/', function(req, res, next)
   }
 
   const gameWalkthrough = sess.gameWalkthrough;
-
-  console.log(JSON.stringify(gameWalkthrough));
-
-
+  const isDev = req.session.isDeveloperSession;
+  
   // Final data instance being send to front end
   var data = { 
+    isDev,
     gameWalkthrough
   };
 

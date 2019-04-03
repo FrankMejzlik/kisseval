@@ -30,12 +30,38 @@ router.get('/', function(req, res, next)
 
   console.log("SessionId: " + sess.id + " PROGRESS : " + sess.gameProgress + "/" + totalGameLength)
 
+
+  const isDev = req.session.isDeveloperSession;
+
+  // If dev, skip tutorial
+  if (isDev == true && sess.gameProgress < 3 && sess.gameProgress >= 1) 
+  {
+    sess.gameProgress= 3;
+  }
+
+  const gameProgress = new Object();
+  gameProgress.curr = sess.gameProgress;
+  gameProgress.total = totalGameLength;
+
   // If in tutorial
   if (sess.gameProgress <= global.gConfig.tutorialLength) 
   {
-    phonyQuery = "true";
+    // Send example data to views
+    let exampleItems;
+    if (sess.gameProgress == 1) {
+      exampleItems ='<li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="boat" checked="">                <span>boat</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="ocean" checked="">                <span>ocean</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="pier" checked="">                <span>pier</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="forest" checked="">                <span>forest</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="coast" checked="">                <span>coast</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li>';
+    } 
+    else if (sess.gameProgress == 2) {
+      exampleItems ='<li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="sky" checked="">                <span>sky</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="dirt" checked="">                <span>dirt</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="ground" checked="">                <span>ground</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li>';
+    }
+
+    
+    
+    // Final data instance being send to front end
     var data = { 
-      phonyQuery
+      isDev,
+      exampleItems,
+      gameProgress
     };
 
     res.render('tutorials/example_pic' + sess.gameProgress, data);
@@ -43,7 +69,7 @@ router.get('/', function(req, res, next)
   }
 
   // If finished game
-  if (sess.gameProgress >= totalGameLength) 
+  if (sess.gameProgress > totalGameLength) 
   {
 
     // var gameWalkthrough = sess.gameWalkthrough;
@@ -61,9 +87,6 @@ router.get('/', function(req, res, next)
   if (typeof sess.gameImage === 'undefined')
   {
     sess.gameImage = global.imageRanker.GetRandomImage();
-
-    console.log("aaa:" + JSON.stringify(sess.gameImage));
-
   } 
 
   const newImage = sess.gameImage;
@@ -78,10 +101,13 @@ router.get('/', function(req, res, next)
     console.log("Serving image " + newImage);
   }
 
+  
   // Final data instance being send to front end
   var data = { 
+    isDev,
     phonyQuery,
-    newImage
+    newImage,
+    gameProgress
   };
 
 
@@ -122,8 +148,15 @@ router.post('/', function(req, res, next)
       let sessionId = sess.id;
       let imageId = sess.gameImage.imageId;
 
+      let queryType = 1;
+      if (sess.isDeveloperSession == true) 
+      {
+        // Set to developer query
+        queryType = 0;
+      }
+
       // Parameters: SessionID, ImageID, string query
-      const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString);
+      const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString, queryType);
       /* RETURN OBJECT:
         [
           {
@@ -157,11 +190,6 @@ router.post('/', function(req, res, next)
     console.log("Incrementing game progress for session " + sess.id + " to " + sess.gameProgress );    
   }
 
-  // If was not PHONY query (e.g. test or tutorial onw)
-  if (req.body.phonyQuery !== "true") 
-  {
-
-  }
   
   // Redirect user back to game page
   res.redirect(301, "/collector/");

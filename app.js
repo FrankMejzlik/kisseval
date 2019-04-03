@@ -43,19 +43,42 @@ app.use(session({ secret: 'matfyz', resave: false, saveUninitialized: true, }));
 // Get ImageRanker C++ library
 const imageRanker = require(path.join(__dirname, 'build/Release/image_ranker.node'));
 
+// Shared property
 const a = path.join(global.rootDir, global.gConfig.pathToImages);
+
+// Dataset specific properties
+// DATASET 2
 const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
-//const b = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.softmaxFilename);
 const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
 const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
+const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
+const f = global.gConfig.columnIndexOfFilename2;
+const g = global.gConfig.imagesDirListFileLineLength2;
+const h = global.gConfig.numRows2;
+const i = global.gConfig.idOffset2;
+
+// DATASET 1
+// const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename);
+// const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename);
+// const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename);
+// const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList);
+// const f = global.gConfig.columnIndexOfFilename;
+// const g = global.gConfig.imagesDirListFileLineLength;
+// const h = global.gConfig.numRows;
+// const i = global.gConfig.idOffset;
 
 console.log(a);
 console.log(b);
 console.log(c);
 console.log(d);
+console.log(e);
+console.log(f);
+console.log(g);
+console.log(h);
+console.log(i); 
 
 // Create global instance if ImageRanker
-global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d);
+global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d,e,f,g,h,i);
 
 
 

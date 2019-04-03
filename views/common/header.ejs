@@ -16,6 +16,29 @@
 </head>
 
 <body>
+  
+
+  <div class="dev-login-modal reveal text-center" id="exampleModal2" data-reveal >
+    <h1>Yes?</h1>
+
+    <form class="dev-login-form" action="/users" method="POST">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+                <div class="medium-12 cell">
+                    <label>
+                        <input name="pass" type="password">
+                    </label>
+                </div>
+
+                <div class="small-12 cell">
+                    <input type="submit" class="button success" value="Send">
+                </div>
+            </div>
+            
+        </div>
+    </form>
+  </div>
+
   <div class="top-bar header main">
     <div class="top-bar-left">
       <ul class="dropdown menu" data-dropdown-menu>
@@ -29,6 +52,19 @@
       </ul>
     </div>
     <div class="top-bar-right">
+
+      <!-- Dev login panel -->
+      <div class="dev-login">
+        <button class="button" data-open="exampleModal2">o</button>
+      </div>
+
+      <% 
+      if (typeof isDev != 'undefined') {
+        if (isDev == true) { %>
+          <div class="dev-sign"><p>DEVELOPER SESSION</p></div>
+      <% 
+        }
+      } %>
 
     </div>
   </div>

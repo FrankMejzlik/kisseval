@@ -1,15 +1,15 @@
 
 <form autocomplete="off" class="autocomplete-form" action="/collector/" method="POST">
 
-    <% if (phonyQuery == "true") {%>
-      <input type='hidden' id="phonyQuery" name='phonyQuery' value='true'>
-    <% } %>
-
     <div class="selected-keyword-container">
       <h3>Selected keywords</h3>
 
       <ul id="selectedKeywordsList">
     
+        <% if (typeof exampleItems !== 'undefined') {%>
+          <%- exampleItems %>
+        <% } %>
+
       </ul>
 
         <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
@@ -25,6 +25,13 @@
 
 <!-- Autocomplete AJAX script -->
 <script>
+  function boldString(str, find)
+  {
+    const re = new RegExp(find, 'g');
+    return str.replace(re, '<strong>' + find + '</strong>');
+  }
+
+
   function autocomplete(inp, selectedContainer) {
 
   var currentFocus;
@@ -74,8 +81,11 @@
             //b.innerHTML = "<strong>" + data[i].substr(0, val.length) + "</strong>";
             //b.innerHTML += data[i].substr(val.length);
 
+            const wordTitle = boldString(data[i][1], val);
+            const wordDesc = boldString(data[i][2], val);
+
             b.innerHTML += "\
-              <span class=\"keyword-title\">" + data[i][1] + "</span><small>" + data[i][2] + "</small>\
+              <span class=\"keyword-title\">" + wordTitle + "</span><small>" + wordDesc + "</small>\
               <small class='wordnet-id'>" + data[i][0] + "</small>";
 
 

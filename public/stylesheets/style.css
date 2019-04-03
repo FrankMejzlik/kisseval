@@ -3,7 +3,56 @@ body {
   margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   position: relative;
+  background-image: url(../images/generic/bg_neural.jpg);
 }
+
+.welcome-section {
+  margin: 80px auto 30px auto;
+}
+
+
+.main-image {
+  text-align: center;
+}
+.progerss-bar {
+  text-align: center;
+  padding: 7px 0 0px 0;
+}
+
+.progerss-bar span {
+  font-size: 26px;
+  
+}
+
+.progerss-bar span.curr {
+  font-size: 36px;
+  
+}
+
+.dev-sign {
+  
+}
+
+.dev-sign p {
+  margin:0;
+  position: absolute;
+  left: 20px;
+
+  top: 86px;
+}
+
+.dev-login {
+  margin: 0;
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+}
+
+.dev-login button {
+  margin: 0;
+  padding: 5px;
+}
+
 
 
 h1 {
@@ -76,9 +125,25 @@ a {
 }
 
 .how-to-use-tip {
-  /* background-color: #ffb5b5; */
+  /*background-color: #ffb5b5;*/
   text-align: center;
-  padding: 50px 30px;
+  padding: 50px 30px 0;
+  position: absolute;
+  top: 58px;
+  max-width: 408px;
+}
+
+
+.how-to-use-tip .callout.primary {
+  border: none;
+  background-color: #ffb5b5;
+}
+.how-to-use-tip h4 {
+font-size: 20px
+}
+
+.how-to-use-tip h5 {
+font-size: 17px
 }
 
 .main-query {
@@ -171,36 +236,45 @@ a {
 }
 
 .tutorial-instructions.popup.superimportant {
-  background-color: #eeb121;
+  background-color: #ffb5b5;
 }
 
-.tutorial-instructions.popup p { 
+.tutorial-instructions.popup p {
   margin: 0;
 }
 
 #tip1_00 {
-  left: 10%;
-  top: 300px;
+  left: 7%;
+  top: 240px;
+  width: 400px;
+  font-size: 18px;
 }
 
 #tip1_01 {
-  left: 16%;
-  top: 567px;
+  left: 22%;
+  top: 525px;
+  font-size: 14px;
 }
 
 #tip1_02 {
-  left: 62%;
-  top: 668px;
+  left: 60%;
+  font-size: 15px;
+  top: 468px;
+  width: 400px;
 }
 
 #tip1_03 {
-  left: 10%;
-  top: 300px;
+  left: 11%;
+  top: 335px;
+  font-size: 14px;
+  width: 500px;
 }
 
 #tip1_04 {
-  left: 13%;
-  top: 457px;
+  left: 15%;
+  top: 428px;
+  font-size: 19px;
+  width: 369px;
 }
 
 #tip1_05 {
@@ -251,18 +325,21 @@ ul {
 }
 
 #tip1_1 {
-  top: -237px;
+  top: -294px;
   right: -37%;
+  font-size: 19px;
 }
 
 #tip1_2 {
-  top: -167px;
+  top: -200px;
   right: -29%;
 }
 
 #tip1_3 {
-  top: -479px;
-  right: -50%;
+  top: -503px;
+  right: -45%;
+  font-size: 20px;
+  background: #ffb5b5;
 }
 
 #tip1_4 {
@@ -271,8 +348,10 @@ ul {
 }
 
 #tip1_10 {
-  top: 58px;
-  right: -80px;
+  left: 14%;
+  right: 5%;
+  font-size: 20px;
+  width: 500px;
 }
 
 .callout.primary {
@@ -474,6 +553,14 @@ margin-bottom: 30px;
 
 .cta-play-again-section {
   margin: 60px auto 30px auto;
+}
+
+.cta-play-again-section .callout {
+  padding: 40px 0 40px 0
+}
+
+.cta-play-again-section #playAgain {
+  margin-top: 20px;
 }
 
 .main-image {

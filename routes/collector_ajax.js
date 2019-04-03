@@ -19,50 +19,15 @@
 // });
 const util = require('util')
 
-function test() 
-{
-  return "fuuuu";
-}
-
-
 var foo = function (req, res, next) {
   return global.imageRanker.GetNearKeywords(req);
 }
 
-var bar = function (req, res, next) {
-  return foo();
-}
-
 exports.find = function(req, res) 
 {
-  // var b=req.params.search;
-  // db.collection('publication', function(err, collection) {
-  //     collection.find({type:'pub',content: new RegExp(b,'i')}).limit(5).toArray(function(err, items) {
-  //         res.jsonp(items);
-  //     });
-  // });
-
   var word = req.query.queryValue;
-  //console.log(global.imageRanker);
 
-  //console.log(util.inspect(req, {showHidden: false, depth: null}))
-  //console.log("word = " + req.params);
-
-  //if (!!word){
-    var itemss = foo(word);
-  //}
-
-
-  //console.log("ITEMS" + itemss);
-
-  // for (var i = 0; i < arrayIds.length; ++i) 
-  // {
-  //     console.log("wordnetId = " + arrayIds[i][0]);
-  //     console.log("word = " + arrayIds[i][1]);
-  //     console.log("description = " + arrayIds[i][2]);
-  // }
-
-  var items ="aaa";
+  var itemss = foo(word);
 
   // Send response
   res.jsonp(itemss);

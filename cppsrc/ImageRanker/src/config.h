@@ -7,6 +7,8 @@
 #define PRODUCTION 0
 
 
+#define MIN_DESC_SEARCH_LENGTH 4
+
 //! What is delimiter for synonyms in data files
 #define SYNONYM_DELIMITER '#'
 
@@ -17,7 +19,7 @@
 #define NUM_SUGESTIONS 5ULL
 
 //! If set to 1, loaded data from files will be inserted into PRIMARY db
-#define PUSH_DATA_TO_DB 0
+#define PUSH_DATA_TO_DB 1
 
 //! If 1, data will be loaded from database(s)
 #define GET_DATA_FROM_DB 0
@@ -34,7 +36,7 @@
  * 3: linode data1
  * 4: linode data2
  */
-#define PRIMARY_DB_ID 2
+#define PRIMARY_DB_ID 4
 #define SECONDARY_DB_ID 2
 
 

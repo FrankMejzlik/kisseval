@@ -27,7 +27,7 @@
 
 
         "pathData2": "/data2/",
-        "softmaxFilename2": "Studenti_NasNetLarge.pre-softmax",
+        "softmaxFilename2": "Studenti_NasNetLarge.softmax",
         "deepFeaturesFilename2": "Studenti_NasNetLarge.deep-features",
         "keywordClassesFilename2": "keyword_classes.txt",
         "imagesDirList2": "dir_images.txt",

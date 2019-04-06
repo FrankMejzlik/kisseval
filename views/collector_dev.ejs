@@ -1,0 +1,45 @@
+<!-- Include header -->
+<%- include common/header.ejs %>
+
+<section class="main-image-query grid-container">
+  <div class="grid-x grid-padding-x text-center align-center">
+    
+      
+    <% 
+    if (typeof isDev != 'undefined') {
+      if (isDev == true) { %>
+
+
+    <div class="autocomplete-keywords-container small-12 cell">
+      <!-- Include autocomplete module -->
+      <%- include modules/autocomplete_dev.ejs %>
+    </div>
+
+    <div class="main-image small-12 cell">
+      <img src="<%= '../images/'  %><%= newImage.filename %>" />
+    </div>
+
+    <% 
+      }
+    } %>
+
+
+    <% 
+    if (typeof isDev == 'undefined' || isDev == false) { %>
+
+      <h3 class="warning small-12 cell">You must be logged as developer.</h3>
+      <h4 class="note small-12 cell">Click button in left bottom corner and log in.</h5>
+
+    <% 
+    } %>
+      
+    
+    
+
+  </div>
+</section>
+
+</body>
+
+<!-- Include footer -->
+<%- include common/footer.ejs %>

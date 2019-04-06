@@ -18,6 +18,7 @@ global.rootDir = __dirname;
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var collectorRouter = require('./routes/collector');
+var collectorDevRouter = require('./routes/collector_dev');
 var scoreboardRouter = require('./routes/scoreboard');
 var collectorAjax = require('./routes/collector_ajax');
 
@@ -48,24 +49,24 @@ const a = path.join(global.rootDir, global.gConfig.pathToImages);
 
 // Dataset specific properties
 // DATASET 2
-// const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
-// const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
-// const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
-// const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
-// const f = global.gConfig.columnIndexOfFilename2;
-// const g = global.gConfig.imagesDirListFileLineLength2;
-// const h = global.gConfig.numRows2;
-// const i = global.gConfig.idOffset2;
+const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
+const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
+const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
+const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
+const f = global.gConfig.columnIndexOfFilename2;
+const g = global.gConfig.imagesDirListFileLineLength2;
+const h = global.gConfig.numRows2;
+const i = global.gConfig.idOffset2;
 
 // DATASET 1
-const b = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.softmaxFilename);
-const c = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.deepFeaturesFilename);
-const d = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.keywordClassesFilename);
-const e = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.imagesDirList);
-const f = global.gConfig.columnIndexOfFilename;
-const g = global.gConfig.imagesDirListFileLineLength;
-const h = global.gConfig.numRows;
-const i = global.gConfig.idOffset;
+// const b = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.softmaxFilename);
+// const c = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.deepFeaturesFilename);
+// const d = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.keywordClassesFilename);
+// const e = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.imagesDirList);
+// const f = global.gConfig.columnIndexOfFilename;
+// const g = global.gConfig.imagesDirListFileLineLength;
+// const h = global.gConfig.numRows;
+// const i = global.gConfig.idOffset;
 
 console.log(a);
 console.log(b);
@@ -91,6 +92,7 @@ if (global.gConfig.log_all == true)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/collector', collectorRouter);
+app.use('/collector_dev', collectorDevRouter);
 app.use('/scoreboard', scoreboardRouter);
 
 // Allow only GET requests to 'collector_ajax' router

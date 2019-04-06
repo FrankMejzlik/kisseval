@@ -1,20 +1,19 @@
 
-<!--
-    Autocomplete module
+<form autocomplete="off" class="autocomplete-form" action="/collector_dev/" method="POST">
 
-    This autocomplete is not usual implementation of it.
-    It does NOT do any search in provided data, it just takes
-    data it gets from source and displays it as options.
+    <div class="selected-keyword-container">
+      <h4>DEVELOPER QUERY COLLECTOR</h4>
+      <h3>Selected keywords</h3>
 
-    It is mainly used with nodeJS backend to which we do AJAX 
-    requests and response contains data to show to user.
--->
-
-<form autocomplete="off" class="autocomplete-form" action="/collector/" method="POST">
+      <ul id="selectedKeywordsList">
     
-    <div class="selected-keyword-container" id="selectedKeywordsList">
-        <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
+        <% if (typeof exampleItems !== 'undefined') {%>
+          <%- exampleItems %>
+        <% } %>
 
+      </ul>
+
+        <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
     </div>
 
     <div class="main-query-input-wrapper control-wrapper">
@@ -22,11 +21,18 @@
         <input type="text" id="queryInput" tabindex="1" name="query">
 
     </div>
-    <input type="submit" class="button success" id="sendQuery" value="Send query" onclick="processTutorialSubmit(event, this); return false;">
+    <input type="submit" class="button success" id="sendQuery" value="Send query">
 </form>
 
 <!-- Autocomplete AJAX script -->
 <script>
+  function boldString(str, find)
+  {
+    const re = new RegExp(find, 'g');
+    return str.replace(re, '<strong>' + find + '</strong>');
+  }
+
+
   function autocomplete(inp, selectedContainer) {
 
   var currentFocus;
@@ -76,8 +82,11 @@
             //b.innerHTML = "<strong>" + data[i].substr(0, val.length) + "</strong>";
             //b.innerHTML += data[i].substr(val.length);
 
+            const wordTitle = boldString(data[i][1], val);
+            const wordDesc = boldString(data[i][2], val);
+
             b.innerHTML += "\
-              <span class=\"keyword-title\">" + data[i][1] + "</span><small>" + data[i][2] + "</small>\
+              <span class=\"keyword-title\">" + wordTitle + "</span><small>" + wordDesc + "</small>\
               <small class='wordnet-id'>" + data[i][0] + "</small>";
 
 
@@ -96,6 +105,8 @@
 
               let selVal = '';
               let selValWord = '';
+              
+              console.log('Hello Franta');
 
               for (var i = 0; i < this.childNodes.length; i++) {
                 if (this.childNodes[i].className == "wordnet-id") {
@@ -108,11 +119,12 @@
                   continue;
                 }     
               }
+              selValWord = selValWord.replace(/(<([^>]+)>)/ig,"");
 
-              chechkboxCont = document.createElement("div");
+              chechkboxCont = document.createElement("li");
               chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
 
-              chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + selVal + "' checked>\
+              chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + selValWord + "' checked>\
                 <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this);'> X</a>"
 
               selectedContainer.appendChild(chechkboxCont);

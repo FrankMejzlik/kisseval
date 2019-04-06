@@ -52,6 +52,20 @@
       </ul>
     </div>
     <div class="top-bar-right">
+    <ul class="dropdown menu" data-dropdown-menu>
+
+    <% 
+    if (typeof isDev != 'undefined') {
+      if (isDev == true) { %>
+
+      <li class="menu-item">
+        <a href="/collector_dev/">Developer query collector</a>
+      </li>
+
+    <% 
+      }
+    } %>
+    </ul>
 
       <!-- Dev login panel -->
       <div class="dev-login">

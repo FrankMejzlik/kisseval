@@ -172,9 +172,9 @@
 
   #elif STAGING
 
-    #define SOLUTION_PATH "/home/devwesp/source/repos/ImageRankerCollector/"
-    #define DATA_PATH "/home/devwesp/source/repos/ImageRankerCollector/data/"
-    #define IMAGES_PATH "/home/devwesp/source/repos/ImageRankerCollector/public/images/"
+    #define SOLUTION_PATH "/home/devwesp/source/repos/ImageRanker/"
+    #define DATA_PATH "/home/devwesp/source/repos/ImageRanker/data/"
+    #define IMAGES_PATH "/home/devwesp/source/repos/ImageRanker/public/images/"
 
   #endif
 
@@ -208,9 +208,9 @@
 
   #elif STAGING
 
-    #define SOLUTION_PATH "/home/devwesp/source/repos/ImageRankerCollector/"
-    #define DATA_PATH "/home/devwesp/source/repos/ImageRankerCollector/data2/"
-    #define IMAGES_PATH "/home/devwesp/source/repos/ImageRankerCollector/public/images/"
+    #define SOLUTION_PATH "/home/devwesp/source/repos/ImageRanker/"
+    #define DATA_PATH "/home/devwesp/source/repos/ImageRanker/data2/"
+    #define IMAGES_PATH "/home/devwesp/source/repos/ImageRanker/public/images/"
 
   #endif
 

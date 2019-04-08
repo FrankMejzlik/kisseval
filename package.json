@@ -1,9 +1,9 @@
 {
-  "name": "imagerankercollector",
+  "name": "imageranker",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www imagerankercollector",
+    "start": "node ./bin/www imageranker",
     "build": "node-gyp rebuild",
     "clean": "node-gyp clean",
     "stop": "node ./bin/server.stop"

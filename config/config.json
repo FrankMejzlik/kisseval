@@ -2,8 +2,8 @@
     "development": {
         "config_id": "development",
         "log_all": true,
-        "app_name": "ImageRankerCollector",
-        "app_desc": "ImageRanker data collecting application.",
+        "app_name": "ImageRanker",
+        "app_desc": "Image ranking allplication.",
         "node_port": 8080,
         "json_indentation": 4,
         "database_host": "localhost",
@@ -11,8 +11,8 @@
         "database_username": "image-ranker",
         "database_password": "s5XurJ3uS3E52Gzm",
         "database_name": "image-ranker-collector-data",
-        "title": "ImageRankerCollector",
-        "subtitle": "Can you see as neural network?",
+        "title": "ImageRanker",
+        "subtitle": "See it? Rank it!?",
         "pathToImages": "/public/images/",
         "pathData": "/data/",
 

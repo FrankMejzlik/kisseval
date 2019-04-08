@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include <iostream>
 #include <assert.h>
 #include <fstream>
@@ -11,6 +12,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <random>
+#include <sstream>
 #include <queue>
 
 #include <map>
@@ -18,6 +20,8 @@
 #include <locale>
 
 #include "config.h"
+
+#include "utility.h"
 #include "Database.h"
 #include "KeywordsContainer.h"
 
@@ -27,14 +31,25 @@ struct Image
 {
   Image() = delete;
   Image(size_t id, std::string&& filename, std::vector<std::pair<size_t, float>>&& probVector):
-    _imageId(id),
-    _filename(std::move(filename)),
-    _probabilityVector(std::move(probVector))
+    m_imageId(id),
+    m_filename(std::move(filename)),
+    m_probabilityVector(std::move(probVector))
   {}
 
-  size_t _imageId;
-  std::string _filename;
-  std::vector<std::pair<size_t, float>> _probabilityVector;
+  Image(size_t id, std::string&& filename, std::vector<std::pair<size_t, float>>&& probVector, std::vector<std::pair<size_t, uint8_t>>&& boolVector) :
+    m_imageId(id),
+    m_filename(std::move(filename)),
+    m_probabilityVector(std::move(probVector)),
+    m_booleanProbVector(boolVector)
+  {
+  }
+
+  size_t m_imageId;
+  std::string m_filename;
+  std::vector<std::pair<size_t, float>> m_probabilityVector;
+  std::vector<std::pair<size_t, uint8_t>> m_booleanProbVector;
+
+
 };
 
 
@@ -54,6 +69,12 @@ public:
   //!
   /*! <wordnetID, keyword, description> */
   using KeywordReference = std::vector<std::tuple<size_t, std::string, std::string>>;
+
+  enum RankingModel 
+  {
+    cBoolean,
+    cFuzzyLogic
+  };
 
   enum QueryOrigin
   {
@@ -85,6 +106,40 @@ public:
 
   ~ImageRanker() noexcept = default;
 
+  // Testing
+# if 1 
+
+  void TEST_GetVectorKeywords(size_t wordnetId)
+  {
+    auto keywords = _keywords.GetVectorKeywords(wordnetId);
+
+    std::cout << "===========" << std::endl;
+    std::cout << "KEYWORD: " << GetKeywordByWordnetId(wordnetId) << std::endl;
+
+    for (auto&& keywordId : keywords)
+    {
+      std::cout << GetKeywordByWordnetId(keywordId) << std::endl;
+    }
+  }
+
+
+  void TEST_GetCanonicalQuery(const std::string& query)
+  {
+    CnfFormula fml = _keywords.GetCanonicalQuery(query);
+
+    std::cout << "===========" << std::endl;
+    std::cout << "QUERY: " << query << std::endl;
+    std::cout << _keywords.StringifyCnfFormula(fml) << std::endl;
+
+  }
+
+#endif
+
+
+  //////////////////////////
+  //    API Methods
+  //////////////////////////
+  // vvvvvvvvvvvvvvvvvvvvvvv
 
   /*!
    * This processes input queries that come from users, generates results and sends them back
@@ -95,6 +150,15 @@ public:
   ImageReference GetRandomImage() const;
   KeywordReference GetNearKeywords(const std::string& prefix);
 
+  std::vector<std::pair<size_t, size_t>> RunModelTest(QueryOrigin queryOrigin, RankingModel rankingModel = DEFAULT_RANKING_MODEL) const;
+
+  std::vector<ImageReference> GetRelevantImages(const std::string& query, RankingModel rankingModel = DEFAULT_RANKING_MODEL) const;
+
+
+  // ^^^^^^^^^^^^^^^^^^^^^^^
+  //////////////////////////
+  //    API Methods
+  //////////////////////////
   
 private:
 #if PUSH_DATA_TO_DB
@@ -103,9 +167,12 @@ private:
   bool PushImagesToDatabase();
 #endif
 
-  size_t GetRandomImageId() const;
-
   
+  size_t GetRandomImageId() const;
+  
+
+  std::vector<ImageReference> GetRelevantImagesBooleanModel(const std::string& query) const;
+  std::vector<ImageReference> GetRelevantImagesFuzzyLogicModel(const std::string& query) const;
 
   std::string GetKeywordByWordnetId(size_t wordnetId)
   {

@@ -2,6 +2,9 @@
 #pragma once
 
 #include <string>
+
+using namespace std::literals::string_literals;
+
 #include <algorithm>
 #include <vector>
 #include <sstream>
@@ -11,7 +14,12 @@
 #include <set>
 
 #include "config.h"
+
+#include "utility.h"
 #include "Database.h"
+
+using Clause = std::vector<size_t>;
+using CnfFormula = std::vector<Clause>;
 
 struct Keyword
 {
@@ -33,7 +41,6 @@ struct Keyword
     m_hyponyms(hyponyms)
 
   {}
-
 
   size_t m_wordnetId;
   size_t m_vectorIndex;
@@ -65,6 +72,60 @@ public:
   std::string GetKeywordByVectorIndex(size_t index) const;
 
   std::string GetKeywordDescriptionByWordnetId(size_t wordnetId);
+  
+  CnfFormula GetCanonicalQuery(const std::string& query) const;
+
+  Keyword* GetKeywordByWord(const std::string& keyword) const
+  {
+    auto item = std::lower_bound(_keywords.begin(), _keywords.end(), keyword,
+      [](const std::unique_ptr<Keyword>& pWord, const std::string& str) 
+      {
+        // Compare strings
+        auto result = pWord->m_word.compare(str);
+
+        return result <= -1;
+      }
+    );
+    if (item == _keywords.cend()) 
+    {
+      LOG_ERROR("This keyword not found.");
+    }
+
+    return item->get();
+  }
+
+  /*!
+   * Returns vector of keywords that are present in ranking vector of images.
+   *
+   * \return
+   */
+  std::vector<size_t> GetVectorKeywords(size_t wordnetId) const;
+
+  std::vector<size_t> GetVectorKeywordsIndices(size_t wordnetId) const;
+
+
+  std::string StringifyCnfFormula(const CnfFormula& formula)
+  {
+    std::string result;
+
+    for (auto&& clause : formula)
+    {
+      result += "(";
+
+      for (auto&& vecIndex : clause)
+      {
+        result += GetKeywordByVectorIndex(vecIndex) + " | "s;
+      }
+      result.pop_back();
+      result.pop_back();
+
+      result += ") & ";
+    }
+    result.pop_back();
+    result.pop_back();
+
+    return result;
+  }
 
 private:
   bool ParseKeywordClassesFile(std::string_view filepath);
@@ -104,6 +165,7 @@ private:
   std::vector<size_t> FindAllNeedles(std::string_view hey, std::string_view needle);
 
 private:
+  //! Keywords
   std::vector< std::unique_ptr<Keyword> > _keywords;
 
   //! Maps wordnetID to Keyword

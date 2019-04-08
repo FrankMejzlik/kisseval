@@ -2,12 +2,22 @@
 
 #include <stdint.h>
 
+#define DEFAULT_RANKING_MODEL ImageRanker::cBoolean
+
+/*!
+  * Boolean model settings
+  */
+#define GENERATE_BOOL_IMAGE_VECTOR_NAIVELY 1 
+#define IS_TRUE_TRESHOLD 0.01f
+
 #define DEVELOPMENT 1
 #define STAGING 0
 #define PRODUCTION 0
 
+//! Will throw exception on LOG_ERROR
+#define THROW_ON_ERROR 1
 
-#define MIN_DESC_SEARCH_LENGTH 4
+#define MIN_DESC_SEARCH_LENGTH 3
 
 //! What is delimiter for synonyms in data files
 #define SYNONYM_DELIMITER '#'
@@ -36,7 +46,7 @@
  * 3: linode data1
  * 4: linode data2
  */
-#define PRIMARY_DB_ID 4
+#define PRIMARY_DB_ID 2
 #define SECONDARY_DB_ID 2
 
 
@@ -172,9 +182,9 @@
 
   #elif STAGING
 
-    #define SOLUTION_PATH "/home/devwesp/source/repos/ImageRanker/"
-    #define DATA_PATH "/home/devwesp/source/repos/ImageRanker/data/"
-    #define IMAGES_PATH "/home/devwesp/source/repos/ImageRanker/public/images/"
+    #define SOLUTION_PATH "/home/devwesp/source/repos/ImageRankerCollector/"
+    #define DATA_PATH "/home/devwesp/source/repos/ImageRankerCollector/data/"
+    #define IMAGES_PATH "/home/devwesp/source/repos/ImageRankerCollector/public/images/"
 
   #endif
 
@@ -208,9 +218,9 @@
 
   #elif STAGING
 
-    #define SOLUTION_PATH "/home/devwesp/source/repos/ImageRanker/"
-    #define DATA_PATH "/home/devwesp/source/repos/ImageRanker/data2/"
-    #define IMAGES_PATH "/home/devwesp/source/repos/ImageRanker/public/images/"
+    #define SOLUTION_PATH "/home/devwesp/source/repos/ImageRankerCollector/"
+    #define DATA_PATH "/home/devwesp/source/repos/ImageRankerCollector/data2/"
+    #define IMAGES_PATH "/home/devwesp/source/repos/ImageRankerCollector/public/images/"
 
   #endif
 
@@ -218,8 +228,21 @@
 
 #define GENERATE_COLLECTOR_INPUT_DATA 1
 
-//! Basic LOG macro
-#define LOG(x) std::cout << x << std::endl
+
+//! Standard logging macro
+#define LOG(x) std::cout << x << std::endl;
+
+//! Basic log error macro
+#if THROW_ON_ERROR
+
+  #define LOG_ERROR(x) std::cout << "ERROR: " << x << std::endl; throw std::runtime_error(std::string(x));
+
+#elif
+
+  #define LOG_ERROR(x) std::cout << "ERROR: " << x << std::endl;
+
+#endif
+
 
 
  //! Error value for size_t types

@@ -27,11 +27,32 @@
 </div>
 
 <div class="image-browser-main-tiles small-12 cell">
+<% if (typeof query !== 'undefined') {%>
+  <h3>Query: <%= query %></h3>
+  <% } %>
   <ul id="resultImagesList">
 
   <% if (typeof relevantImages !== 'undefined') {%>
-    <%- JSON.stringify(relevantImages) %>
+    <%- JSON.stringify(relevantImagesArray) %>
   <% } %>
+
+
+  <% if (typeof relevantImagesArray !== 'undefined') {%>
+
+<%
+for (var i = 0; i < relevantImagesArray.length; ++i) {
+%>
+
+<li class="rel-img-item">
+  <img src="/images/<%= relevantImagesArray[i].filename %>" id="<%= relevantImagesArray[i].imageId %>" />
+
+
+
+</li>
+
+<% }%>
+<% } %>
+
   </ul>
 
 </div>

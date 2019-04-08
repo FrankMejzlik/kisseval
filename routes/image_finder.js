@@ -80,15 +80,25 @@ router.post('/', function(req, res, next)
     // GetRelevantImages
     console.log("Getting relevant images!!!");
 
-    const relevantImagesArray = new Array();
-    relevantImagesArray.push("Img1");
-    relevantImagesArray.push("Img2");
-    relevantImagesArray.push(finalString);
+    // Get relevant images array for this query
+    /* RETURN:
+    [
+      {
+        "imageId" : 1234,
+        "filename": fefef.jpg
+      },
+      {
+        "imageId" : 1233314,
+        "filename": fefefaf.jpg
+      }
+      ...
+    ] */
+    const relevantImagesArray = global.imageRanker.GetRelevantImages(finalString);
 
-    data.relevantImages = relevantImagesArray;
 
-    // Parameters: SessionID, ImageID, string query
-    //const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString, queryType);
+    data.query = finalString;
+    data.relevantImagesArray = relevantImagesArray;
+
 
   }
 

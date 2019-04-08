@@ -22,6 +22,7 @@ KeywordsContainer::KeywordsContainer(std::string_view keywordClassesFilepath)
 
 
 
+
 KeywordsContainer::KeywordsContainer(std::vector< std::vector<std::string>>&& data)
 {
   // Parse data
@@ -126,10 +127,97 @@ bool KeywordsContainer::ParseKeywordDbDataStructure(std::vector< std::vector<std
   return true;
 }
 
+
+std::vector<size_t> KeywordsContainer::GetVectorKeywords(size_t wordnetId) const
+{
+  // Find root keyword
+  auto wordnetIdKeywordPair = _wordnetIdToKeywords.find(wordnetId);
+
+  if (wordnetIdKeywordPair == _wordnetIdToKeywords.end()) 
+  {
+    LOG_ERROR("Keyword not found!");
+
+    return std::vector<size_t>();
+  }
+
+  Keyword* pRootKeyword = wordnetIdKeywordPair->second;
+
+  // It not vector keyword
+  if (pRootKeyword->m_vectorIndex == SIZE_T_ERROR_VALUE)
+  {
+    std::vector<size_t> result;
+
+    // Recursively get hyponyms
+    for (auto&& hypo : pRootKeyword->m_hyponyms) 
+    {
+      auto recur = GetVectorKeywords(hypo);
+      result.reserve(result.size() + recur.size());
+      result.insert(result.end(),  recur.begin(), recur.end());
+    }
+    
+    return result;
+  }
+
+  // If vector word, return self
+  return std::vector<size_t>{ pRootKeyword->m_wordnetId };
+}
+
+std::vector<size_t> KeywordsContainer::GetVectorKeywordsIndices(size_t wordnetId) const
+{
+  // Find root keyword
+  auto wordnetIdKeywordPair = _wordnetIdToKeywords.find(wordnetId);
+
+  if (wordnetIdKeywordPair == _wordnetIdToKeywords.end())
+  {
+    LOG_ERROR("Keyword not found!");
+
+    return std::vector<size_t>();
+  }
+
+  Keyword* pRootKeyword = wordnetIdKeywordPair->second;
+
+  // It not vector keyword
+  if (pRootKeyword->m_vectorIndex == SIZE_T_ERROR_VALUE)
+  {
+    std::vector<size_t> result;
+
+    // Recursively get hyponyms
+    for (auto&& hypo : pRootKeyword->m_hyponyms)
+    {
+      auto recur = GetVectorKeywordsIndices(hypo);
+      result.reserve(result.size() + recur.size());
+      result.insert(result.end(), recur.begin(), recur.end());
+    }
+
+    return result;
+  }
+ 
+
+  // If vector word, return self
+  return std::vector<size_t>{ pRootKeyword->m_vectorIndex };
+}
+
+
+CnfFormula KeywordsContainer::GetCanonicalQuery(const std::string& query) const
+{
+  // Tokenize query
+  auto tokens = SplitString(query, '&');
+
+  std::vector<Clause> resultFormula;
+
+  // Get clauses from all tokens
+  for (auto&& token : tokens) 
+  {
+    Keyword* pKeyword = GetKeywordByWord(token);
+
+    resultFormula.emplace_back(GetVectorKeywordsIndices(pKeyword->m_wordnetId));
+  }
+
+  return resultFormula;
+}
+
 bool KeywordsContainer::ParseKeywordClassesFile(std::string_view filepath)
 {
-  
-
   // Open file with list of files in images dir
   std::ifstream inFile(filepath.data(), std::ios::in);
 
@@ -209,7 +297,7 @@ bool KeywordsContainer::ParseKeywordClassesFile(std::string_view filepath)
     // Get all hyperyms
     std::vector<size_t> hyperyms;
 
-    std::stringstream hyperymsSs(tokens[3]);
+    std::stringstream hyperymsSs(tokens[4]);
     std::string stringHypernym;
 
     while (std::getline(hyperymsSs, stringHypernym, SYNONYM_DELIMITER))

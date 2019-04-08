@@ -22,6 +22,7 @@ var collectorRouter = require('./routes/collector');
 var collectorDevRouter = require('./routes/collector_dev');
 var scoreboardRouter = require('./routes/scoreboard');
 var collectorAjax = require('./routes/collector_ajax');
+var imagesAjax = require('./routes/images_ajax');
 
 
 
@@ -99,6 +100,8 @@ app.use('/scoreboard', scoreboardRouter);
 
 // Allow only GET requests to 'collector_ajax' router
 app.get('/collector_ajax', collectorAjax.find);
+
+app.get('/images_ajax', imagesAjax.find);
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) 

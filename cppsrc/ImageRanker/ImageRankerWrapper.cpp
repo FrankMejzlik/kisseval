@@ -9,7 +9,9 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
     InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage),
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
-    InstanceMethod("GetRelevantImages", &ImageRankerWrapper::GetRelevantImages)
+    InstanceMethod("GetRelevantImages", &ImageRankerWrapper::GetRelevantImages),
+    InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
+    InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex)
   });
 
   constructor = Napi::Persistent(func);
@@ -258,6 +260,122 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
     napi_create_string_utf8(env, std::get<1>(image).data(), std::get<1>(image).size(), &filename);
 
     napi_set_property(env, result, filenameKey, filename);
+  }
+
+  return Napi::Object(env, result);
+}
+
+
+Napi::Value ImageRankerWrapper::GetKeywordByVectorIndex(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 1)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetKeywordByVectorIndex)").ThrowAsJavaScriptException();
+  }
+
+  Napi::Number keywordVectorIndex = info[0].As<Napi::Number>();
+
+  // Call native method
+  std::string keyword{ this->actualClass_->GetKeywordByVectorIndex(keywordVectorIndex.Uint32Value()) };
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_string_utf8(env, keyword.data(), keyword.size(), &result);
+
+
+  return Napi::String(env, result);
+}
+
+
+Napi::Value ImageRankerWrapper::GetImageDataById(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 1)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
+  }
+
+  Napi::Number imageId = info[0].As<Napi::Number>();
+
+  // Call native method
+  Image image{ this->actualClass_->GetImageDataById(imageId.Uint32Value()) };
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // Set "imageId"
+  {
+    napi_value imageIdKey;
+    napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
+    napi_value imageId;
+    napi_create_uint32(env, image.m_imageId, &imageId);
+
+    napi_set_property(env, result, imageIdKey, imageId);
+  }
+
+  // Set "filename"
+  {
+    napi_value filenameKey;
+    napi_create_string_utf8(env, "filename", 8, &filenameKey);
+    napi_value filename;
+    napi_create_string_utf8(env, image.m_filename.data(), image.m_filename.size(), &filename);
+
+    napi_set_property(env, result, filenameKey, filename);
+  }
+
+  // Set "probabilityVector"
+  {
+    std::string probVecKeyString{ "probabilityVector" };
+    napi_value probVecKey;
+    napi_create_string_utf8(env, probVecKeyString.data(), probVecKeyString.size(), &probVecKey);
+
+    // Create array
+    napi_value probVecArr;
+    napi_create_array(env, &probVecArr);
+    {
+      size_t i{ 0ULL };
+      for (auto&& probPair : image.m_probabilityVector)
+      {
+        napi_value pair;
+        napi_create_object(env, &pair);
+
+        // Set "index"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "index", 5, &key);
+          napi_value value;
+          napi_create_uint32(env, probPair.first, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        // Set "prob"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "prob", 4, &key);
+          napi_value value;
+          napi_create_double(env, probPair.second, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        napi_set_element(env, probVecArr, i, pair);
+
+        ++i;
+      }
+      
+    }
+    napi_set_property(env, result, probVecKey, probVecArr);
   }
 
   return Napi::Object(env, result);

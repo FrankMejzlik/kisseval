@@ -43,11 +43,8 @@
 for (var i = 0; i < relevantImagesArray.length; ++i) {
 %>
 
-<li class="rel-img-item">
+<li class="rel-img-item" data-open="modalImage" onclick="SwitchModalImageHtmlContents(<%= relevantImagesArray[i].imageId %>);">
   <img src="/images/<%= relevantImagesArray[i].filename %>" id="<%= relevantImagesArray[i].imageId %>" />
-
-
-
 </li>
 
 <% }%>
@@ -55,7 +52,51 @@ for (var i = 0; i < relevantImagesArray.length; ++i) {
 
   </ul>
 
+
+  <div class="reveal" id="modalImage" data-reveal data-src="999">
+    
+  <button class="close-button" data-close aria-label="Close modal" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
+
+<script>
+function SwitchModalImageHtmlContents(id) {
+
+    var $modal = $("#modalImage");
+
+    $.ajax('/images_ajax?imageId=' + id)
+      .done(function(resp)
+      {
+        var html = "<div class='modal-image-data'>";
+        html +="<img src='/images/" + resp.filename + "' />";
+        html += "<span>" + resp.imageId + "</span>";
+        html += "<ul class='probs-list'>";
+
+        for (var i = 0; i < resp.probabilityVector.length; ++i) 
+        {
+          html += "<li class='probs-list-item'>";
+            html += "<small class='index'>" + resp.probabilityVector[i].index +  "</small>";
+            html += "<p class='keyword'>" + resp.probabilityVector[i].keyword +  "</p>";
+            html += "<span class='prob'>" + resp.probabilityVector[i].prob +  "</span>";
+          html += "</li>";
+        }
+
+
+        html += "</ul>";
+        html += "</div>";
+
+        // Switch HTML
+        $modal.html(html);
+      }
+  );
+  }
+
+</script>
+
+</div>
+
+
 
 <!-- Include autocomplete module -->
 <%- include autocomplete_logic.ejs %>

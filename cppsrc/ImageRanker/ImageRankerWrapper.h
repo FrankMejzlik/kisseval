@@ -5,7 +5,8 @@
 #include <napi.h>
 #include "src/ImageRanker.h"
 
-class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper> {
+class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper> 
+{
  public:
   static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
@@ -43,5 +44,21 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper> {
 
   */
   Napi::Value GetRelevantImages(const Napi::CallbackInfo& info);
+
+  // ImageData GetImageDataById(size_t imageId) const;
+  /*
+  struct Image
+  {
+    size_t m_imageId;
+    std::string m_filename;
+    std::vector<std::pair<size_t, float>> m_probabilityVector;
+    std::vector<std::pair<size_t, uint8_t>> m_booleanProbVector;
+  };
+  */
+  Napi::Value GetImageDataById(const Napi::CallbackInfo& info);
+
+
+  // std::string GetKeywordByVectorIndex(size_t index) const
+  Napi::Value GetKeywordByVectorIndex(const Napi::CallbackInfo& info);
 
 };

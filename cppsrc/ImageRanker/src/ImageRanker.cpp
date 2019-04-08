@@ -46,6 +46,8 @@ ImageRanker::ImageRanker(
  
 }
 
+
+
 ImageRanker::ImageRanker(
   std::string_view imagesPath
 ) :
@@ -101,6 +103,21 @@ ImageRanker::KeywordReference ImageRanker::GetNearKeywords(const std::string& pr
   }
 
   return _keywords.GetNearKeywords(lower);
+}
+
+
+ImageRanker::ImageData ImageRanker::GetImageDataById(size_t imageId) const
+{
+  auto imgIdImgPair = _images.find(imageId);
+
+  if (imgIdImgPair == _images.end())
+  {
+    LOG_ERROR("Image not found.")
+    return ImageRanker::ImageData();
+  }
+
+  // Return copy to this Image instance
+  return ImageRanker::ImageData(imgIdImgPair->second);
 }
 
 std::vector<ImageRanker::GameSessionQueryResult> ImageRanker::SubmitUserQueriesWithResults(std::vector<ImageRanker::GameSessionInputQuery> inputQueries, QueryOrigin origin)

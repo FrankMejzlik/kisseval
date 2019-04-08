@@ -8,7 +8,7 @@
   * Boolean model settings
   */
 #define GENERATE_BOOL_IMAGE_VECTOR_NAIVELY 1 
-#define IS_TRUE_TRESHOLD 0.01f
+#define IS_TRUE_TRESHOLD 0.005f
 
 #define DEVELOPMENT 1
 #define STAGING 0

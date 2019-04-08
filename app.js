@@ -17,6 +17,7 @@ global.rootDir = __dirname;
 // Require routers
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var imageFinderRouter = require('./routes/image_finder');
 var collectorRouter = require('./routes/collector');
 var collectorDevRouter = require('./routes/collector_dev');
 var scoreboardRouter = require('./routes/scoreboard');
@@ -91,6 +92,7 @@ if (global.gConfig.log_all == true)
 // Push all routers into express middleware stack
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/image_finder', imageFinderRouter);
 app.use('/collector', collectorRouter);
 app.use('/collector_dev', collectorDevRouter);
 app.use('/scoreboard', scoreboardRouter);

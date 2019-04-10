@@ -25,9 +25,62 @@ padding-bottom: 40px;
 
 
 .rel-img-item {
+  cursor: pointer;
   width: 20%;
   display: inline-block;
   font-size: 0px;
+}
+
+.rel-img-item:hover,
+.rel-img-item:focus {
+  opacity: 0.7;
+  transition: 0.3s;
+}
+.modal-image-data {
+  text-align: center;
+}
+
+.reveal {
+  width: 43em;
+}
+
+.modal-image-data .probs-list {
+  text-align: left;
+  column-count: 3;
+  column-gap: 25px;
+}
+.modal-image-data .probs-list li {
+  
+border-bottom: 1px solid #aaa;
+  
+padding-right: 20px;
+  
+margin-bottom: 10px;
+}
+
+li.probs-list-item {}
+
+.modal-image-data .probs-list .probs-list-item .index {
+  display: inline-block;
+  font-size: 12px;
+  margin-right: 10px
+
+}
+
+.modal-image-data .probs-list .probs-list-item .keyword {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0;
+}
+
+
+.modal-image-data img {
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin-bottom: 30px;
+  margin: 0 auto 20px;
 }
 
 .test-form-message-bar {

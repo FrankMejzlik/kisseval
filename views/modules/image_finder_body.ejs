@@ -103,20 +103,21 @@ function SwitchModalImageHtmlContents(id) {
       {
         var html = "<div class='modal-image-data'>";
         html +="<img src='/images/" + resp.filename + "' />";
-        html += "<span>" + resp.imageId + "</span>";
-        html += "<ul class='probs-list'>";
+        html += "<h3 class='id'>Image ID:" + resp.imageId + "</h3>";
+        html += "<hr />";
+        html += "<ol class='probs-list'>";
 
         for (var i = 0; i < resp.probabilityVector.length; ++i) 
         {
           html += "<li class='probs-list-item'>";
-            html += "<small class='index'>" + resp.probabilityVector[i].index +  "</small>";
+            html += "<small class='index'>(" + resp.probabilityVector[i].index +  ")</small>";
             html += "<p class='keyword'>" + resp.probabilityVector[i].keyword +  "</p>";
-            html += "<span class='prob'>" + resp.probabilityVector[i].prob +  "</span>";
+            html += "<span class='prob'>" + resp.probabilityVector[i].prob.toFixed(10) +  "</span>";
           html += "</li>";
         }
 
 
-        html += "</ul>";
+        html += "</ol>";
         html += "</div>";
 
         // Switch HTML

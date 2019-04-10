@@ -17,11 +17,13 @@ global.rootDir = __dirname;
 // Require routers
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var testsRouter = require('./routes/tests');
 var imageFinderRouter = require('./routes/image_finder');
 var collectorRouter = require('./routes/collector');
 var collectorDevRouter = require('./routes/collector_dev');
 var scoreboardRouter = require('./routes/scoreboard');
 var collectorAjax = require('./routes/collector_ajax');
+var testsAjax = require('./routes/tests_ajax');
 var imagesAjax = require('./routes/images_ajax');
 
 
@@ -95,13 +97,17 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/image_finder', imageFinderRouter);
 app.use('/collector', collectorRouter);
+app.use('/tests', testsRouter);
 app.use('/collector_dev', collectorDevRouter);
 app.use('/scoreboard', scoreboardRouter);
 
 // Allow only GET requests to 'collector_ajax' router
 app.get('/collector_ajax', collectorAjax.find);
 
+// AJAXes
 app.get('/images_ajax', imagesAjax.find);
+app.get('/tests_ajax:RunBooleanCustomModelTest', testsAjax.RunBooleanCustomModelTest);
+
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) 

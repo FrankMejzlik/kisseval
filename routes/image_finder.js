@@ -9,11 +9,19 @@ var router = express.Router();
 // GET request on '/'
 router.get('/', function(req, res, next) 
 {
+  
+
   let phonyQuery = "false";
 
   // Get session object
   const sess = req.session;
 
+  var targetImageId = sess.targetImageId;
+  if (typeof targetImageId === 'undefined') 
+  {
+    targetImageId = 0;
+  }
+  
 
   // If still on same progress, show same image
   if (typeof sess.gameImage === 'undefined')
@@ -39,10 +47,11 @@ router.get('/', function(req, res, next)
     isDev
   };
 
+  data.targetImageId = targetImageId;
+
 
 
   res.render('image_finder', data);
-  return;
 });
    
 // Process POST from autocomplete form
@@ -57,12 +66,18 @@ router.post('/', function(req, res, next)
 
   // Get keywords user provided
   var keywords = req.body.keyword;
+  var targetImageId = Number(req.body.targetImageId);
+  sess.targetImageId = targetImageId;
+
+
+  if (typeof targetImageId === 'undefined') 
+  {
+    targetImageId = 0;
+  }
   
   // Initialize final string
   let finalString = "";
 
-  
-  
 
   // If at least one keyword provided
   if (typeof keywords !== 'undefined' && keywords.length > 0) 
@@ -93,11 +108,29 @@ router.post('/', function(req, res, next)
       }
       ...
     ] */
-    const relevantImagesArray = global.imageRanker.GetRelevantImages(finalString);
+
+    /*
+    enum RankingModel 
+      {
+        cBoolean,
+        cBooleanCustom,
+        cBooleanExtended,
+        cViretBase,
+        cFuzzyLogic
+      };  
+    */
+
+
+    const relData = global.imageRanker.GetRelevantImages(finalString, 500, 1, targetImageId);
+    const relevantImagesArray = relData.images;
+    const targetImageRank = relData.targetImageRank;
 
 
     data.query = finalString;
     data.relevantImagesArray = relevantImagesArray;
+    data.keywords = keywords;
+    data.targetImageRank = targetImageRank;
+    data.targetImageId = targetImageId;
 
 
   }

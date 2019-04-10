@@ -11,7 +11,10 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
     InstanceMethod("GetRelevantImages", &ImageRankerWrapper::GetRelevantImages),
     InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
-    InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex)
+    InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex),
+    InstanceMethod("RunModelTest", &ImageRankerWrapper::RunModelTest)
+
+    
   });
 
   constructor = Napi::Persistent(func);
@@ -266,6 +269,88 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
 }
 
 
+// const chartData = [
+//   { index: 0, value: 10 },
+//   { index: 1, value: 20 },
+//   { index: 2, value: 30 },
+//   { index: 3, value: 40 },
+//   { index: 4, value: 40.32 },
+//   { index: 5, value: 50.3 },
+//   { index: 6, value: 60.4 }
+// ];
+
+
+Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 3)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::RunModelTest)").ThrowAsJavaScriptException();
+  }
+
+  Napi::Number modelType = info[0].As<Napi::Number>();
+  Napi::Number dataSource = info[1].As<Napi::Number>();
+  Napi::Number probTrashold = info[2].As<Napi::Number>();
+
+  std::string probTrasholdStr{ std::to_string(probTrashold.DoubleValue()) };
+
+
+  #if LOG_CALLS
+
+  std::cout << "CALLING NATIVE 'RunModelTest' with args:" << std::endl;
+  std::cout << modelType.Uint32Value() << std::endl;
+  std::cout << dataSource.Uint32Value() << std::endl;
+  std::cout << probTrasholdStr << std::endl;
+  std::cout << "===================" << std::endl;
+
+  #endif
+
+
+  // Call native method
+  ImageRanker::ChartData chartDataPairs{ this->actualClass_->RunModelTest((ImageRanker::RankingModel)modelType.Uint32Value(), (ImageRanker::QueryOrigin)dataSource.Uint32Value(), probTrasholdStr) };
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_array(env, &result);
+
+  size_t i{ 0ULL };
+  for (auto&& pairIndexValue : chartDataPairs)
+  {
+    napi_value pair;
+    napi_create_object(env, &pair);
+
+    // Set "index"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "index", 5, &key);
+      napi_value value;
+      napi_create_uint32(env, pairIndexValue.first, &value);
+
+      napi_set_property(env, pair, key, value);
+    }
+
+    // Set "value"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "value", 5, &key);
+      napi_value value;
+      napi_create_uint32(env, pairIndexValue.second, &value);
+
+      napi_set_property(env, pair, key, value);
+    }
+
+    napi_set_element(env, result, i, pair);
+    ++i;
+  }
+
+  return Napi::Object(env, result);
+}
+
+
 Napi::Value ImageRankerWrapper::GetKeywordByVectorIndex(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
@@ -437,63 +522,105 @@ Napi::Value ImageRankerWrapper::GetRelevantImages(const Napi::CallbackInfo& info
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
 
+  std::cout << "CALLING NATIVE 'GetRelevantImages' with args:" << std::endl;
+
   // Process arguments
   int length = info.Length();
-  if (length != 1)
+  if (length != 4)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
   }
 
   // Transfer JS args to C args
   Napi::String query = info[0].As<Napi::String>();
+  Napi::Number numResults = info[1].As<Napi::Number>();
+  Napi::Number rankingModel = info[2].As<Napi::Number>();
+  Napi::Number imageId = info[3].As<Napi::Number>();
 
 #if LOG_CALLS
 
   std::cout << "CALLING NATIVE 'GetRelevantImages' with args:" << std::endl;
   std::cout << query.Utf8Value() << std::endl;
+  std::cout << numResults.Uint32Value() << std::endl;
+  std::cout << rankingModel.Uint32Value() << std::endl;
+  std::cout << imageId.Uint32Value() << std::endl;
   std::cout << "===================" << std::endl;
 
 #endif
 
   // Call native method: Get vector of relevant images
-  std::vector<ImageRanker::ImageReference> images{ this->actualClass_->GetRelevantImages(query.Utf8Value()) };
+  std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> images{ this->actualClass_->GetRelevantImages(query.Utf8Value(), numResults.Uint32Value(), (ImageRanker::RankingModel)rankingModel.Uint32Value(), imageId.Uint32Value()) };
+
+#if LOG_CALLS
+
+  std::cout << "CALLING NATIVE 'GetRelevantImages' with result:" << std::endl;
+  std::cout << images.second.m_targetImageRank << std::endl;
+  std::cout << "numImages = " << images.first.size() << std::endl;
+  std::cout << "===================" << std::endl;
+
+#endif
+
+
 
   napi_value result;
-  napi_create_array(env, &result);
-  {
+  napi_create_object(env, &result);
 
-    size_t i{0ULL};
-    for (auto&& image : images)
+
+  // "targetImageRank"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "targetImageRank", 15, &key);
+
+    napi_value value;
+    napi_create_uint32(env, images.second.m_targetImageRank, &value);
+
+    napi_set_property(env, result, key, value);
+  }
+
+
+  // "images"
+  {
+    napi_value imagesKey;
+    napi_create_string_utf8(env, "images", 6, &imagesKey);
+
+    napi_value resultImageArray;
+    napi_create_array(env, &resultImageArray);
     {
 
-      // Construct NAPI return object 
-      napi_value imageItem;
-      napi_create_object(env, &imageItem);
-
-      // Set "imageId"
+      size_t i{ 0ULL };
+      for (auto&& image : images.first)
       {
-        napi_value imageIdKey;
-        napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
-        napi_value imageId;
-        napi_create_uint32(env, std::get<0>(image), &imageId);
 
-        napi_set_property(env, imageItem, imageIdKey, imageId);
+        // Construct NAPI return object 
+        napi_value imageItem;
+        napi_create_object(env, &imageItem);
+
+        // Set "imageId"
+        {
+          napi_value imageIdKey;
+          napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
+          napi_value imageId;
+          napi_create_uint32(env, std::get<0>(image), &imageId);
+
+          napi_set_property(env, imageItem, imageIdKey, imageId);
+        }
+
+        // Set "filename"
+        {
+          napi_value filenameKey;
+          napi_create_string_utf8(env, "filename", 8, &filenameKey);
+          napi_value filename;
+          napi_create_string_utf8(env, std::get<1>(image).data(), std::get<1>(image).size(), &filename);
+
+          napi_set_property(env, imageItem, filenameKey, filename);
+        }
+
+        napi_set_element(env, resultImageArray, i, imageItem);
+
+        ++i;
       }
-
-      // Set "filename"
-      {
-        napi_value filenameKey;
-        napi_create_string_utf8(env, "filename", 8, &filenameKey);
-        napi_value filename;
-        napi_create_string_utf8(env, std::get<1>(image).data(), std::get<1>(image).size(), &filename);
-
-        napi_set_property(env, imageItem, filenameKey, filename);
-      }
-
-      napi_set_element(env, result, i, imageItem);
-
-      ++i;
     }
+    napi_set_property(env, result, imagesKey, resultImageArray);
   }
 
   return Napi::Object(env, result);

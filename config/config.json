@@ -12,7 +12,7 @@
         "database_password": "s5XurJ3uS3E52Gzm",
         "database_name": "image-ranker-collector-data",
         "title": "ImageRanker",
-        "subtitle": "See it? Rank it!?",
+        "subtitle": "See it? Rank it!",
         "pathToImages": "/public/images/",
         "pathData": "/data/",
 

@@ -4,13 +4,46 @@
   <form autocomplete="off" class="autocomplete-form" action="/image_finder/" method="POST">
 
       <div class="selected-keyword-container">
+        
+        <div id="imagePreview">
+          <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= targetImageId %>" />
+
+<% if (typeof keywords !== 'undefined') { %>
+
+          <span>Current rank: <%= targetImageRank %></span>
+
+          <% } %>
+        </div>
+        
+
+        <hr />
         <h3>Selected keywords</h3>
 
         <ul id="selectedKeywordsList">
       
-          <% if (typeof exampleItems !== 'undefined') {%>
-            <%- exampleItems %>
-          <% } %>
+          <% if (typeof keywords !== 'undefined') {
+              if (keywords instanceof Array) 
+              {
+                for (var i = 0; i < keywords.length; ++i) {
+                 %>
+            
+
+                  <li class="slected-keyword-checkbox">
+                    <input type="checkbox" name="keyword" value="<%= keywords[i] %>" checked="">                
+                    <span><%= keywords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
+                  </li>
+
+          <%    }
+          } else { %>
+
+            <li class="slected-keyword-checkbox">
+            <input type="checkbox" name="keyword" value="<%= keywords %>" checked="">                
+            <span><%= keywords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
+          </li>
+
+             <%
+          }
+           } %>
 
         </ul>
 
@@ -18,7 +51,7 @@
       </div>
 
       <div class="main-query-input-wrapper control-wrapper">
-
+          
           <input type="text" id="queryInput" tabindex="1" name="query">
 
       </div>

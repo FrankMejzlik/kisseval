@@ -45,6 +45,9 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   */
   Napi::Value GetRelevantImages(const Napi::CallbackInfo& info);
 
+
+  Napi::Value RunModelTest(const Napi::CallbackInfo& info);
+
   // ImageData GetImageDataById(size_t imageId) const;
   /*
   struct Image

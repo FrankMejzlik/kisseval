@@ -13,7 +13,7 @@
 
     <div class="test1 small-6 cell">
         
-      <form id="testForm1" autocomplete="off" class="tests-settings-form" action="/tests_ajax:RunBooleanCustomModelTest/" method="POST">
+      <form id="testForm1" autocomplete="off" class="tests-settings-form" action="/tests_ajax:RunBooleanCustomModelTest" method="POST">
         <div class="grid-container">
           <div class="grid-x grid-padding-x text-center">
 
@@ -203,33 +203,41 @@
 
 
 
-
-
-
-    <div class="test2 small-6 cell">
-      <form id="testForm2" autocomplete="off" class="tests-settings-form" action="/tests_ajax:RunBooleanCustomModelTest/" method="POST">
+<div class="test2 small-6 cell">
+        
+      <form id="testForm2" autocomplete="off" class="tests-settings-form" action="/tests_ajax:RunBooleanCustomModelTest" method="POST">
         <div class="grid-container">
-          <div class="grid-x grid-padding-x  text-center">
+          <div class="grid-x grid-padding-x text-center">
 
-            <div id="testForm2MessageBar" class="test-form-message-bar  medium-12 cell callout warning">
+            <div id="testForm2MessageBar" class="test-form-message-bar medium-12 cell callout warning">
               <p>Working...</p>
             </div>
 
             <div class="medium-6 cell">
               <label>Ranking model
-                <select name="model-type">
-                  <option value="boolean-custom">BooleanCustom</option>
-                  <option value="viret-base" selected>ViretBase</option>
+                <select name="model-type" id="testForm2ModelType">
+                  <option value="0">Boolean</option>
+                  <option value="1" selected>Boolean Custom</option>
+                  <option value="2" >Boolean Extended</option>
+                  <option value="3">Viret Base</option>
+                  <option value="4">Fuzzy Logic</option>
                 </select>
               </label>
             </div>
 
             <div class="medium-6 cell">
               <label>Data source
-                <select name="model-type">
-                  <option value="developers">Developers</option>
-                  <option value="public">Public</option>
+                <select name="data-source" id="testForm2DataSource">
+                  <option value="0" selected>Developers</option>
+                  <option value="1">Public</option>
                 </select>
+              </label>
+            </div>
+
+            <div class="medium-6 cell">
+              <label>
+                True treshold
+                <input disabled id="testForm2ProbTreshold" type="number" value="0.005" step="0.01">
               </label>
             </div>
             
@@ -237,12 +245,144 @@
               <input type="submit" class="button success" id="runTest2" value="Run test!">
             </div>
 
+            <div class="chart-active plot-cont small-12 cell">
+
+              <canvas id="chart12"></canvas>
+
+            </div>
+
+
           </div>
         </div>
       </form>
+      <!-- Chart plotting -->
+      <script src="/javascripts/Chart.bundle.js"></script>
+      <script>
+        function removeData(chart) {
+            chart2.data.labels.pop();
+            chart2.data.datasets.forEach((dataset) => {
+                dataset.data.pop();
+            });
+            chart2.update();
+        }
+
+        var ctx = document.getElementById('chart12').getContext('2d');
+
+        const chartSettings2 = {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {},
+
+            // Configuration options go here
+            options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Test 1'
+            },
+            tooltips: {
+              mode: 'index',
+              intersect: false,
+            },
+            hover: {
+              mode: 'nearest',
+              intersect: true
+            },
+            scales: {
+              xAxes: [{
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Rank'
+                }
+              }],
+              yAxes: [{
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Number of images'
+                }
+              }]
+            }
+          }
+        }
+
+        
+
+        var chart2 = new Chart(ctx, chartSettings2);
+
+        
+
+        /* attach a submit handler to the form */
+        $("#testForm2").submit(function(event) {
+
+          /* get the action attribute from the <form action=""> element */
+          var $form = $( this ),
+              url = $form.attr( 'action' );
+
+          /* stop form from submitting normally */
+          event.preventDefault();
+          
+          $form.removeClass("result-ok");
+          $form.addClass("running-test");
+
+          /* Send the data using post with element id name and name2*/
+          var posting = $.get( 
+            url, 
+            { 
+              modelType: $('#testForm2ModelType').val(), 
+              dataSource: $('#testForm2DataSource').val(),
+              probTreshold: $('#testForm2ProbTreshold').val()
+            } 
+          );
+
+          /* Alerts the results */
+          posting.done(function( response ) 
+          { 
+            const form = $("#testForm2");
+
+            const returnedData = response.chartData;
+
+            let labels = new Array();
+            let data = new Array();
+
+            // Create labels from indices
+            for (var i = 0; i < returnedData.length; ++i)
+            {
+              labels.push(returnedData[i].index);
+              data.push(returnedData[i].value);
+            }
 
 
+            var chartData = {
+              labels,
+              datasets: [
+                {
+                  borderColor: "rgba(255, 0, 0, 1)",
+                  backgroundColor: "rgba(255, 0, 0, 0)",
+                  label: 'BooleanCustom',
+                  pointRadius: 0.1,
+                  pointHoverRadius: 0.1,
+                  data,
+                },
+              ]
+            }
+                        
+            // Update data
+            chart2.data = chartData;
+            // Update chart
+            chart2.update();
+
+            form.removeClass("running-test");
+            form.addClass("result-ok");
+          });
+
+        });
+      </script>
     </div>
+
 
   </div>
 </section>

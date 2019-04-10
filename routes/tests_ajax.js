@@ -42,15 +42,3 @@ exports.RunBooleanCustomModelTest = function(req, res)
   // Send response
   res.jsonp(responseData);
 };
-
-exports.RunBaseViretModelTest = function(req, res) 
-{
-  // PARAMS: Treshold for probability if is in the picture
-
-  // var word = req.query.imageId;
-
-  // var imageData = foo(word);
-
-  // // Send response
-  // res.jsonp(imageData);
-};

@@ -1,0 +1,35 @@
+<li class="grid-x grid-padding-x text-center" data-property-index="${nextPropertyIndex}">
+
+    <a class="remove-poperty button" onclick="removeProperty(this)" >x</a>
+
+<div class="medium-6 cell">
+  <label>Ranking model
+    <select name="${nextPropertyIndex}][modelType]">
+      <option value="0">Boolean</option>
+      <option value="1" selected>Boolean Custom</option>
+      <option value="2" >Boolean Extended</option>
+      <option value="3">Viret Base</option>
+      <option value="4">Fuzzy Logic</option>
+    </select>
+  </label>
+</div>
+
+<div class="medium-6 cell">
+  <label>Data source
+    <select name="${nextPropertyIndex}][dataSource]">
+      <option value="0" selected>Developers</option>
+      <option value="1">Public</option>
+    </select>
+  </label>
+</div>
+
+<div class="medium-6 cell">
+  <label>
+    True treshold
+    <input disabled name="${nextPropertyIndex}][trueTreshold]" type="number" value="0.005" step="0.01">
+  </label>
+</div>
+
+</li>
+
+<script>

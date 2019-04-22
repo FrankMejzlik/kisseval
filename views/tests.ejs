@@ -21,33 +21,10 @@
               <p>Working...</p>
             </div>
 
-            <div class="medium-6 cell">
-              <label>Ranking model
-                <select name="model-type" id="testForm1ModelType">
-                  <option value="0">Boolean</option>
-                  <option value="1" selected>Boolean Custom</option>
-                  <option value="2" >Boolean Extended</option>
-                  <option value="3">Viret Base</option>
-                  <option value="4">Fuzzy Logic</option>
-                </select>
-              </label>
-            </div>
+            <ul id="propList1" class="model-props-list small-12 cell ">
 
-            <div class="medium-6 cell">
-              <label>Data source
-                <select name="data-source" id="testForm1DataSource">
-                  <option value="0" selected>Developers</option>
-                  <option value="1">Public</option>
-                </select>
-              </label>
-            </div>
-
-            <div class="medium-6 cell">
-              <label>
-                True treshold
-                <input disabled id="testForm1ProbTreshold" type="number" value="0.005" step="0.01">
-              </label>
-            </div>
+              <a class="button" onclick="addProperty1()" >(+)</a>
+            </ul>
             
             <div class="medium-12 cell">
               <input type="submit" class="button success" id="runTest1" value="Run test!">
@@ -63,9 +40,44 @@
           </div>
         </div>
       </form>
+
+      <!-- Model properties generation -->
+      <script>
+        const targetList = document.getElementById("propList1");
+        let nextPropertyIndex = 0;
+        
+
+        function addProperty1() 
+        {
+          let propertyTemplate = `<%- include modules/tests_model_properties.ejs %>`;
+
+          targetList.innerHTML += propertyTemplate;
+
+          // Increment property counter
+          ++nextPropertyIndex;
+        }
+
+        function removeProperty(element) 
+        {
+          $(element).parent().remove();
+        }
+
+      </script>
+
       <!-- Chart plotting -->
       <script src="/javascripts/Chart.bundle.js"></script>
       <script>
+      function getFormData($form){
+          var unindexed_array = $form.serializeArray();
+          var indexed_array = {};
+
+          $.map(unindexed_array, function(n, i){
+              indexed_array[n['name']] = n['value'];
+          });
+
+          return indexed_array;
+      }
+
         function removeData(chart) {
             chart.data.labels.pop();
             chart.data.datasets.forEach((dataset) => {
@@ -136,14 +148,16 @@
           $form.removeClass("result-ok");
           $form.addClass("running-test");
 
+          const formData = getFormData($form);
+
+
           /* Send the data using post with element id name and name2*/
           var posting = $.get( 
             url, 
-            { 
-              modelType: $('#testForm1ModelType').val(), 
-              dataSource: $('#testForm1DataSource').val(),
-              probTreshold: $('#testForm1ProbTreshold').val()
-            } 
+            {
+              formData
+            }
+            
           );
 
           /* Alerts the results */
@@ -151,31 +165,55 @@
           { 
             const form = $("#testForm1");
 
-            const returnedData = response.chartData;
+            const returnedDataArray = response.chartDataArray;
+
+            let datasets = new Array();
+
+            const num = returnedDataArray.length;
+            const divPerChanel = (num / 3) + 1;
 
             let labels = new Array();
-            let data = new Array();
 
-            // Create labels from indices
-            for (var i = 0; i < returnedData.length; ++i)
+            for (var i = 0; i < returnedDataArray.length; ++i) 
             {
-              labels.push(returnedData[i].index);
-              data.push(returnedData[i].value);
+              const returnedData = returnedDataArray[i];
+
+              // Calculate coefs for colour
+              const r = (i % 3 == 0 ? 1 : 0) * 255;
+              const g = (i % 3 == 1 ? 1 : 0) * 255;
+              const b = (i % 3 == 2 ? 1 : 0) * 255;
+
+
+              const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
+          
+              let data = new Array();
+
+              // Create labels from indices
+              for (var j = 0; j < returnedData.length; ++j)
+              {
+                if (i == 0) {
+                  labels.push(returnedData[j].index);
+                }
+                
+                data.push(returnedData[j].value);
+              }
+
+              const chartData = {
+                borderColor,
+                backgroundColor: "rgba(255, 0, 0, 0)",
+                label: 'BooleanCustom',
+                pointRadius: 0.1,
+                pointHoverRadius: 0.1,
+                data,
+              }
+
+              datasets.push(chartData);
             }
 
 
             var chartData = {
               labels,
-              datasets: [
-                {
-                  borderColor: "rgba(255, 0, 0, 1)",
-                  backgroundColor: "rgba(255, 0, 0, 0)",
-                  label: 'BooleanCustom',
-                  pointRadius: 0.1,
-                  pointHoverRadius: 0.1,
-                  data,
-                },
-              ]
+              datasets
             }
                         
             // Update data

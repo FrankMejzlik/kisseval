@@ -41,6 +41,28 @@
         </div>
       </form>
 
+      <!-- Model properties panel toggling -->
+      <script>
+        $( document ).ready(function() {
+          setupModelPropertiesEventListener();
+        });
+
+        function setupModelPropertiesEventListener() 
+        {
+          $(".model-type-select").change(function() 
+          {
+            const $this = $(this);
+        
+            //$this.parent().removeClass();
+            //$this.parent().addClass("model-type-" + $this.val());
+        
+            $this.parent().parent().parent().children(".model-properties").slideUp();
+            $this.parent().parent().parent().children(".model-type-" + $this.val()).slideDown();
+        
+          });
+        }
+      </script>
+
       <!-- Model properties generation -->
       <script>
         const targetList = document.getElementById("propList1");
@@ -52,6 +74,9 @@
           let propertyTemplate = `<%- include modules/tests_model_properties.ejs %>`;
 
           targetList.innerHTML += propertyTemplate;
+
+          // Setup listeners
+          setupModelPropertiesEventListener();
 
           // Increment property counter
           ++nextPropertyIndex;

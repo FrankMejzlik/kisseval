@@ -39,17 +39,19 @@ struct Image
     m_probabilityVector(std::move(probVector))
   {}
 
-  Image(size_t id, std::string&& filename, std::vector<std::pair<size_t, float>>&& probVector, std::vector<std::pair<size_t, uint8_t>>&& boolVector) :
+  Image(size_t id, std::string&& filename, std::vector<std::pair<size_t, float>>&& probVector, std::vector<std::pair<size_t, uint8_t>>&& boolVector, std::vector<std::pair<size_t, float>>&& probVecUnsorted) :
     m_imageId(id),
     m_filename(std::move(filename)),
     m_probabilityVector(std::move(probVector)),
-    m_booleanProbVector(boolVector)
+    m_booleanProbVector(boolVector),
+    m_probabilityVectorUnsorted(probVecUnsorted)
   {
   }
 
   size_t m_imageId;
   std::string m_filename;
   std::vector<std::pair<size_t, float>> m_probabilityVector;
+  std::vector<std::pair<size_t, float>> m_probabilityVectorUnsorted;
   std::vector<std::pair<size_t, uint8_t>> m_booleanProbVector;
 
 

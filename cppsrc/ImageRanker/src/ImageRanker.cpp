@@ -308,10 +308,13 @@ std::map<size_t, Image> ImageRanker::ParseSoftmaxBinFile(std::string_view filepa
 
     // Initialize vector of floats for this row
     std::vector<std::pair<size_t, float>> floats;
+    std::vector<std::pair<size_t, float>> floatsUnsorted;
     std::vector<std::pair<size_t, uint8_t>> boolVector;
 
     // Reserve exact capacitys
     floats.reserve(numFloats);
+    boolVector.reserve(numFloats);
+    floatsUnsorted.reserve(numFloats);
 
     // Iterate through all floats in row
     for (size_t i = 0; i < numFloats; ++i)
@@ -342,6 +345,9 @@ std::map<size_t, Image> ImageRanker::ParseSoftmaxBinFile(std::string_view filepa
     // Get image filename 
     std::string filename{ imageFilenames[id / _idOffset] };
 
+    // Make copy of vector before sorting
+    floatsUnsorted = floats;
+
     // Sort probabilites
     std::sort(
       floats.begin(), floats.end(), 
@@ -352,7 +358,7 @@ std::map<size_t, Image> ImageRanker::ParseSoftmaxBinFile(std::string_view filepa
     );
 
     // Push final row
-    images.emplace(std::make_pair(id, Image(id, std::move(filename), std::move(floats), std::move(boolVector))));
+    images.emplace(std::make_pair(id, Image(id, std::move(filename), std::move(floats), std::move(boolVector), std::move(floatsUnsorted))));
   }
 
   
@@ -438,8 +444,7 @@ ImageRanker::ChartData ImageRanker::RunViretBaseModelTest(ImageRanker::QueryOrig
     size_t imageId{ FastAtoU(idQueryRow[0].data()) };
     const std::string& userQuery{ idQueryRow[1] };
 
-    auto resultImages = GetRelevantImages(userQuery, 0ULL, ImageRanker::RankingModel::cViretBase, imageId);
-
+    auto resultImages = GetRelevantImages(userQuery, 1000ULL, ImageRanker::RankingModel::cViretBase, imageId);
 
     size_t transformedRank = resultImages.second.m_targetImageRank / scaleDownFactor;
 
@@ -624,70 +629,126 @@ std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> Im
 
 std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> ImageRanker::GetImageRankingViretBaseModel(const std::string& query, size_t numResults, size_t targetImageId) const
 {
-  CnfFormula fml = _keywords.GetCanonicalQuery(query);
+  // Create formula tree from text based query
+  // Numerical values represents index in softmax vector
+  CnfFormula formula = _keywords.GetCanonicalQuery(query);
 
-  auto cmp = [](const std::pair<double, std::pair<size_t, std::string>>& left, const std::pair<double, std::pair<size_t, std::string>>& right)
+  // Comparator lambda for priority queue structure
+  auto lessThenComparator = [](const std::pair<double, ImageRanker::ImageReference>& left, const std::pair<double, ImageRanker::ImageReference>& right)
   {
+    // One pair is less then if it's rank is less
     return left.first < right.first;
   };
-
+  
+  // Initialize container
+  std::vector<std::pair<double, ImageRanker::ImageReference>> container;
   // Reserve enough space in container
-  std::vector<std::pair<double, std::pair<size_t, std::string>>> container;
   container.reserve(GetNumImages());
 
-  std::priority_queue<std::pair<double, std::pair<size_t, std::string>>, std::vector<std::pair<double, std::pair<size_t, std::string>>>, decltype(cmp)> maxHeap(cmp, std::move(container));
+  // Initialize max heap used for sorting Image pairs by their ranking
+  std::priority_queue<std::pair<double, ImageRanker::ImageReference>, std::vector<std::pair<double, ImageRanker::ImageReference>>, decltype(lessThenComparator)> maxHeap(lessThenComparator, std::move(container));
 
-  // Extract desired number of images out of min heap
+  // Initialize result variable
   std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> result;
+  // Reserve enough space
   result.first.reserve(numResults);
 
-  // Check every image if satisfies query formula
+  // Iterate through all images
   for (auto&& idImgPair : _images)
   {
+    // Create reference to this image
     const Image& img{ idImgPair.second };
-    double imageRanking{ 1.0f };
+    
+    // Initial image ranking is 1 because we'll multiply it
+    //double imageRanking{ 0.0 };
+    uint8_t imageRanking{ 0};
 
-    double clauseRanking{ 0.0f };
-    // Itarate through clauses connected with AND
-    for (auto&& clause : fml)
+    // Itarate through all clauses connected with AND
+    for (auto&& clause : formula)
     {
-      bool clauseSucc{ false };
+      // Initialize clause ranking with 0, we will add to it
+      //double clauseRanking{ 0.0f };
+      uint8_t clauseRanking{ 0 };
 
-      // Iterate through predicates
-      for (auto&& var : clause)
+      // Iterate through all variables (keywords) in this clause
+      for (auto&& keywordIndex : clause)
       {
-        // Add up labels in one clause
-        clauseRanking += img.m_probabilityVector[var].second;
+        // Get probability of this keyword in this picture
+        //double probability{ img.m_probabilityVectorUnsorted[keywordIndex].second };
+        uint8_t probability{ img.m_booleanProbVector[keywordIndex].second };
+
+      #if 0 // Experiment with this
+
+        // If probability is less than treshold
+        if (probability < IS_TRUE_TRESHOLD)
+        {
+          // Ignore this value
+          //continue;
+        }
+
+      #endif  
+
+        // Add this probability to current clause ranking
+        clauseRanking += probability;
       }
 
-      imageRanking = imageRanking * clauseRanking;
+    #if 0  // Experiment with this
+
+      // If clause ranking too low 
+      if (clauseRanking < DBL_EPSILON) 
+      {
+        // Skip it
+        continue;
+      }
+
+    #endif  
+
+      // Multiply all AND connected clauses's rankings
+      imageRanking = imageRanking + clauseRanking;
     }
 
-
-    // Insert result to min heap
+    // Insert result ranking max priority queue
     maxHeap.push(std::pair(imageRanking, std::pair(img.m_imageId, img.m_filename)));
   }
 
+
+  // Get final size of heap
   size_t sizeHeap{ maxHeap.size() };
+
+  // Iterate through all image results on heap
   for (size_t i = 0ULL; i < sizeHeap; ++i)
   {
+    // Get the greatest value from top
     auto pair = maxHeap.top();
+    // Pop it
     maxHeap.pop();
 
-    // If is target image, save it
+    // If this is the image we're looking for
     if (targetImageId == pair.second.first)
     {
+      // Store it's rank => it's order in heap + 1
       result.second.m_targetImageRank = i + 1;
     }
 
+    // If desired number of results to return is not full yet
     if (i < numResults)
     {
+      // Add this image into result images
       result.first.emplace_back(std::move(pair.second));
     }
 
   }
 
+  // Return structure 
+  /*
+    < vector<ImageReferences>, QueryResult>
 
+    ImageReferences = pair<imageId, filename>
+
+    QueryResult  {
+      m_targetImageRank // Rank given to image we've been looking for
+    }
+  */
   return result;
 }
 
@@ -696,16 +757,37 @@ std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> Im
 {
   CnfFormula fml = _keywords.GetCanonicalQuery(query);
 
-  auto cmp = [](const std::pair<size_t, std::pair<size_t, std::string>>& left, const std::pair<size_t, std::pair<size_t, std::string>>& right)
+  auto cmp = [](const std::pair<std::pair<size_t, float>, std::pair<size_t, std::string>>& left, const std::pair<std::pair<size_t, float>, std::pair<size_t, std::string>>& right)
   { 
-    return left.first > right.first; 
+
+
+    if (left.first.first > right.first.first)
+    {
+      // First is greater
+      return true;
+    }
+    else if (left.first.first == right.first.first)
+    {
+      if (left.first.second < right.first.second)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
   };
 
   // Reserve enough space in container
-  std::vector<std::pair<size_t, std::pair<size_t, std::string>>> container;
+  std::vector<std::pair<std::pair<size_t, float>, std::pair<size_t, std::string>>> container;
   container.reserve(GetNumImages());
 
-  std::priority_queue<std::pair<size_t, std::pair<size_t, std::string>>, std::vector<std::pair<size_t, std::pair<size_t, std::string>>>, decltype(cmp)> minHeap(cmp, std::move(container));
+  std::priority_queue<std::pair<std::pair<size_t, float>, std::pair<size_t, std::string>>, std::vector<std::pair<std::pair<size_t, float>, std::pair<size_t, std::string>>>, decltype(cmp)> minHeap(cmp, std::move(container));
 
   // Extract desired number of images out of min heap
   std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> result;
@@ -716,6 +798,7 @@ std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> Im
   {
     const Image& img{ idImgPair.second };
     size_t imageSucc{ 0ULL };
+    float imageSubRank{ 0.0f };
 
     // Itarate through clauses connected with AND
     for (auto&& clause : fml)
@@ -731,6 +814,8 @@ std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> Im
           clauseSucc = true;
           break;
         }
+
+        imageSubRank += img.m_probabilityVectorUnsorted[var].second;
       }
 
       // If this clause not satisfied
@@ -742,7 +827,7 @@ std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> Im
 
 
     // Insert result to min heap
-    minHeap.push(std::pair(imageSucc, std::pair(img.m_imageId, img.m_filename)));
+    minHeap.push(std::pair(std::pair(imageSucc, imageSubRank), std::pair(img.m_imageId, img.m_filename)));
   }
 
   size_t sizeHeap{ minHeap.size() };

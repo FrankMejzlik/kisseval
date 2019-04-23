@@ -10,7 +10,7 @@
   * Boolean model settings
   */
 #define GENERATE_BOOL_IMAGE_VECTOR_NAIVELY 1 
-#define IS_TRUE_TRESHOLD 0.005f
+#define IS_TRUE_TRESHOLD 0.001f
 
 
 #define NUM_IMAGES_PER_PAGE 200

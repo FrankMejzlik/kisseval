@@ -22,7 +22,9 @@ body {
 padding-top: 40px;
 padding-bottom: 40px;
 }
-
+.hidden-by-default {
+  display: none;
+}
 
 .rel-img-item {
   cursor: pointer;
@@ -133,7 +135,25 @@ li.probs-list-item {}
   padding: 5px;
 }
 
+.model-props-list {
+  
+}
+.model-props-list li {
+  position: relative;
+  border-bottom: 1px solid #aaa;
+  padding:  20px 0 10px;
+}
 
+.remove-poperty.button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 4px 7px;
+  border-radius: 50%;
+  background-color: #ff0000;
+  top: -10px;
+
+}
 
 h1 {
   font-size: 30px;

@@ -54,6 +54,9 @@ const a = path.join(global.rootDir, global.gConfig.pathToImages);
 // Dataset specific properties
 // DATASET 2
 const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
+
+const bb = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.preSoftmaxFilename2);
+
 const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
 const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
 const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
@@ -74,6 +77,7 @@ const i = global.gConfig.idOffset2;
 
 console.log(a);
 console.log(b);
+console.log(bb);
 console.log(c);
 console.log(d);
 console.log(e);
@@ -83,7 +87,7 @@ console.log(h);
 console.log(i); 
 
 // Create global instance if ImageRanker
-global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d,e,f,g,h,i);
+global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,bb,c,d,e,f,g,h,i);
 
 
 

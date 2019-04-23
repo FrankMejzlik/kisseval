@@ -1,10 +1,10 @@
 
 const util = require('util')
 
-var foo = function (req, res, next) 
+var foo = function (aggFn, modelType, dataSource, settings) 
 {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(req, res, next);
+  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settings);
 
   return result;
 }
@@ -18,11 +18,31 @@ exports.RunBooleanCustomModelTest = function(req, res)
 
   // var word = req.query.imageId;
 
-  const modelType = Number(req.query.modelType);
-  const dataSource = Number(req.query.dataSource);
-  const probTreshold = Number(req.query.probTreshold);
+  // Construct response Object
+  let  responseData = new Object();
+  responseData.chartDataArray = new Array();
 
-  var chartData = foo(modelType, dataSource, probTreshold);
+  const formDataArray = req.query.formData;
+
+  for (var i = 0; i <formDataArray.length; ++i)
+  {
+    const aggFn = Number(formDataArray[i].aggregation);
+    const modelType = Number(formDataArray[i].modelType);
+    const dataSource = Number(formDataArray[i].dataSource);
+
+    // Settings
+    const probTreshold = formDataArray[i].trueTreshold;
+
+    const chartData = foo(aggFn, modelType, dataSource, probTreshold);
+
+    
+
+
+    // Insert this result data to array
+    responseData.chartDataArray.push(chartData);
+  }
+
+  
 
 
   // const chartData = [
@@ -35,9 +55,7 @@ exports.RunBooleanCustomModelTest = function(req, res)
   //   { index: 6, value: 60.4 }
   // ];
 
-  // Construct response Object
-  let  responseData = new Object();
-  responseData.chartData = chartData;
+  
 
   // Send response
   res.jsonp(responseData);

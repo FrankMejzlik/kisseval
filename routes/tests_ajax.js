@@ -1,10 +1,10 @@
 
 const util = require('util')
 
-var foo = function (req, res, next) 
+var foo = function (aggFn, modelType, dataSource, settings) 
 {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(req, res, next);
+  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settings);
 
   return result;
 }
@@ -26,11 +26,16 @@ exports.RunBooleanCustomModelTest = function(req, res)
 
   for (var i = 0; i <formDataArray.length; ++i)
   {
+    const aggFn = Number(formDataArray[i].aggregation);
     const modelType = Number(formDataArray[i].modelType);
     const dataSource = Number(formDataArray[i].dataSource);
-    const probTreshold = Number(formDataArray[i].probTreshold);
-  
-    const chartData = foo(modelType, dataSource, probTreshold);
+
+    // Settings
+    const probTreshold = formDataArray[i].trueTreshold;
+
+    const chartData = foo(aggFn, modelType, dataSource, probTreshold);
+
+    
 
 
     // Insert this result data to array

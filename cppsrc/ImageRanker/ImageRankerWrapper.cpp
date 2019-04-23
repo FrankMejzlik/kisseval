@@ -32,23 +32,25 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
   // Process arguments
   int length = info.Length();
   
-  if (length != 9) {
+  if (length != 10) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
 
 
   Napi::String imagesPath = info[0].As<Napi::String>();
   Napi::String probabilityVectorFilepath = info[1].As<Napi::String>();
-  Napi::String deepFeaturesFilepath = info[2].As<Napi::String>();
-  Napi::String keywordClassesFilepath = info[3].As<Napi::String>();
-  Napi::String imagesDirList = info[4].As<Napi::String>();
-  Napi::Number columnIndexOfFilename = info[5].As<Napi::Number>();
-  Napi::Number imagesDirListFileLineLength = info[6].As<Napi::Number>();
-  Napi::Number numRows = info[7].As<Napi::Number>();
-  Napi::Number idOffset = info[8].As<Napi::Number>();
+  Napi::String rawProbabilityVectorFilepath = info[2].As<Napi::String>();
+  Napi::String deepFeaturesFilepath = info[3].As<Napi::String>();
+  Napi::String keywordClassesFilepath = info[4].As<Napi::String>();
+  Napi::String imagesDirList = info[5].As<Napi::String>();
+  Napi::Number columnIndexOfFilename = info[6].As<Napi::Number>();
+  Napi::Number imagesDirListFileLineLength = info[7].As<Napi::Number>();
+  Napi::Number numRows = info[8].As<Napi::Number>();
+  Napi::Number idOffset = info[9].As<Napi::Number>();
 
   std::cout << imagesPath.Utf8Value() << std::endl;
   std::cout << probabilityVectorFilepath.Utf8Value() << std::endl;
+  std::cout << rawProbabilityVectorFilepath.Utf8Value() << std::endl;
   std::cout << deepFeaturesFilepath.Utf8Value() << std::endl;
   std::cout << keywordClassesFilepath.Utf8Value() << std::endl;
   std::cout << imagesDirList.Utf8Value() << std::endl;
@@ -58,18 +60,37 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
   std::cout << numRows.Int64Value() << std::endl;
   std::cout << idOffset.Int64Value() << std::endl;
 
+  if (rawProbabilityVectorFilepath.Utf8Value().size() <= 0) 
+  {
+    this->actualClass_ = new ImageRanker(
+      imagesPath.Utf8Value(),
+      probabilityVectorFilepath.Utf8Value(),
+      deepFeaturesFilepath.Utf8Value(),
+      keywordClassesFilepath.Utf8Value(),
+      imagesDirList.Utf8Value(),
+      columnIndexOfFilename.Int64Value(),
+      imagesDirListFileLineLength.Int64Value(),
+      numRows.Int64Value(),
+      idOffset.Int64Value()
+    );
+  } 
+  else 
+  {
+    this->actualClass_ = new ImageRanker(
+      imagesPath.Utf8Value(),
+      probabilityVectorFilepath.Utf8Value(),
+      rawProbabilityVectorFilepath.Utf8Value(),
+      deepFeaturesFilepath.Utf8Value(),
+      keywordClassesFilepath.Utf8Value(),
+      imagesDirList.Utf8Value(),
+      columnIndexOfFilename.Int64Value(),
+      imagesDirListFileLineLength.Int64Value(),
+      numRows.Int64Value(),
+      idOffset.Int64Value()
+    );
+  }
 
-  this->actualClass_ = new ImageRanker(
-    imagesPath.Utf8Value(),
-    probabilityVectorFilepath.Utf8Value(),
-    deepFeaturesFilepath.Utf8Value(),
-    keywordClassesFilepath.Utf8Value(),
-    imagesDirList.Utf8Value(),
-    columnIndexOfFilename.Int64Value(),
-    imagesDirListFileLineLength.Int64Value(),
-    numRows.Int64Value(),
-    idOffset.Int64Value()
-  );
+  
 }
 
 
@@ -287,31 +308,31 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 
   // Process arguments
   int length = info.Length();
-  if (length != 3)
+  if (length != 4)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::RunModelTest)").ThrowAsJavaScriptException();
   }
 
-  Napi::Number modelType = info[0].As<Napi::Number>();
-  Napi::Number dataSource = info[1].As<Napi::Number>();
-  Napi::Number probTrashold = info[2].As<Napi::Number>();
+  Napi::Number aggFn = info[0].As<Napi::Number>();
+  Napi::Number modelType = info[1].As<Napi::Number>();
+  Napi::Number dataSource = info[2].As<Napi::Number>();
 
-  std::string probTrasholdStr{ std::to_string(probTrashold.DoubleValue()) };
+  Napi::String trueTreshold = info[3].As<Napi::String>();
 
+  std::vector<std::string> sett;
 
-  #if LOG_CALLS
+  sett.push_back(trueTreshold.Utf8Value());
 
-  std::cout << "CALLING NATIVE 'RunModelTest' with args:" << std::endl;
-  std::cout << modelType.Uint32Value() << std::endl;
-  std::cout << dataSource.Uint32Value() << std::endl;
-  std::cout << probTrasholdStr << std::endl;
-  std::cout << "===================" << std::endl;
-
-  #endif
-
-
+  
   // Call native method
-  ImageRanker::ChartData chartDataPairs{ this->actualClass_->RunModelTest((ImageRanker::RankingModel)modelType.Uint32Value(), (ImageRanker::QueryOrigin)dataSource.Uint32Value(), probTrasholdStr) };
+  ImageRanker::ChartData chartDataPairs{ 
+    this->actualClass_->RunModelTest(
+      (ImageRanker::AggregationFunction)aggFn.Uint32Value(),
+      (ImageRanker::RankingModel)modelType.Uint32Value(), 
+      (ImageRanker::QueryOrigin)dataSource.Uint32Value(),
+      sett
+    ) 
+  };
 
   // Construct NAPI return object 
   napi_value result;
@@ -549,7 +570,12 @@ Napi::Value ImageRankerWrapper::GetRelevantImages(const Napi::CallbackInfo& info
 #endif
 
   // Call native method: Get vector of relevant images
-  std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> images{ this->actualClass_->GetRelevantImages(query.Utf8Value(), numResults.Uint32Value(), (ImageRanker::RankingModel)rankingModel.Uint32Value(), imageId.Uint32Value()) };
+  std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> images{ this->actualClass_->GetRelevantImages(
+    query.Utf8Value(), numResults.Uint32Value(), 
+    ImageRanker::AggregationFunction::cMinMaxClamp, (ImageRanker::RankingModel)rankingModel.Uint32Value(), 
+    std::vector<std::string>({"0.01"}),
+    imageId.Uint32Value()) 
+  };
 
 #if LOG_CALLS
 

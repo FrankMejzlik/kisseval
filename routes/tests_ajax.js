@@ -1,10 +1,10 @@
 
 const util = require('util')
 
-var foo = function (aggFn, modelType, dataSource, settings) 
+var foo = function (aggFn, modelType, dataSource, settingsArray) 
 {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settings);
+  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settingsArray);
 
   return result;
 }
@@ -20,7 +20,7 @@ exports.RunBooleanCustomModelTest = function(req, res)
 
   // Construct response Object
   let  responseData = new Object();
-  responseData.chartDataArray = new Array();
+  responseData.chartDataArray = new Array();  
 
   const formDataArray = req.query.formData;
 
@@ -30,10 +30,28 @@ exports.RunBooleanCustomModelTest = function(req, res)
     const modelType = Number(formDataArray[i].modelType);
     const dataSource = Number(formDataArray[i].dataSource);
 
-    // Settings
-    const probTreshold = formDataArray[i].trueTreshold;
+    // Variable with all settings
+    const settingsArray = new Array();
 
-    const chartData = foo(aggFn, modelType, dataSource, probTreshold);
+    // Settings
+    // Boolean custom
+    const probTreshold = formDataArray[i].trueTreshold;
+    settingsArray.push(probTreshold);
+
+
+    // Viret base
+    const probTreshold4 = formDataArray[i].trueTreshold4;
+    const queryOperations = formDataArray[i].queryOperations;
+    settingsArray.push(probTreshold4);
+    settingsArray.push(queryOperations);
+
+    // 3: bucket sorting
+    const inBucketRanking = formDataArray[i].inBucketRanking;
+    settingsArray.push(inBucketRanking);
+
+    
+
+    const chartData = foo(aggFn, modelType, dataSource, settingsArray);
 
     
 

@@ -317,20 +317,44 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   Napi::Number modelType = info[1].As<Napi::Number>();
   Napi::Number dataSource = info[2].As<Napi::Number>();
 
-  Napi::String trueTreshold = info[3].As<Napi::String>();
+  // Get settings vector
+  std::vector<std::string> settings;
 
-  std::vector<std::string> sett;
+  Napi::Array settingsArray = info[3].As<Napi::Array>();
+  for(size_t i = 0; i < settingsArray.Length(); i++)
+  {
+    Napi::Value v = settingsArray[i];
+    if (v.IsString())
+    {
+      std::string value = (std::string)v.As<Napi::String>();
+      settings.push_back(value);
+    }
+  }
 
-  sett.push_back(trueTreshold.Utf8Value());
+  #if LOG_CALLS
 
-  
+  std::cout << "CALLING NATIVE 'RunModelTest' with args:" << std::endl;
+  std::cout << aggFn.Uint32Value() << std::endl;
+  std::cout << modelType.Uint32Value() << std::endl;
+  std::cout << dataSource.Uint32Value() << std::endl;
+  std::cout << "settings:" << std::endl;
+
+  for (auto&& s : settings) 
+  {
+    std::cout << s << std::endl;
+  }
+
+  std::cout << "===================" << std::endl;
+
+  #endif
+
   // Call native method
   ImageRanker::ChartData chartDataPairs{ 
     this->actualClass_->RunModelTest(
       (ImageRanker::AggregationFunction)aggFn.Uint32Value(),
       (ImageRanker::RankingModel)modelType.Uint32Value(), 
       (ImageRanker::QueryOrigin)dataSource.Uint32Value(),
-      sett
+      settings
     ) 
   };
 

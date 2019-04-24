@@ -20,9 +20,12 @@ exports.RunBooleanCustomModelTest = function(req, res)
 
   // Construct response Object
   let  responseData = new Object();
+  
   responseData.chartDataArray = new Array();  
 
-  const formDataArray = req.query.formData;
+  const formDataArray = req.query.submitData.formData;
+  const formId = req.query.submitData.formId;
+  responseData.formId = formId;
 
   for (var i = 0; i <formDataArray.length; ++i)
   {

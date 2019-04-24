@@ -1,0 +1,32 @@
+<li id="testBlock${nextBlockIndex}" class="test-block small-6 cell">
+        
+  <form data-id="${nextBlockIndex}" id="testForm${nextBlockIndex}" autocomplete="off" class="tests-settings-form" action="/tests_ajax" method="POST">
+    <div class="grid-container">
+      <div class="grid-x grid-padding-x text-center">
+
+        <div class="test-form-message-bar medium-12 cell callout warning">
+          <p>Working...</p>
+        </div>
+
+        <canvas class="chart-canvas" id="chart${nextBlockIndex}"></canvas> 
+
+        <ul class="model-props-list small-12 cell ">
+          <a class="button" onclick="addProperty(this)" >Add test to chart</a>
+        </ul>
+
+         
+        
+        <div class="medium-12 cell">
+          <input type="submit" class="run-test-btn button success"  value="Run test!" >
+        </div>
+
+        <div class="chart-active plot-cont small-12 cell">
+
+        
+
+        </div>
+      </div>
+    </div>
+  </form>
+
+</li>

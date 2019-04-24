@@ -137,22 +137,25 @@ li.probs-list-item {}
 
 .model-props-list {
   
+margin: 0 0 0 20px;
 }
 .model-props-list li {
   position: relative;
   border-bottom: 1px solid #aaa;
-  padding:  20px 0 10px;
+  padding: 30px 0 10px;
+  border-top: 1px solid #aaa;
+  margin-bottom: -1px;
 }
 
 .remove-poperty.button {
   position: absolute;
-  right: 0;
+  right: -10px;
   top: 0;
-  padding: 4px 7px;
+  padding: 4px 8px;
   border-radius: 50%;
   background-color: #ff0000;
-  top: -10px;
-
+  top: -9px;
+  z-index: 2;
 }
 
 h1 {
@@ -161,6 +164,20 @@ h1 {
 
 h2 {
   font-size: 26px;
+}
+
+.index-title {
+  position: absolute;
+  left: calc(50% - 15px);
+  top: -15px;
+  background: #97d6d5;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #000000;
+  font-size: 26px;
+  line-height: 1.4;
+  border: 2px solid #eeb121;
 }
 
 h3 {
@@ -612,6 +629,10 @@ input[type=submit] {
 
 .callout.warning {
   background-color: #97D6D5;
+  position: absolute;
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 .callout.alert {
@@ -735,4 +756,82 @@ font-size: 18px;
   margin-bottom: 30px;
   border-bottom: 2px solid #aaa;
 
+}
+
+#testListSection 
+{
+  list-style: none;
+
+}
+
+/* xoxo */
+
+.model-props-list {
+  margin-bottom: 20px !important;
+}
+
+.test-block {
+  padding: 20px 20px 20px 20px;
+  /* margin-bottom: 20px; */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+
+.test-block:nth-child(4n) {
+  background-color: #eeb12173;
+}
+
+.test-block:nth-child(4n + 1) {
+  background-color: #eeb12173;
+}
+
+.test-block:nth-child(4n + 2) {
+  background-color: #97d6d580;
+}
+.test-block:nth-child(4n + 3) {
+  background-color: #97d6d580;
+}
+
+.test-block label {
+  text-align: left;
+}
+
+.test-block small {
+  font-size: 16px;
+  display: block;
+  text-align: left;
+  margin: 10px 0 0px 0px;
+  font-weight: 600;
+}
+
+.test-block select {
+  padding: 1px 20px 1px 1px;
+  margin: 0;
+  font-size: 12px;
+  height: 1.6rem;
+}
+
+.test-block  [type='text'], 
+.test-block [type='password'], 
+.test-block [type='date'], 
+.test-block [type='datetime'], 
+.test-block [type='datetime-local'], 
+.test-block [type='month'], 
+.test-block [type='week'], 
+.test-block [type='email'], 
+.test-block [type='number'], 
+.test-block [type='search'], 
+.test-block [type='tel'], 
+.test-block [type='time'], 
+.test-block [type='url'], 
+.test-block [type='color'], 
+.test-block  textarea {
+  margin: 0;
+  height: 1.6rem;
+  font-size: 12px;
+}
+
+.tests-settings-form {
+  position: relative;
 }

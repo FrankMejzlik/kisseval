@@ -8,39 +8,14 @@
 
       <h2>Tests on gathered data</h2>
 
+      <a class="button alert" onclick="CreateNewChartPanel()" >Add chart window</a>
     </div>
+  </div>
 
+  <ul id="testListSection" class="grid-x grid-padding-x align-center">
 
-    <div class="test1 small-6 cell">
-        
-      <form id="testForm1" autocomplete="off" class="tests-settings-form" action="/tests_ajax:RunBooleanCustomModelTest" method="POST">
-        <div class="grid-container">
-          <div class="grid-x grid-padding-x text-center">
-
-            <div id="testForm1MessageBar" class="test-form-message-bar medium-12 cell callout warning">
-              <p>Working...</p>
-            </div>
-
-            <ul id="propList1" class="model-props-list small-12 cell ">
-
-              <a class="button" onclick="addProperty1()" >Add test to chart</a>
-            </ul>
-            
-            <div class="medium-12 cell">
-              <input type="submit" class="button success" id="runTest1" value="Run test!">
-            </div>
-
-            <div class="chart-active plot-cont small-12 cell">
-
-              <canvas id="chart11"></canvas>
-
-            </div>
-
-
-          </div>
-        </div>
-      </form>
-
+    
+    
       <!-- Model properties panel toggling -->
       <script>
         $( document ).ready(function() {
@@ -53,9 +28,6 @@
           {
             const $this = $(this);
         
-            //$this.parent().removeClass();
-            //$this.parent().addClass("model-type-" + $this.val());
-        
             $this.parent().parent().parent().children(".model-properties").slideUp();
             $this.parent().parent().parent().children(".model-type-" + $this.val()).slideDown();
         
@@ -65,15 +37,18 @@
 
       <!-- Model properties generation -->
       <script>
-        const targetList = document.getElementById("propList1");
+        
         let nextPropertyIndex = 0;
+        let nextBlockIndex = 0;
         
 
-        function addProperty1() 
+        function addProperty(element) 
         {
           let propertyTemplate = `<%- include modules/tests_model_properties.ejs %>`;
-
-          targetList.innerHTML += propertyTemplate;
+          const targetList = $(element).parent();
+          
+          //targetList.html(targetList.html() + propertyTemplate);
+          targetList.append(propertyTemplate);
 
           // Setup listeners
           setupModelPropertiesEventListener();
@@ -92,6 +67,47 @@
       <!-- Chart plotting -->
       <script src="/javascripts/Chart.bundle.js"></script>
       <script>
+        const chartSettings = {
+          // The type of chart we want to create
+          type: 'line',
+
+          // The data for our dataset
+          data: {},
+
+          // Configuration options go here
+          options: {
+          responsive: true,
+          title: {
+            display: false,
+            text: 'Test 1'
+          },
+          tooltips: {
+            mode: 'index',
+            intersect: false,
+          },
+          hover: {
+            mode: 'nearest',
+            intersect: true
+          },
+          scales: {
+            xAxes: [{
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Rank'
+              }
+            }],
+            yAxes: [{
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Number of images'
+              }
+            }]
+          }
+        }
+      }
+
       function getFormData($form){
           var unindexed_array = $form.serializeArray();
           var indexed_array = {};
@@ -111,60 +127,9 @@
             chart.update();
         }
 
-        var ctx = document.getElementById('chart11').getContext('2d');
-
-        const chartSettings = {
-            // The type of chart we want to create
-            type: 'line',
-
-            // The data for our dataset
-            data: {},
-
-            // Configuration options go here
-            options: {
-            responsive: true,
-            title: {
-              display: true,
-              text: 'Test 1'
-            },
-            tooltips: {
-              mode: 'index',
-              intersect: false,
-            },
-            hover: {
-              mode: 'nearest',
-              intersect: true
-            },
-            scales: {
-              xAxes: [{
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Rank'
-                }
-              }],
-              yAxes: [{
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Number of images'
-                }
-              }]
-            }
-          }
-        }
-
-        
-
-        var chart = new Chart(ctx, chartSettings);
-
-        
-
-        /* attach a submit handler to the form */
-        $("#testForm1").submit(function(event) {
-
-          /* get the action attribute from the <form action=""> element */
-          var $form = $( this ),
+        function submitTestForm(event, element) {
+        /* get the action attribute from the <form action=""> element */
+          var $form = $( element ),
               url = $form.attr( 'action' );
 
           /* stop form from submitting normally */
@@ -175,12 +140,19 @@
 
           const formData = getFormData($form);
 
+          const id = $form.data("id");
+
+          
+
+          const submitData = new Object();
+          submitData.formData = formData;
+          submitData.formId = id;
 
           /* Send the data using post with element id name and name2*/
           var posting = $.get( 
             url, 
             {
-              formData
+              submitData
             }
             
           );
@@ -188,7 +160,7 @@
           /* Alerts the results */
           posting.done(function( response ) 
           { 
-            const form = $("#testForm1");
+            const formId = response.formId;
 
             const returnedDataArray = response.chartDataArray;
 
@@ -223,12 +195,15 @@
                 data.push(returnedData[j].value);
               }
 
+              const label = String(i);
+
               const chartData = {
                 borderColor,
                 backgroundColor: "rgba(255, 0, 0, 0)",
-                label: 'BooleanCustom',
-                pointRadius: 0.1,
-                pointHoverRadius: 0.1,
+                label,
+                pointRadius: 0.5,
+                pointHoverRadius: 0.5,
+                borderWidth: 1.0,
                 data,
               }
 
@@ -240,212 +215,54 @@
               labels,
               datasets
             }
-                        
+
+            const chartCanvas = document.getElementById("chart" + formId);
+            const form = document.getElementById("testForm" + formId);
+            const $form = $(form);                        
+
+            // Create chart
+            var ctx = chartCanvas.getContext('2d');
+            var chart = new Chart(ctx, chartSettings);
+
             // Update data
             chart.data = chartData;
             // Update chart
             chart.update();
 
-            form.removeClass("running-test");
-            form.addClass("result-ok");
+            $form.removeClass("running-test");
+            $form.addClass("result-ok");
           });
-
-        });
-      </script>
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="test2 small-6 cell">
-        
-      <form id="testForm2" autocomplete="off" class="tests-settings-form" action="/tests_ajax:RunBooleanCustomModelTest" method="POST">
-        <div class="grid-container">
-          <div class="grid-x grid-padding-x text-center">
-
-            <div id="testForm2MessageBar" class="test-form-message-bar medium-12 cell callout warning">
-              <p>Working...</p>
-            </div>
-
-            <div class="medium-6 cell">
-              <label>Ranking model
-                <select name="model-type" id="testForm2ModelType">
-                  <option value="0">Boolean</option>
-                  <option value="1" selected>Boolean Custom</option>
-                  <option value="2" >Boolean Extended</option>
-                  <option value="3">Viret Base</option>
-                  <option value="4">Fuzzy Logic</option>
-                </select>
-              </label>
-            </div>
-
-            <div class="medium-6 cell">
-              <label>Data source
-                <select name="data-source" id="testForm2DataSource">
-                  <option value="0" selected>Developers</option>
-                  <option value="1">Public</option>
-                </select>
-              </label>
-            </div>
-
-            <div class="medium-6 cell">
-              <label>
-                True treshold
-                <input disabled id="testForm2ProbTreshold" type="number" value="0.005" step="0.01">
-              </label>
-            </div>
-            
-            <div class="medium-12 cell">
-              <input type="submit" class="button success" id="runTest2" value="Run test!">
-            </div>
-
-            <div class="chart-active plot-cont small-12 cell">
-
-              <canvas id="chart12"></canvas>
-
-            </div>
-
-
-          </div>
-        </div>
-      </form>
-      <!-- Chart plotting -->
-      <script src="/javascripts/Chart.bundle.js"></script>
-      <script>
-        function removeData(chart) {
-            chart2.data.labels.pop();
-            chart2.data.datasets.forEach((dataset) => {
-                dataset.data.pop();
-            });
-            chart2.update();
         }
 
-        var ctx = document.getElementById('chart12').getContext('2d');
+        function CreateNewChartPanel()
+        {
+          const targetChartContainer = document.getElementById("testListSection");
 
-        const chartSettings2 = {
-            // The type of chart we want to create
-            type: 'line',
+          let propertyTemplate = `<%- include modules/tests_chart_block.ejs %>`;
 
-            // The data for our dataset
-            data: {},
+          targetChartContainer.innerHTML += propertyTemplate;
 
-            // Configuration options go here
-            options: {
-            responsive: true,
-            title: {
-              display: true,
-              text: 'Test 1'
-            },
-            tooltips: {
-              mode: 'index',
-              intersect: false,
-            },
-            hover: {
-              mode: 'nearest',
-              intersect: true
-            },
-            scales: {
-              xAxes: [{
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Rank'
-                }
-              }],
-              yAxes: [{
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Number of images'
-                }
-              }]
-            }
-          }
+          // Setup listeners
+          //setupModelPropertiesEventListener()
+
+          $(".tests-settings-form").submit(function(event) {
+
+            submitTestForm(event, this);
+
+          })
+
+          // Increment property counter
+          ++nextBlockIndex;
         }
+        
 
         
 
-        var chart2 = new Chart(ctx, chartSettings2);
-
-        
-
-        /* attach a submit handler to the form */
-        $("#testForm2").submit(function(event) {
-
-          /* get the action attribute from the <form action=""> element */
-          var $form = $( this ),
-              url = $form.attr( 'action' );
-
-          /* stop form from submitting normally */
-          event.preventDefault();
-          
-          $form.removeClass("result-ok");
-          $form.addClass("running-test");
-
-          /* Send the data using post with element id name and name2*/
-          var posting = $.get( 
-            url, 
-            { 
-              modelType: $('#testForm2ModelType').val(), 
-              dataSource: $('#testForm2DataSource').val(),
-              probTreshold: $('#testForm2ProbTreshold').val()
-            } 
-          );
-
-          /* Alerts the results */
-          posting.done(function( response ) 
-          { 
-            const form = $("#testForm2");
-
-            const returnedData = response.chartData;
-
-            let labels = new Array();
-            let data = new Array();
-
-            // Create labels from indices
-            for (var i = 0; i < returnedData.length; ++i)
-            {
-              labels.push(returnedData[i].index);
-              data.push(returnedData[i].value);
-            }
+;
 
 
-            var chartData = {
-              labels,
-              datasets: [
-                {
-                  borderColor: "rgba(255, 0, 0, 1)",
-                  backgroundColor: "rgba(255, 0, 0, 0)",
-                  label: '',
-                  pointRadius: 0.1,
-                  pointHoverRadius: 0.1,
-                  data,
-                },
-              ]
-            }
-                        
-            // Update data
-            chart2.data = chartData;
-            // Update chart
-            chart2.update();
 
-            form.removeClass("running-test");
-            form.addClass("result-ok");
-          });
-
-        });
       </script>
-    </div>
-
 
   </div>
 </section>

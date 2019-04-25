@@ -28,8 +28,8 @@
           {
             const $this = $(this);
         
-            $this.parent().parent().parent().children(".model-properties").slideUp();
-            $this.parent().parent().parent().children(".model-type-" + $this.val()).slideDown();
+            $this.parent().parent().parent().children(".model-properties").hide();
+            $this.parent().parent().parent().children(".model-type-" + $this.val()).show();
         
           });
         }
@@ -254,14 +254,6 @@
           // Increment property counter
           ++nextBlockIndex;
         }
-        
-
-        
-
-;
-
-
-
       </script>
 
   </div>

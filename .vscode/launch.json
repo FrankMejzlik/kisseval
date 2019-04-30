@@ -8,7 +8,17 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\bin\\www"
+            "program": "${workspaceFolder}/bin/www"
+        },
+        {
+            "type": "cppvsdbg",
+            "request": "launch",
+            "preLaunchTask": "npm: build:dev",
+            "name": "Debug MSVS C++",
+            "program": "c://Program Files/nodejs/node.exe",
+            "args": [
+                "${workspaceFolder}/bin/www"
+            ]
         }
     ]
 }

@@ -5,15 +5,17 @@
         "cflags_cc!": [ "-fno-exceptions" ],
         "sources": [
             "cppsrc/main.cpp",
-            "cppsrc/ImageRanker/src/ImageRanker.cpp",
-            "cppsrc/ImageRanker/src/KeywordsContainer.cpp",
-            "cppsrc/ImageRanker/src/Database.cpp",
-            "cppsrc/ImageRanker/ImageRankerWrapper.cpp",
+            "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/ImageRanker.cpp",
+            "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/KeywordsContainer.cpp",
+            "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/Database.cpp",
+            "cppsrc/ImageRankerWrapper/ImageRankerWrapper.cpp",
         ],
 
         'include_dirs': [
             "<!@(node -p \"require('node-addon-api').include\")",
-            "cppsrc/ImageRanker/external/MariaDB_Connector_C_64-bit/include/"
+            "cppsrc/ImageRankerWrapper/",
+            "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/",
+            "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/include/"
         ],
         'libraries': [],
         'dependencies': [
@@ -38,7 +40,7 @@
 
                     "link_settings": {
                         "libraries": [
-                            "-lmariadbclient"
+                            "-lmariadb", "-L/usr/lib64/"
                         ],
                         "configurations": {
                             "Debug": {
@@ -62,6 +64,9 @@
             [
             "OS=='win'",
             {
+                "defines": [
+                    "_HAS_EXCEPTIONS=1"
+                ],
                 "link_settings": {
                     "libraries": [
                         "-lmariadbclient.lib",
@@ -74,7 +79,10 @@
                         "msvs_settings": {
                             "VCLinkerTool": {
                                 "AdditionalLibraryDirectories": [
-                                    "../cppsrc/ImageRanker/external/MariaDB_Connector_C_64-bit/lib/"
+                                    "../cppsrc/ImageRankerWrapper/ImageRanker/ImageRankerexternal/MariaDB_Connector_C_64-bit/lib/"
+                                ],
+                                "AdditionalOptions": [
+                                    "/MP /EHsc"
                                 ]
                             }
                         }
@@ -102,7 +110,7 @@
                                 "EnableCOMDATFolding": 2,
                                 "LinkIncremental": 1,
                                 "AdditionalLibraryDirectories": [
-                                    "../cppsrc/ImageRanker/external/MariaDB_Connector_C_64-bit/lib/"
+                                    "../cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/lib/"
                                 ]
                             }
                         }

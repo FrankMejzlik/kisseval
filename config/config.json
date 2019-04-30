@@ -31,10 +31,7 @@
         "preSoftmaxFilename2": "Studenti_NasNetLarge.pre-softmax",
         "deepFeaturesFilename2": "Studenti_NasNetLarge.deep-features",
         "keywordClassesFilename2": "keyword_classes.txt",
-        "imagesDirList2": "dir_images.txt",
-        "columnIndexOfFilename2": 4,
-        "imagesDirListFileLineLength2": 90,
-        "numRows2": 20000,
+        "imagesDirList2": "files.txt",
         "idOffset2": 1,
 
 

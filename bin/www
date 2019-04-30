@@ -5,8 +5,9 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('imageranker:server');
 var http = require('http');
+var debug = require('debug')('imageranker:server');
+
 
 /**
  * Get port from environment and store in Express.

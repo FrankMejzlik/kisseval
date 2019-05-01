@@ -19,6 +19,62 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   ImageRanker* actualClass_;
 
    Napi::Value Initialize(const Napi::CallbackInfo& info);
+
+   // std::vector<std::pair<TestSettings, ChartData>> RunGridTest(const std::vector<TestSettings>& testSettings);
+   /*
+    NATIVE RETURN FORMAT:
+    [
+      (
+          (
+            ImageRanker::Aggregation,
+            ImageRanker::RankingModel,
+            ImageRanker::QueryOrigin,
+            [ "opt1","opt2", ...]
+          ),        
+         [
+           (0, 10.2)
+           (10, 11.6),
+           (20, 12.15),
+           (30, 13.3),
+           (40, 14.1),
+           (50, 15.1),
+           ...
+         ]
+      ), 
+     ... ]
+
+
+    DYNAMIC RETURN FORMAT:
+    [
+      { "testSettings":
+          {
+            "aggregation": 1,
+            "rankingModel" 2,
+            "queryOrigin": 3,
+            "modelOptions" :[ "opt1", "opt2", ...]
+          },
+         "chartData": [
+           { index: 0, value: 10.6 },
+           { index: 1, value: 11.3 },
+           ...
+         ]
+      },
+     ... ]
+   */
+   Napi::Value RunGridTest(const Napi::CallbackInfo& info);
+
+   // std::pair<uint8_t, uint8_t> GetGridTestProgress() const;
+   /*
+   RETURN FORMAT:
+      (numCompletedTests, numTests)
+
+      e.g.
+      (244, 500)
+   
+   DYNAMIC RETURN FORMAT:
+    { "numCompletedTests": 244, "numTests": 500 }
+   */
+   Napi::Value GetGridTestProgress(const Napi::CallbackInfo& info);
    
   // std::vector<GameSessionQueryResult> SubmitUserQueriesWithResults(std::vector<GameSessionInputQuery> inputQueries, QueryOrigin origin = QueryOrigin::cPublic);
   Napi::Value SubmitUserQueriesWithResults(const Napi::CallbackInfo& info);
@@ -30,7 +86,7 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   Napi::Value GetNearKeywords(const Napi::CallbackInfo& info);
 
   //std::vector<ImageReference> GetRelevantImages(const std::string& query, RankingModel rankingModel = DEFAULT_RANKING_MODEL) const;
-  /* RETURN:
+  /* DYNAMIC RETURN:
   [
     {
       "imageId" : 1234,

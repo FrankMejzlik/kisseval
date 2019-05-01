@@ -7,9 +7,17 @@
     <div class="section-header test1 small-12 cell text-center">
 
       <h2>Tests on gathered data</h2>
+      <h3 id="gridTestProgress"></h3>
 
       <a class="button alert" onclick="CreateNewChartPanel()" >Add chart window</a>
     </div>
+  </div>
+
+  <div class="top-settings">
+    <ul id="topSetList" class="top-settings-list">
+
+    </ul>
+
   </div>
 
   <ul id="testListSection" class="grid-x grid-padding-x align-center">
@@ -106,6 +114,44 @@
             }]
           }
         }
+      }
+
+      function startFetchingGridTestProgress($form) 
+      {
+        var $outputElem = $("#gridTestProgress");
+
+        const url = "/tests_ajax_GetGridTestProgress";
+
+        const submitData = new Object();
+
+        (function(){
+            
+            
+          // Send GET request
+          var posting = $.get( 
+            url, 
+            {
+              submitData
+            }
+          );
+
+          // Process response
+          posting.done(function( response ) 
+          { 
+
+            const complete = response.numCompletedTests;
+            const total = response.numTests;
+
+            $outputElem.html(complete + '\\' + total);
+
+          });
+
+            setTimeout(arguments.callee, 2000);
+        })();
+
+        
+
+
       }
 
       function getFormData($form){
@@ -237,10 +283,10 @@
         function submitGridTest(event, element) 
         {
           // Get form that has been submited
-          const $form = $(element);
+          const $form = $(element).closest("form");
           
           // Define AJAX request URL
-          const url = "/tests_ajax:RunGridTestWrapper";
+          const url = "/tests_ajax_RunGridTest";
 
           // Stop usual submit
           event.preventDefault();
@@ -256,6 +302,8 @@
           submitData.formData = formData;
           submitData.formId = id;
 
+          startFetchingGridTestProgress($form);
+
           // Send GET request
           var posting = $.get( 
             url, 
@@ -267,9 +315,11 @@
           // Process response
           posting.done(function( response ) 
           { 
+            // Form that has been submitted
             const formId = response.formId;
 
-            const returnedDataArray = response.chartDataArray;
+            // Array of the best models and their settings
+            const returnedDataArray = response.gridTestResults;
 
             let datasets = new Array();
 
@@ -278,9 +328,48 @@
 
             let labels = new Array();
 
+            // Iterate over returned array of best results
+            /*
+            [
+              { "testSettings":
+                  {
+                    "aggregation": 1,
+                    "rankingModel" 2,
+                    "queryOrigin": 3,
+                    "modelOptions" :[ "opt1", "opt2", ...]
+                  },
+                "chartData": [
+                  { index: 0, value: 10.6 },
+                  { index: 1, value: 11.3 },
+                  ...
+                ]
+              },
+            ... ]
+            */
             for (var i = 0; i < returnedDataArray.length; ++i) 
             {
-              const returnedData = returnedDataArray[i];
+              // Settings of this test result
+              // xoxo
+              const returnedTestSettings = returnedDataArray[i].testSettings;
+              
+
+              var html = "<li>";
+                html += '<p class="index">' + i + '</p>';
+                html += "<p class=\"agg\">aggregation = " + returnedTestSettings.aggregation + "</p>";
+                html += "<p class=\"rm\">rankingModel = " + returnedTestSettings.rankingModel + "</p>";
+                html += "<p class=\"or\">queryOrigin = " + returnedTestSettings.queryOrigin + "</p>";
+                html += "<strong>Model settings:</strong>";
+                for (var j = 0; j < returnedTestSettings.modelOptions.length; ++j)
+                {
+                  html += "<small>" + returnedTestSettings.modelOptions[j] + "</small>";
+                }
+
+              html += "</li>"
+
+              $('#topSetList').append(html);
+
+              // Chart data
+              const returnedChartData = returnedDataArray[i].chartData;
 
               // Calculate coefs for colour
               const r = (i % 3 == 0 ? 1 : 0) * 255;
@@ -293,13 +382,13 @@
               let data = new Array();
 
               // Create labels from indices
-              for (var j = 0; j < returnedData.length; ++j)
+              for (var j = 0; j < returnedChartData.length; ++j)
               {
                 if (i == 0) {
-                  labels.push(returnedData[j].index);
+                  labels.push(returnedChartData[j].index);
                 }
                 
-                data.push(returnedData[j].value);
+                data.push(returnedChartData[j].value);
               }
 
               const label = String(i);
@@ -358,9 +447,19 @@
 
           })
 
+          $(".tests-settings-form .run-grid-test").click(function(event) 
+          {
+
+            submitGridTest(event, this);
+
+          })
+
           // Increment property counter
           ++nextBlockIndex;
         }
+
+
+        
       </script>
 
   </div>

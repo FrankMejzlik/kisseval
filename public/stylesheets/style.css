@@ -17,7 +17,9 @@ body {
 .welcome-section {
   margin: 80px auto 30px auto;
 }
-
+#gridTestProgress {
+  display: none;
+}
 .section-header {
 padding-top: 40px;
 padding-bottom: 40px;
@@ -810,6 +812,34 @@ font-size: 18px;
   margin: 0;
   font-size: 12px;
   height: 1.6rem;
+}
+
+.top-settings {
+  position: absolute;
+  width: 300px;
+  left: 44px;
+  top: 100px;
+}
+
+.top-settings-list {
+  list-style: none;
+  /* column-count: 4; */
+}
+
+.top-settings-list li {
+  border-bottom: 1px solid #aaa;
+}
+
+.top-settings-list li small {
+  display: block;
+}
+
+.top-settings-list .index {
+  font-size: 18px;
+}
+
+.top-settings-list p {
+  margin: 0;
 }
 
 .test-block  [type='text'], 

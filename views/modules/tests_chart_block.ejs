@@ -1,6 +1,6 @@
-<li id="testBlock${nextBlockIndex}" class="test-block small-6 cell">
+<li id="testBlock${nextBlockIndex}" class="test-block small-12 cell">
         
-  <form data-id="${nextBlockIndex}" id="testForm${nextBlockIndex}" autocomplete="off" class="tests-settings-form" action="/tests_ajax:RunModelTest" method="POST">
+  <form data-id="${nextBlockIndex}" id="testForm${nextBlockIndex}" autocomplete="off" class="tests-settings-form" action="/tests_ajax_RunModelTest" method="POST">
     <div class="grid-container">
       <div class="grid-x grid-padding-x text-center">
 
@@ -17,7 +17,9 @@
          
         
         <div class="medium-12 cell">
-          <input type="submit" class="run-test-btn button success"  value="Run test!" >
+          <input type="submit" class="run-test-btn button success"  value="Run test" >
+
+          <a class="button alert run-grid-test">RUN GRID TEST</a>
         </div>
 
         <div class="chart-active plot-cont small-12 cell">

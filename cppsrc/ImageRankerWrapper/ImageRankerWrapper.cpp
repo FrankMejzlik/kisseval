@@ -6,7 +6,10 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::HandleScope scope(env);
 
   Napi::Function func = DefineClass(env, "ImageRankerWrapper", {
+    
     InstanceMethod("Initialize", &ImageRankerWrapper::Initialize),
+    InstanceMethod("GetGridTestProgress", &ImageRankerWrapper::GetGridTestProgress),
+    InstanceMethod("RunGridTest", &ImageRankerWrapper::RunGridTest),
     InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
     InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage),
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
@@ -102,6 +105,58 @@ Napi::Value ImageRankerWrapper::Initialize(const Napi::CallbackInfo& info) {
 
   napi_value result;  
   napi_create_uint32(env, 0ULL, &result);
+
+  return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::GetGridTestProgress(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+
+  if (length != 0) {
+    Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
+  }
+
+#if LOG_CALLS
+
+  std::cout << "===================================" << std::endl;
+  std::cout << "CALL: ImageRanker::GetGridTestProgress() with arguments:" << std::endl;
+  std::cout << "===================================" << std::endl;
+
+#endif
+
+  auto compTotalPair = this->actualClass_->GetGridTestProgress();
+
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // "numCompletedTests": 244
+  {
+    std::string keyString{"numCompletedTests"s};
+    napi_value key;
+    napi_create_string_utf8(env, keyString.data(), keyString.size(), &key);
+
+    napi_value value;
+    napi_create_uint32(env, compTotalPair.first, &value);
+
+    napi_set_property(env, result, key, value);
+  }
+
+  // "numTests": 500
+  {
+    std::string keyString{ "numTests"s };
+    napi_value key;
+    napi_create_string_utf8(env, keyString.data(), keyString.size(), &key);
+
+    napi_value value;
+    napi_create_uint32(env, compTotalPair.second, &value);
+
+    napi_set_property(env, result, key, value);
+  }
 
   return Napi::Object(env, result);
 }
@@ -302,16 +357,269 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
 }
 
 
-// const chartData = [
-//   { index: 0, value: 10 },
-//   { index: 1, value: 20 },
-//   { index: 2, value: 30 },
-//   { index: 3, value: 40 },
-//   { index: 4, value: 40.32 },
-//   { index: 5, value: 50.3 },
-//   { index: 6, value: 60.4 }
-// ];
 
+Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 1)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::RunGridTest)").ThrowAsJavaScriptException();
+  }
+
+  std::vector<ImageRanker::TestSettings> gridTestSettings;
+
+
+  Napi::Array gridTestSettingsArray = info[0].As<Napi::Array>();
+  for (size_t i = 0; i < gridTestSettingsArray.Length(); i++)
+  {
+    std::tuple<ImageRanker::Aggregation, ImageRanker::RankingModel, ImageRanker::QueryOrigin, std::vector<std::string>> metaResult;
+
+    Napi::Value v = gridTestSettingsArray[i];
+
+    Napi::Array innerArr = v.As<Napi::Array>();
+    for (size_t j = 0; j < innerArr.Length(); j++)
+    {
+
+      // Aggregation
+      if (j == 0)
+      {
+        if (v.IsNumber())
+        {
+          ImageRanker::Aggregation agg = static_cast<ImageRanker::Aggregation>((uint32_t)v.As<Napi::Number>().Uint32Value());
+
+          std::get<0>(metaResult) = agg;
+        }
+      }
+      // Ranking Mode
+      else if (j == 1)
+      {
+        if (v.IsNumber())
+        {
+          ImageRanker::RankingModel rankModel = static_cast<ImageRanker::RankingModel>((uint32_t)v.As<Napi::Number>().Uint32Value());
+
+          std::get<1>(metaResult) = rankModel;
+        }
+      }
+      // Query origin
+      else if (j == 2)
+      {
+        if (v.IsNumber())
+        {
+          ImageRanker::QueryOrigin queryOrigin = static_cast<ImageRanker::QueryOrigin>((uint32_t)v.As<Napi::Number>().Uint32Value());
+
+          std::get<2>(metaResult) = queryOrigin;
+        }
+      }
+      // RankingModelOptions
+      else if (j == 3)
+      {
+        // Get settings vector
+        std::vector<std::string> settings;
+
+        Napi::Array settingsArray = v.As<Napi::Array>();
+        for (size_t k = 0; k < settingsArray.Length(); k++)
+        {
+          Napi::Value val = settingsArray[k];
+          if (val.IsString())
+          {
+            std::string value = (std::string)val.As<Napi::String>().Utf8Value();
+            settings.push_back(value);
+          }
+        }
+        std::get<3>(metaResult) = std::move(settings);
+
+      }
+
+    }
+
+
+    // Push final one settings 
+    gridTestSettings.push_back(std::move(metaResult));
+  }
+
+#if LOG_CALLS
+
+  std::cout << "CALLING NATIVE 'RunGridTest' with args:" << std::endl;
+
+  {
+    size_t i{ 0ULL };
+    for (auto&& settings : gridTestSettings)
+    {
+      std::cout << i << ": " << std::endl;
+      std::cout << "Aggregation = " << std::get<0>(settings) << std::endl;
+      std::cout << "RankingModel = " << std::get<1>(settings) << std::endl;
+      std::cout << "QueryOrigin = " << std::get<2>(settings) << std::endl;
+
+      std::cout << "\t settings =" << std::endl;
+      for (auto&& modelOpt : std::get<3>(settings))
+      {
+        std::cout << "\t\t" << modelOpt << std::endl;
+      }
+
+      ++i;
+    }
+    std::cout << "===================" << std::endl;
+  }
+#endif
+
+  // Call native method
+  std::vector<std::pair<ImageRanker::TestSettings, ImageRanker::ChartData>> gridTestResult{
+    this->actualClass_->RunGridTest(gridTestSettings)
+  };
+
+
+  napi_value finalResult;
+  napi_create_array(env, &finalResult);
+
+  size_t i{ 0ULL };
+  for (auto&& pair : gridTestResult)
+  {
+    std::cout << "RESULT " << i << std::endl;
+    // Pair
+    {
+      napi_value testSetChartDataPair;
+      napi_create_object(env, &testSetChartDataPair);
+
+      // "testSettings"
+      {
+        std::string keyString{ "testSettings"s };
+        napi_value key;
+        napi_create_string_utf8(env, keyString.data(), keyString.size(), &key);
+
+        napi_value testSettings;
+        napi_create_object(env, &testSettings);
+
+        // Set "aggregation"
+        {
+          std::string keyString{ "aggregation"s };
+          napi_value key;
+          napi_create_string_utf8(env, keyString.data(), keyString.size(), &key);
+          napi_value value;
+          napi_create_uint32(env, (uint32_t)std::get<0>(pair.first), &value);
+
+          std::cout << "aggregation = " << (uint32_t)std::get<0>(pair.first) << std::endl;
+
+          napi_set_property(env, testSettings, key, value);
+        }
+
+        // Set "rankingModel"
+        {
+          std::string keyString{ "rankingModel"s };
+          napi_value key;
+          napi_create_string_utf8(env, keyString.data(), keyString.size(), &key);
+          napi_value value;
+          napi_create_uint32(env, (uint32_t)std::get<1>(pair.first), &value);
+
+          std::cout << "rankingModel = " << (uint32_t)std::get<1>(pair.first) << std::endl;
+
+          napi_set_property(env, testSettings, key, value);
+        }
+
+        // Set "queryOrigin"
+        {
+          std::string keyString{ "queryOrigin"s };
+          napi_value key;
+          napi_create_string_utf8(env, keyString.data(), keyString.size(), &key);
+          napi_value value;
+          napi_create_uint32(env, (uint32_t)std::get<2>(pair.first), &value);
+
+          std::cout << "queryOrigin = " << (uint32_t)std::get<2>(pair.first) << std::endl;
+
+          napi_set_property(env, testSettings, key, value);
+        }
+
+        // "modelOptions"
+        {
+          std::string keyString{ "modelOptions"s };
+          napi_value key;
+          napi_create_string_utf8(env, keyString.data(), keyString.size(), &key);
+
+          napi_value arrOpts;
+          napi_create_array(env, &arrOpts);
+
+          std::cout << "modelOptions:" << std::endl;
+
+          size_t ii{0ULL};
+          for (auto&& opt : std::get<3>(pair.first))
+          {
+            napi_value optString;
+            napi_create_string_utf8(env, opt.data(), opt.size(), &optString);
+
+            std::cout << optString <<  std::endl;
+
+            napi_set_element(env, arrOpts, ii, optString);
+
+            ++ii;
+          }
+
+          napi_set_property(env, testSettings, key, arrOpts);
+        }
+
+        napi_set_property(env, testSetChartDataPair, key, testSettings);
+      }
+
+      // "chartData"
+      {
+        std::string keyString{ "chartData"s };
+        napi_value key;
+        napi_create_string_utf8(env, keyString.data(), keyString.size(), &key);
+
+        napi_value chartDataArray;
+        napi_create_array(env, &chartDataArray);
+
+        std::cout << "CHARTDATA:" << std::endl;
+
+        size_t iii{ 0ULL };
+        for (auto&& pairIndexValue : pair.second)
+        {
+          napi_value indValPair;
+          napi_create_object(env, &indValPair);
+
+          std::cout << "iii = " << iii << std::endl;
+
+          // Set "index"
+          {
+            napi_value key;
+            napi_create_string_utf8(env, "index", 5, &key);
+
+            napi_value value;
+            napi_create_uint32(env, pairIndexValue.first, &value);
+
+            std::cout << "index = " << pairIndexValue.first << std::endl;
+
+            napi_set_property(env, indValPair, key, value);
+          }
+
+          // Set "value"
+          {
+            napi_value key;
+            napi_create_string_utf8(env, "value", 5, &key);
+            napi_value value;
+            napi_create_uint32(env, pairIndexValue.second, &value);
+
+            std::cout << "value = " << pairIndexValue.second << std::endl;
+
+            napi_set_property(env, indValPair, key, value);
+          }
+
+          napi_set_element(env, chartDataArray, iii, indValPair);
+          ++iii;
+        }
+
+        napi_set_property(env, testSetChartDataPair, key, chartDataArray);
+      }
+
+      napi_set_element(env, finalResult, i, testSetChartDataPair);
+    } // pair
+    ++i;
+  } 
+
+  return Napi::Array(env, finalResult);
+}
 
 Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 {

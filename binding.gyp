@@ -79,7 +79,7 @@
                         "msvs_settings": {
                             "VCLinkerTool": {
                                 "AdditionalLibraryDirectories": [
-                                    "../cppsrc/ImageRankerWrapper/ImageRanker/ImageRankerexternal/MariaDB_Connector_C_64-bit/lib/"
+                                    "../cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/lib/"
                                 ],
                                 "AdditionalOptions": [
                                     "/MP /EHsc"

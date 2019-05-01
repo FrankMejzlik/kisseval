@@ -46,8 +46,18 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   */
   Napi::Value GetRelevantImages(const Napi::CallbackInfo& info);
 
-
+  // RETURN FORMAT:
+  // const chartData = [
+  //   { index: 0, value: 10 },
+  //   { index: 1, value: 20 },
+  //   { index: 2, value: 30 },
+  //   { index: 3, value: 40 },
+  //   { index: 4, value: 40.32 },
+  //   { index: 5, value: 50.3 },
+  //   { index: 6, value: 60.4 }
+  // ];
   Napi::Value RunModelTest(const Napi::CallbackInfo& info);
+
 
   // ImageData GetImageDataById(size_t imageId) const;
   /*

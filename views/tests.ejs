@@ -234,6 +234,113 @@
           });
         }
 
+        function submitGridTest(event, element) 
+        {
+          // Get form that has been submited
+          const $form = $(element);
+          
+          // Define AJAX request URL
+          const url = "/tests_ajax:RunGridTestWrapper";
+
+          // Stop usual submit
+          event.preventDefault();
+          
+          $form.removeClass("result-ok");
+          $form.addClass("running-test");
+
+          const formData = getFormData($form);
+
+          const id = $form.data("id");
+
+          const submitData = new Object();
+          submitData.formData = formData;
+          submitData.formId = id;
+
+          // Send GET request
+          var posting = $.get( 
+            url, 
+            {
+              submitData
+            }
+          );
+
+          // Process response
+          posting.done(function( response ) 
+          { 
+            const formId = response.formId;
+
+            const returnedDataArray = response.chartDataArray;
+
+            let datasets = new Array();
+
+            const num = returnedDataArray.length;
+            const divPerChanel = (num / 3) + 1;
+
+            let labels = new Array();
+
+            for (var i = 0; i < returnedDataArray.length; ++i) 
+            {
+              const returnedData = returnedDataArray[i];
+
+              // Calculate coefs for colour
+              const r = (i % 3 == 0 ? 1 : 0) * 255;
+              const g = (i % 3 == 1 ? 1 : 0) * 255;
+              const b = (i % 3 == 2 ? 1 : 0) * 255;
+
+
+              const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
+          
+              let data = new Array();
+
+              // Create labels from indices
+              for (var j = 0; j < returnedData.length; ++j)
+              {
+                if (i == 0) {
+                  labels.push(returnedData[j].index);
+                }
+                
+                data.push(returnedData[j].value);
+              }
+
+              const label = String(i);
+
+              const chartData = {
+                borderColor,
+                backgroundColor: "rgba(255, 0, 0, 0)",
+                label,
+                pointRadius: 0.5,
+                pointHoverRadius: 0.5,
+                borderWidth: 1.0,
+                data,
+              }
+
+              datasets.push(chartData);
+            }
+
+
+            var chartData = {
+              labels,
+              datasets
+            }
+
+            const chartCanvas = document.getElementById("chart" + formId);
+            const form = document.getElementById("testForm" + formId);
+            const $form = $(form);                        
+
+            // Create chart
+            var ctx = chartCanvas.getContext('2d');
+            var chart = new Chart(ctx, chartSettings);
+
+            // Update data
+            chart.data = chartData;
+            // Update chart
+            chart.update();
+
+            $form.removeClass("running-test");
+            $form.addClass("result-ok");
+          });
+        }
+
         function CreateNewChartPanel()
         {
           const targetChartContainer = document.getElementById("testListSection");

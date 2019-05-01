@@ -127,9 +127,8 @@ app.get('/collector_ajax', collectorAjax.find);
 
 // AJAXes
 app.get('/images_ajax', imagesAjax.find);
-app.get('/tests_ajax',testsAjax.RunBooleanCustomModelTest);
-app.get('/tests_ajax:RunBooleanCustomModelTest', testsAjax.RunBooleanCustomModelTest);
-app.get('/tests_ajax:RunBooleanCustomModelTest2', testsAjax.RunBooleanCustomModelTest);
+app.get('/tests_ajax:RunModelTest', testsAjax.RunModelTest);
+app.get('/tests_ajax:RunGridTest', testsAjax.RunGridTest);
 
 
 // Catch 404 and forward to error handler

@@ -1,7 +1,7 @@
 
 const util = require('util')
 
-var foo = function (aggFn, modelType, dataSource, settingsArray) 
+var RunModelTest = function (aggFn, modelType, dataSource, settingsArray) 
 {
   // Run test in native code
   result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settingsArray);
@@ -9,15 +9,118 @@ var foo = function (aggFn, modelType, dataSource, settingsArray)
   return result;
 }
 
-exports.RunBooleanCustomModelTest = function(req, res) 
+var RunGridTestWrapper = function (aggFn, modelType, dataSource, settingsArray) 
 {
-  // PARAMS: 
-  //    ImageRanker::QueryOrigin::cDeveloper | ImageRanker::QueryOrigin::cPublic  Source data
-  //    Treshold for probability if is in the picture
-  //  
+  // Run grid test in native library
+  result = global.imageRanker.RunGridTest(aggFn, modelType, dataSource, settingsArray);
 
-  // var word = req.query.imageId;
+  return result;
+}
 
+
+exports.RunModelTest = function(req, res) 
+{
+  // Construct response Object
+  let  responseData = new Object();
+  
+  responseData.chartDataArray = new Array();  
+
+  const formDataArray = req.query.submitData.formData;
+  const formId = req.query.submitData.formId;
+  responseData.formId = formId;
+
+  for (var i = 0; i <formDataArray.length; ++i)
+  {
+    const aggFn = Number(formDataArray[i].aggregation);
+    const modelType = Number(formDataArray[i].modelType);
+    const dataSource = Number(formDataArray[i].dataSource);
+
+    // Variable with all settings
+    const settingsArray = new Array();
+
+    // Construct settings array based on model
+    switch (modelType)
+    {
+      /*!
+      * FORMAT:
+      *  0: Boolean:
+      *  1: BooleanBucket:
+      *    0 => trueTreshold
+      *    1 => inBucketSorting
+      *  2: BooleanExtended:
+      *  3: ViretBase:
+      *    0 => ignoreTreshold
+      *    1 => rankCalcMethod
+      *      0: Multiply & (Add |)
+      *      1: Add only
+      *  4: FuzzyLogic:
+      */
+
+      // Boolean
+      case 0:
+      // Nothing just yet
+      break;
+
+      // BooleanBucket
+      case 1:
+      {
+        // 0 => 
+        const probTreshold = formDataArray[i].trueTreshold;
+        settingsArray.push(probTreshold);
+
+        // 1 =>
+        const inBucketRanking = formDataArray[i].inBucketRanking;
+        settingsArray.push(inBucketRanking);
+      }
+      break;
+
+      // BooleanExtended
+      case 2:
+
+      break;
+
+      // ViretBase
+      case 3:
+      {
+        // 0 =>
+        const probTreshold4 = formDataArray[i].trueTreshold4;
+        settingsArray.push(probTreshold4);
+
+        // 1 =>
+        const queryOperations = formDataArray[i].queryOperations;
+        settingsArray.push(queryOperations);
+      }
+      break;
+
+      // FuzzyLogic
+      case 4:
+
+      break;
+
+      default:
+        throw "Unknown model type.";
+    }
+
+    // Run model test
+    const chartData = RunModelTest(aggFn, modelType, dataSource, settingsArray);
+
+    // Insert this result data to array
+    responseData.chartDataArray.push(chartData);
+  }
+
+  
+
+
+  
+
+  // Send response
+  res.jsonp(responseData);
+};
+
+
+
+exports.RunGridTest = function(req, res) 
+{
   // Construct response Object
   let  responseData = new Object();
   
@@ -54,7 +157,7 @@ exports.RunBooleanCustomModelTest = function(req, res)
 
     
 
-    const chartData = foo(aggFn, modelType, dataSource, settingsArray);
+    const chartData = RunGridTestWrapper(aggFn, modelType, dataSource, settingsArray);
 
     
 

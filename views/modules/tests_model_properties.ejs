@@ -7,13 +7,14 @@
   <div class="medium-4 cell">
       <label>Aggregation
         <select name="${nextPropertyIndex}][aggregation]">
-          <option value="0" selected title="Softmax probabability vector from nerual network.">Softmax</option>
-          <option value="1" title="Linear scale of raw neural network data to interval from 0 to 1 based on image min/max value.">0-1 Linear Scale</option>
-          <option value="2" title="Based on 0-1 Linear Scale but middle values are amplified.">Amplified 1</option>
-          <option value="3" title="Based on 0-1 Linear Scale but middle values are amplified  and lower values are minified.">Amplified 2</option>
-          <option disabled value="4">Amplified 3</option>
-          <option value="5" title="Softmax prob vector but with lowered high values and amplified middle values.">Softmax Amplified 1</option>
-          <option disabled value="6">Softmax Amplified 2</option>
+          <option value="1" selected title="Softmax probabability vector from nerual network.">Softmax</option>
+          <option value="100" title="Softmax prob vector but with lowered high values and amplified middle values.">Softmax Amplified 1</option>
+          <option disabled value="101">Softmax Amplified 2</option>
+          <option value="2" title="Linear scale of raw neural network data to interval from 0 to 1 based on image min/max value.">0-1 Linear Scale</option>
+          <option value="200" title="Based on 0-1 Linear Scale but middle values are amplified.">Amplified 1</option>
+          <option value="201" title="Based on 0-1 Linear Scale but middle values are amplified  and lower values are minified.">Amplified 2</option>
+          <option disabled value="202">Amplified 3</option>
+          
           
         </select>
       </label>

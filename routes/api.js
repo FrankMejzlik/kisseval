@@ -6,27 +6,44 @@ var fs = require('fs');
 
 exports.getRelevantImagesFromPlainQuery = function(req, res) 
 {
-  // const rankingModel = 1;
-  // const aggregation = 2;
-  // const settings = ["0.869999", "1"];
+  const numResults = Number(req.query.num_results);
+  const rankingModel = Number(req.query.ranking_model);
+  const aggregation = Number(req.query.aggregation);
+
+  let finalString = "";
+
+  const kwIds = new Array();
+  // If more than one
+  if (typeof req.query.settings_array !== 'undefined') 
+  {
+      
+    const kwIds = req.query.query.split(" ");
+
+    for (var i = 0; i < kwIds.length; ++i)
+    {
+      finalString += kwIds[i] + "&";
+    }
+
+    finalString = finalString.slice(0, -1);
+  }
+
+  const settings = new Array();
+  // If more than one
+  if (typeof req.query.settings_array !== 'undefined') 
+  {
+      
+    const arrToks = req.query.settings_array.split(" ");
+
+    for (var i = 0; i < arrToks.length; ++i)
+    {
+      settings.push(arrToks[i]);
+    }
+  }
 
 
-  // const relData = global.imageRanker.GetRelevantImagesPlainQuery(finalString, 500, aggregation, rankingModel, settings, targetImageId);
-  // const relevantImagesArray = relData.images;
-  // const targetImageRank = relData.targetImageRank;
-
-
-  // data.query = finalString;
-  // data.relevantImagesArray = relevantImagesArray;
-  // data.keywords = keywordsWords;
-  // data.targetImageRank = targetImageRank;
-  // data.targetImageId = targetImageId;
-
-  const testResponse = new Object();
-  testResponse.a = "aaa";
-  testResponse.b = [1,3,4,5,6];
-  testResponse.c = 29;
+  const relData = global.imageRanker.GetRelevantImagesPlainQuery(finalString, numResults, aggregation, rankingModel, settings, 0);
+  const relevantImagesArray = relData.images;
 
   // Send response
-  res.jsonp(testResponse);
+  res.jsonp(relevantImagesArray);
 };

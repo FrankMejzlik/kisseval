@@ -167,6 +167,10 @@ h1 {
 h2 {
   font-size: 26px;
 }
+.docs  {
+  display: block;
+  text-align: left;
+}
 
 .index-title {
   position: absolute;

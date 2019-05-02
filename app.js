@@ -22,6 +22,8 @@ var imageFinderRouter = require('./routes/image_finder');
 var collectorRouter = require('./routes/collector');
 var collectorDevRouter = require('./routes/collector_dev');
 var scoreboardRouter = require('./routes/scoreboard');
+var docsRouter = require('./routes/docs');
+
 var collectorAjax = require('./routes/collector_ajax');
 var testsAjax = require('./routes/tests_ajax');
 var imagesAjax = require('./routes/images_ajax');
@@ -122,7 +124,7 @@ app.use('/collector', collectorRouter);
 app.use('/tests', testsRouter);
 app.use('/collector_dev', collectorDevRouter);
 app.use('/scoreboard', scoreboardRouter);
-//app.use('/api', api);
+app.use('/docs', docsRouter);
 
 // Allow only GET requests to 'collector_ajax' router
 app.get('/collector_ajax', collectorAjax.find);

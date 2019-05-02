@@ -100,7 +100,7 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   ]
 
   */
-  Napi::Value GetRelevantImages(const Napi::CallbackInfo& info);
+  Napi::Value GetRelevantImagesPlainQuery(const Napi::CallbackInfo& info);
 
   // RETURN FORMAT:
   // const chartData = [

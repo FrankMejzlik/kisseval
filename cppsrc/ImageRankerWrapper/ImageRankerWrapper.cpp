@@ -13,7 +13,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
     InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage),
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
-    InstanceMethod("GetRelevantImages", &ImageRankerWrapper::GetRelevantImages),
+    InstanceMethod("GetRelevantImagesPlainQuery", &ImageRankerWrapper::GetRelevantImagesPlainQuery),
     InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
     InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex),
     InstanceMethod("RunModelTest", &ImageRankerWrapper::RunModelTest)
@@ -882,7 +882,7 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) 
 
 
 
-Napi::Value ImageRankerWrapper::GetRelevantImages(const Napi::CallbackInfo& info)
+Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -891,46 +891,68 @@ Napi::Value ImageRankerWrapper::GetRelevantImages(const Napi::CallbackInfo& info
 
   // Process arguments
   int length = info.Length();
-  if (length != 4)
+  if (length != 6)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
   }
 
   // Transfer JS args to C args
-  Napi::String query = info[0].As<Napi::String>();
-  Napi::Number numResults = info[1].As<Napi::Number>();
-  Napi::Number rankingModel = info[2].As<Napi::Number>();
-  Napi::Number imageId = info[3].As<Napi::Number>();
+  // const std::string& query
+  std::string query{info[0].As<Napi::String>().Utf8Value()};
+
+  // size_t numResults
+  size_t numResults = info[1].As<Napi::Number>().Uint32Value();
+
+  // Aggregation aggFn
+  unsigned int aggregation = info[2].As<Napi::Number>().Uint32Value();
+
+  // RankingModel rankingModel
+  unsigned int rankingModel = info[3].As<Napi::Number>().Uint32Value();
+
+  // const ModelSettings& settings
+  std::vector<std::string> settings;
+
+  Napi::Array settingsArray = info[4].As<Napi::Array>();
+  for (size_t k{0ULL}; k < settingsArray.Length(); k++)
+  {
+    Napi::Value val = settingsArray[k];
+    if (val.IsString())
+    {
+      std::string value = (std::string)val.As<Napi::String>().Utf8Value();
+      settings.push_back(value);
+    }
+  }
+
+  // size_t imageId = SIZE_T_ERROR_VALUE
+  size_t imageId = info[5].As<Napi::Number>().Uint32Value();
 
 #if LOG_CALLS
 
-  std::cout << "CALLING NATIVE 'GetRelevantImages' with args:" << std::endl;
-  std::cout << query.Utf8Value() << std::endl;
-  std::cout << numResults.Uint32Value() << std::endl;
-  std::cout << rankingModel.Uint32Value() << std::endl;
-  std::cout << imageId.Uint32Value() << std::endl;
+  std::cout << "CALLING NATIVE 'GetRelevantImagesPlainQuery' with args:" << std::endl;
+  std::cout << "query = " << query << std::endl;
+  std::cout << "numResults = " << numResults << std::endl;
+  std::cout << "aggregation = " << (unsigned int)aggregation << std::endl;
+  std::cout << "rankingModel = " << (unsigned int)rankingModel << std::endl;
+
+  std::cout << "\t settings = " << std::endl;
+  for (auto&& modelOpt : settings)
+  {
+    std::cout << "\t\t" << modelOpt << std::endl;
+  }
+
+  std::cout << "imageId = " << imageId << std::endl;
   std::cout << "===================" << std::endl;
 
 #endif
 
   // Call native method: Get vector of relevant images
-  std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> images{ this->actualClass_->GetRelevantImages(
-    query.Utf8Value(), numResults.Uint32Value(), 
-    ImageRanker::Aggregation::cMinMaxLinear, (ImageRanker::RankingModel)rankingModel.Uint32Value(), 
-    std::vector<std::string>({"0.01"}),
-    imageId.Uint32Value()) 
+  std::pair<std::vector<ImageRanker::ImageReference>, ImageRanker::QueryResult> images{ 
+    this->actualClass_->GetRelevantImagesPlainQuery(
+      query, numResults, 
+      static_cast<ImageRanker::Aggregation>(aggregation), static_cast<ImageRanker::RankingModel>(rankingModel), 
+      settings, imageId
+    )
   };
-
-#if LOG_CALLS
-
-  std::cout << "CALLING NATIVE 'GetRelevantImages' with result:" << std::endl;
-  std::cout << images.second.m_targetImageRank << std::endl;
-  std::cout << "numImages = " << images.first.size() << std::endl;
-  std::cout << "===================" << std::endl;
-
-#endif
-
-
 
   napi_value result;
   napi_create_object(env, &result);

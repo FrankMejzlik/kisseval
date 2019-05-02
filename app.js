@@ -25,6 +25,7 @@ var scoreboardRouter = require('./routes/scoreboard');
 var collectorAjax = require('./routes/collector_ajax');
 var testsAjax = require('./routes/tests_ajax');
 var imagesAjax = require('./routes/images_ajax');
+var api = require('./routes/api');
 
 
 
@@ -121,9 +122,13 @@ app.use('/collector', collectorRouter);
 app.use('/tests', testsRouter);
 app.use('/collector_dev', collectorDevRouter);
 app.use('/scoreboard', scoreboardRouter);
+//app.use('/api', api);
 
 // Allow only GET requests to 'collector_ajax' router
 app.get('/collector_ajax', collectorAjax.find);
+
+// GETs
+app.get('/api_get_relevant_images', api.getRelevantImagesFromPlainQuery);
 
 // AJAXes
 app.get('/images_ajax', imagesAjax.find);

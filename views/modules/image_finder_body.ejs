@@ -6,9 +6,10 @@
       <div class="selected-keyword-container">
         
         <div id="imagePreview">
+          Target image ID:
           <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= targetImageId %>" />
 
-<% if (typeof keywords !== 'undefined') { %>
+          <% if (typeof keywords !== 'undefined') { %>
 
           <span>Current rank: <%= targetImageRank %></span>
 
@@ -29,16 +30,18 @@
             
 
                   <li class="slected-keyword-checkbox">
+                    <input type="checkbox" name="keywordWord" value="<%= keywordsWords[i] %>" checked="">                
                     <input type="checkbox" name="keyword" value="<%= keywords[i] %>" checked="">                
-                    <span><%= keywords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
+                    <span><%= keywordsWords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
                   </li>
 
           <%    }
           } else { %>
 
             <li class="slected-keyword-checkbox">
-            <input type="checkbox" name="keyword" value="<%= keywords %>" checked="">                
-            <span><%= keywords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
+            <input type="checkbox" name="keywordWord" value="<%= keywordsWords %>" checked="">          
+            <input type="checkbox" name="keyword" value="<%= keywords %>" checked="">       
+            <span><%= keywordsWords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
           </li>
 
              <%
@@ -51,12 +54,165 @@
       </div>
 
       <div class="main-query-input-wrapper control-wrapper">
+
+          <div class="settings-window">
+            <li class="grid-x grid-padding-x text-center" data-property-index="${nextPropertyIndex}">
+
+
+              <div class="medium-4 cell">
+                <label>Number of results
+                    <input id="numResultsInput" name="numResults" type="number" value="500" step="1">
+                </label>
+              </div>
+
+              <div class="medium-4 cell">
+                  <label>Aggregation
+                    <select id="aggregationInput" name="aggregation">
+                      <option value="1" selected title="Softmax probabability vector from nerual network.">Softmax</option>
+                      <option value="100" title="Softmax prob vector but with lowered high values and amplified middle values.">Softmax Amplified 1</option>
+                      <option disabled value="101">Softmax Amplified 2</option>
+                      <option value="2" title="Linear scale of raw neural network data to interval from 0 to 1 based on image min/max value.">0-1 Linear Scale</option>
+                      <option value="200" title="Based on 0-1 Linear Scale but middle values are amplified.">Amplified 1</option>
+                      <option value="201" title="Based on 0-1 Linear Scale but middle values are amplified  and lower values are minified.">Amplified 2</option>
+                      <option disabled value="202">Amplified 3</option>
+                      
+                      
+                    </select>
+                  </label>
+                </div>
+
+              <div class="medium-4 cell">
+                <label>Ranking model
+                  <select id="rankingModelInput" class="model-type-select" name="modelType">
+                    <option value="0" disabled>Boolean</option>
+                    <option value="1" selected title="Based on Boolean model but images that do not fully satisfy formula are included with lower rank. Ranks are primarly based on number of satisfied clauses. They can be sorted within buckets as well.">Boolean Bucketed</option>
+                    <option value="2" disabled>Boolean Extended</option>
+                    <option value="3" title="VIRET tool model.">Viret Base</option>
+                    <option value="4" disabled>Fuzzy Logic</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="model-properties model-type-0 small-12 cell hidden-by-default">
+                <div class="grid-x grid-padding-x text-center">
+                    <div class="small-12 cell">
+                        <small>Model specific settings</small>
+                    </div>
+                    <div class="medium-4 cell">
+                        
+                      <label>
+                        True treshold
+                        <input id="probTreshold2Input"  name="trueTresholds2" type="number" value="0.005" step="0.00001">
+                      </label>
+                    </div>
+
+                </div>
+              </div>
+
+              <!-- Boolean custom model settings -->
+              <div class="model-properties model-type-1 small-12 cell">
+                  <div class="grid-x grid-padding-x text-center">
+                      <div class="small-12 cell">
+                        <small>Model specific settings</small>
+                      </div>
+                      <div class="medium-4 cell">
+                          
+                        <label>
+                          True treshold
+                          <input  id="probTresholdInput" name="trueTreshold" type="number" value="0.005" step="0.00001">
+                        </label>
+                      </div>
+
+                      <div class="medium-4 cell">
+                          <label>In bucket ranking
+                            <select  id="inBucketRankingInput" class="in-bucket-ranking-select" name="inBucketRanking">
+                              <option value="0" selected>None</option>
+                              <option value="1">Sum</option>
+                              <option value="2">Max</option>
+                            </select>
+                          </label>
+                        </div>
+              
+                  </div>
+                </div>
+
+                <!-- Boolean extended model settings -->
+                <div class="model-properties model-type-2 small-12 cell hidden-by-default">
+                  <div class="grid-x grid-padding-x text-center">
+                      <div class="small-12 cell">
+                          <small>Model specific settings</small>
+                      </div>
+                      <div class="medium-4 cell">
+                          
+                        <label>
+                          True treshold
+                          <input name="trueTreshold3" type="number" value="0.005" step="0.00001">
+                        </label>
+                      </div>
+              
+                
+                    </div>
+                  </div>
+
+                  <!-- Viret base settings -->
+                  <div class="model-properties model-type-3 small-12 cell hidden-by-default">
+                    <div class="grid-x grid-padding-x text-center">
+                        <div class="small-12 cell">
+                            <small>Model specific settings</small>
+                        </div>
+                        <div class="medium-4 cell">
+                            
+                          <label>
+                            True treshold
+                            <input id="probTreshold4Input" name="trueTreshold4" type="number" value="0.005" step="0.00001">
+                          </label>
+                        </div>
+              
+                        <div class="medium-4 cell">
+                            <label>Query operation
+                              <select id="queryOperationsInput" class="query_operations-select" name="queryOperations">
+                                <option value="0" selected>Multiply, Add</option>
+                                <option value="1">Add only</option>
+                              </select>
+                            </label>
+                          </div>
+                
+                    </div>
+                  </div>
+
+            </li>
+          </div>
           
           <input type="text" id="queryInput" tabindex="1" name="query">
 
       </div>
       <input type="submit" class="button success" id="sendQuery" value="Search">
   </form>
+  <script>
+    $( document ).ready(function() {
+      $(".model-type-select").change(function() 
+        {
+          const $this = $(this);
+      
+          $this.parent().parent().parent().children(".model-properties").hide();
+          $this.parent().parent().parent().children(".model-type-" + $this.val()).show();
+      
+        });
+
+      // Setup provided settings
+      $("#numResultsInput").val(<%= selectedSettings.numResults %>).change();
+      $("#aggregationInput").val(<%= selectedSettings.aggregation %>).change();
+      $("#rankingModelInput").val(<%= selectedSettings.rankingModel %>).change();
+      $("#probTresholdInput").val(<%= selectedSettings.probTreshold %>).change();
+      $("#inBucketRankingInput").val(<%= selectedSettings.inBucketRanking %>).change();
+      $("#probTreshold4Input").val(<%= selectedSettings.probTreshold4 %>).change();
+      $("#queryOperationsInput").val(<%= selectedSettings.queryOperations %>).change();
+
+
+     });
+     
+  </script>
+
 </div>
 
 <div class="image-browser-main-tiles small-12 cell">

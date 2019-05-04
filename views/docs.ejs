@@ -10,6 +10,30 @@
 </section>
 <section class=" grid-container text-center">
   <div class="docs grid-x grid-padding-x">
+    <h2>API</h2>
+    <p>
+      You can send GET request to get image rankings back. Format is:</p>
+      <pre>http://li1985-59.members.linode.com/api_get_relevant_images?num_results=600&aggregation=1&ranking_model=3&settings_array=0.0+1&query=2959942+2959942</pre>
+      <p><br/>This example fetches for query "car&street" first 600 ranked images using Viret ranking model over Softmax vector with settings - 0.0 treshold for throwing away keyword and using only sum approach.
+      </p>
+      <h5>Parameters:</h5>
+        <ul>
+          <li>num_results - Number of results your want to fetch</li>
+          <li>aggregation - What vector will be used for sampling (e.g. softmax, linear, ...)
+            <small>This value correspond to input values used in app (just 'Inspect element' and read 'value' attribute)</small>
+          </li>
+          <li>ranking_model - What model will be used for ranking of images
+              <small>This value correspond to input values used in app (just 'Inspect element' and read 'value' attribute)</small>
+          </li>
+          <li>settings_array - Specific options for selected model
+              <small>This value correspond to input values used in app for specific model in the same order (just 'Inspect element' and read 'value' attribute)</small>
+          </li>
+          <li>query - Query itself as '+' separated list of WordnetIDs of wanted keywords - '+' is substitution for & symbol </li>
+        </ul>
+      </p>
+
+
+    </p>
     <h2>Image finder</h2>
     <p>
       You can specify what model, aggregation, model settings, etc. Then just fill in keywords and search.</p>

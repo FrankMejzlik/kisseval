@@ -59,36 +59,33 @@
             <li class="grid-x grid-padding-x text-center" data-property-index="${nextPropertyIndex}">
 
 
-              <div class="medium-4 cell">
+              <div class="medium-3 cell">
                 <label>Number of results
                     <input id="numResultsInput" name="numResults" type="number" value="500" step="1">
                 </label>
               </div>
 
-              <div class="medium-4 cell">
-                  <label>Aggregation
-                    <select id="aggregationInput" name="aggregation">
-                      <option value="1" selected title="Softmax probabability vector from nerual network.">Softmax</option>
-                      <option value="100" title="Softmax prob vector but with lowered high values and amplified middle values.">Softmax Amplified 1</option>
-                      <option disabled value="101">Softmax Amplified 2</option>
-                      <option value="2" title="Linear scale of raw neural network data to interval from 0 to 1 based on image min/max value.">0-1 Linear Scale</option>
-                      <option value="200" title="Based on 0-1 Linear Scale but middle values are amplified.">Amplified 1</option>
-                      <option value="201" title="Based on 0-1 Linear Scale but middle values are amplified  and lower values are minified.">Amplified 2</option>
-                      <option disabled value="202">Amplified 3</option>
-                      
-                      
-                    </select>
-                  </label>
-                </div>
+              <div class="medium-3 cell">
+                <label>Aggregation
+                  <select id="aggregationInput" name="aggregation">
+                    <option value="100" selected title="Softmax probabability vector from nerual network.">Softmax</option>
+                    <option value="200">x^p</option>
+                    <option value="300" title="">Sine</option>
+                  </select>
+                </label>
+              </div>
+              <div class="medium-3 cell">
+                <label>Aggregation parameter
+                    <input id="aggregationParamInput" name="aggregationParam" type="number" value="1" step="0.1">
+                </label>
+              </div>
 
-              <div class="medium-4 cell">
+              <div class="medium-3 cell">
                 <label>Ranking model
                   <select id="rankingModelInput" class="model-type-select" name="modelType">
-                    <option value="0" disabled>Boolean</option>
                     <option value="1" selected title="Based on Boolean model but images that do not fully satisfy formula are included with lower rank. Ranks are primarly based on number of satisfied clauses. They can be sorted within buckets as well.">Boolean Bucketed</option>
                     <option value="2" disabled>Boolean Extended</option>
                     <option value="3" title="VIRET tool model.">Viret Base</option>
-                    <option value="4" disabled>Fuzzy Logic</option>
                   </select>
                 </label>
               </div>

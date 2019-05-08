@@ -8,6 +8,7 @@
             "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/ImageRanker.cpp",
             "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/KeywordsContainer.cpp",
             "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/Database.cpp",
+            "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/GridTest.cpp",
             "cppsrc/ImageRankerWrapper/ImageRankerWrapper.cpp",
         ],
 
@@ -15,6 +16,8 @@
             "<!@(node -p \"require('node-addon-api').include\")",
             "cppsrc/ImageRankerWrapper/",
             "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/",
+            "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/aggregations/",
+            "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/src/ranking_models/",
             "cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/include/"
         ],
         'libraries': [],

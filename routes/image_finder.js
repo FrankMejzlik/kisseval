@@ -78,12 +78,14 @@ router.post('/', function(req, res, next)
 
   const numResults = Number(req.body.numResults);
   const aggregation = Number(req.body.aggregation);
+  const aggregationParam = String(req.body.aggregationParam);
   const rankingModel = Number(req.body.modelType);
   
   const probTreshold = req.body.trueTreshold;
   const inBucketRanking = req.body.inBucketRanking;
   const probTreshold4 = req.body.trueTreshold4;
   const queryOperations = req.body.queryOperations;
+  
 
   // Variable with all settings
   const settingsArray = new Array();
@@ -151,7 +153,9 @@ router.post('/', function(req, res, next)
       throw "Unknown model type.";
   }
 
-
+  // Variable with all settings
+  const aggSettingsArray = new Array();
+  aggSettingsArray.push(aggregationParam);
 
   // Get keywords user provided
   var keywords = req.body.keyword;
@@ -214,7 +218,7 @@ router.post('/', function(req, res, next)
     */
 
 
-    const relData = global.imageRanker.GetRelevantImagesPlainQuery(finalString, numResults, aggregation, rankingModel, settingsArray, targetImageId);
+    const relData = global.imageRanker.GetRelevantImagesPlainQuery(finalString, numResults, aggregation, rankingModel, settingsArray, aggSettingsArray, targetImageId);
     const relevantImagesArray = relData.images;
     const targetImageRank = relData.targetImageRank;
 

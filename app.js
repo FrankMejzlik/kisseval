@@ -88,6 +88,7 @@ const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.so
 const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
 const f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
 const g = global.gConfig.idOffset2;
+const h = global.gConfig.appMode;
 
 console.log(a);
 console.log(b);
@@ -95,6 +96,7 @@ console.log(c);
 console.log(d);
 console.log(e);
 console.log(f);
+console.log(g);
 console.log(g);
 
 // DATASET 1
@@ -106,7 +108,7 @@ console.log(g);
 
 
 // Create global instance if ImageRanker
-global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d,e,f,g);
+global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d,e,f,g, h);
 
 global.imageRanker.Initialize();
 

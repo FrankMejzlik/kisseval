@@ -231,6 +231,30 @@ exports.RunGridTest = function(req, res)
       oneTestArray.push(settingsArray);
 
 
+      // Variable with all settings
+      const aggSettingsArray = new Array();
+
+      // Construct settings array based on model
+      switch (aggregation)
+      {
+        case 100:
+        // Nothing just yet
+        break;
+
+        case 200:
+        {
+
+        }
+        break;
+
+        case 300:
+
+        break;
+
+        default:
+          throw "Unknown model type.";
+      }
+      oneTestArray.push(aggSettingsArray);
 
       testSettingsArray.push(oneTestArray);
     }

@@ -650,7 +650,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 
   // Process arguments
   int length = info.Length();
-  if (length != 4)
+  if (length != 5)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::RunModelTest)").ThrowAsJavaScriptException();
   }
@@ -673,8 +673,19 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
     }
   }
 
-    // Aggregation settings
-  std::vector<std::string> aggSettings = std::vector<std::string>({ "1.0"s });
+  // Aggregation settings
+  std::vector<std::string> aggSettings;
+
+  Napi::Array aggSettingsArray = info[4].As<Napi::Array>();
+  for (size_t k{0ULL}; k < aggSettingsArray.Length(); k++)
+  {
+    Napi::Value val = aggSettingsArray[k];
+    if (val.IsString())
+    {
+      std::string value = (std::string)val.As<Napi::String>().Utf8Value();
+      aggSettings.push_back(value);
+    }
+  }
 
 
 
@@ -691,13 +702,18 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
     std::cout << s << std::endl;
   }
 
+  for (auto&& s : aggSettings) 
+  {
+    std::cout << s << std::endl;
+  }
+
   std::cout << "===================" << std::endl;
 
   #endif
 
   // Call native method
   ChartData chartDataPairs{ 
-    this->actualClass_->RunModelTest(
+    this->actualClass_->RunModelTestWrapper(
       (AggregationId)aggFn.Uint32Value(),
       (RankingModelId)modelType.Uint32Value(), 
       (QueryOriginId)dataSource.Uint32Value(),
@@ -974,8 +990,8 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   std::cout << "CALLING NATIVE 'GetRelevantImagesWrapper' with args:" << std::endl;
   std::cout << "query = " << query << std::endl;
   std::cout << "numResults = " << numResults << std::endl;
-  std::cout << "aggregationId = " << (size_t)aggregation << std::endl;
-  std::cout << "rankingModelId = " << (size_t)rankingModel << std::endl;
+  std::cout << "aggregationId = " << aggregation << std::endl;
+  std::cout << "rankingModelId = " << rankingModel << std::endl;
 
   std::cout << "\t modelSettings = " << std::endl;
   for (auto&& modelOpt : settings)
@@ -998,7 +1014,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   std::pair<std::vector<ImageReference>, QueryResult> images{ 
     this->actualClass_->GetRelevantImagesWrapper(
       query, numResults, 
-      aggregation, rankingModel, 
+      (AggregationId)aggregation, (RankingModelId)rankingModel, 
       settings, aggSettings,
       imageId
     )

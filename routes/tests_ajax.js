@@ -1,10 +1,10 @@
 
 const util = require('util')
 
-var RunModelTest = function (aggFn, modelType, dataSource, settingsArray) 
+var RunModelTest = function (aggFn, modelType, dataSource, settingsArray, aggSettingsArray) 
 {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settingsArray);
+  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
 
   return result;
 }
@@ -42,6 +42,10 @@ exports.RunModelTest = function(req, res)
     const aggFn = Number(formDataArray[i].aggregation);
     const modelType = Number(formDataArray[i].modelType);
     const dataSource = Number(formDataArray[i].dataSource);
+    const aggregationParam = String(formDataArray[i].aggregationParam);
+
+    const aggSettingsArray = new Array();
+    aggSettingsArray.push(aggregationParam);
 
     // Variable with all settings
     const settingsArray = new Array();
@@ -110,7 +114,7 @@ exports.RunModelTest = function(req, res)
     }
 
     // Run model test
-    const chartData = RunModelTest(aggFn, modelType, dataSource, settingsArray);
+    const chartData = RunModelTest(aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
 
     // Insert this result data to array
     responseData.chartDataArray.push(chartData);
@@ -161,6 +165,8 @@ exports.RunGridTest = function(req, res)
       oneTestArray.push(modelType);
       const dataSource = Number(formDataArray[i].dataSource);
       oneTestArray.push(dataSource);
+
+      const aggregationParam = String(req.body.aggregationParam);
 
       // Variable with all settings
       const settingsArray = new Array();
@@ -233,27 +239,8 @@ exports.RunGridTest = function(req, res)
 
       // Variable with all settings
       const aggSettingsArray = new Array();
+      aggSettingsArray.push(aggregationParam);
 
-      // Construct settings array based on model
-      switch (aggregation)
-      {
-        case 100:
-        // Nothing just yet
-        break;
-
-        case 200:
-        {
-
-        }
-        break;
-
-        case 300:
-
-        break;
-
-        default:
-          throw "Unknown model type.";
-      }
       oneTestArray.push(aggSettingsArray);
 
       testSettingsArray.push(oneTestArray);

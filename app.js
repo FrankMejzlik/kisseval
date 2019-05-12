@@ -24,6 +24,13 @@ var collectorDevRouter = require('./routes/collector_dev');
 var scoreboardRouter = require('./routes/scoreboard');
 var docsRouter = require('./routes/docs');
 
+const annotatorRouter = require("./routes/annotator");
+const annotatorAjaxRouter = require("./routes/annotator_ajax");
+const rankerRouter = require("./routes/ranker");
+const rankerAjaxRouter = require("./routes/ranker_ajax");
+const statisticsRouter = require("./routes/statistics");
+const statisticsAjaxRouter = require("./routes/statistics_ajax");
+
 var collectorAjax = require('./routes/collector_ajax');
 var testsAjax = require('./routes/tests_ajax');
 var imagesAjax = require('./routes/images_ajax');
@@ -99,12 +106,6 @@ console.log(f);
 console.log(g);
 console.log(g);
 
-// DATASET 1
-// const b = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.softmaxFilename);
-// const c = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.deepFeaturesFilename);
-// const d = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.keywordClassesFilename);
-// const e = path.join(global.rootDir, global.gConfig.pathData + global.gConfig.imagesDirList);
-// const i = global.gConfig.idOffset;
 
 
 // Create global instance if ImageRanker
@@ -122,11 +123,20 @@ if (global.gConfig.log_all == true)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/image_finder', imageFinderRouter);
-app.use('/collector', collectorRouter);
+
 app.use('/tests', testsRouter);
 app.use('/collector_dev', collectorDevRouter);
 app.use('/scoreboard', scoreboardRouter);
 app.use('/docs', docsRouter);
+app.use('/collector', collectorRouter);
+
+app.use('/annotator', annotatorRouter);
+//app.get('/annotator_ajax', annotatorAjaxRouter);
+app.use('/ranker', rankerRouter);
+//app.get('/ranker_ajax', rankerAjaxRouter);
+app.use('/statistics', statisticsRouter);
+//app.use('/statistics_ajax', statisticsAjaxRouter);
+
 
 // Allow only GET requests to 'collector_ajax' router
 app.get('/collector_ajax', collectorAjax.find);
@@ -146,11 +156,6 @@ app.use(function(req, res, next)
 {
   next(createError(404));
 });
-
-
-
-
-
 
 // error handler
 app.use(function(err, req, res, next) {

@@ -5,7 +5,6 @@
             'type': 'none',
             'dependencies': [
                 'cppsrc/ImageRankerWrapper/binding.gyp:*', 
-                'cppsrc/CEmbedSomWrapper/binding.gyp:*'
             ]
         }
     ]

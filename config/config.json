@@ -11,7 +11,7 @@
         "appMode": 0,
 
         "pathToImages": "/public/images/",
-        "pathData": "/data/",
+        "pathData": "/data/dataset1/",
 
         "softmaxFilename": "VBS2019_classification_NasNetLarge_20000.softmax",
         "deepFeaturesFilename": "VBS2019_classification_NasNetMobile_20000.deep-features",
@@ -20,7 +20,7 @@
         "idOffset": 50,
 
 
-        "pathData2": "/data2/",
+        "pathData2": "/data/dataset2/",
         "softmaxFilename2": "Studenti_NasNetLarge.softmax",
         "preSoftmaxFilename2": "Studenti_NasNetLarge.pre-softmax",
         "deepFeaturesFilename2": "Studenti_NasNetLarge.deep-features",

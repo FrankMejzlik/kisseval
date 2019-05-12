@@ -1,8 +1,6 @@
 {
     "targets": [{
         "target_name": "image_ranker",
-        "cflags!": [ "-fno-exceptions" ],
-        "cflags_cc!": [ "-fno-exceptions" ],
         "sources": [
             "main.cpp",
             "ImageRanker/ImageRanker/src/ImageRanker.cpp",
@@ -23,7 +21,7 @@
         'dependencies': [
             "<!(node -p \"require('node-addon-api').gyp\")"
         ],
-        'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ],
+        'defines': [ "HAS_NAPI_HEADERS", "LOG_CALLS" ],
         "cflags_cc": [
             "-std=c++17"
         ],   
@@ -37,6 +35,8 @@
                 "OS=='linux'",
                 {
                     "defines": [
+                        "HAS_NAPI_HEADERS",
+                        "LOG_CALLS"
                     ],
                     "architecture": "i386",
 
@@ -66,9 +66,6 @@
             [
             "OS=='win'",
             {
-                "defines": [
-                    "_HAS_EXCEPTIONS=1"
-                ],
                 "link_settings": {
                     "libraries": [
                         "-lmariadbclient.lib",

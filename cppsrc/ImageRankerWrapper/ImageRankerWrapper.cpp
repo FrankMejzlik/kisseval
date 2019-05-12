@@ -1,5 +1,7 @@
 #include "ImageRankerWrapper.h"
 
+#include <stdexcept>
+
 Napi::FunctionReference ImageRankerWrapper::constructor;
 
 Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
@@ -30,7 +32,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
 }
 
 ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::ObjectWrap<ImageRankerWrapper>(info)  {
- Napi::Env env = info.Env();
+  Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
 
   // Process arguments
@@ -67,23 +69,23 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
 #endif
 
 
-
-  this->actualClass_ = new ImageRanker(
-    imagesPath,
-    rawNetRankingFilepath,
-    keywordClassesFilepath,
-    softmaxFilepath,
-    deepFeaturesFilepath,
-    imageToIdMapFilepath,
-    idOffset,
-    mode
-  );
-
-
-
-
+  try {
+    this->actualClass_ = new ImageRanker(
+      imagesPath,
+      rawNetRankingFilepath,
+      keywordClassesFilepath,
+      softmaxFilepath,
+      deepFeaturesFilepath,
+      imageToIdMapFilepath,
+      idOffset,
+      mode
+    );
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
 }
-
 
 Napi::Value ImageRankerWrapper::Initialize(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -103,8 +105,15 @@ Napi::Value ImageRankerWrapper::Initialize(const Napi::CallbackInfo& info) {
   std::cout << "===================================" << std::endl;
 
 #endif
+
+  try {
+    this->actualClass_->Initialize();
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
   
-  this->actualClass_->Initialize();
 
   napi_value result;  
   napi_create_uint32(env, 0ULL, &result);
@@ -133,6 +142,7 @@ Napi::Value ImageRankerWrapper::GetGridTestProgress(const Napi::CallbackInfo& in
 #endif
 
   auto compTotalPair = this->actualClass_->GetGridTestProgress();
+  
 
   napi_value result;
   napi_create_object(env, &result);
@@ -189,8 +199,16 @@ Napi::Value ImageRankerWrapper::SubmitUserQueriesWithResults(const Napi::Callbac
   size_t queryOrigin = queryType.Int64Value();
 
   // Call native method
-  // RETURN: std::tuple<size_t, std::string, std::vector<std::string>, std::vector<std::pair<std::string, float>>>
-  std::vector<GameSessionQueryResult> queryResults{ this->actualClass_->SubmitUserQueriesWithResults(methodInput, static_cast<QueryOriginId>(queryOrigin)) };
+  std::vector<GameSessionQueryResult> queryResults;
+  try {
+    // RETURN: std::tuple<size_t, std::string, std::vector<std::string>, std::vector<std::pair<std::string, float>>>
+    queryResults = this->actualClass_->SubmitUserQueriesWithResults(methodInput, static_cast<QueryOriginId>(queryOrigin));
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
 
   // Construct NAPI return object 
   napi_value resultArray;
@@ -330,7 +348,14 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
   }
 
   // Call native method
-  ImageReference image{ this->actualClass_->GetRandomImage() };
+  ImageReference image;
+  try {
+    image =  this->actualClass_->GetRandomImage();
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
 
   // Construct NAPI return object 
   napi_value result;
@@ -489,9 +514,14 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
 #endif
 
   // Call native method
-  std::vector<std::pair<TestSettings, ChartData>> gridTestResult{
-    this->actualClass_->RunGridTest(gridTestSettings)
-  };
+  std::vector<std::pair<TestSettings, ChartData>> gridTestResult;
+  try {
+    gridTestResult = this->actualClass_->RunGridTest(gridTestSettings);
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
 
 
   napi_value finalResult;
@@ -712,14 +742,20 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   #endif
 
   // Call native method
-  ChartData chartDataPairs{ 
-    this->actualClass_->RunModelTestWrapper(
+  
+  ChartData chartDataPairs;
+  try {
+    chartDataPairs = this->actualClass_->RunModelTestWrapper(
       (AggregationId)aggFn.Uint32Value(),
       (RankingModelId)modelType.Uint32Value(), 
       (QueryOriginId)dataSource.Uint32Value(),
       settings, aggSettings
-    ) 
-  };
+    );
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
 
   // Construct NAPI return object 
   napi_value result;
@@ -774,8 +810,16 @@ Napi::Value ImageRankerWrapper::GetKeywordByVectorIndex(const Napi::CallbackInfo
   Napi::Number keywordVectorIndex = info[0].As<Napi::Number>();
 
   // Call native method
-  // using KeywordData = std::tuple<size_t, std::string, std::string>;
-  KeywordData keyword{ this->actualClass_->GetKeywordByVectorIndex(keywordVectorIndex.Uint32Value()) };
+  
+  KeywordData keyword;
+  try {
+    // using KeywordData = std::tuple<size_t, std::string, std::string>;
+    keyword = this->actualClass_->GetKeywordByVectorIndex(keywordVectorIndex.Uint32Value());
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
 
   // Construct NAPI return object 
   napi_value result;
@@ -801,7 +845,16 @@ Napi::Value ImageRankerWrapper::GetImageDataById(const Napi::CallbackInfo& info)
   Napi::Number imageId = info[0].As<Napi::Number>();
 
   // Call native method
-  const Image* image{ this->actualClass_->GetImageDataById(imageId.Uint32Value()) };
+  const Image* image;
+  try {
+    image = this->actualClass_->GetImageDataById(imageId.Uint32Value());
+  } 
+  catch (const std::exception& e)
+  {
+    image = nullptr;
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
 
   // Construct NAPI return object 
   napi_value result;
@@ -890,7 +943,15 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) 
   Napi::String prefix = info[0].As<Napi::String>();
 
   // Get suggested keywords
-  std::vector< std::tuple<size_t, std::string, std::string> > keywordData = this->actualClass_->GetNearKeywords(prefix);
+  std::vector< std::tuple<size_t, std::string, std::string> > keywordData;
+  try {
+     keywordData = this->actualClass_->GetNearKeywords(prefix);
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
 
   // Final return structure
   napi_value result;
@@ -1011,14 +1072,19 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
 #endif
 
   // Call native method: Get vector of relevant images
-  std::pair<std::vector<ImageReference>, QueryResult> images{ 
-    this->actualClass_->GetRelevantImagesWrapper(
+  std::pair<std::vector<ImageReference>, QueryResult> images;
+  try {
+     images = this->actualClass_->GetRelevantImagesWrapper(
       query, numResults, 
       (AggregationId)aggregation, (RankingModelId)rankingModel, 
       settings, aggSettings,
       imageId
-    )
-  };
+    );
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
 
   napi_value result;
   napi_create_object(env, &result);

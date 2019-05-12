@@ -1,0 +1,27 @@
+
+<form autocomplete="off" class="autocomplete-form" action="/annotator/" method="POST">
+
+    <div class="selected-keyword-container">
+      <h3>Selected keywords</h3>
+
+      <ul id="selectedKeywordsList">
+    
+        <% if (typeof exampleItems !== 'undefined') {%>
+          <%- exampleItems %>
+        <% } %>
+
+      </ul>
+
+        <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
+    </div>
+
+    <div class="main-query-input-wrapper control-wrapper">
+
+        <input type="text" id="queryInput" tabindex="1" name="query">
+
+    </div>
+    <input type="submit" class="button success" id="sendQuery" value="Send query">
+</form>
+
+<!-- Include autocomplete module -->
+<%- include autocomplete_logic.ejs %>

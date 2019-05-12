@@ -10,8 +10,75 @@ body {
   display: none;
 }
 
+.accordion-title
+{
+  background-color: #97d6d5;
+  font-size: 20px;
+  padding: 10px 20px;
+  color: #000;
+}
+
+.flexible-developer-only-window {
+  
+max-height: 44vh;
+  
+min-height: 200px;
+  
+overflow: auto;
+}
+
+.accordion-title::before
+{
+  top: 16px;
+}
+.accordion-title:hover,
+.accordion-title:focus
+{
+  background-color: #7dafae;
+  color: #000;
+}
+
 .result-ok .plot-cont {
   display:block;
+}
+
+.menu-item  {
+  width: 27%;
+  text-align: center;
+}
+
+.menu-item.active {
+  
+}
+
+.menu-item.active a {
+  color: #cc4b37;
+  background-color: transparent;
+  position: relative;
+}
+
+.menu-item.active a:before {
+  width: 34%;
+  left: 50%;
+  transform: translate(-50%);
+  height: 2px;
+  position: absolute;
+  background-color: #cc4b37;
+  bottom: 0;
+  content: '';
+  /* left: 0; */
+}
+
+.menu-item.active a:hover:before {
+  background-color: #415b76;
+}
+
+.developer-bottom-analysis-bar {
+  position: fixed;    
+  max-width: none;
+  padding: 0;
+  width: 100vw;
+  bottom: 0;
 }
 
 .welcome-section {
@@ -194,6 +261,12 @@ a {
   color: #00B7FF;
 }
 
+
+.add-new-chart-button {
+  /* position: absolute; */
+  left: 0;
+  top: 0;
+}
 .header {
   background: #97D6D5;
 }
@@ -337,8 +410,8 @@ font-size: 17px
 
 .menu-item a {
   color: #313524;
-  padding: 21px 28px !important;
-  font-size: 18px;
+  padding: 16px 28px !important;
+  font-size: 28px;
 }
 
 .absolute {
@@ -351,6 +424,7 @@ font-size: 17px
   padding: 13px 20px 16px 20px;
   width: 300px;
   right: 0;
+  display: none;
   text-align: center;
 }
 
@@ -429,8 +503,6 @@ ul {
 .menu-item a:hover,
 .menu-item a:focus {
   color: #415B76;
-  padding: 21px 28px !important;
-  font-size: 18px;
 }
 
 
@@ -441,6 +513,8 @@ ul {
   background-color: #97D6D5;
   box-shadow: 2px -2px 18px #000000a1;
   margin-bottom: 20px;
+  z-index: 1;
+  position: relative;
 }
 
 .menu .menu-text .title {
@@ -746,7 +820,7 @@ font-size: 18px;
   position: fixed;
   right: 0;
   width: 300px;
-  top: 0;
+  top: 76px;
   z-index: 0;
   height: 100%;
   background-color: #f1f1f1;
@@ -819,10 +893,10 @@ font-size: 18px;
 }
 
 .top-settings {
-  position: absolute;
-  width: 300px;
-  left: 44px;
-  top: 100px;
+  /* position: absolute; */
+  /* width: 300px; */
+  /* left: 44px; */
+  /* top: 100px; */
 }
 
 .top-settings-list {

@@ -1,20 +1,26 @@
 <!-- Include header -->
-<%- //include common/header.ejs %>
+<%- include common/header.ejs %>
 
 <section class="tests-section grid-container">
   <div class="grid-x grid-padding-x align-center">
 
-  
+    <div class="section-header test1 small-12 cell text-center">
 
+      <h2>Tests on gathered data</h2>
+      <h3 id="gridTestProgress"></h3>
 
-  <div class="top-settings small-12 cell">
-    <a class="add-new-chart-button button alert" onclick="CreateNewChartPanel()" >Add chart window</a>
+      <a class="button alert" onclick="CreateNewChartPanel()" >Add chart window</a>
+    </div>
+  </div>
+
+  <div class="top-settings">
     <ul id="topSetList" class="top-settings-list">
 
     </ul>
+
   </div>
 
-  <ul id="testListSection" class="grid-x grid-padding-x align-center small-12 cell">
+  <ul id="testListSection" class="grid-x grid-padding-x align-center">
 
     
     
@@ -462,4 +468,4 @@
 </body>
 
 <!-- Include footer -->
-<%- //include common/footer.ejs %>
+<%- include common/footer.ejs %>

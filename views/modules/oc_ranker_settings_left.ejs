@@ -1,0 +1,132 @@
+
+<form class="oc-ranker-settings-left ranking-model-settings-form" action="<%= ocRankerSettingsLeft_ranker_formActionAddress %>">
+  <div class="medium-3 cell">
+    <label>Number of results
+        <input id="numResultsInput" name="numResults" type="number" value="500" step="1">
+    </label>
+  </div>
+
+  <div class="medium-3 cell">
+    <label>Aggregation
+      <select id="aggregationInput" name="aggregation">
+        <option value="100" selected title="Softmax probabability vector from nerual network.">Softmax</option>
+        <option value="200">x^p</option>
+        <option value="300" title="">Sine</option>
+      </select>
+    </label>
+  </div>
+  <div class="medium-3 cell">
+    <label>Aggregation parameter
+        <input id="aggregationParamInput" name="aggregationParam" type="number" value="1" step="0.1">
+    </label>
+  </div>
+
+  <div class="medium-3 cell">
+    <label>Ranking model
+      <select id="rankingModelInput" class="model-type-select" name="modelType">
+        <option value="1" selected title="Based on Boolean model but images that do not fully satisfy formula are included with lower rank. Ranks are primarly based on number of satisfied clauses. They can be sorted within buckets as well.">Boolean Bucketed</option>
+        <option value="2" disabled>Boolean Extended</option>
+        <option value="3" title="VIRET tool model.">Viret Base</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="model-properties model-type-0 small-12 cell hidden-by-default">
+    <div class="grid-x grid-padding-x text-center">
+        <div class="small-12 cell">
+            <small>Model specific settings</small>
+        </div>
+        <div class="medium-4 cell">
+            
+          <label>
+            True treshold
+            <input id="probTreshold2Input"  name="trueTresholds2" type="number" value="0.005" step="0.00001">
+          </label>
+        </div>
+
+    </div>
+  </div>
+
+  <!-- Boolean custom model settings -->
+  <div class="model-properties model-type-1 small-12 cell">
+      <div class="grid-x grid-padding-x text-center">
+          <div class="small-12 cell">
+            <small>Model specific settings</small>
+          </div>
+          <div class="medium-4 cell">
+              
+            <label>
+              True treshold
+              <input  id="probTresholdInput" name="trueTreshold" type="number" value="0.005" step="0.00001">
+            </label>
+          </div>
+
+          <div class="medium-4 cell">
+              <label>In bucket ranking
+                <select  id="inBucketRankingInput" class="in-bucket-ranking-select" name="inBucketRanking">
+                  <option value="0" selected>None</option>
+                  <option value="1">Sum</option>
+                  <option value="2">Max</option>
+                </select>
+              </label>
+            </div>
+  
+      </div>
+    </div>
+
+    <!-- Boolean extended model settings -->
+    <div class="model-properties model-type-2 small-12 cell hidden-by-default">
+      <div class="grid-x grid-padding-x text-center">
+          <div class="small-12 cell">
+              <small>Model specific settings</small>
+          </div>
+          <div class="medium-4 cell">
+              
+            <label>
+              True treshold
+              <input name="trueTreshold3" type="number" value="0.005" step="0.00001">
+            </label>
+          </div>
+  
+    
+        </div>
+      </div>
+
+      <!-- Viret base settings -->
+      <div class="model-properties model-type-3 small-12 cell hidden-by-default">
+        <div class="grid-x grid-padding-x text-center">
+            <div class="small-12 cell">
+                <small>Model specific settings</small>
+            </div>
+            <div class="medium-4 cell">
+                
+              <label>
+                True treshold
+                <input id="probTreshold4Input" name="trueTreshold4" type="number" value="0.005" step="0.00001">
+              </label>
+            </div>
+  
+            <div class="medium-4 cell">
+                <label>Query operation
+                  <select id="queryOperationsInput" class="query_operations-select" name="queryOperations">
+                    <option value="0" selected>Multiply, Add</option>
+                    <option value="1">Add only</option>
+                  </select>
+                </label>
+              </div>
+    
+        </div>
+      </div>
+
+  <a class="button" onclick="ocSaveRankerSettingsLeft(this);">Save settings</a>
+</form>
+
+<script>
+  
+  function ocSaveRankerSettingsLeft(element)
+  {
+
+  }
+
+
+</script>

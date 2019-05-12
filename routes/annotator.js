@@ -5,14 +5,25 @@ var fs = require('fs');
 
 var router = express.Router();
 
-
-// GET request on '/'
+// GET page
 router.get('/', function(req, res, next) 
 {
+  // Get current page slug
+  const currentPage = "annotator";
+
   let phonyQuery = "false";
 
   // Get session object
   const sess = req.session;
+  const isDev = req.session.isDeveloperSession;
+
+  // Get user level
+  let userLevel = 1;
+  if (req.session.isDeveloperSession)
+  {
+    userLevel = 10;
+  }
+
 
   // If this session has not initialized game yet
   if (typeof sess.gameProgress === 'undefined' || req.query.startGame == "true") 
@@ -22,16 +33,15 @@ router.get('/', function(req, res, next)
     // Initialize array of this session's images
     sess.gameWalkthrough = new Array();
 
-    res.redirect('/collector')
+    res.redirect('/annotator')
   } 
-
 
   const totalGameLength = global.gConfig.gameLength + global.gConfig.tutorialLength;
 
   console.log("SessionId: " + sess.id + " PROGRESS : " + sess.gameProgress + "/" + totalGameLength)
 
 
-  const isDev = req.session.isDeveloperSession;
+  
 
   // If dev, skip tutorial
   if (isDev == true && sess.gameProgress < 3 && sess.gameProgress >= 1) 
@@ -43,41 +53,9 @@ router.get('/', function(req, res, next)
   gameProgress.curr = sess.gameProgress;
   gameProgress.total = totalGameLength;
 
-  // If in tutorial
-  if (sess.gameProgress <= global.gConfig.tutorialLength) 
-  {
-    // Send example data to views
-    let exampleItems;
-    if (sess.gameProgress == 1) {
-      exampleItems ='<li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="boat" checked="">                <span>boat</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="ocean" checked="">                <span>ocean</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="pier" checked="">                <span>pier</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="forest" checked="">                <span>forest</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="coast" checked="">                <span>coast</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li>';
-    } 
-    else if (sess.gameProgress == 2) {
-      exampleItems ='<li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="sky" checked="">                <span>sky</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="dirt" checked="">                <span>dirt</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="ground" checked="">                <span>ground</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a></li>';
-    }
-
-    
-    
-    // Final data instance being send to front end
-    var data = { 
-      isDev,
-      exampleItems,
-      gameProgress
-    };
-
-    res.render('tutorials/example_pic' + sess.gameProgress, data);
-    return;
-  }
-
   // If finished game
   if (sess.gameProgress > totalGameLength) 
   {
-
-    // var gameWalkthrough = sess.gameWalkthrough;
-    // var data = { 
-    //   gameWalkthrough
-    // };
-
-
     res.redirect(301, "/scoreboard/");
     return;
   }
@@ -101,9 +79,13 @@ router.get('/', function(req, res, next)
     console.log("Serving image " + newImage);
   }
 
+
+  
   
   // Final data instance being send to front end
   var data = { 
+    currentPage,
+    userLevel,
     isDev,
     phonyQuery,
     newImage,
@@ -112,7 +94,7 @@ router.get('/', function(req, res, next)
 
 
 
-  res.render('collector', data);
+  res.render('annotator', data);
   return;
 });
    
@@ -148,12 +130,7 @@ router.post('/', function(req, res, next)
       let sessionId = sess.id;
       let imageId = sess.gameImage.imageId;
 
-      let queryType = 1;
-      if (sess.isDeveloperSession == true) 
-      {
-        // Set to developer query
-        queryType = 0;
-      }
+      let queryType = 11;
 
       // Parameters: SessionID, ImageID, string query
       const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString, queryType);
@@ -192,7 +169,7 @@ router.post('/', function(req, res, next)
 
   
   // Redirect user back to game page
-  res.redirect(301, "/collector/");
+  res.redirect(301, "/annotator/");
 });
 
 

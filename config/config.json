@@ -29,7 +29,7 @@
         "idOffset2": 1,
 
         "gameLength": 7,
-        "tutorialLength": 2
+        "tutorialLength": 0
     },
     "staging": {
         "config_id": "staging",

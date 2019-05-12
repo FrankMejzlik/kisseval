@@ -28,15 +28,16 @@
       <span aria-hidden="true">&times;</span>
     </button>
 
-    <!-- Menu -->
-    <ul class="vertical menu">
-      <li><a href="#">Foundation</a></li>
-      <li><a href="#">Dot</a></li>
-      <li><a href="#">ZURB</a></li>
-      <li><a href="#">Com</a></li>
-      <li><a href="#">Slash</a></li>
-      <li><a href="#">Sites</a></li>
-    </ul>
+    <% // If OC Ranker Settins should be filled in
+    if (typeof ocRankerSettingsLeft_ranker != "undefined") 
+    {
+     
+    } 
+    // If Annotator settins should be displayed
+    else if (typeof ocRankerSettingsLeft_annotator != "undefined") 
+    {
+      
+    } %>
 
   </div>
 
@@ -47,15 +48,7 @@
       <span aria-hidden="true">&times;</span>
     </button>
 
-    <!-- Menu -->
-    <ul class="vertical menu">
-      <li><a href="#">Foundatio22n</a></li>
-      <li><a href="#">Do22t</a></li>
-      <li><a href="#">ZU22RB</a></li>
-      <li><a href="#">Co22m</a></li>
-      <li><a href="#">Sl22ash</a></li>
-      <li><a href="#">Sit22es</a></li>
-    </ul>
+    
 
   </div>
 
@@ -82,10 +75,11 @@
 
   <!-- Off canvas body -->
   <div class="off-canvas-content" data-off-canvas-content>
-
+    <!--
     <button type="button" class="button" data-toggle="offCanvasLeftSplit1">Open Left</button>
     <button type="button" class="button" data-toggle="offCanvasRightSplit2">Open Right</button>
-
+    -->
+    
     <div class="top-bar header main">
       <div class="top-bar-left">
         <ul class="dropdown menu" data-dropdown-menu>
@@ -93,13 +87,37 @@
             <span class="title"><%= global.gConfig.title %></span>  
             <span class="subtitle"><%= global.gConfig.subtitle %></span>  
           </a></li>
-          <li class="menu-item">
+          <li class="menu-item
+            <% if (typeof currentPage != 'undefined') 
+            {
+              if (currentPage == "annotator") 
+              { %>
+                active
+              <% }
+            } %>
+          ">
             <a href="/annotator/">Annotator</a>
           </li>
-          <li class="menu-item">
+          <li class="menu-item
+          <% if (typeof currentPage != 'undefined') 
+            {
+              if (currentPage == "ranker") 
+              { %>
+                active
+              <% }
+            } %>
+          ">
             <a href="/ranker">Ranker</a>
           </li>
-          <li class="menu-item">
+          <li class="menu-item
+          <% if (typeof currentPage != 'undefined') 
+          {
+            if (currentPage == "statistics") 
+            { %>
+              active
+            <% }
+          } %>
+          ">
             <a href="/statistics/">Statistics</a>
           </li>
         </ul>
@@ -114,12 +132,12 @@
           </li>
         </ul>
 
-        <% 
-        if (typeof isDev != 'undefined') {
-          if (isDev == true) { %>
+        <% if (typeof isDev != 'undefined') 
+        {
+          if (isDev == true) 
+          { %>
             <div class="dev-sign"><p>DEVELOPER SESSION</p></div>
-        <% 
-          }
+          <% }
         } %>
 
       </div>

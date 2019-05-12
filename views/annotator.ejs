@@ -1,0 +1,50 @@
+<!-- Include header -->
+<%- include common/header.ejs %>
+
+<section class="main-image-query grid-container">
+  <div class="grid-x grid-padding-x align-center">
+    <div class="progerss-bar small-12 cell">
+      <span class="curr"><%= gameProgress.curr %></span>
+      <span class="separator">/</span>
+      <span class="total"><%= gameProgress.total %></span>
+    </div>
+    <div class="main-image small-12 cell">
+      <img src="<%= "../images/"  %><%= newImage.filename %>" />
+    </div>
+
+    <div class="autocomplete-keywords-container small-12 cell">
+    
+      <!-- Include autocomplete module -->
+      <%- include modules/annotator_annotate_form.ejs %>
+
+    </div>
+
+  </div>
+</section>
+
+<% if (typeof userLevel != 'undefined') 
+{
+  if (userLevel >= 5) 
+  { %>
+    <div class="developer-bottom-analysis-bar grid-container">.
+
+      <ul class="accordion" data-accordion data-allow-all-closed="true">
+        <li class="accordion-item" data-accordion-item>
+          <!-- Accordion tab title -->
+          <a href="#" class="accordion-title">Analysis</a>
+
+          <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
+          <div class="accordion-content flexible-developer-only-window" data-tab-content>
+            
+            <%- include tests.ejs %>
+
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  <% }
+} %>
+
+<!-- Include footer -->
+<%- include common/footer.ejs %>

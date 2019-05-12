@@ -9,6 +9,9 @@ var router = express.Router();
 // GET request on '/'
 router.get('/', function(req, res, next) 
 {
+  // Get current page slug
+  const currentPage = "statistics";
+
   // Initialize data Object
   var data = new Object();
 
@@ -18,7 +21,9 @@ router.get('/', function(req, res, next)
   data.isDev = isDev;
 
 
-  res.render('tests', data);
+  data.currentPage = currentPage;
+  
+  res.render('statistics', data);
 });
    
 // Process POST from autocomplete form

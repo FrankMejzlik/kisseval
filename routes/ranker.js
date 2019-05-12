@@ -9,7 +9,8 @@ var router = express.Router();
 // GET request on '/'
 router.get('/', function(req, res, next) 
 {
-  
+  // Get current page slug
+  const currentPage = "ranker";
 
   let phonyQuery = "false";
 
@@ -44,6 +45,7 @@ router.get('/', function(req, res, next)
   
   // Final data instance being send to front end
   var data = { 
+    currentPage,
     isDev
   };
 
@@ -63,7 +65,7 @@ router.get('/', function(req, res, next)
 
 
 
-  res.render('image_finder', data);
+  res.render('ranker', data);
 });
    
 // Process POST from autocomplete form

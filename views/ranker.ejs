@@ -28,7 +28,7 @@
 
         <!-- Image settings -->
         <div class="get-random-image-cont small-4 cell">
-            <a class="button" onclick="getRandomImageToPreview(this);">Get random image</a>
+            <a class="button" onclick="getRandomImageToPreview(this);">RNG image</a>
         </div>
         <div class="target-image-id-cont small-4 cell">
           
@@ -37,12 +37,12 @@
           </label>
         </div>
         <div class="target-image-id-cont small-4 cell">
-          <a class="button" onclick="getRandomImageToPreview(this);">Get selected</a>
+          <a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>
         </div>
 
         <!-- Image preview canvas -->
         <div class="image-preview small-12 cell">
-          <img src="http://via.placeholder.com/640x360" />
+          <img id="targetImage" src="http://via.placeholder.com/640x360" />
         </div>
 
       </div>
@@ -177,6 +177,57 @@ function SwitchModalImageHtmlContents(id)
 </section>
 
 </body>
+
+<script>
+  function clearImageGrid()
+  {
+
+  }
+
+  function getRandomImageToPreview(elem)
+  {
+    // Create AJAX call to get appropriate data
+    get('/ranker_ajax_get_random_image_and_start_search_session')
+      // If response OK
+      .then((data) => {
+
+        // Clear old grid
+        clearImageGrid();
+
+        data = JSON.parse(data);
+
+        $("#targetImageId").val(data.imageId);
+        $("#targetImage").attr("src", "/images/" + data.imageFilename);
+
+      })
+      // If error occured
+      .catch((err) => {
+          // Do stuff on error...
+      });
+  }
+
+  function getSelectedImageToPreview(elem)
+  {
+    const targetId = $("#targetImageId").val();
+
+    // Create AJAX call to get appropriate data
+    get('/ranker_ajax_get_selected_image_and_start_search_session?imageId=' + targetId)
+      // If response OK
+      .then((data) => {
+
+        data = JSON.parse(data);
+        
+        $("#targetImageId").val(data.imageId);
+        $("#targetImage").attr("src", "/images/" + data.imageFilename);
+
+      })
+      // If error occured
+      .catch((err) => {
+          // Do stuff on error...
+      });
+  }
+
+</script>
 
 <!-- Include footer -->
 <%- include common/footer.ejs %>

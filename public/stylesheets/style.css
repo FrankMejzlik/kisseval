@@ -11,6 +11,17 @@ body {
   width: 100%;
 }
 
+.ranker-left-sidebar {
+  background-color: rgb(151, 214, 213);
+  min-height: calc(100vh - 100px);
+}
+
+.settings-bar-section {
+  text-align: left;
+  min-height: 59px;
+  position: relative;
+}
+
 .ranker-grid-section.grid-container 
 {
   width: 100%;
@@ -19,6 +30,21 @@ body {
 
 .plot-cont {
   display: none;
+}
+
+.button.icon-settings {
+  width: 40px;
+  padding: 5px;
+  background-color: transparent;
+  position: absolute;
+  transition: 0.3s ease-in-out;
+  left: 12px;
+  top: 10px;
+}
+
+.button.icon-settings:hover,
+.button.icon-settings:focus {
+  opacity: 0.5;
 }
 
 .accordion-title
@@ -523,7 +549,7 @@ ul {
 .top-bar {
   background-color: #97D6D5;
   box-shadow: 2px -2px 18px #000000a1;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   z-index: 1;
   position: relative;
 }

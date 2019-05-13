@@ -27,6 +27,12 @@ function validStateCheckSpecific(req, viewData)
   // Make sure that settings stored in session are initialized
   utils.initializeModelSettings(sess);
 
+  // Initialize session counter if needed
+  if (typeof sess.ranker.searchSessionCounter == "undefined")
+  {
+    sess.ranker.searchSessionCounter = 0;
+  }
+
   viewData.ranker = new Object();
   viewData.ranker.settings = sess.ranker.settings;
 }

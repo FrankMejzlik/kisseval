@@ -138,7 +138,14 @@ app.use('/ranker', rankerRouter);
 app.use('/statistics', statisticsRouter);
 //app.use('/statistics_ajax', statisticsAjaxRouter);
 
+// Ranker AJAXes
 app.get('/ranker_ajax_submit_settings', rankerAjaxRouter.submitSettings);
+app.get('/ranker_ajax_submit_image', rankerAjaxRouter.submitImage);
+app.get('/ranker_ajax_get_random_image_and_start_search_session', rankerAjaxRouter.getRandomImageAndStartSearchSession);
+app.get('/ranker_ajax_get_selected_image_and_start_search_session', rankerAjaxRouter.getSelectedImageAndStartSearchSession);
+app.get('/ranker_ajax_process_action', rankerAjaxRouter.processAction);
+
+
 // Allow only GET requests to 'collector_ajax' router
 app.get('/collector_ajax', collectorAjax.find);
 

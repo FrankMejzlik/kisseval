@@ -7,6 +7,10 @@ body {
 }
 
 
+.oc-ranker-settings-left-section .medium-3 {
+  width: 100%;
+}
+
 .ranker-grid-section.grid-container 
 {
   width: 100%;

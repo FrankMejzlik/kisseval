@@ -1,0 +1,99 @@
+<div class="small-12 medium-3 cell">
+  <label>Number of results
+      <input name="0][numResults]" type="number" value="500" step="1">
+  </label>
+</div>
+
+<div class="small-12 medium-3 cell">
+  <label>Aggregation
+    <select name="0][aggregation]">
+      <option value="100" selected title="Softmax probabability vector from nerual network.">Softmax</option>
+      <option value="200">x^p</option>
+      <option value="300">Sine</option>
+    </select>
+  </label>
+</div>
+<div class="small-12 medium-3 cell">
+  <label>Aggregation parameter
+    <input name="0][aggregationParameter]" type="number" value="1" step="0.1">
+  </label>
+</div>
+<div class="small-12 small-12 cell">
+  <label>Keyword frequency
+    <select class="keyword-frequency-select" name="0][keywordFrequency]">
+      <option value="0" selected>Ignore</option>
+      <option value="1">Take into account</option>
+    </select>
+  </label>
+</div>
+
+<div class="small-12 medium-3 cell">
+  <label>Data source
+    <select name="0][dataSource]">
+      <option value="0" title="Queries that has been gathered from people developing this app." selected>Developers</option>
+      <option value="1" title="Queries gathered from wild public on the internet.">Public</option>
+      </option>
+    </select>
+  </label>
+</div>
+
+<div class="small-12 medium-3 cell">
+  <label>Ranking model
+    <select class="ranking-model-select" name="0][rankingModel]">
+      <option value="1" selected title="Based on Boolean model but images that do not fully satisfy formula are included with lower rank. Ranks are primarly based on number of satisfied clauses. They can be sorted within buckets as well.">Boolean</option>
+      <option value="3" title="VIRET tool model.">Viret Base</option>
+    </select>
+  </label>
+</div>
+<!-- Boolean custom model settings -->
+<div class="model-properties model-type-1 small-12 cell">
+  <div class="grid-x grid-padding-x text-center">
+
+    <div class="small-12 cell">
+      <small>Model specific settings:</small>
+    </div>
+    <div class="small-12 medium-3 cell">
+      <label>
+        True treshold
+        <input name="0][boolean_trueTreshold]" type="number" value="0.005" step="0.00001">
+      </label>
+    </div>
+
+    <div class="small-12 medium-3 cell">
+      <label>In bucket ranking
+        <select class="in-bucket-ranking-select" name="0][boolean_inBucketRanking]">
+          <option value="0" selected>None</option>
+          <option value="1">Sum</option>
+          <option value="2">Max</option>
+        </select>
+      </label>
+    </div>
+
+  </div>
+</div>
+
+<!-- Viret base settings -->
+<div class="model-properties model-type-3 small-12 cell hidden-by-default">
+  <div class="grid-x grid-padding-x text-center">
+    <div class="small-12 cell">
+      <small>Model specific settings</small>
+    </div>
+    <div class="small-12 medium-3 cell">
+
+      <label>
+        True treshold
+        <input name="0][viret_trueTreshold]" type="number" value="0.005" step="0.00001">
+      </label>
+    </div>
+
+    <div class="small-12 medium-3 cell">
+      <label>Query operation
+        <select class="query_operations-select" name="0][viret_queryOperations]">
+          <option value="0" selected>Multiply, Add</option>
+          <option value="1">Add only</option>
+        </select>
+      </label>
+    </div>
+
+  </div>
+</div>

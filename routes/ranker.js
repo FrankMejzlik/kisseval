@@ -2,13 +2,15 @@
 var express = require('express');
 var router = express.Router();
 
+const utils = require("../routes/utils/utils");
+
 function validStateCheckGeneral(req, viewData)
 {
   // Get session object reference
   const sess = req.session;
 
   // Resolve user level
-  global.resolveUserLevel(sess);
+  utils.resolveUserLevel(sess);
 
   // Get current page slug
   viewData.currentPage = "ranker";
@@ -23,7 +25,7 @@ function validStateCheckSpecific(req, viewData)
   const sess = req.session;
 
   // Make sure that settings stored in session are initialized
-  global.initializeModelSettings(sess);
+  utils.initializeModelSettings(sess);
 
   viewData.ranker = new Object();
   viewData.ranker.settings = sess.ranker.settings;

@@ -21,12 +21,18 @@ exports.submitSettings = function(req, res)
   const sess = req.session;
 
   // Save new settings into session
-  sess.ranker = global.parseModelSettingsFromForm(req.query);
+  if (typeof sess.ranker === "undefined")
+  {
+    sess.ranker = new Object();
+  }
+  sess.ranker.settings = global.parseModelSettingsFromForm(req.query[0]);
 
-  console.log("Setting ranker settings to:");
-  console.log(sess.ranker.settings);
-  console.log("==============================");
-
-
+  if (global.gConfig.log_all) 
+  {
+    console.log("Setting ranker settings to:");
+    console.log(sess.ranker.settings);
+    console.log("==============================");
+  }
+  
   res.redirect('/ranker');
 };

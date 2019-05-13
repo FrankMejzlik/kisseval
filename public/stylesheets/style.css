@@ -540,7 +540,8 @@ ul {
 
 .menu .menu-text {
   padding: 0;
-  margin-right: 40px;
+  margin-right: 0px;
+  width: 16%;
 }
 
 #tip1_1 {

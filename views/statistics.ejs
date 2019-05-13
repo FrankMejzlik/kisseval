@@ -24,24 +24,7 @@
 
     
     
-      <!-- Model properties panel toggling -->
-      <script>
-        $( document ).ready(function() {
-          setupModelPropertiesEventListener();
-        });
- 
-        function setupModelPropertiesEventListener() 
-        {
-          $(".model-type-select").change(function() 
-          {
-            const $this = $(this);
-        
-            $this.parent().parent().parent().children(".model-properties").hide();
-            $this.parent().parent().parent().children(".model-type-" + $this.val()).show();
-        
-          });
-        }
-      </script>
+      
 
       <!-- Model properties generation -->
       <script>

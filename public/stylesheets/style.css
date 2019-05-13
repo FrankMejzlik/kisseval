@@ -6,6 +6,13 @@ body {
   background-image: url(../images/generic/bg_neural.jpg);
 }
 
+
+.ranker-grid-section.grid-container 
+{
+  width: 100%;
+  max-width: 100%;
+}
+
 .plot-cont {
   display: none;
 }
@@ -187,9 +194,9 @@ li.probs-list-item {}
 .dev-sign p {
   margin:0;
   position: absolute;
-  left: 20px;
-
-  top: 86px;
+  left: 49px;
+  top: 56px;
+  font-size: 12px;
 }
 
 .dev-login {
@@ -489,7 +496,7 @@ font-size: 17px
   position:relative;
   max-width: 700px;
   /* min-height: 800px; */
-  padding-top:  50px;
+  padding-top: 10px;
 }
 
 ul {
@@ -759,6 +766,21 @@ padding:  10px 10px;
 margin-bottom: 30px;
 }
 
+
+.autocomplete-input-cont {
+  position: relative;
+  /* padding: 0 !important; */
+}
+
+.autocomplete-input-cont .autocomplete-items {
+  width: calc(100% - 30px);
+  left: 15px;
+}
+
+.autocomplete-input-cont #queryInput {
+  margin: 0;
+}
+
 .autocomplete-form {
   /* max-width: 300px; */
   text-align: center;
@@ -818,7 +840,7 @@ font-size: 18px;
 
 .selected-keyword-container {
   position: fixed;
-  right: 0;
+  left: 0;
   width: 300px;
   top: 76px;
   z-index: 0;

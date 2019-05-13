@@ -132,12 +132,14 @@ app.use('/collector', collectorRouter);
 
 app.use('/annotator', annotatorRouter);
 //app.get('/annotator_ajax', annotatorAjaxRouter);
+
 app.use('/ranker', rankerRouter);
 //app.get('/ranker_ajax', rankerAjaxRouter);
+
 app.use('/statistics', statisticsRouter);
 //app.use('/statistics_ajax', statisticsAjaxRouter);
 
-
+app.get('/ranker_ajax_submit_settings', rankerAjaxRouter.submitSettings);
 // Allow only GET requests to 'collector_ajax' router
 app.get('/collector_ajax', collectorAjax.find);
 

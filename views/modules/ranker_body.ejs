@@ -1,10 +1,4 @@
-<!-- Include header -->
-<%- include common/header.ejs %>
 
-<section class="ranker-grid-section grid-container">
-  <div class="grid-x grid-padding-x align-center">
-
-    
 
 <div class="ranker-left-sidebar large-3 cell">
 
@@ -92,7 +86,30 @@
       </div>
 
     </form>
-    
+    <script>
+      $( document ).ready(function() {
+        $(".model-type-select").change(function() 
+          {
+            const $this = $(this);
+        
+            $this.parent().parent().parent().children(".model-properties").hide();
+            $this.parent().parent().parent().children(".model-type-" + $this.val()).show();
+        
+          });
+
+        // Setup provided settings
+        $("#numResultsInput").val(<%= selectedSettings.numResults %>).change();
+        $("#aggregationInput").val(<%= selectedSettings.aggregation %>).change();
+        $("#rankingModelInput").val(<%= selectedSettings.rankingModel %>).change();
+        $("#probTresholdInput").val(<%= selectedSettings.probTreshold %>).change();
+        $("#inBucketRankingInput").val(<%= selectedSettings.inBucketRanking %>).change();
+        $("#probTreshold4Input").val(<%= selectedSettings.probTreshold4 %>).change();
+        $("#queryOperationsInput").val(<%= selectedSettings.queryOperations %>).change();
+
+
+      });
+      
+    </script>
 
   </div>
 
@@ -169,14 +186,4 @@ function SwitchModalImageHtmlContents(id)
 
 
 <!-- Include autocomplete module -->
-<%- include modules/autocomplete_logic.ejs %>
-
-    
-
-  </div>
-</section>
-
-</body>
-
-<!-- Include footer -->
-<%- include common/footer.ejs %>
+<%- include autocomplete_logic.ejs %>

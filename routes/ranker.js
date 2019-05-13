@@ -11,6 +11,8 @@ router.get('/', function(req, res, next)
 {
   // Get current page slug
   const currentPage = "ranker";
+  const ocRankerSettingsLeft_ranker = true;
+  const ocRankerSettingsLeft_ranker_formActionAddress = "/ranker_ajax_submit_settings";
 
   let phonyQuery = "false";
 
@@ -45,6 +47,8 @@ router.get('/', function(req, res, next)
   
   // Final data instance being send to front end
   var data = { 
+    ocRankerSettingsLeft_ranker,
+    ocRankerSettingsLeft_ranker_formActionAddress,
     currentPage,
     isDev
   };
@@ -53,7 +57,7 @@ router.get('/', function(req, res, next)
 
   const selectedSettings = new Object();
   selectedSettings.numResults = 500;
-  selectedSettings.aggregation = 2;
+  selectedSettings.aggregation = 200;
   selectedSettings.rankingModel = 1;
   
   selectedSettings.probTreshold = 0.0;

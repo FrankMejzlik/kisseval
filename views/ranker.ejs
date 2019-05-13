@@ -19,6 +19,10 @@
             <button type="button" class="button icon-settings open-left-oc" data-toggle="offCanvasLeftSplit1"><img src="/images/generic/icon_settings.svg"></button>
         </div>
 
+        <p id="targetImageRankOut">
+
+        </p>
+
       </div>
     </section>
 
@@ -55,7 +59,7 @@
 
         <div class="autocomplete-input-cont small-12 cell">
           <!-- Autocomplete text input -->
-          <input type="text" id="queryInput" tabindex="1" name="query">
+          <input disabled type="text" id="queryInput" tabindex="1" name="query">
           <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
           
           <ul class="selected-keywords-list" id="selectedKeywordsList">
@@ -101,25 +105,8 @@
   
   <ul id="resultImagesList">
 
-      <% if (typeof relevantImages !== 'undefined') {%>
-        <%- JSON.stringify(relevantImagesArray) %>
-      <% } %>
-
-
-      <% if (typeof relevantImagesArray !== 'undefined') {%>
-
-    <%
-    for (var i = 0; i < relevantImagesArray.length; ++i) {
-    %>
-
-      <li class="rel-img-item" data-open="modalImage" onclick="SwitchModalImageHtmlContents(<%= relevantImagesArray[i].imageId %>);">
-        <img src="/images/<%= relevantImagesArray[i].filename %>" id="<%= relevantImagesArray[i].imageId %>" />
-      </li>
-
-        <% }%>
-    <% } %>
-
   </ul>
+
 </div>
 
 
@@ -169,7 +156,7 @@ function SwitchModalImageHtmlContents(id)
 
 
 <!-- Include autocomplete module -->
-<%- include modules/autocomplete_logic.ejs %>
+<%- include modules/autocomplete_logic_ranker.ejs %>
 
     
 
@@ -198,6 +185,7 @@ function SwitchModalImageHtmlContents(id)
 
         $("#targetImageId").val(data.imageId);
         $("#targetImage").attr("src", "/images/" + data.imageFilename);
+        $("#queryInput").prop('disabled', false);
 
       })
       // If error occured
@@ -216,9 +204,10 @@ function SwitchModalImageHtmlContents(id)
       .then((data) => {
 
         data = JSON.parse(data);
-        
+
         $("#targetImageId").val(data.imageId);
         $("#targetImage").attr("src", "/images/" + data.imageFilename);
+        $("#queryInput").prop('disabled', false);
 
       })
       // If error occured
@@ -226,6 +215,39 @@ function SwitchModalImageHtmlContents(id)
           // Do stuff on error...
       });
   }
+
+  function processAction(action, operand)
+  {
+    // Create AJAX call to get appropriate data
+    get('/ranker_ajax_process_action?action=' + action + '&operand=' + operand)
+      // If response OK
+      .then((data) => {
+
+        data = JSON.parse(data);
+
+        $targetList = $("#resultImagesList");
+        $targetList.html("");
+
+        $("#targetImageRankOut").html(data.targetImageRank);
+
+        for (var i = 0; i < data.relevantImagesArray.images.length; ++i) {
+
+          $targetList.append(
+            '<li class="rel-img-item" data-open="modalImage" onclick="SwitchModalImageHtmlContents(' + data.relevantImagesArray.images[i].imageId + ');">\
+              <img src="/images/' + data.relevantImagesArray.images[i].filename + '" id="' + data.relevantImagesArray.images[i].imageId + '" />\
+            </li>'
+          );
+        }
+
+
+      })
+      // If error occured
+      .catch((err) => {
+          // Do stuff on error...
+      });
+  }
+
+  
 
 </script>
 

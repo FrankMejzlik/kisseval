@@ -79,8 +79,7 @@
 
               let selVal = '';
               let selValWord = '';
-              
-              console.log('Hello Franta');
+
 
               for (var i = 0; i < this.childNodes.length; i++) {
                 if (this.childNodes[i].className == "wordnet-id") {
@@ -94,6 +93,12 @@
                 }     
               }
               selValWord = selValWord.replace(/(<([^>]+)>)/ig,"");
+
+
+
+              // Call action
+              processAction(1, selVal);
+
 
               chechkboxCont = document.createElement("li");
               chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
@@ -184,6 +189,14 @@ autocomplete(document.getElementById("queryInput"), document.getElementById("sel
 
 function removeKeyword(e, t) 
 {
+  const operand = $(t).parent().children("input[name='keyword']").val();
+
   $(t).parent().remove();
+
+
+
+  // Call action
+  processAction(0, operand);
+
 }
 </script>

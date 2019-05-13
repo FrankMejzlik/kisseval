@@ -102,6 +102,7 @@ function startSearchSession (sess, imageId, imageSrc)
   sess.ranker.searchSession.id = sess.ranker.searchSessionCounter;
   sess.ranker.searchSession.imageId = imageId;
   sess.ranker.searchSession.imageSrc = imageSrc;
+  sess.ranker.searchSession.query = new Array();
   sess.ranker.searchSession.actionsArray = new Array();
 
   if (global.gConfig.log_all) 
@@ -118,7 +119,6 @@ function startSearchSession (sess, imageId, imageSrc)
 function pushAction(sess, action, operand, score)
 {
   if (global.gConfig.log_all) { console.log("=> pushAction()"); }
-
 
   if (global.gConfig.log_all) 
   {
@@ -212,18 +212,54 @@ exports.processAction = function(req, res)
   if (global.gConfig.log_all) { console.log("=> processAction()"); }
   const sess = req.session;
 
-  const action = 0;
+  const action = req.query.action;
+  const operand = req.query.operand;
 
   // Get all needed things for calling native method
-  const settingsForNative = convertSettingsObjectToNativeFormat(sess.ranker.settings);
+  const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
 
-  const actionResult = GetRelevantImagesPlainQuery();
 
-  
+  if (typeof sess.ranker.query === "undefined")
+  {
+    sess.ranker.query = new Array();
 
-  pushAction(sess, action, operand, score);
+  }
 
-  let response = "action process response";
+  if (action == 0)
+  {
+    const index = sess.ranker.query.indexOf(operand);
+
+    // Cut out this kw
+    sess.ranker.query.splice(index, 1);
+  }
+  else if (action == 1)
+  {
+    // Add keyword
+    sess.ranker.query.push(operand);
+  }
+
+  if (sess.ranker.query.length <= 0)
+  {
+    //return;
+  }
+
+  const queryPlain = sess.ranker.query.join("&");
+
+  let response = new Object();
+  response.targetImageRank;
+  response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
+    queryPlain, 
+    settingsForNative.numResults, 
+    settingsForNative.aggregation, 
+    settingsForNative.rankingModel, 
+    settingsForNative.rankingModelSettings, 
+    settingsForNative.aggregationSettings,
+    sess.ranker.searchSession.imageId
+  );
+
+
+
+  pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);
 
   if (global.gConfig.log_all) { console.log("<= processAction()"); }
   res.jsonp(response);

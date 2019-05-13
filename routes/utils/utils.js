@@ -95,9 +95,10 @@ exports.parseModelSettingsFromForm = function(formBbody)
 exports.convertSettingsObjectToNativeFormat = function(settings)
 { 
   let result = new Object();
-
-  result.keywordFrequency = settins.keywordFrequency;
-  result.dataSource = settins.dataSource;
+  
+  result.numResults = settings.numResults;
+  result.keywordFrequency = settings.keywordFrequency;
+  result.dataSource = settings.dataSource;
   result.rankingModel = settings.rankingModel;
   result.rankingModelSettings = new Array();
   {
@@ -122,10 +123,10 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
       case 1:
       {
         // 0 => 
-        settingsArray.push(settings.boolean_trueTreshold);
+        result.rankingModelSettings.push(settings.boolean_trueTreshold);
   
         // 1 =>
-        settingsArray.push(settings.boolean_inBucketRanking);
+        result.rankingModelSettings.push(settings.boolean_inBucketRanking);
       }
       break;
   
@@ -133,10 +134,10 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
       case 3:
       {
         // 0 =>
-        settingsArray.push(selectedSettings.viret_probTreshold);
+        result.rankingModelSettings.push(settings.viret_trueTreshold);
   
         // 1 =>
-        settingsArray.push(settings.viret_queryOperations);
+        result.rankingModelSettings.push(settings.viret_queryOperations);
       }
       break;
   

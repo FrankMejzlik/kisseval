@@ -13,7 +13,7 @@ exports.getDefaultModelSettingsObject = function ()
   selectedSettings.boolean_trueTreshold = 0.001;
   selectedSettings.boolean_inBucketRanking = 0;
 
-  selectedSettings.viret_probTreshold = 0.0;
+  selectedSettings.viret_trueTreshold = 0.0;
   selectedSettings.viret_queryOperations = 1;
 
   return selectedSettings;
@@ -82,7 +82,7 @@ exports.parseModelSettingsFromForm = function(formBbody)
   // Viret specific
   if (typeof formBbody.viret_trueTreshold !== "undefined")
   {
-    settings.viret_probTreshold = formBbody.viret_trueTreshold;
+    settings.viret_trueTreshold = formBbody.viret_trueTreshold;
   }
   if (typeof formBbody.viret_queryOperations !== "undefined")
   {

@@ -1,6 +1,8 @@
 
 const util = require('util')
 
+const utils = require("../routes/utils/utils");
+
 // var foo = function (req, res, next) 
 // {
 //   const id = Number(req);
@@ -25,7 +27,7 @@ exports.submitSettings = function(req, res)
   {
     sess.ranker = new Object();
   }
-  sess.ranker.settings = global.parseModelSettingsFromForm(req.query[0]);
+  sess.ranker.settings = utils.parseModelSettingsFromForm(req.query[0]);
 
   if (global.gConfig.log_all) 
   {

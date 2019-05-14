@@ -483,9 +483,22 @@ function drawInteractiveSearchChart(chartDataArray)
   }
 
 
-function addKeyword(keywordId) 
+function addKeyword(keywordId, word) 
 {
+  // xoxo
   processAction(1, keywordId);
+
+  const selectedContainer = document.getElementById("selectedKeywordsList");
+
+  chechkboxCont = document.createElement("li");
+  chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
+
+  chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + keywordId + "' checked>\
+    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
+    <span>" + word + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this);'> X</a>"
+
+  selectedContainer.appendChild(chechkboxCont);
+
 }
 
 function switchModalImageHtmlContents(id) 
@@ -503,12 +516,31 @@ function switchModalImageHtmlContents(id)
       // html +="<img src='/images/" + resp.filename + "' />";
       // html += "<h3 class='id'>Image ID:" + resp.imageId + "</h3>";
       // html += "<hr />";
-      html += "<ol class='non-hypernyms-list cell small-6'>";
+      html += "<div class='non-hypernyms cell small-6'>";
+      html += "<h5>Keywords</h5>";
+      html += "<ol class='non-hypernyms-list'>";
 
       for (var i = 0; i < nonHypernymsArray.length; ++i) 
       {
         html += "<li class='probs-list-item '>";
-          html += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].keywordId + ")'>" + nonHypernymsArray[i].keyword +  "</a>";
+          html += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].wordnetId + ", \"" + nonHypernymsArray[i].word + "\")'>" + nonHypernymsArray[i].word +  "<span class='ranking'>" + nonHypernymsArray[i].ranking + "</span></a>";
+            
+        html += "</li>";
+      }
+      html += "</ol>";
+
+      html += "</div>";
+      
+
+      html += "<div class='hypernyms cell small-6'>";
+      html += "<h5>Hypernyms</h5>";  
+      html += "<ol class='hypernyms-list'>";
+
+      for (var i = 0; i < hypernymsArray.length; ++i) 
+      {
+        html += "<li class='probs-list-item '>";
+          html += "<a class='keyword' onclick='addKeyword(" + hypernymsArray[i].wordnetId + ", \"" + hypernymsArray[i].word + "\")'>" + hypernymsArray[i].word + "<span class='ranking'>" + hypernymsArray[i].ranking + "</span></a>";
+            
         html += "</li>";
       }
       html += "</ol>";

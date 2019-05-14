@@ -215,7 +215,11 @@ padding-bottom: 40px;
 }
 
 .modal-image-data {
-  text-align: center;
+  text-align: left;
+}
+
+ol {
+  margin: 0;
 }
 
 .reveal {
@@ -237,6 +241,8 @@ margin-bottom: 10px;
 }
 
 li.probs-list-item {}
+
+li.probs-list-item .ranking {display: none;}
 
 .modal-image-data .probs-list .probs-list-item .index {
   display: inline-block;

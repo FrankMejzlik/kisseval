@@ -936,21 +936,22 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
 
   // Process arguments
   int length = info.Length();
-  if (length != 1)
+  if (length != 2)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetImageKeywordsForInteractiveSearch)").ThrowAsJavaScriptException();
   }
 
   Napi::Number imageId = info[0].As<Napi::Number>();
+  Napi::Number numResults = info[1].As<Napi::Number>();
 
   // Call native method
-  const std::pair<std::vector<std::pair<size_t, float>>, std::vector<std::pair<size_t, float>>> image;
-  try {
-    image = this->actualClass_->GetImageKeywordsForInteractiveSearch(imageId.Uint32Value());
+  std::pair<std::vector<std::tuple<size_t, std::string, float>>, std::vector<std::tuple<size_t, std::string, float>>> hypersNonHypersPair;
+  try 
+  {
+    hypersNonHypersPair = this->actualClass_->GetImageKeywordsForInteractiveSearch(imageId.Uint32Value(), numResults.Uint32Value());
   } 
   catch (const std::exception& e)
   {
-    image = nullptr;
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
 
@@ -963,10 +964,10 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
   {
     napi_value imageIdKey;
     napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
-    napi_value imageId;
-    napi_create_uint32(env, image->m_imageId, &imageId);
+    napi_value imageIds;
+    napi_create_uint32(env, imageId.Uint32Value(), &imageIds);
 
-    napi_set_property(env, result, imageIdKey, imageId.Uint32Value());
+    napi_set_property(env, result, imageIdKey, imageIds);
   }
 
 
@@ -981,7 +982,7 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
     napi_create_array(env, &probVecArr);
     {
       size_t i{ 0ULL };
-      for (auto&& probPair : image.first)
+      for (auto&& probPair : hypersNonHypersPair.first)
       {
         napi_value pair;
         napi_create_object(env, &pair);
@@ -991,7 +992,17 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
           napi_value key;
           napi_create_string_utf8(env, "wordnetId", NAPI_AUTO_LENGTH, &key);
           napi_value value;
-          napi_create_uint32(env, probPair.first, &value);
+          napi_create_uint32(env,  std::get<0>(probPair), &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        // Set "word"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "word", NAPI_AUTO_LENGTH, &key);
+          napi_value value;
+          napi_create_string_utf8(env, std::get<1>(probPair).data(), NAPI_AUTO_LENGTH, &value);
 
           napi_set_property(env, pair, key, value);
         }
@@ -1001,7 +1012,7 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
           napi_value key;
           napi_create_string_utf8(env, "ranking", NAPI_AUTO_LENGTH, &key);
           napi_value value;
-          napi_create_double(env, probPair.second, &value);
+          napi_create_double(env,  std::get<2>(probPair), &value);
 
           napi_set_property(env, pair, key, value);
         }
@@ -1026,27 +1037,37 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
     napi_create_array(env, &probVecArr);
     {
       size_t i{ 0ULL };
-      for (auto&& probPair : image.second)
+      for (auto&& probPair : hypersNonHypersPair.second)
       {
         napi_value pair;
         napi_create_object(env, &pair);
 
-        // Set "index"
+        // Set "wordnetId"
         {
           napi_value key;
-          napi_create_string_utf8(env, "index", 5, &key);
+          napi_create_string_utf8(env, "wordnetId", NAPI_AUTO_LENGTH, &key);
           napi_value value;
-          napi_create_uint32(env, probPair.first, &value);
+          napi_create_uint32(env, std::get<0>(probPair), &value);
 
           napi_set_property(env, pair, key, value);
         }
 
-        // Set "prob"
+        // Set "word"
         {
           napi_value key;
-          napi_create_string_utf8(env, "prob", 4, &key);
+          napi_create_string_utf8(env, "word", NAPI_AUTO_LENGTH, &key);
           napi_value value;
-          napi_create_double(env, probPair.second, &value);
+          napi_create_string_utf8(env, std::get<1>(probPair).data(), NAPI_AUTO_LENGTH, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        // Set "ranking"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "ranking", NAPI_AUTO_LENGTH, &key);
+          napi_value value;
+          napi_create_double(env, std::get<2>(probPair), &value);
 
           napi_set_property(env, pair, key, value);
         }

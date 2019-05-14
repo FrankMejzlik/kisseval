@@ -317,9 +317,9 @@ exports.getImageKeywordsForInteractiveSearch = function(req, res)
 
   const imageId = req.query.imageId;
 
-  global.logger.log('debug', "action = " + action + ", operand = " + operand);
+  //global.logger.log('debug', "action = " + action + ", operand = " + operand);
 
-  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(imageId);
+  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(Number(imageId), 30);
 
   global.logger.log('debug', "<= processAction()");
   res.jsonp(response);

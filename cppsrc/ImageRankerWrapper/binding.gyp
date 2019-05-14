@@ -21,7 +21,7 @@
         'dependencies': [
             "<!(node -p \"require('node-addon-api').gyp\")"
         ],
-        'defines': [ "HAS_NAPI_HEADERS", "LOG_CALLS" ],
+        'defines': [ "NAPI_CPP_EXCEPTIONS", "HAS_NAPI_HEADERS", "LOG_CALLS" ],
         "cflags_cc": [
             "-std=c++17"
         ],   

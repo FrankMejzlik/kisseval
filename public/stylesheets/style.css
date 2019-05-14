@@ -1,5 +1,5 @@
 body {
-  padding: 0px 0 50px 0;
+  padding: 0px 0 0px 0;
   margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   position: relative;
@@ -9,6 +9,13 @@ body {
 .global-messages-section
 {
   position: relative;
+}
+.current-session-chart-const {
+  max-width: 400px;
+}
+
+.current-session-chart-const canvas {
+  max-width: 400px;
 }
 
 #mainGlobalMessageCont {
@@ -40,6 +47,8 @@ body {
 }
 #targetImageRankOut {
   font-weight: 600;
+  margin-top: 20px;
+  display: block;
 }
 .settings-bar-section {
   text-align: left;
@@ -50,6 +59,8 @@ body {
 .image-grid-section {
   padding: 0 !important;
   max-width: 100%;
+  max-height: calc(100vh - 76px);
+  overflow: auto;
 }
 
 .ranker-grid-section.grid-container 
@@ -142,11 +153,12 @@ overflow: auto;
 }
 
 .developer-bottom-analysis-bar {
-  position: fixed;    
+  position: fixed;
   max-width: none;
   padding: 0;
   width: 100vw;
   bottom: 0;
+  z-index: 4;
 }
 
 .welcome-section {
@@ -753,10 +765,10 @@ input[type=submit] {
 }
 
 .autocomplete-items div {
-  padding: 10px;
+  padding: 3px 10px;
   cursor: pointer;
-  background-color: #fff; 
-  border-bottom: 1px solid #d4d4d4; 
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
 }
 .autocomplete-items div:hover {
   /*when hovering an item:*/
@@ -925,8 +937,8 @@ margin-bottom: 30px;
   position: absolute;
   left: 50%;
   top: 50%;
-  max-width: calc(100% - 30px);
-  max-height: calc(100% - 30px);
+  max-width: calc(100% - 20px);
+  max-height: calc(100% - 6px);
   transform: translate(-50%, -50%);
 }
 

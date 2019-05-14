@@ -96,13 +96,13 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
 { 
   let result = new Object();
   
-  result.numResults = settings.numResults;
-  result.keywordFrequency = settings.keywordFrequency;
-  result.dataSource = settings.dataSource;
-  result.rankingModel = settings.rankingModel;
+  result.numResults = Number(settings.numResults);
+  result.keywordFrequency = Number(settings.keywordFrequency);
+  result.dataSource = Number(settings.dataSource);
+  result.rankingModel = Number(settings.rankingModel);
   result.rankingModelSettings = new Array();
   {
-    switch (settings.rankingModel)
+    switch (result.rankingModel)
     {
       /*!
       * FORMAT:
@@ -145,7 +145,7 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
         throw "Unknown model type.";
     }  
   }
-  result.aggregation = settings.aggregation;
+  result.aggregation = Number(settings.aggregation);
   result.aggregationSettings = new Array();
   {
     // Variable with all settings

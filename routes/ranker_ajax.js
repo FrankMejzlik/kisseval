@@ -5,7 +5,6 @@ const util = require('util')
 const utils = require("../routes/utils/utils");
 
 
-
 var eActions = { 
   "removeKeyword":0,
   "addKeyword":1 
@@ -145,11 +144,21 @@ exports.submitImage = function(req, res)
   // Is this correct image?
   response.correct = (imageId == sess.ranker.searchSession.imageId);
 
-  
+  const userId = 0;
+  const sessionId = sess.id;
+  const searchSessionId = sess.ranker.searchSession.id;
+  const targetImageId = sess.ranker.searchSession.imageId;
+  const actionsArray = sess.ranker.searchSession.actionsArray;
 
+  const nativeSettings = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings);
 
   // NATIVE SUBMIT PROGRESS DATA!!!
-  // global.imageRanker.SubmitInteractiveSearchSubmit();
+  // global.imageRanker.SubmitInteractiveSearchSubmit(
+  // nativeSettings.rankingModel, nativeSettings.aggregation, 
+  // nativeSettings.rankingModelSettings, 
+  // nativeSettings.aggregationSettings, 
+  // userId, sessionId, searchSessionId, targetImageId, 
+  // );
   //
 
 
@@ -159,7 +168,7 @@ exports.submitImage = function(req, res)
     terminateSearchSession(sess);
   }
 
-  
+
   global.logger.log('debug', "response: " + JSON.stringify(response, undefined, 4));
 
 
@@ -280,6 +289,20 @@ exports.processAction = function(req, res)
   {
     response.relevantImagesArray.targetImageRank = undefined;
   }
+
+  const actionsArray = sess.ranker.searchSession.actionsArray;
+  response.chartData = new Array();
+  
+  // Construct chart data
+  for (let i = 0; i < actionsArray.length; ++i)
+  {
+    const pair = new Object();
+    pair.index = i;
+    pair.value = actionsArray[i].score;
+
+    response.chartData.push(pair);
+  }
+
 
   global.logger.log('debug', "<= processAction()");
   res.jsonp(response);

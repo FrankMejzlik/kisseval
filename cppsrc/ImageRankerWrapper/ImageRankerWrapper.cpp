@@ -17,6 +17,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
     InstanceMethod("GetRelevantImagesPlainQuery", &ImageRankerWrapper::GetRelevantImagesPlainQuery),
     InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
+    InstanceMethod("GetImageKeywordsForInteractiveSearch", &ImageRankerWrapper::GetImageKeywordsForInteractiveSearch),
     InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex),
     InstanceMethod("RunModelTest", &ImageRankerWrapper::RunModelTest)
 
@@ -892,6 +893,140 @@ Napi::Value ImageRankerWrapper::GetImageDataById(const Napi::CallbackInfo& info)
     {
       size_t i{ 0ULL };
       for (auto&& probPair : image->m_rawNetRankingSorted)
+      {
+        napi_value pair;
+        napi_create_object(env, &pair);
+
+        // Set "index"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "index", 5, &key);
+          napi_value value;
+          napi_create_uint32(env, probPair.first, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        // Set "prob"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "prob", 4, &key);
+          napi_value value;
+          napi_create_double(env, probPair.second, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        napi_set_element(env, probVecArr, i, pair);
+
+        ++i;
+      }
+      
+    }
+    napi_set_property(env, result, probVecKey, probVecArr);
+  }
+
+  return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 1)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetImageKeywordsForInteractiveSearch)").ThrowAsJavaScriptException();
+  }
+
+  Napi::Number imageId = info[0].As<Napi::Number>();
+
+  // Call native method
+  const std::pair<std::vector<std::pair<size_t, float>>, std::vector<std::pair<size_t, float>>> image;
+  try {
+    image = this->actualClass_->GetImageKeywordsForInteractiveSearch(imageId.Uint32Value());
+  } 
+  catch (const std::exception& e)
+  {
+    image = nullptr;
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // Set "imageId"
+  {
+    napi_value imageIdKey;
+    napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
+    napi_value imageId;
+    napi_create_uint32(env, image->m_imageId, &imageId);
+
+    napi_set_property(env, result, imageIdKey, imageId.Uint32Value());
+  }
+
+
+  // Set "hypernymsArray"
+  {
+    std::string probVecKeyString{ "hypernymsArray" };
+    napi_value probVecKey;
+    napi_create_string_utf8(env, probVecKeyString.data(), probVecKeyString.size(), &probVecKey);
+
+    // Create array
+    napi_value probVecArr;
+    napi_create_array(env, &probVecArr);
+    {
+      size_t i{ 0ULL };
+      for (auto&& probPair : image.first)
+      {
+        napi_value pair;
+        napi_create_object(env, &pair);
+
+        // Set "wordnetId"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "wordnetId", NAPI_AUTO_LENGTH, &key);
+          napi_value value;
+          napi_create_uint32(env, probPair.first, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        // Set "ranking"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "ranking", NAPI_AUTO_LENGTH, &key);
+          napi_value value;
+          napi_create_double(env, probPair.second, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        napi_set_element(env, probVecArr, i, pair);
+
+        ++i;
+      }
+      
+    }
+    napi_set_property(env, result, probVecKey, probVecArr);
+  }
+
+  // Set "nonHypernymsArray"
+  {
+    std::string probVecKeyString{ "nonHypernymsArray" };
+    napi_value probVecKey;
+    napi_create_string_utf8(env, probVecKeyString.data(), probVecKeyString.size(), &probVecKey);
+
+    // Create array
+    napi_value probVecArr;
+    napi_create_array(env, &probVecArr);
+    {
+      size_t i{ 0ULL };
+      for (auto&& probPair : image.second)
       {
         napi_value pair;
         napi_create_object(env, &pair);

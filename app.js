@@ -37,7 +37,17 @@ var imagesAjax = require('./routes/images_ajax');
 var api = require('./routes/api');
 
 
-
+const winston = require('winston');
+global.logger = winston.createLogger({
+    level: 'debug',
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.printf(info => {
+            return `${info.timestamp} ${info.level}: ${info.message}`;
+        })
+    ),
+    transports: [new winston.transports.Console()]
+});
 // Instantiate app
 var app = express();
 
@@ -47,7 +57,7 @@ app.set('views', path.join(__dirname, 'views'));
 // Setup it's engine
 app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -112,12 +122,6 @@ global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d,e,f,g, h);
 
 global.imageRanker.Initialize();
 
-
-if (global.gConfig.log_all == true)
-{
-  console.log(global.imageRanker);
-}
-
 // Push all routers into express middleware stack
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -144,6 +148,7 @@ app.get('/ranker_ajax_submit_image', rankerAjaxRouter.submitImage);
 app.get('/ranker_ajax_get_random_image_and_start_search_session', rankerAjaxRouter.getRandomImageAndStartSearchSession);
 app.get('/ranker_ajax_get_selected_image_and_start_search_session', rankerAjaxRouter.getSelectedImageAndStartSearchSession);
 app.get('/ranker_ajax_process_action', rankerAjaxRouter.processAction);
+app.get('/ranker_ajax_get_image_keywords_for_interactive_search', rankerAjaxRouter.getImageKeywordsForInteractiveSearch);
 
 
 // Allow only GET requests to 'collector_ajax' router

@@ -40,12 +40,16 @@ function validStateCheckSpecific(req, viewData)
 // GET request
 router.get('/', function(req, res, next) 
 {
+  const sess = req.session;
+
   // This structure will be send to view template
   let viewData = new Object();
 
   // Do valid state checks
   validStateCheckGeneral(req, viewData);
   validStateCheckSpecific(req, viewData);
+
+  global.logger.log('debug', "sess.ranker:"+ JSON.stringify(sess.ranker, undefined, 4));
 
   // Rener ranker view
   res.render('ranker', viewData);

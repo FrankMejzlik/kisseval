@@ -16,6 +16,7 @@ router.post('/', function(req, res, next)
   {
     // Switch to dev session
     req.session.isDeveloperSession = !req.session.isDeveloperSession;
+    req.session.userLevel = 10;
   }
   
   // Redirect user back home page

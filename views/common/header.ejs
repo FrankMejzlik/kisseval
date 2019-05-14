@@ -134,9 +134,9 @@
           </li>
         </ul>
 
-        <% if (typeof isDev != 'undefined') 
+        <% if (typeof userLevel != 'undefined') 
         {
-          if (isDev == true) 
+          if (userLevel >= 10) 
           { %>
             <div class="dev-sign"><p>DEVELOPER SESSION</p></div>
           <% }

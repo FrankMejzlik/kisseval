@@ -127,6 +127,8 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   */
   Napi::Value GetImageDataById(const Napi::CallbackInfo& info);
 
+  Napi::Value GetImageKeywordsForInteractiveSearch(const Napi::CallbackInfo& info);
+
 
   // std::string GetKeywordByVectorIndex(size_t index) const
   Napi::Value GetKeywordByVectorIndex(const Napi::CallbackInfo& info);

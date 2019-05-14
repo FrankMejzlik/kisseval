@@ -1,7 +1,10 @@
 
+
 const util = require('util')
 
 const utils = require("../routes/utils/utils");
+
+
 
 var eActions = { 
   "removeKeyword":0,
@@ -46,50 +49,46 @@ exports.submitSettings = function(req, res)
 
 function submitSearchSession(sess)
 {
-  if (global.gConfig.log_all) { console.log("=> submitSearchSession()"); }
-
-  if (global.gConfig.log_all) 
-  {
-    console.log("Submitting search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
-  }
+  global.logger.log('debug', "<= submitSearchSession()");
 
 
-  if (global.gConfig.log_all) { console.log("<= submitSearchSession()"); }
+  global.logger.log('debug', "Submitting search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
+
+
+  global.logger.log('debug', "<= submitSearchSession()");
 }
 
 function terminateSearchSession(sess) 
 {
-  if (global.gConfig.log_all) { console.log("=> terminateSearchSession()"); }
+  global.logger.log('debug', "=> terminateSearchSession()");
   
   // If not set at all
   if (typeof sess.ranker === "undefined")
   {
     // Nothing to do
+    global.logger.log('debug', "<= terminateSearchSession()");
     return;
   }
   if (typeof sess.ranker.searchSession === "undefined")
   {
     // Nothing to do
+    global.logger.log('debug', "<= terminateSearchSession()");
     return;
   }
 
-  if (global.gConfig.log_all) 
-  {
-    console.log("Terminating search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
-  }
+  sess.ranker.query = undefined;
+
+  global.logger.log('debug', "Terminating search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");  
 
   // Reset it
   sess.ranker.searchSession = undefined;
 
-  if (global.gConfig.log_all) { console.log("<= terminateSearchSession()"); }
+  global.logger.log('debug', "<= terminateSearchSession()");
 }
 
 function startSearchSession (sess, imageId, imageSrc)
 {
-  if (global.gConfig.log_all) { console.log("=> startSearchSession()"); }
-  
-  // End previous first
-  terminateSearchSession(sess);
+  global.logger.log('debug', "=> startSearchSession()");
 
   if (typeof sess.ranker === "undefined")
   {
@@ -105,28 +104,17 @@ function startSearchSession (sess, imageId, imageSrc)
   sess.ranker.searchSession.query = new Array();
   sess.ranker.searchSession.actionsArray = new Array();
 
-  if (global.gConfig.log_all) 
-  {
-    console.log("Starting search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
-  }
+  global.logger.log('debug', "Starting search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
 
   // Increment counter
   ++sess.ranker.searchSessionCounter;
 
-  if (global.gConfig.log_all) { console.log("<= startSearchSession()"); }
+  global.logger.log('debug', "<= startSearchSession()");
 }
 
 function pushAction(sess, action, operand, score)
 {
-  if (global.gConfig.log_all) { console.log("=> pushAction()"); }
-
-  if (global.gConfig.log_all) 
-  {
-    console.log("Pushing action, session ID = " + sess.id + ", search session ID =  " + sess.ranker.searchSession.id);
-    console.log("action = " + action);
-    console.log("operand = " + operand);
-    console.log("score = " + score);
-  }
+  global.logger.log('debug', "=> pushAction()");
 
   // Create object for this action
   const newAction = new Object();
@@ -134,27 +122,55 @@ function pushAction(sess, action, operand, score)
   newAction.operand = operand;
   newAction.score = score;
 
+  global.logger.log('debug', "Pushing action, session ID = " + sess.id + ", search session ID =  " + sess.ranker.searchSession.id);
+  global.logger.log('debug', "newAction:"+ JSON.stringify(newAction, undefined, 4));
+
   // Store it in session
   sess.ranker.searchSession.actionsArray.push(newAction);
 
-  if (global.gConfig.log_all) { console.log("<= pushAction()"); }
+  global.logger.log('debug', "<= pushAction()");
 }
 
 exports.submitImage = function(req, res)
 {
-  if (global.gConfig.log_all) { console.log("=> submitImage()"); }
+  global.logger.log('debug', "=> submitImage()");
   const sess = req.session;
 
+  const imageId = req.query.imageId;
+  global.logger.log('debug', "imageId = " + imageId);
 
-  let response = "data";
 
-  if (global.gConfig.log_all) { console.log("<= submitImage()"); }
+  let response = new Object();
+  
+  // Is this correct image?
+  response.correct = (imageId == sess.ranker.searchSession.imageId);
+
+  
+
+
+  // NATIVE SUBMIT PROGRESS DATA!!!
+  // global.imageRanker.SubmitInteractiveSearchSubmit();
+  //
+
+
+  // If correct answer, just end search session
+  if (response.correct)
+  {
+    terminateSearchSession(sess);
+  }
+
+  
+  global.logger.log('debug', "response: " + JSON.stringify(response, undefined, 4));
+
+
+  global.logger.log('debug', "<= submitImage()");
   res.jsonp(response);
 }
 
 exports.getRandomImageAndStartSearchSession = function(req, res) 
 {
-  if (global.gConfig.log_all) { console.log("=> getRandomImageAndStartSearchSession()"); }
+  global.logger.log('debug', "=> getRandomImageAndStartSearchSession()");
+
   const sess = req.session;
 
   // Terminate old session if any
@@ -170,18 +186,15 @@ exports.getRandomImageAndStartSearchSession = function(req, res)
   response.imageId = image.imageId;
   response.imageFilename = image.filename;
 
-  if (global.gConfig.log_all) 
-  { 
-    console.log("response = " + JSON.stringify(response)); 
-  }
+  global.logger.log('debug', "response: " + JSON.stringify(response, undefined, 4));  
 
-  if (global.gConfig.log_all) { console.log("<= getRandomImageAndStartSearchSession()"); }
+  global.logger.log('debug', "<= getRandomImageAndStartSearchSession()");
   res.jsonp(response);
 }
 
 exports.getSelectedImageAndStartSearchSession = function(req, res) 
 {
-  if (global.gConfig.log_all) { console.log("=> getSelectedImageAndStartSearchSession()"); }
+  global.logger.log('debug', "=> getSelectedImageAndStartSearchSession()");
   const sess = req.session;
 
    // Terminate old session if any
@@ -202,18 +215,20 @@ exports.getSelectedImageAndStartSearchSession = function(req, res)
      console.log("response = " + JSON.stringify(response)); 
    }
 
-  if (global.gConfig.log_all) { console.log("<= getSelectedImageAndStartSearchSession()"); }
+  global.logger.log('debug', "<= getSelectedImageAndStartSearchSession()");
   res.jsonp(response);
 }
 
 
 exports.processAction = function(req, res) 
 {
-  if (global.gConfig.log_all) { console.log("=> processAction()"); }
+  global.logger.log('debug', "=> processAction()");
   const sess = req.session;
 
   const action = req.query.action;
   const operand = req.query.operand;
+
+  global.logger.log('debug', "action = " + action + ", operand = " + operand);
 
   // Get all needed things for calling native method
   const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
@@ -222,7 +237,6 @@ exports.processAction = function(req, res)
   if (typeof sess.ranker.query === "undefined")
   {
     sess.ranker.query = new Array();
-
   }
 
   if (action == 0)
@@ -238,29 +252,52 @@ exports.processAction = function(req, res)
     sess.ranker.query.push(operand);
   }
 
-  if (sess.ranker.query.length <= 0)
-  {
-    //return;
-  }
-
   const queryPlain = sess.ranker.query.join("&");
 
   let response = new Object();
-  response.targetImageRank;
-  response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
-    queryPlain, 
-    settingsForNative.numResults, 
-    settingsForNative.aggregation, 
-    settingsForNative.rankingModel, 
-    settingsForNative.rankingModelSettings, 
-    settingsForNative.aggregationSettings,
-    sess.ranker.searchSession.imageId
-  );
+  
+  if (sess.ranker.query.length > 0)
+  {
+    response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
+      queryPlain, 
+      1000, 
+      settingsForNative.aggregation, 
+      settingsForNative.rankingModel, 
+      settingsForNative.rankingModelSettings, 
+      settingsForNative.aggregationSettings,
+      sess.ranker.searchSession.imageId
+    );
+
+    pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);
+  }
+  else 
+  {
+    pushAction(sess, action, operand, 0);
+  }
+
+  // If not dev, hide target image position
+  if (sess.userLevel < 10)
+  {
+    response.relevantImagesArray.targetImageRank = undefined;
+  }
+
+  global.logger.log('debug', "<= processAction()");
+  res.jsonp(response);
+}
 
 
 
-  pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);
+exports.getImageKeywordsForInteractiveSearch = function(req, res) 
+{
+  global.logger.log('debug', "=> processAction()");
+  const sess = req.session;
 
-  if (global.gConfig.log_all) { console.log("<= processAction()"); }
+  const imageId = req.query.imageId;
+
+  global.logger.log('debug', "action = " + action + ", operand = " + operand);
+
+  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(imageId);
+
+  global.logger.log('debug', "<= processAction()");
   res.jsonp(response);
 }

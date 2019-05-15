@@ -76,6 +76,13 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
    */
    Napi::Value GetGridTestProgress(const Napi::CallbackInfo& info);
    
+
+   
+
+
+   Napi::Value GetStatisticsUserKeywordAccuracy(const Napi::CallbackInfo& info);
+
+
   // std::vector<GameSessionQueryResult> SubmitUserQueriesWithResults(std::vector<GameSessionInputQuery> inputQueries, QueryOrigin origin = QueryOrigin::cPublic);
   Napi::Value SubmitUserQueriesWithResults(const Napi::CallbackInfo& info);
 

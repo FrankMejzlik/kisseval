@@ -1,447 +1,182 @@
 <!-- Include header -->
 <%- include common/header.ejs %>
 
-<section class="tests-section grid-container">
+
+<section class="page-title-section grid-container">
   <div class="grid-x grid-padding-x align-center">
-
-    <div class="section-header test1 small-12 cell text-center">
-
-      <h2>Tests on gathered data</h2>
-      <h3 id="gridTestProgress"></h3>
-
-      <a class="button alert" onclick="CreateNewChartPanel()" >Add chart window</a>
+    
+    <div class="title small-12 cell text-center">
+      <h4>User success rate in queries relative to NN</h4>
     </div>
-  </div>
-
-  <div class="top-settings">
-    <ul id="topSetList" class="top-settings-list">
-
-    </ul>
-
-  </div>
-
-  <ul id="testListSection" class="grid-x grid-padding-x align-center">
-      <!-- Model properties generation -->
-      <script>
-        
-        let nextPropertyIndex = 0;
-        let nextBlockIndex = 0;
-        
-
-        function addProperty(element) 
-        {
-          let propertyTemplate = `<%- include modules/tests_model_properties.ejs %>`;
-          const targetList = $(element).parent();
-          
-          //targetList.html(targetList.html() + propertyTemplate);
-          targetList.append(propertyTemplate);
-
-          // Setup listeners
-          setupModelPropertiesEventListener();
-
-          // Increment property counter
-          ++nextPropertyIndex;
-        }
-
-        function removeProperty(element) 
-        {
-          $(element).parent().remove();
-        }
-
-      </script>
-
-      <!-- Chart plotting -->
-      <script src="/javascripts/Chart.bundle.js"></script>
-      <script>
-        const chartSettings = {
-          // The type of chart we want to create
-          type: 'line',
-
-          // The data for our dataset
-          data: {},
-
-          // Configuration options go here
-          options: {
-          responsive: true,
-          title: {
-            display: false,
-            text: 'Test 1'
-          },
-          tooltips: {
-            mode: 'index',
-            intersect: false,
-          },
-          hover: {
-            mode: 'nearest',
-            intersect: true
-          },
-          scales: {
-            xAxes: [{
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: 'Rank'
-              }
-            }],
-            yAxes: [{
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: 'Number of images'
-              }
-            }]
-          }
-        }
-      }
-
-      function startFetchingGridTestProgress($form) 
-      {
-        var $outputElem = $("#gridTestProgress");
-
-        const url = "/tests_ajax_GetGridTestProgress";
-
-        const submitData = new Object();
-
-        (function(){
-            
-            
-          // Send GET request
-          var posting = $.get( 
-            url, 
-            {
-              submitData
-            }
-          );
-
-          // Process response
-          posting.done(function( response ) 
-          { 
-
-            const complete = response.numCompletedTests;
-            const total = response.numTests;
-
-            $outputElem.html(complete + '\\' + total);
-
-          });
-
-            setTimeout(arguments.callee, 2000);
-        })();
-
-        
-
-
-      }
-
-      function getFormData($form){
-          var unindexed_array = $form.serializeArray();
-          var indexed_array = {};
-
-          $.map(unindexed_array, function(n, i){
-              indexed_array[n['name']] = n['value'];
-          });
-
-          return indexed_array;
-      }
-
-        function removeData(chart) {
-            chart.data.labels.pop();
-            chart.data.datasets.forEach((dataset) => {
-                dataset.data.pop();
-            });
-            chart.update();
-        }
-
-        function submitTestForm(event, element) {
-        /* get the action attribute from the <form action=""> element */
-          var $form = $( element ),
-              url = $form.attr( 'action' );
-
-          /* stop form from submitting normally */
-          event.preventDefault();
-          
-          $form.removeClass("result-ok");
-          $form.addClass("running-test");
-
-          const formData = getFormData($form);
-
-          const id = $form.data("id");
-
-          
-
-          const submitData = new Object();
-          submitData.formData = formData;
-          submitData.formId = id;
-
-          /* Send the data using post with element id name and name2*/
-          var posting = $.get( 
-            url, 
-            {
-              submitData
-            }
-            
-          );
-
-          /* Alerts the results */
-          posting.done(function( response ) 
-          { 
-            const formId = response.formId;
-
-            const returnedDataArray = response.chartDataArray;
-
-            let datasets = new Array();
-
-            const num = returnedDataArray.length;
-            const divPerChanel = (num / 3) + 1;
-
-            let labels = new Array();
-
-            for (var i = 0; i < returnedDataArray.length; ++i) 
-            {
-              const returnedData = returnedDataArray[i];
-
-              // Calculate coefs for colour
-              const r = (i % 3 == 0 ? 1 : 0) * 255;
-              const g = (i % 3 == 1 ? 1 : 0) * 255;
-              const b = (i % 3 == 2 ? 1 : 0) * 255;
-
-
-              const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
-          
-              let data = new Array();
-
-              // Create labels from indices
-              for (var j = 0; j < returnedData.length; ++j)
-              {
-                if (i == 0) {
-                  labels.push(returnedData[j].index);
-                }
-                
-                data.push(returnedData[j].value);
-              }
-
-              const label = String(i);
-
-              const chartData = {
-                borderColor,
-                backgroundColor: "rgba(255, 0, 0, 0)",
-                label,
-                pointRadius: 0.5,
-                pointHoverRadius: 0.5,
-                borderWidth: 1.0,
-                data,
-              }
-
-              datasets.push(chartData);
-            }
-
-
-            var chartData = {
-              labels,
-              datasets
-            }
-
-            const chartCanvas = document.getElementById("chart" + formId);
-            const form = document.getElementById("testForm" + formId);
-            const $form = $(form);                        
-
-            // Create chart
-            var ctx = chartCanvas.getContext('2d');
-            var chart = new Chart(ctx, chartSettings);
-
-            // Update data
-            chart.data = chartData;
-            // Update chart
-            chart.update();
-
-            $form.removeClass("running-test");
-            $form.addClass("result-ok");
-          });
-        }
-
-        function submitGridTest(event, element) 
-        {
-          // Get form that has been submited
-          const $form = $(element).closest("form");
-          
-          // Define AJAX request URL
-          const url = "/tests_ajax_RunGridTest";
-
-          // Stop usual submit
-          event.preventDefault();
-          
-          $form.removeClass("result-ok");
-          $form.addClass("running-test");
-
-          const formData = getFormData($form);
-
-          const id = $form.data("id");
-
-          const submitData = new Object();
-          submitData.formData = formData;
-          submitData.formId = id;
-
-          startFetchingGridTestProgress($form);
-
-          // Send GET request
-          var posting = $.get( 
-            url, 
-            {
-              submitData
-            }
-          );
-
-          // Process response
-          posting.done(function( response ) 
-          { 
-            // Form that has been submitted
-            const formId = response.formId;
-
-            // Array of the best models and their settings
-            const returnedDataArray = response.gridTestResults;
-
-            let datasets = new Array();
-
-            const num = returnedDataArray.length;
-            const divPerChanel = (num / 3) + 1;
-
-            let labels = new Array();
-
-            // Iterate over returned array of best results
-            /*
-            [
-              { "testSettings":
-                  {
-                    "aggregation": 1,
-                    "rankingModel" 2,
-                    "queryOrigin": 3,
-                    "modelOptions" :[ "opt1", "opt2", ...]
-                  },
-                "chartData": [
-                  { index: 0, value: 10.6 },
-                  { index: 1, value: 11.3 },
-                  ...
-                ]
-              },
-            ... ]
-            */
-            for (var i = 0; i < returnedDataArray.length; ++i) 
-            {
-              // Settings of this test result
-              // xoxo
-              const returnedTestSettings = returnedDataArray[i].testSettings;
-              
-
-              var html = "<li>";
-                html += '<p class="index">' + i + '</p>';
-                html += "<p class=\"agg\">aggregation = " + returnedTestSettings.aggregation + "</p>";
-                html += "<p class=\"rm\">rankingModel = " + returnedTestSettings.rankingModel + "</p>";
-                html += "<p class=\"or\">queryOrigin = " + returnedTestSettings.queryOrigin + "</p>";
-                html += "<strong>Model settings:</strong>";
-                for (var j = 0; j < returnedTestSettings.modelOptions.length; ++j)
-                {
-                  html += "<small>" + returnedTestSettings.modelOptions[j] + "</small>";
-                }
-
-              html += "</li>"
-
-              $('#topSetList').append(html);
-
-              // Chart data
-              const returnedChartData = returnedDataArray[i].chartData;
-
-              // Calculate coefs for colour
-              const r = (i % 3 == 0 ? 1 : 0) * 255;
-              const g = (i % 3 == 1 ? 1 : 0) * 255;
-              const b = (i % 3 == 2 ? 1 : 0) * 255;
-
-
-              const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
-          
-              let data = new Array();
-
-              // Create labels from indices
-              for (var j = 0; j < returnedChartData.length; ++j)
-              {
-                if (i == 0) {
-                  labels.push(returnedChartData[j].index);
-                }
-                
-                data.push(returnedChartData[j].value);
-              }
-
-              const label = String(i);
-
-              const chartData = {
-                borderColor,
-                backgroundColor: "rgba(255, 0, 0, 0)",
-                label,
-                pointRadius: 0.5,
-                pointHoverRadius: 0.5,
-                borderWidth: 1.0,
-                data,
-              }
-
-              datasets.push(chartData);
-            }
-
-
-            var chartData = {
-              labels,
-              datasets
-            }
-
-            const chartCanvas = document.getElementById("chart" + formId);
-            const form = document.getElementById("testForm" + formId);
-            const $form = $(form);                        
-
-            // Create chart
-            var ctx = chartCanvas.getContext('2d');
-            var chart = new Chart(ctx, chartSettings);
-
-            // Update data
-            chart.data = chartData;
-            // Update chart
-            chart.update();
-
-            $form.removeClass("running-test");
-            $form.addClass("result-ok");
-          });
-        }
-
-        function CreateNewChartPanel()
-        {
-          const targetChartContainer = document.getElementById("testListSection");
-
-          let propertyTemplate = `<%- include modules/tests_chart_block.ejs %>`;
-
-          targetChartContainer.innerHTML += propertyTemplate;
-
-          // Setup listeners
-          //setupModelPropertiesEventListener()
-
-          $(".tests-settings-form").submit(function(event) {
-
-            submitTestForm(event, this);
-
-          })
-
-          $(".tests-settings-form .run-grid-test").click(function(event) 
-          {
-
-            submitGridTest(event, this);
-
-          })
-
-          // Increment property counter
-          ++nextBlockIndex;
-        }
-
-
-        
-      </script>
 
   </div>
 </section>
+
+<section class="statistics-hyper-nonhyper-section grid-container">
+  <div class="grid-x grid-padding-x align-center">
+
+    <div class="nonhyper small-6 cell text-center">
+      <h4>Non-hypernyms</h4>
+      <h5>Percentage in user queries: <%= nonHyper.misc.percentage %>%</h5>
+      <canvas class="chart-canvas" id="nonhyperChart"></canvas> 
+      
+    </div>
+
+    <div class="hyper small-6 cell text-center">
+      <h4>Hypernyms</h4>
+      <h5>Percentage in user queries: <%= hyper.misc.percentage %>%</h5>
+      <canvas class="chart-canvas" id="hyperChart"></canvas> 
+      
+
+    </div>
+
+  </div>
+</section>
+
+<script src="/javascripts/Chart.bundle.js"></script>
+<script>
+
+$( document ).ready(function() 
+{
+    drawInteractiveSearchChart1();
+    drawInteractiveSearchChart2();
+});
+
+function drawInteractiveSearchChart1()
+{
+  const data = <%- JSON.stringify(nonHyper) %>;
+
+  drawInteractiveSearchChart(data.chartData, "nonhyperChart");
+}
+
+
+function drawInteractiveSearchChart2()
+{
+  const data = <%- JSON.stringify(hyper) %>
+
+  drawInteractiveSearchChart(data.chartData, "hyperChart");
+}
+
+
+
+
+const chartSettings = {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {},
+
+    // Configuration options go here
+    options: {
+      animation: {
+          duration: 0
+      },
+    responsive: true,
+    title: {
+      display: false,
+      text: ''
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false,
+    },
+    hover: {
+      mode: 'nearest',
+      intersect: true
+    },
+    scales: {
+      xAxes: [{
+        display: true,
+        scaleLabel: {
+          display: true,
+          labelString: 'The best ranked bind from NN'
+        }
+      }],
+      yAxes: [{
+        display: true,
+        ticks: {
+            beginAtZero: true
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Number of hits by users'
+        }
+      }]
+    }
+  }
+}
+
+function drawInteractiveSearchChart(chartData, canvasId)
+{
+
+  const returnedDataArray = new Array();
+  returnedDataArray.push(chartData);
+
+  let datasets = new Array();
+
+  const num = returnedDataArray.length;
+  const divPerChanel = (num / 3) + 1;
+
+  let labels = new Array();
+
+  for (var i = 0; i < returnedDataArray.length; ++i) 
+  {
+    const returnedData = returnedDataArray[i];
+
+    // Calculate coefs for colour
+    const r = (i % 3 == 0 ? 1 : 0) * 255;
+    const g = (i % 3 == 1 ? 1 : 0) * 255;
+    const b = (i % 3 == 2 ? 1 : 0) * 255;
+
+
+    const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
+
+    let data = new Array();
+
+    // Create labels from indices
+    for (var j = 0; j < returnedData.length; ++j)
+    {
+      if (i == 0) {
+        labels.push(returnedData[j].index);
+      }
+      
+      data.push(returnedData[j].value);
+    }
+
+    const label = String(i);
+
+    const chartData = {
+      borderColor,
+      backgroundColor: "rgba(255, 0, 0, 0)",
+      label,
+      pointRadius: 0.5,
+      pointHoverRadius: 0.5,
+      borderWidth: 1.0,
+      data,
+    }
+
+    datasets.push(chartData);
+  }
+
+
+  var chartData = {
+    labels,
+    datasets
+  }
+
+  const chartCanvas = document.getElementById(canvasId);
+                       
+  // Create chart
+  var ctx = chartCanvas.getContext('2d');
+  var chart = new Chart(ctx, chartSettings);
+
+  // Update data
+  chart.data = chartData;
+  // Update chart
+  chart.update();
+}
+</script>
 
 </body>
 

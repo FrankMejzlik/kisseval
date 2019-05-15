@@ -19,7 +19,10 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
     InstanceMethod("GetImageKeywordsForInteractiveSearch", &ImageRankerWrapper::GetImageKeywordsForInteractiveSearch),
     InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex),
-    InstanceMethod("RunModelTest", &ImageRankerWrapper::RunModelTest)
+    InstanceMethod("RunModelTest", &ImageRankerWrapper::RunModelTest),
+    InstanceMethod("GetStatisticsUserKeywordAccuracy", &ImageRankerWrapper::GetStatisticsUserKeywordAccuracy)
+
+    
 
     
   });
@@ -794,6 +797,221 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 
   return Napi::Object(env, result);
 }
+
+Napi::Value ImageRankerWrapper::GetStatisticsUserKeywordAccuracy(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 1)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetStatisticsUserKeywordAccuracy)").ThrowAsJavaScriptException();
+  }
+
+  size_t querySource = info[0].As<Napi::Number>().Uint32Value();
+
+
+#if LOG_CALLS
+
+  std::cout << "CALLING NATIVE 'GetStatisticsUserKeywordAccuracy' with args:" << std::endl;
+  std::cout << querySource << std::endl;
+  std::cout << "===================" << std::endl;
+
+#endif
+
+  // Call native method
+
+  std::tuple<UserAccuracyChartData, UserAccuracyChartData> chartDataPairs;
+  try 
+  {
+    chartDataPairs = this->actualClass_->GetStatisticsUserKeywordAccuracy((QueryOriginId)querySource);
+  }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
+
+  auto nonhypers{ std::get<0>(chartDataPairs) };
+  auto hypers{ std::get<1>(chartDataPairs) };
+
+  napi_value resultPairObject;
+  napi_create_object(env, &resultPairObject);
+
+  // Nonhypers
+  {
+    auto misc{ nonhypers.first};
+    auto data{ nonhypers.second };
+
+    napi_value keyOutter2;
+    napi_create_string_utf8(env, "nonhyper", NAPI_AUTO_LENGTH, &keyOutter2);
+    napi_value kwCont;
+    napi_create_object(env, &kwCont);
+
+    // Misc
+    {
+      napi_value keyOutter;
+      napi_create_string_utf8(env, "misc", NAPI_AUTO_LENGTH, &keyOutter);
+      napi_value miscObj;
+      napi_create_object(env, &miscObj);
+
+      // Set "querySource"
+      {
+        napi_value key;
+        napi_create_string_utf8(env, "querySource", NAPI_AUTO_LENGTH, &key);
+        napi_value value;
+        napi_create_uint32(env, std::get<0>(misc), &value);
+
+        napi_set_property(env, miscObj, key, value);
+      }
+
+      // Set "percentage"
+      {
+        napi_value key;
+        napi_create_string_utf8(env, "percentage", NAPI_AUTO_LENGTH, &key);
+        napi_value value;
+        napi_create_double(env, std::get<1>(misc), &value);
+
+        napi_set_property(env, miscObj, key, value);
+      }
+
+      napi_set_property(env, kwCont, keyOutter, miscObj);
+    }
+
+
+    // Chart data
+    {
+      napi_value keyOutter;
+      napi_create_string_utf8(env, "chartData", NAPI_AUTO_LENGTH, &keyOutter);
+      napi_value nonHyperChartDataArray;
+      napi_create_array(env, &nonHyperChartDataArray);
+
+      size_t i{ 0ULL };
+      for (auto&& pairIndexValue : data)
+      {
+        napi_value pair;
+        napi_create_object(env, &pair);
+
+        // Set "index"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "index", 5, &key);
+          napi_value value;
+          napi_create_uint32(env, pairIndexValue.first, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        // Set "value"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "value", 5, &key);
+          napi_value value;
+          napi_create_uint32(env, pairIndexValue.second, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        napi_set_element(env, nonHyperChartDataArray, i, pair);
+        ++i;
+      }
+
+      napi_set_property(env, kwCont, keyOutter, nonHyperChartDataArray);
+    }
+
+    napi_set_property(env, resultPairObject, keyOutter2, kwCont);
+  }
+
+  // Hypers
+  {
+    auto misc{ hypers.first };
+    auto data{ hypers.second };
+
+    napi_value keyOutter2;
+    napi_create_string_utf8(env, "hyper", NAPI_AUTO_LENGTH, &keyOutter2);
+    napi_value kwCont;
+    napi_create_object(env, &kwCont);
+
+    // Misc
+    {
+      napi_value keyOutter;
+      napi_create_string_utf8(env, "misc", NAPI_AUTO_LENGTH, &keyOutter);
+      napi_value miscObj;
+      napi_create_object(env, &miscObj);
+
+      // Set "querySource"
+      {
+        napi_value key;
+        napi_create_string_utf8(env, "querySource", NAPI_AUTO_LENGTH, &key);
+        napi_value value;
+        napi_create_uint32(env, std::get<0>(misc), &value);
+
+        napi_set_property(env, miscObj, key, value);
+      }
+
+      // Set "percentage"
+      {
+        napi_value key;
+        napi_create_string_utf8(env, "percentage", NAPI_AUTO_LENGTH, &key);
+        napi_value value;
+        napi_create_double(env, std::get<1>(misc), &value);
+
+        napi_set_property(env, miscObj, key, value);
+      }
+
+      napi_set_property(env, kwCont, keyOutter, miscObj);
+    }
+
+
+    // Chart data
+    {
+      napi_value keyOutter;
+      napi_create_string_utf8(env, "chartData", NAPI_AUTO_LENGTH, &keyOutter);
+      napi_value nonHyperChartDataArray;
+      napi_create_array(env, &nonHyperChartDataArray);
+
+      size_t i{ 0ULL };
+      for (auto&& pairIndexValue : data)
+      {
+        napi_value pair;
+        napi_create_object(env, &pair);
+
+        // Set "index"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "index", 5, &key);
+          napi_value value;
+          napi_create_uint32(env, pairIndexValue.first, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        // Set "value"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "value", 5, &key);
+          napi_value value;
+          napi_create_uint32(env, pairIndexValue.second, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        napi_set_element(env, nonHyperChartDataArray, i, pair);
+        ++i;
+      }
+
+      napi_set_property(env, kwCont, keyOutter, nonHyperChartDataArray);
+    }
+
+    napi_set_property(env, resultPairObject, keyOutter2, kwCont);
+  }
+
+  return Napi::Object(env, resultPairObject);
+}
+
 
 
 Napi::Value ImageRankerWrapper::GetKeywordByVectorIndex(const Napi::CallbackInfo& info)

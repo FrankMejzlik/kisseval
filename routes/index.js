@@ -16,7 +16,7 @@ function validStateCheckGeneral(req, viewData)
   utils.resolveUserLevel(sess);
 
   // Get current page slug
-  viewData.currentPage = "statistics";
+  viewData.currentPage = "index";
   viewData.userLevel = sess.userLevel;
 }
 

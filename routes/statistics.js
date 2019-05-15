@@ -6,19 +6,42 @@ var fs = require('fs');
 var router = express.Router();
 
 
+const utils = require("../routes/utils/utils");
+
+function validStateCheckGeneral(req, viewData)
+{
+  // Get session object reference
+  const sess = req.session;
+
+  // Resolve user level
+  utils.resolveUserLevel(sess);
+
+  // Get current page slug
+  viewData.currentPage = "statistics";
+  viewData.userLevel = sess.userLevel;
+}
+
+function validStateCheckSpecific(req, viewData)
+{
+  // Get session object reference
+  const sess = req.session;
+
+}
+
+
 // GET request on '/'
 router.get('/', function(req, res, next) 
 {
-  // Get current page slug
-  const currentPage = "statistics";
-
-  // Initialize data Object
-  var data = new Object();
-
-  // Get session object
   const sess = req.session;
-  const isDev = sess.isDev;
-  data.isDev = isDev;
+
+  // This structure will be send to view template
+  let viewData = new Object();
+
+  // Do valid state checks
+  validStateCheckGeneral(req, viewData);
+  validStateCheckSpecific(req, viewData);
+
+  global.logger.log('debug', "sess.ranker:"+ JSON.stringify(sess.ranker, undefined, 4));
 
 
   data.currentPage = currentPage;
@@ -26,26 +49,5 @@ router.get('/', function(req, res, next)
   res.render('statistics', data);
 });
    
-// Process POST from autocomplete form
-router.post('/', function(req, res, next) 
-{
-  // Initialize data Object
-  var data = new Object();
-
-  // Get session object
-  const sess = req.session;
-  const isDev = sess.isDev;
-  data.isDev = isDev;
-
-  // Get keywords user provided
-  var keywords = req.body.keyword;
-  
-  // Initialize final string
-  let finalString = "";
-
-
-  res.render('image_finder', data);
-});
-
 
 module.exports = router;

@@ -374,6 +374,10 @@ a {
   color: #00B7FF;
 }
 
+.dropdown.menu > li > a {
+    padding: 0.1rem 1rem;
+}
+
 
 .add-new-chart-button {
   /* position: absolute; */
@@ -512,6 +516,9 @@ font-size: 17px
   background-size:contain;
 }
 
+.login-dev {
+  padding: 6px !important;
+}
 
 .feedback-popup .button {
   margin: 0;
@@ -523,7 +530,7 @@ font-size: 17px
 
 .menu-item a {
   color: #313524;
-  padding: 16px 28px !important;
+  padding: 11px 28px !important;
   font-size: 28px;
 }
 
@@ -669,14 +676,14 @@ ul {
   color: #fff3d9;
 }
 .menu .menu-text .subtitle {
-  font-size: 18px;
+  font-size: 14px;
   color: #233656;
 }
 
 .menu .menu-text {
   padding: 0;
   margin-right: 0px;
-  width: 16%;
+  width: 192px;
 }
 
 #tip1_1 {
@@ -960,6 +967,12 @@ margin-bottom: 30px;
 .oc-ranker-settings-left-section {
   padding: 40px 30px 20px 30px;
 }
+
+.oc-ranker-settings-left-section .numResults,
+.oc-ranker-settings-left-section .dataSource{
+  display: none;
+}
+
 
 .oc-ranker-settings-left-section input,
 .oc-ranker-settings-left-section select {

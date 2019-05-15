@@ -3,27 +3,8 @@
 const util = require('util')
 
 const utils = require("../routes/utils/utils");
+const rankerUtils = require("../routes/utils/ranker_utils");
 
-
-var eActions = { 
-  "removeKeyword":0,
-  "addKeyword":1 
-};
-
-// var foo = function (req, res, next) 
-// {
-//   const id = Number(req);
-//   const result = global.imageRanker.GetImageDataById(id);
-
-//   for (var i = 0; i < result.probabilityVector.length; ++i) 
-//   {
-//     const keywordIndex = result.probabilityVector[i].index;
-
-//     result.probabilityVector[i].keyword = global.imageRanker.GetKeywordByVectorIndex(keywordIndex);
-//   }
-
-//   return result;
-// }
 
 exports.submitSettings = function(req, res) 
 {
@@ -45,90 +26,6 @@ exports.submitSettings = function(req, res)
   
   res.redirect('/ranker');
 };
-
-function submitSearchSession(sess)
-{
-  global.logger.log('debug', "<= submitSearchSession()");
-
-
-  global.logger.log('debug', "Submitting search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
-
-
-  global.logger.log('debug', "<= submitSearchSession()");
-}
-
-function terminateSearchSession(sess) 
-{
-  global.logger.log('debug', "=> terminateSearchSession()");
-  
-  // If not set at all
-  if (typeof sess.ranker === "undefined")
-  {
-    // Nothing to do
-    global.logger.log('debug', "<= terminateSearchSession()");
-    return;
-  }
-  if (typeof sess.ranker.searchSession === "undefined")
-  {
-    // Nothing to do
-    global.logger.log('debug', "<= terminateSearchSession()");
-    return;
-  }
-
-  sess.ranker.query = undefined;
-
-  global.logger.log('debug', "Terminating search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");  
-
-  // Reset it
-  sess.ranker.searchSession = undefined;
-
-  global.logger.log('debug', "<= terminateSearchSession()");
-}
-
-function startSearchSession (sess, imageId, imageSrc)
-{
-  global.logger.log('debug', "=> startSearchSession()");
-
-  if (typeof sess.ranker === "undefined")
-  {
-    sess.ranker = new Object();
-  }
-
-  // Start new
-  sess.ranker.searchSession = new Object();
-  // Git it unique ID
-  sess.ranker.searchSession.id = sess.ranker.searchSessionCounter;
-  sess.ranker.searchSession.imageId = imageId;
-  sess.ranker.searchSession.imageSrc = imageSrc;
-  sess.ranker.searchSession.query = new Array();
-  sess.ranker.searchSession.actionsArray = new Array();
-
-  global.logger.log('debug', "Starting search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
-
-  // Increment counter
-  ++sess.ranker.searchSessionCounter;
-
-  global.logger.log('debug', "<= startSearchSession()");
-}
-
-function pushAction(sess, action, operand, score)
-{
-  global.logger.log('debug', "=> pushAction()");
-
-  // Create object for this action
-  const newAction = new Object();
-  newAction.action = action;
-  newAction.operand = operand;
-  newAction.score = score;
-
-  global.logger.log('debug', "Pushing action, session ID = " + sess.id + ", search session ID =  " + sess.ranker.searchSession.id);
-  global.logger.log('debug', "newAction:"+ JSON.stringify(newAction, undefined, 4));
-
-  // Store it in session
-  sess.ranker.searchSession.actionsArray.push(newAction);
-
-  global.logger.log('debug', "<= pushAction()");
-}
 
 exports.submitImage = function(req, res)
 {
@@ -165,7 +62,7 @@ exports.submitImage = function(req, res)
   // If correct answer, just end search session
   if (response.correct)
   {
-    terminateSearchSession(sess);
+    rankerUtils.terminateSearchSession(sess);
   }
 
 
@@ -183,13 +80,13 @@ exports.getRandomImageAndStartSearchSession = function(req, res)
   const sess = req.session;
 
   // Terminate old session if any
-  terminateSearchSession(sess);
+  rankerUtils.terminateSearchSession(sess);
 
   // Get random image
   const image = global.imageRanker.GetRandomImage();
 
   // Start new session with this image
-  startSearchSession(sess, image.imageId, image.filename);
+  rankerUtils.startSearchSession(sess, image.imageId, image.filename);
 
   let response = new Object();
   response.imageId = image.imageId;
@@ -207,13 +104,13 @@ exports.getSelectedImageAndStartSearchSession = function(req, res)
   const sess = req.session;
 
    // Terminate old session if any
-   terminateSearchSession(sess);
+   rankerUtils.terminateSearchSession(sess);
 
    // Get random image
    const image = global.imageRanker.GetImageDataById(Number(req.query.imageId));
  
    // Start new session with this image
-   startSearchSession(sess, image.imageId, image.filename);
+   rankerUtils.startSearchSession(sess, image.imageId, image.filename);
  
    let response = new Object();
    response.imageId = image.imageId;
@@ -277,11 +174,11 @@ exports.processAction = function(req, res)
       sess.ranker.searchSession.imageId
     );
 
-    pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);
+    rankerUtils.pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);
   }
   else 
   {
-    pushAction(sess, action, operand, 0);
+    rankerUtils.pushAction(sess, action, operand, 0);
   }
 
   // If not dev, hide target image position

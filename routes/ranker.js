@@ -4,6 +4,8 @@ var router = express.Router();
 
 const utils = require("../routes/utils/utils");
 
+const rankerUtils = require("../routes/utils/ranker_utils");
+
 function validStateCheckGeneral(req, viewData)
 {
   // Get session object reference
@@ -48,6 +50,9 @@ router.get('/', function(req, res, next)
   // Do valid state checks
   validStateCheckGeneral(req, viewData);
   validStateCheckSpecific(req, viewData);
+  
+  rankerUtils.terminateSearchSession(sess);
+
 
   global.logger.log('debug', "sess.ranker:"+ JSON.stringify(sess.ranker, undefined, 4));
 

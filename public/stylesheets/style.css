@@ -391,6 +391,11 @@ a {
     padding: 0.1rem 1rem;
 }
 
+.run-grid-test
+{
+  display: none;
+}
+
 
 .add-new-chart-button {
   /* position: absolute; */

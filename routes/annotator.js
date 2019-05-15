@@ -123,40 +123,38 @@ router.post('/', function(req, res, next)
       finalString = keywords;
     }
 
-    // If player out of tutorial
-    if (sess.gameProgress > 2)
-    {
-
-      let sessionId = sess.id;
-      let imageId = sess.gameImage.imageId;
-
-      let queryType = 11;
-
-      // Parameters: SessionID, ImageID, string query
-      const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString, queryType);
-      /* RETURN OBJECT:
-        [
-          {
-            "sessionId": "332e3f4",
-            "imageFilename": "file2.jpg",
-            "keywords": [ "k1", "k2" ,... ]
-            "netProbabilites": [
-                {
-                  "netKeyword": 1222,
-                  "netProbability": 0.444,
-                },
-                ...
-            ]
-
-          }
-          ...
-        ]
-      */
 
 
-      // Mark it into session
-      sess.gameWalkthrough.push(userImageResult);
-    }
+    let sessionId = sess.id;
+    let imageId = sess.gameImage.imageId;
+
+    let queryType = 1;
+
+    // Parameters: SessionID, ImageID, string query
+    const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString, queryType);
+    /* RETURN OBJECT:
+      [
+        {
+          "sessionId": "332e3f4",
+          "imageFilename": "file2.jpg",
+          "keywords": [ "k1", "k2" ,... ]
+          "netProbabilites": [
+              {
+                "netKeyword": 1222,
+                "netProbability": 0.444,
+              },
+              ...
+          ]
+
+        }
+        ...
+      ]
+    */
+
+
+    // Mark it into session
+    sess.gameWalkthrough.push(userImageResult);
+    
 
     // Increment game progress counter
     ++sess.gameProgress;

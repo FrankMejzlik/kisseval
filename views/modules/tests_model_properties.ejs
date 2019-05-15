@@ -8,8 +8,7 @@
     <label>Aggregation
       <select name="${nextPropertyIndex}][aggregation]">
         <option value="100" selected title="Softmax probabability vector from nerual network.">Softmax</option>
-        <option value="200">x^p</option>
-        <option value="300" title="">Sine</option>          
+        <option value="200">x^p</option>     
       </select>
     </label>
   </div>
@@ -22,8 +21,7 @@
   <div class="medium-3 cell">
     <label>Ranking model
       <select class="model-type-select" name="${nextPropertyIndex}][modelType]">
-        <option value="1" selected title="Based on Boolean model but images that do not fully satisfy formula are included with lower rank. Ranks are primarly based on number of satisfied clauses. They can be sorted within buckets as well.">Boolean Bucketed</option>
-        <option value="2" disabled>Boolean Extended</option>
+        <option value="1" selected title="Based on Boolean model but images that do not fully satisfy formula are included with lower rank. Ranks are primarly based on number of satisfied clauses. They can be sorted within buckets as well.">Boolean</option>
         <option value="3" title="VIRET tool model.">Viret Base</option>
       </select>
     </label>

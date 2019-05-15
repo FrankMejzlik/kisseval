@@ -34,6 +34,7 @@ body {
 .ranker-left-sidebar {
   background-color: rgb(151, 214, 213);
   min-height: calc(100vh - 100px);
+  overflow: hidden;
 }
 
 #targetImageRankOut {
@@ -159,6 +160,10 @@ overflow: auto;
   width: 100vw;
   bottom: 0;
   z-index: 4;
+}
+
+.developer-bottom-analysis-bar .accordion-title {
+  background-color: #eeb121;
 }
 
 .welcome-section {
@@ -300,9 +305,12 @@ li.probs-list-item .ranking {display: none;}
 .dev-sign p {
   margin:0;
   position: absolute;
-  left: 49px;
-  top: 56px;
+  left: 22px;
+  top: 64px;
   font-size: 12px;
+  background: red;
+  color: #fff;
+  padding: 0px 10px;
 }
 
 .dev-login {
@@ -977,7 +985,7 @@ margin-bottom: 30px;
 .oc-ranker-settings-left-section input,
 .oc-ranker-settings-left-section select {
   height: 30px;
-  padding: 5px;
+  padding: 5px  20px 5px 5px;
   font-size: 12px;
 }
 
@@ -1067,7 +1075,7 @@ font-size: 18px;
   position: fixed;
   left: 0;
   width: 300px;
-  top: 76px;
+  top: 66px;
   z-index: 0;
   height: 100%;
   background-color: #f1f1f1;
@@ -1131,8 +1139,14 @@ font-size: 18px;
   background-color: #97d6d580;
 }
 
+.test-block .medium-3{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .test-block label {
   text-align: left;
+  font-size: 11px;
 }
 
 .test-block small {

@@ -176,10 +176,13 @@
 
     // Configuration options go here
     options: {
+      animation: {
+          duration: 0
+      },
     responsive: true,
     title: {
       display: false,
-      text: 'Test 1'
+      text: ''
     },
     tooltips: {
       mode: 'index',
@@ -412,7 +415,7 @@ function drawInteractiveSearchChart(chartDataArray)
   let currentImagesToPrintArray;
   let currentImageIndex;
   let numImagesToPrint;
-  const numImagesPerBatch = 500;
+  const numImagesPerBatch = 300;
   const batchPrintTimeout = 2000;
 
   function printImagesFromTo()

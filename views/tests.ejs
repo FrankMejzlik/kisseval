@@ -4,11 +4,14 @@
 <section class="tests-section grid-container">
   <div class="grid-x grid-padding-x align-center">
 
-  
+    <div class="top-settings small-6 cell">
+      <a class="add-new-chart-button button alert" onclick="CreateNewChartPanel()" >Add chart window</a>
+    </div>
+    <div class="layout-switch-cont small-6 cell">
+      <a class="add-new-chart-button button alert" onclick="switchTestWindowLayout(0)" >50/50</a>
+      <a class="add-new-chart-button button alert" onclick="switchTestWindowLayout(1)" >100</a>
+    </div>
 
-
-  <div class="top-settings small-12 cell">
-    <a class="add-new-chart-button button alert" onclick="CreateNewChartPanel()" >Add chart window</a>
     <ul id="topSetList" class="top-settings-list">
 
     </ul>
@@ -20,6 +23,30 @@
     
       <!-- Model properties panel toggling -->
       <script>
+        function switchTestWindowLayout(mode)
+        {
+          $list = $("#testListSection");
+          $blocks = $(".test-block");
+
+          $blocks.each(function()
+          {
+            // 50/50
+            if (mode == 0)
+            {
+              $list.removeClass("hundred");
+              $list.addClass("fifty-fifty");
+            }
+            // 100
+            else if (mode == 1)
+            {
+              $list.removeClass("fifty-fifty");
+              $list.addClass("hundred");
+            }
+            
+          });          
+        }
+
+
         $( document ).ready(function() {
           setupModelPropertiesEventListener();
         });

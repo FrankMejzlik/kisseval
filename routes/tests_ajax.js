@@ -76,6 +76,9 @@ exports.RunModelTest = function(req, res)
       // BooleanBucket
       case 1:
       {
+        
+        const keywordFrequency = formDataArray[i].keywordFrequency;
+        settingsArray.push(keywordFrequency);
         // 0 => 
         const probTreshold = formDataArray[i].trueTreshold;
         settingsArray.push(probTreshold);
@@ -94,6 +97,9 @@ exports.RunModelTest = function(req, res)
       // ViretBase
       case 3:
       {
+        const keywordFrequency = formDataArray[i].keywordFrequency;
+        settingsArray.push(keywordFrequency);
+
         // 0 =>
         const probTreshold4 = formDataArray[i].trueTreshold4;
         settingsArray.push(probTreshold4);

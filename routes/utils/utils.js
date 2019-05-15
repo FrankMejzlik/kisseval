@@ -10,6 +10,8 @@ exports.getDefaultModelSettingsObject = function ()
   selectedSettings.keywordFrequency = 0;
   selectedSettings.dataSource = 0;
   
+  selectedSettings.keywordFrequency = 0;
+
   selectedSettings.boolean_trueTreshold = 0.001;
   selectedSettings.boolean_inBucketRanking = 0;
 
@@ -69,6 +71,12 @@ exports.parseModelSettingsFromForm = function(formBbody)
     settings.dataSource = formBbody.dataSource;
   }
 
+  if (typeof formBbody.keywordFrequency !== "undefined")
+  {
+    settings.keywordFrequency = formBbody.keywordFrequency;
+  }
+  
+
   // Boolean specific
   if (typeof formBbody.boolean_trueTreshold !== "undefined")
   {
@@ -123,9 +131,11 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
       case 1:
       {
         // 0 => 
+        result.rankingModelSettings.push(settings.keywordFrequency);
+        // 1 ->
         result.rankingModelSettings.push(settings.boolean_trueTreshold);
   
-        // 1 =>
+        // 2 =>
         result.rankingModelSettings.push(settings.boolean_inBucketRanking);
       }
       break;
@@ -133,6 +143,9 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
       // ViretBase
       case 3:
       {
+
+        result.rankingModelSettings.push(settings.keywordFrequency);
+
         // 0 =>
         result.rankingModelSettings.push(settings.viret_trueTreshold);
   

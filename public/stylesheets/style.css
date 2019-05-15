@@ -1078,6 +1078,17 @@ font-size: 18px;
 
 }
 
+
+#testListSection.hundred .test-block.small-12
+{
+  width: 100%;
+}
+
+#testListSection.fifty-fifty .test-block.small-12
+{
+  width: 50%;
+}
+
 /* xoxo */
 
 .model-props-list {

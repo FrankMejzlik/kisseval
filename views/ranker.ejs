@@ -122,7 +122,7 @@
 
 
 <!-- Single image modal window -->
-<div class="reveal" id="modalImage" data-reveal data-src="999">
+<div class="reveal" id="modalImage" data-reveal data-src="999" data-overlay="false">
   <button class="close-button" data-close aria-label="Close modal" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -412,7 +412,7 @@ function drawInteractiveSearchChart(chartDataArray)
   let currentImagesToPrintArray;
   let currentImageIndex;
   let numImagesToPrint;
-  const numImagesPerBatch = 100;
+  const numImagesPerBatch = 500;
   const batchPrintTimeout = 2000;
 
   function printImagesFromTo()
@@ -460,7 +460,10 @@ function drawInteractiveSearchChart(chartDataArray)
         for (currentImageIndex = 0; currentImageIndex < numImagesPerBatch; ++currentImageIndex) 
         {
           $targetList.append(
-            '<li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
+            '<button class="close-button" data-close aria-label="Close modal" type="button">\
+              <span aria-hidden="true">&times;</span>\
+            </button>\
+            <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
               data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
               <a class="button btn-submit success" onclick="submitImage(this);">S</a>\
               <a class="just-clicker"  data-open="modalImage"></a>\

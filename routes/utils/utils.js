@@ -10,13 +10,13 @@ exports.getDefaultModelSettingsObject = function ()
   selectedSettings.keywordFrequency = 0;
   selectedSettings.dataSource = 0;
   
-  selectedSettings.keywordFrequency = 0;
+  selectedSettings.keywordFrequency = "0";
 
-  selectedSettings.boolean_trueTreshold = 0.001;
-  selectedSettings.boolean_inBucketRanking = 0;
+  selectedSettings.boolean_trueTreshold = "0.001";
+  selectedSettings.boolean_inBucketRanking = "0";
 
-  selectedSettings.viret_trueTreshold = 0.0;
-  selectedSettings.viret_queryOperations = 1;
+  selectedSettings.viret_trueTreshold = "0.0";
+  selectedSettings.viret_queryOperations = "1";
 
   return selectedSettings;
 }

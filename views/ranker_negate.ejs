@@ -1,0 +1,713 @@
+<!-- Include header -->
+<%- include common/header.ejs %>
+
+<section class="global-messages-section grid-container">
+  <div class="grid-x grid-x align-center">
+    <div class="callout" id="mainGlobalMessageCont">
+      <h5 class="primary"></h5>
+      <p class="secondary"></p>
+    </div>
+  </div>
+</section>
+
+<section class="ranker-grid-section grid-container">
+  <div class="grid-x grid-x align-center">
+
+    
+
+<div class="ranker-left-sidebar large-3 cell">
+
+  <form autocomplete="off" class="autocomplete-form" action="/image_finder/" method="POST">
+
+    <!-- Settings bar -->
+    <section class="settings-bar-section grid-container">
+      <div class="grid-x grid-padding-x align-left">  
+
+        <!-- Image settings -->
+        <div class="get-random-image-cont small-4 cell">
+            <button type="button" class="button icon-settings open-left-oc" data-toggle="offCanvasLeftSplit1"><img src="/images/generic/icon_settings.svg"></button>
+        </div>
+
+        <div class="target-image-rank-cont small-4 cell">
+          <span id="targetImageRankOut"></span>
+        </div>
+        
+
+      </div>
+    </section>
+
+    <!-- Image preview -->
+    <section class="image-preview-section grid-container">
+      <div class="grid-x grid-padding-x align-left">  
+
+        <!-- Image settings -->
+        <div class="get-random-image-cont small-4 cell">
+            <a class="button" onclick="getRandomImageToPreview(this);">RNG image</a>
+        </div>
+        <div class="target-image-id-cont small-4 cell">
+          
+          <label class="target-image-id-label">Target image ID:
+            <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= ranker.targetImageId ? ranker.targetImageId : '' %>" />
+          </label>
+        </div>
+        <div class="target-image-id-cont small-4 cell">
+          <a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>
+        </div>
+
+        <!-- Image preview canvas -->
+        <div class="image-preview small-12 cell">
+          <img id="targetImage" src="/images/generic/bg_neural.jpg" />
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- Autocomplete section -->
+    <section class="autocomplete-section grid-container">
+      <div class="grid-x grid-padding-x align-left"> 
+
+        <div class="autocomplete-input-cont small-12 cell">
+          <!-- Autocomplete text input -->
+          <input disabled type="text" id="queryInput" tabindex="1" name="query">
+          <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
+          
+        </div>
+        <div class="kw-cols selected-keywords-list-cont large-4 cell">
+          <h3>OK</h3>
+          <ul class="selected-keywords-list" id="selectedKeywordsList">
+          </ul>
+        </div>
+        <div class="kw-cols suggested-keywords-list-cont large-4 cell">
+          <h3>?</h3>
+          <ul class="suggested-keywords-list" id="suggestedKeywordsList">
+            </ul>
+        </div>
+        <div class="kw-cols deselected-keywords-list-cont large-4 cell">
+          <h3>NOK</h3>
+          <ul class="deselected-keywords-list" id="deselectedKeywordsList">
+            </ul>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+<!-- Images grid -->
+<div class="ranker-right-sidebar image-grid-section image-browser-main-tiles large-9 cell grid-container">
+  
+  <ul id="resultImagesList" class="grid-x grid-x align-center align-middle">
+
+  </ul>
+
+</div>
+
+
+
+<!-- Single image modal window -->
+<div class="reveal" id="modalImage" data-reveal data-src="999" data-overlay="false">
+  <button class="close-button" data-close aria-label="Close modal" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+<% if (typeof userLevel != 'undefined') 
+{
+  if (userLevel >= 5) 
+  { %>
+    <div class="developer-bottom-analysis-bar grid-container">.
+
+      <ul class="accordion" data-accordion data-allow-all-closed="true">
+        <li class="accordion-item" data-accordion-item>
+          <!-- Accordion tab title -->
+          <a href="#" class="accordion-title">Analysis</a>
+
+          <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
+          <div class="accordion-content flexible-developer-only-window grid-x grid-x align-center align-middle" data-tab-content>
+            <div class="current-session-chart-const small-6 cell">
+              <canvas class="chart-canvas" id="interactiveSearchChart"></canvas> 
+            </div>
+
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  <% }
+} %>
+
+
+
+<!-- Include autocomplete module -->
+<%- include modules/autocomplete_logic_ranker.ejs %>
+
+  </div>
+</section>
+
+</body>
+
+<!-- Chart plotting -->
+<script src="/javascripts/Chart.bundle.js"></script>
+<script>
+  const chartSettings = {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {},
+
+    // Configuration options go here
+    options: {
+      animation: {
+          duration: 0
+      },
+    responsive: true,
+    title: {
+      display: false,
+      text: ''
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false,
+    },
+    hover: {
+      mode: 'nearest',
+      intersect: true
+    },
+    scales: {
+      xAxes: [{
+        display: true,
+        scaleLabel: {
+          display: true,
+          labelString: 'Rank'
+        }
+      }],
+      yAxes: [{
+        display: true,
+        ticks: {
+            beginAtZero: true
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Target image rank'
+        }
+      }]
+    }
+  }
+}
+
+function drawInteractiveSearchChart(chartDataArray)
+{
+
+  const returnedDataArray = chartDataArray;
+
+  let datasets = new Array();
+
+  const num = returnedDataArray.length;
+  const divPerChanel = (num / 3) + 1;
+
+  let labels = new Array();
+
+  for (var i = 0; i < returnedDataArray.length; ++i) 
+  {
+    const returnedData = returnedDataArray[i];
+
+    // Calculate coefs for colour
+    const r = (i % 3 == 0 ? 1 : 0) * 255;
+    const g = (i % 3 == 1 ? 1 : 0) * 255;
+    const b = (i % 3 == 2 ? 1 : 0) * 255;
+
+
+    const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
+
+    let data = new Array();
+
+    // Create labels from indices
+    for (var j = 0; j < returnedData.length; ++j)
+    {
+      if (i == 0) {
+        labels.push(returnedData[j].index);
+      }
+      
+      data.push(returnedData[j].value);
+    }
+
+    const label = String(i);
+
+    const chartData = {
+      borderColor,
+      backgroundColor: "rgba(255, 0, 0, 0)",
+      label,
+      pointRadius: 0.5,
+      pointHoverRadius: 0.5,
+      borderWidth: 1.0,
+      data,
+    }
+
+    datasets.push(chartData);
+  }
+
+
+  var chartData = {
+    labels,
+    datasets
+  }
+
+  const chartCanvas = document.getElementById("interactiveSearchChart");
+                       
+  // Create chart
+  var ctx = chartCanvas.getContext('2d');
+  var chart = new Chart(ctx, chartSettings);
+
+  // Update data
+  chart.data = chartData;
+  // Update chart
+  chart.update();
+}
+
+
+</script>
+
+
+<script>
+  function clearImageGrid()
+  {
+    $targetList = $("#resultImagesList");
+    $targetList.html("");
+
+    $selectedKeywordsList = $("#selectedKeywordsList");
+    $selectedKeywordsList.html("");
+
+    $selectedKeywordsList = $("#suggestedKeywordsList");
+    $selectedKeywordsList.html("");
+
+    $selectedKeywordsList = $("#deselectedKeywordsList");
+    $selectedKeywordsList.html("");
+  }
+
+  function clearTargetImage()
+  {
+    $("#targetImage").attr("src", "/images/generic/bg_neural.jpg");
+    $("#targetImageId").val(0);
+  }
+
+  function getRandomImageToPreview(elem)
+  {
+    // Clear old grid
+    clearImageGrid();
+
+    // Create AJAX call to get appropriate data
+    get('/ranker_ajax_get_random_image_and_start_search_session')
+      // If response OK
+      .then((data) => {
+
+        
+
+        data = JSON.parse(data);
+
+        $("#targetImageId").val(data.imageId);
+        $("#targetImage").attr("src", "/images/" + data.imageFilename);
+        $("#queryInput").prop('disabled', false);
+
+      })
+      // If error occured
+      .catch((err) => {
+          // Do stuff on error...
+      });
+  }
+
+  function getSelectedImageToPreview(elem)
+  {
+    const targetId = $("#targetImageId").val();
+
+    // Clear old grid
+    clearImageGrid();
+
+    // Create AJAX call to get appropriate data
+    get('/ranker_ajax_get_selected_image_and_start_search_session?imageId=' + targetId)
+      // If response OK
+      .then((data) => {
+
+        data = JSON.parse(data);
+
+        $("#targetImageId").val(data.imageId);
+        $("#targetImage").attr("src", "/images/" + data.imageFilename);
+        $("#queryInput").prop('disabled', false);
+
+      })
+      // If error occured
+      .catch((err) => {
+          // Do stuff on error...
+      });
+  }
+
+  function showGlobalMessage(messagePrimary, messageSecondary, time)
+  {
+    $mainGlobalMessageCont = $("#mainGlobalMessageCont");
+    $primary = $($mainGlobalMessageCont.children(".primary")[0]);
+    $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
+
+    $mainGlobalMessageCont.show();
+    $primary.html(messagePrimary);
+    $secondary.html(messageSecondary);
+
+    setTimeout(() => {
+      clearGlobalMesssage();
+    }, time);
+  }
+
+  function clearGlobalMesssage()
+  {
+    $mainGlobalMessageCont = $("#mainGlobalMessageCont");
+    $primary = $($mainGlobalMessageCont.children(".primary")[0]);
+    $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
+
+
+    $primary.html("");
+    $secondary.html("");
+    $mainGlobalMessageCont.hide();
+  }
+
+  function submitImage(elem)
+  {
+    const imageId = $(elem).parent().data("image-id");
+
+    // Create AJAX call to get appropriate data
+    get('/ranker_ajax_submit_image?imageId=' + imageId)
+      // If response OK
+      .then((data) => {
+
+        data = JSON.parse(data);
+
+        // If correct image submitted
+        if (data.correct)
+        {
+          clearTargetImage();
+          // Clear old grid
+          clearImageGrid();
+
+          showGlobalMessage("Correct.", "Great job", 3000);
+        } 
+        else 
+        {
+          showGlobalMessage("Invalid image.", "Try again", 3000);
+        }
+      })
+      // If error occured
+      .catch((err) => {
+          // Do stuff on error...
+      });
+  }
+
+  let currentPrinter;
+  let currentImagesToPrintArray;
+  let currentImageIndex;
+  let numImagesToPrint;
+  const numImagesPerBatch = 300;
+  const batchPrintTimeout = 2000;
+
+  function printImagesFromTo()
+  {
+    $targetList = $("#resultImagesList");
+
+    for (var i = 0; i < numImagesPerBatch && currentImageIndex < numImagesToPrint; ++currentImageIndex) 
+    {
+      $targetList.append(
+        '<li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' +currentImagesToPrintArray[currentImageIndex].imageId + ')"\
+        data-open="modalImage" data-image-id="' + currentImagesToPrintArray[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + currentImagesToPrintArray[currentImageIndex].filename + '\')">\
+          <a class="button btn-submit success" onclick="">S</a>\
+        </li>'
+      );
+
+      ++i;
+    }
+  }
+
+  function processAction(action, operand)
+  {
+    // Stop printer if running
+    clearInterval(currentPrinter);
+    currentImagesToPrintArray = undefined;
+
+    // Create AJAX call to get appropriate data
+    get('/ranker_ajax_process_action?action=' + action + '&operand=' + operand)
+      // If response OK
+      .then((data) => {
+
+        data = JSON.paata = JSON.parse(data);
+
+        $targetList = $("#resultImagesList");
+        $targetList.html("");
+
+        if (typeof data.relevantImagesArray.targetImageRank !== "undefined")
+        {
+          $("#targetImageRankOut").html("<p>Target rank: </p>" + data.relevantImagesArray.targetImageRank);
+        }
+        
+        numImagesToPrint = data.relevantImagesArray.images.length;
+        currentImagesToPrintArray = data.relevantImagesArray.images;
+
+        for (currentImageIndex = 0; currentImageIndex < numImagesPerBatch; ++currentImageIndex) 
+        {
+          $targetList.append(
+            '<button class="close-button" data-close aria-label="Close modal" type="button">\
+              <span aria-hidden="true">&times;</span>\
+            </button>\
+            <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
+              data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
+              <a class="button btn-submit success" onclick="submitImage(this);">S</a>\
+              <a class="just-clicker"  data-open="modalImage"></a>\
+            </li>'
+          );
+        }
+
+        //xoxo
+
+        const suggestedArray = data.relevantImagesArray.suggestedKeywords;
+        const $suggList = $("#suggestedKeywordsList");
+        $suggList.html("");
+
+
+        //xoxo
+        const numItems = suggestedArray.length > 30 ? 30 : suggestedArray.length;
+
+        for (let i = 0; i < numItems; ++i) 
+        {
+          revertToSuggestedNoAction(suggestedArray[i].wordnetId, suggestedArray[i].word);
+        }
+
+
+        // Draw chart
+        let dataArray = new Array();
+        dataArray.push(data.chartData);
+        drawInteractiveSearchChart(dataArray);
+
+        //currentPrinter = setInterval(printImagesFromTo, batchPrintTimeout);
+
+      })
+      // If error occured
+      .catch((err) => {
+          // Do stuff on error...
+      });
+  }
+
+
+function addKeyword(keywordId, word, elem) 
+{
+  processAction(1, keywordId);
+
+  if (typeof elem !== "undefined")
+  {
+    elem.parentNode.remove()
+  }
+
+  const selectedContainer = document.getElementById("selectedKeywordsList");
+
+  chechkboxCont = document.createElement("li");
+  chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
+
+  chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + keywordId + "' checked>\
+    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
+    <a class='remove-keyword button orange' onclick='revertToSuggested(" + keywordId + ",\"" + word + "\", this);'>?</a>\
+    <span>" + word + "</span>\
+    <a class='remove-keyword button alert' onclick='moveFromKeywordToNot(" + keywordId + ",\"" + word + "\", this);'>&#10006;</a>"
+
+  selectedContainer.appendChild(chechkboxCont);
+}
+
+function moveFromNotToKeyword(keywordId, word, elem) 
+{
+  processAction(4, keywordId);
+
+  if (typeof elem !== "undefined")
+  {
+    elem.parentNode.remove()
+  }
+
+  const selectedContainer = document.getElementById("selectedKeywordsList");
+
+  chechkboxCont = document.createElement("li");
+  chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
+
+  chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + keywordId + "' checked>\
+    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
+    <a class='remove-keyword button orange' onclick='revertToSuggested(" + keywordId + ",\"" + word + "\", this);'>?</a>\
+    <span>" + word + "</span>\
+    <a class='remove-keyword button alert' onclick='moveFromKeywordToNot(" + keywordId + ",\"" + word + "\", this);'>&#10006;</a>"
+
+  selectedContainer.appendChild(chechkboxCont);
+}
+
+
+function addNotKeyword(keywordId, word, elem) 
+{
+  
+  processAction(3, keywordId);
+
+  if (typeof elem !== "undefined")
+  {
+    elem.parentNode.remove()
+  }
+
+
+  const selectedContainer = document.getElementById("deselectedKeywordsList");
+
+  chechkboxCont = document.createElement("li");
+  chechkboxCont.setAttribute("class", 'deslected-keyword-checkbox');
+
+  chechkboxCont.innerHTML += "<input type='checkbox' name='notKeyword' value='" + keywordId + "' checked>\
+    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
+    <a class='remove-keyword button green' onclick='moveFromNotToKeyword(" + keywordId + ",\"" + word + "\", this);'>&#10004;</a>\
+    <span>" + word + "</span> \
+    <a class='remove-keyword button orange' onclick='revertToSuggestedFromNot(" + keywordId + ",\"" + word + "\", this);'>?</a>"
+
+  selectedContainer.appendChild(chechkboxCont);
+
+}
+
+function moveFromKeywordToNot(keywordId, word, elem) 
+{
+  
+  processAction(5, keywordId);
+
+  if (typeof elem !== "undefined")
+  {
+    elem.parentNode.remove()
+  }
+
+
+  const selectedContainer = document.getElementById("deselectedKeywordsList");
+
+  chechkboxCont = document.createElement("li");
+  chechkboxCont.setAttribute("class", 'deslected-keyword-checkbox');
+
+  chechkboxCont.innerHTML += "<input type='checkbox' name='notKeyword' value='" + keywordId + "' checked>\
+    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
+    <a class='remove-keyword button green' onclick='moveFromNotToKeyword("+ keywordId + ",\"" + word + "\", this);'>&#10004;</a>\
+    <span>" + word + "</span> \
+    <a class='remove-keyword button orange' onclick='revertToSuggestedFromNot(" + keywordId + ",\"" + word + "\", this);'>?</a>"
+
+  selectedContainer.appendChild(chechkboxCont);
+
+}
+
+function revertToSuggestedNoAction(keywordId, word)
+{
+  const selectedContainer = document.getElementById("suggestedKeywordsList");
+
+  chechkboxCont = document.createElement("li");
+  chechkboxCont.setAttribute("class", 'suggested-keyword-checkbox');
+
+  chechkboxCont.innerHTML += "<input type='checkbox' name='suggestedKeyword' value='" + keywordId + "' checked>\
+    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
+    <a class='remove-keyword button green' onclick='addKeyword("+ keywordId + ",\"" + word + "\", this);'>&#10004;</a>\
+    <span>" + word + "</span> \
+    <a class='remove-keyword button alert' onclick='addNotKeyword(" + keywordId + ",\"" + word + "\", this);'>&#10006;</a>"
+
+  selectedContainer.appendChild(chechkboxCont);
+}
+
+function revertToSuggested(keywordId, word, elem)
+{
+  processAction(0, keywordId);
+
+  if (typeof elem !== "undefined")
+  {
+    elem.parentNode.remove()
+  }
+
+  const selectedContainer = document.getElementById("suggestedKeywordsList");
+
+  chechkboxCont = document.createElement("li");
+  chechkboxCont.setAttribute("class", 'suggested-keyword-checkbox');
+
+  chechkboxCont.innerHTML += "<input type='checkbox' name='suggestedKeyword' value='" + keywordId + "' checked>\
+    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
+    <a class='remove-keyword button green' onclick='addKeyword("+ keywordId + ",\"" + word + "\", this);'>&#10004;</a>\
+    <span>" + word + "</span> \
+    <a class='remove-keyword button alert' onclick='addNotKeyword(" + keywordId + ",\"" + word + "\", this);'>&#10006;</a>"
+
+  selectedContainer.appendChild(chechkboxCont);
+}
+
+function revertToSuggestedFromNot(keywordId, word, elem)
+{
+  processAction(2, keywordId);
+
+  if (typeof elem !== "undefined")
+  {
+    elem.parentNode.remove()
+  }
+
+  const selectedContainer = document.getElementById("suggestedKeywordsList");
+
+  chechkboxCont = document.createElement("li");
+  chechkboxCont.setAttribute("class", 'suggested-keyword-checkbox');
+
+  chechkboxCont.innerHTML += "<input type='checkbox' name='suggestedKeyword' value='" + keywordId + "' checked>\
+    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
+    <a class='remove-keyword button green' onclick='addKeyword("+ keywordId + ",\"" + word + "\", this);'>&#10004;</a>\
+    <span>" + word + "</span> \
+    <a class='remove-keyword button alert' onclick='addNotKeyword(" + keywordId + ",\"" + word + "\", t his);'>&#10006;</a>"
+
+  selectedContainer.appendChild(chechkboxCont);
+}
+
+
+function switchModalImageHtmlContents(id) 
+{
+
+  var $modal = $("#modalImage");
+
+  $.ajax('/ranker_ajax_get_image_keywords_for_interactive_search?imageId=' + id)
+    .done(function(data)
+    {
+      const hypernymsArray = data.hypernymsArray;
+      const nonHypernymsArray = data.nonHypernymsArray;
+
+      var html = "<div class='modal-image-data grid-x grid-padding-x align-center'>";
+      // html +="<img src='/images/" + resp.filename + "' />";
+      // html += "<h3 class='id'>Image ID:" + resp.imageId + "</h3>";
+      // html += "<hr />";
+      html += "<div class='non-hypernyms cell small-6'>";
+      html += "<h5>Keywords</h5>";
+      html += "<ol class='non-hypernyms-list'>";
+
+      for (var i = 0; i < nonHypernymsArray.length; ++i) 
+      {
+        html += "<li class='probs-list-item '>";
+          html += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].wordnetId + ", \"" + nonHypernymsArray[i].word + "\")'>" + nonHypernymsArray[i].word +  "<span class='ranking'>" + nonHypernymsArray[i].ranking + "</span></a>";
+            
+        html += "</li>";
+      }
+      html += "</ol>";
+
+      html += "</div>";
+      
+
+      html += "<div class='hypernyms cell small-6'>";
+      html += "<h5>Hypernyms</h5>";  
+      html += "<ol class='hypernyms-list'>";
+
+      for (var i = 0; i < hypernymsArray.length; ++i) 
+      {
+        html += "<li class='probs-list-item '>";
+          html += "<a class='keyword' onclick='addKeyword(" + hypernymsArray[i].wordnetId + ", \"" + hypernymsArray[i].word + "\")'>" + hypernymsArray[i].word + "<span class='ranking'>" + hypernymsArray[i].ranking + "</span></a>";
+            
+        html += "</li>";
+      }
+      html += "</ol>";
+
+      html += "</div>";
+
+      // Switch HTML
+      $modal.html(html);
+    }
+  );
+}
+
+</script>
+
+<!-- Include footer -->
+<%- include common/footer.ejs %>

@@ -123,47 +123,27 @@ router.post('/', function(req, res, next)
       finalString = keywords;
     }
 
-
-
     let sessionId = sess.id;
     let imageId = sess.gameImage.imageId;
 
     let queryType = 1;
 
     // Parameters: SessionID, ImageID, string query
+
     const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString, queryType);
-    /* RETURN OBJECT:
-      [
-        {
-          "sessionId": "332e3f4",
-          "imageFilename": "file2.jpg",
-          "keywords": [ "k1", "k2" ,... ]
-          "netProbabilites": [
-              {
-                "netKeyword": 1222,
-                "netProbability": 0.444,
-              },
-              ...
-          ]
-
-        }
-        ...
-      ]
-    */
-
-
+    
     // Mark it into session
     sess.gameWalkthrough.push(userImageResult);
-    
 
     // Increment game progress counter
     ++sess.gameProgress;
     
-    // Reset image
-    sess.gameImage = undefined;
-
+    
     console.log("Incrementing game progress for session " + sess.id + " to " + sess.gameProgress );    
   }
+
+  // Reset image
+  sess.gameImage = undefined;
 
   
   // Redirect user back to game page

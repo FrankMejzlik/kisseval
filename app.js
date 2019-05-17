@@ -27,7 +27,9 @@ var docsRouter = require('./routes/docs');
 const annotatorRouter = require("./routes/annotator");
 const annotatorAjaxRouter = require("./routes/annotator_ajax");
 const rankerRouter = require("./routes/ranker");
+const rankerNegateRouter = require("./routes/ranker_negate");
 const rankerAjaxRouter = require("./routes/ranker_ajax");
+const rankerAjaxNegateRouter = require("./routes/ranker_ajax_negate");
 const statisticsRouter = require("./routes/statistics");
 const statisticsAjaxRouter = require("./routes/statistics_ajax");
 
@@ -137,6 +139,8 @@ app.use('/annotator', annotatorRouter);
 //app.get('/annotator_ajax', annotatorAjaxRouter);
 
 app.use('/ranker', rankerRouter);
+app.use('/ranker_negate', rankerNegateRouter);
+
 //app.get('/ranker_ajax', rankerAjaxRouter);
 
 app.use('/statistics', statisticsRouter);
@@ -149,6 +153,13 @@ app.get('/ranker_ajax_get_random_image_and_start_search_session', rankerAjaxRout
 app.get('/ranker_ajax_get_selected_image_and_start_search_session', rankerAjaxRouter.getSelectedImageAndStartSearchSession);
 app.get('/ranker_ajax_process_action', rankerAjaxRouter.processAction);
 app.get('/ranker_ajax_get_image_keywords_for_interactive_search', rankerAjaxRouter.getImageKeywordsForInteractiveSearch);
+
+app.get('/ranker_negate_ajax_submit_settings', rankerAjaxNegateRouter.submitSettings);
+app.get('/ranker_negate_ajax_submit_image', rankerAjaxNegateRouter.submitImage);
+app.get('/ranker_negate_ajax_get_random_image_and_start_search_session', rankerAjaxNegateRouter.getRandomImageAndStartSearchSession);
+app.get('/ranker_negate_ajax_get_selected_image_and_start_search_session', rankerAjaxNegateRouter.getSelectedImageAndStartSearchSession);
+app.get('/ranker_negate_ajax_process_action', rankerAjaxNegateRouter.processAction);
+app.get('/ranker_negate_ajax_get_image_keywords_for_interactive_search', rankerAjaxNegateRouter.getImageKeywordsForInteractiveSearch);
 
 
 // Allow only GET requests to 'collector_ajax' router

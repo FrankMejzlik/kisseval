@@ -967,6 +967,15 @@ margin-bottom: 30px;
   text-align: center;
   margin:  0 auto 0 auto;
 }
+.kw-cols{
+  padding: 0 10px 0 10px !important;
+}
+.kw-cols li {
+  text-align: left;
+}
+.kw-cols li span {
+  font-size: 14px;
+}
 
 .image-preview {
   position: relative;
@@ -1063,6 +1072,11 @@ text-align: center;
   padding: 0px 0 18px 0px;
   list-style-type: none;
   position: absolute;
+}
+
+
+.ranker-single #selectedKeywordsList {
+  padding: 20px 10px 40px 20px;
 }
 
 #selectedKeywordsList  li {

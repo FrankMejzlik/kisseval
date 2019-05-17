@@ -15,9 +15,9 @@ function validStateCheckGeneral(req, viewData)
   utils.resolveUserLevel(sess);
 
   // Get current page slug
-  viewData.currentPage = "ranker";
+  viewData.currentPage = "ranker_negate";
   viewData.ocRankerSettingsLeft_ranker = true;
-  viewData.ocRankerSettingsLeft_ranker_formActionAddress = "/ranker_ajax_submit_settings";
+  viewData.ocRankerSettingsLeft_ranker_formActionAddress = "/ranker_negate_ajax_submit_settings";
   viewData.userLevel = sess.userLevel;
 }
 
@@ -57,7 +57,7 @@ router.get('/', function(req, res, next)
   global.logger.log('debug', "sess.ranker:"+ JSON.stringify(sess.ranker, undefined, 4));
 
   // Rener ranker view
-  res.render('ranker', viewData);
+  res.render('ranker_negate', viewData);
 });
 
 

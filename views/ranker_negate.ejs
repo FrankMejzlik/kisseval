@@ -74,7 +74,7 @@
           
         </div>
         <div class="kw-cols selected-keywords-list-cont large-4 cell">
-          <h3>OK</h3>
+          <h3>&#10004;</h3>
           <ul class="selected-keywords-list" id="selectedKeywordsList">
           </ul>
         </div>
@@ -84,7 +84,7 @@
             </ul>
         </div>
         <div class="kw-cols deselected-keywords-list-cont large-4 cell">
-          <h3>NOK</h3>
+          <h3>&#10006;</h3>
           <ul class="deselected-keywords-list" id="deselectedKeywordsList">
             </ul>
         </div>
@@ -140,7 +140,7 @@
 
 
 <!-- Include autocomplete module -->
-<%- include modules/autocomplete_logic_ranker.ejs %>
+<%- include modules/autocomplete_logic_ranker_negate.ejs %>
 
   </div>
 </section>
@@ -298,7 +298,7 @@ function drawInteractiveSearchChart(chartDataArray)
     clearImageGrid();
 
     // Create AJAX call to get appropriate data
-    get('/ranker_ajax_get_random_image_and_start_search_session')
+    get('/ranker_negate_ajax_get_random_image_and_start_search_session')
       // If response OK
       .then((data) => {
 
@@ -325,7 +325,7 @@ function drawInteractiveSearchChart(chartDataArray)
     clearImageGrid();
 
     // Create AJAX call to get appropriate data
-    get('/ranker_ajax_get_selected_image_and_start_search_session?imageId=' + targetId)
+    get('/ranker_negate_ajax_get_selected_image_and_start_search_session?imageId=' + targetId)
       // If response OK
       .then((data) => {
 
@@ -374,7 +374,7 @@ function drawInteractiveSearchChart(chartDataArray)
     const imageId = $(elem).parent().data("image-id");
 
     // Create AJAX call to get appropriate data
-    get('/ranker_ajax_submit_image?imageId=' + imageId)
+    get('/ranker_negate_ajax_submit_image?imageId=' + imageId)
       // If response OK
       .then((data) => {
 
@@ -431,7 +431,7 @@ function drawInteractiveSearchChart(chartDataArray)
     currentImagesToPrintArray = undefined;
 
     // Create AJAX call to get appropriate data
-    get('/ranker_ajax_process_action?action=' + action + '&operand=' + operand)
+    get('/ranker_negate_ajax_process_action?action=' + action + '&operand=' + operand)
       // If response OK
       .then((data) => {
 
@@ -660,7 +660,7 @@ function switchModalImageHtmlContents(id)
 
   var $modal = $("#modalImage");
 
-  $.ajax('/ranker_ajax_get_image_keywords_for_interactive_search?imageId=' + id)
+  $.ajax('/ranker_negate_ajax_get_image_keywords_for_interactive_search?imageId=' + id)
     .done(function(data)
     {
       const hypernymsArray = data.hypernymsArray;

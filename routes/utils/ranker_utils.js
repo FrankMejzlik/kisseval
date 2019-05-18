@@ -225,9 +225,9 @@ exports.pushAction = function(sess, action, operand, score)
 
   // Create object for this action
   const newAction = new Object();
-  newAction.action = action;
-  newAction.operand = operand;
-  newAction.score = score;
+  newAction.action = Number(action);
+  newAction.operand = Number(operand);
+  newAction.score = Number(score);
 
   global.logger.log('debug', "Pushing action, session ID = " + sess.id + ", search session ID =  " + sess.ranker.searchSession.id);
   global.logger.log('debug', "newAction:"+ JSON.stringify(newAction, undefined, 4));

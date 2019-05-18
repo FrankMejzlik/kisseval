@@ -21,8 +21,9 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex),
     InstanceMethod("RunModelTest", &ImageRankerWrapper::RunModelTest),
     InstanceMethod("GetStatisticsUserKeywordAccuracy", &ImageRankerWrapper::GetStatisticsUserKeywordAccuracy),
-    InstanceMethod("GetRelevantImagesWithSuggestedPlainQuery", &ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery)
-
+    InstanceMethod("GetRelevantImagesWithSuggestedPlainQuery", &ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery),
+    InstanceMethod("SubmitInteractiveSearchSubmit", &ImageRankerWrapper::SubmitInteractiveSearchSubmit)
+    
     
 
     
@@ -797,6 +798,136 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   }
 
   return Napi::Object(env, result);
+}
+
+
+// xoxo
+Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 12)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::SubmitInteractiveSearchSubmit)").ThrowAsJavaScriptException();
+  }
+
+  size_t originType = info[0].As<Napi::Number>().Uint32Value();
+  size_t targetImageId = info[1].As<Napi::Number>().Uint32Value();
+  size_t modelId = info[2].As<Napi::Number>().Uint32Value();
+  size_t transformationId = info[3].As<Napi::Number>().Uint32Value();
+
+  // Get settings vector
+  std::vector<std::string> modelSettings;
+
+  Napi::Array settingsArray = info[4].As<Napi::Array>();
+  for (size_t i = 0; i < settingsArray.Length(); i++)
+  {
+    Napi::Value v = settingsArray[i];
+    if (v.IsString())
+    {
+      std::string value = (std::string)v.As<Napi::String>();
+      modelSettings.push_back(value);
+    }
+  }
+
+  // Aggregation settings
+  std::vector<std::string> transformationSettings;
+
+  Napi::Array aggSettingsArray = info[5].As<Napi::Array>();
+  for (size_t k{ 0ULL }; k < aggSettingsArray.Length(); k++)
+  {
+    Napi::Value val = aggSettingsArray[k];
+    if (val.IsString())
+    {
+      std::string value = (std::string)val.As<Napi::String>().Utf8Value();
+      transformationSettings.push_back(value);
+    }
+  }
+
+  std::string sessionId = info[6].As<Napi::String>().Utf8Value();
+  size_t searchSessionId = info[7].As<Napi::Number>().Uint32Value();
+  size_t endStatus = info[8].As<Napi::Number>().Uint32Value();
+  size_t sessionDuration = info[9].As<Napi::Number>().Uint32Value();
+
+  // Actions array
+  std::vector<std::tuple<size_t, size_t, size_t>> actions;
+
+  Napi::Array actionsArray = info[10].As<Napi::Array>();
+  for (size_t k{ 0ULL }; k < actionsArray.Length(); k++)
+  {
+    // action:stri, operand:stri, score:num
+    Napi::Value actionObject = actionsArray[k];
+    if (actionObject.IsObject())
+    {
+      Napi::Object object = actionObject.As<Napi::Object>();
+
+      size_t action = object.Get("action").As<Napi::Number>().Uint32Value();
+      size_t score = object.Get("score").As<Napi::Number>().Uint32Value();
+      size_t operand = object.Get("operand").As<Napi::Number>().Uint32Value();
+      
+      actions.emplace_back(action, score, operand);
+    }
+  }
+  size_t userId = info[11].As<Napi::Number>().Uint32Value();
+
+#if LOG_CALLS
+
+  std::cout << "CALLING NATIVE 'SubmitInteractiveSearchSubmit' with args:" << std::endl;
+  std::cout << "originType = " << originType << std::endl;
+  std::cout << "targetImageId = " << targetImageId << std::endl;
+  std::cout << "modelId = " << modelId << std::endl;
+  std::cout << "transformationId = " << transformationId << std::endl;
+  std::cout << "modelSettings:" << std::endl;
+
+  for (auto&& s : modelSettings)
+  {
+    std::cout << s << std::endl;
+  }
+
+  std::cout << "transformationSettings:" << std::endl;
+  for (auto&& s : transformationSettings)
+  {
+    std::cout << s << std::endl;
+  }
+
+  std::cout << "sessionId = " << sessionId << std::endl;
+  std::cout << "searchSessionId = " << searchSessionId << std::endl;
+  std::cout << "endStatus = " << endStatus << std::endl;
+  std::cout << "sessionDuration = " << sessionDuration << std::endl;
+  
+  std::cout << "actions:" << std::endl;
+  
+  for (auto&& act : actions)
+  {
+    std::cout << "A: action = " << std::get<0>(act) << ", score = " << std::get<1>(act) << ", operand = " << std::get<2>(act) << std::endl;
+  }
+  std::cout << "modelSettings:" << std::endl;
+  std::cout << "userId = " << userId << std::endl;
+
+  std::cout << "===================" << std::endl;
+#endif
+
+  // Call native method
+
+  
+  try {
+    this->actualClass_->SubmitInteractiveSearchSubmit(
+      (InteractiveSearchOrigin)originType, targetImageId, 
+      (RankingModelId)modelId, (AggregationId)transformationId,
+      modelSettings, transformationSettings,
+      sessionId, searchSessionId, endStatus, sessionDuration,
+      actions, userId
+    );
+  }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  return Napi::Object();
 }
 
 Napi::Value ImageRankerWrapper::GetStatisticsUserKeywordAccuracy(const Napi::CallbackInfo& info)

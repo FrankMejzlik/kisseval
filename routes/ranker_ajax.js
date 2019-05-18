@@ -53,24 +53,13 @@ exports.submitImage = function(req, res)
   // Is this correct image?
   response.correct = (imageId == sess.ranker.searchSession.imageId);
 
-  const userId = 0;
-  const sessionId = sess.id;
-  const searchSessionId = sess.ranker.searchSession.id;
-  const targetImageId = sess.ranker.searchSession.imageId;
-  const actionsArray = sess.ranker.searchSession.actionsArray;
+  
 
   // Get all needed things for calling native method
   const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
 
 
-  // NATIVE SUBMIT PROGRESS DATA!!!
-  // global.imageRanker.SubmitInteractiveSearchSubmit(
-  // nativeSettings.rankingModel, nativeSettings.aggregation, 
-  // nativeSettings.rankingModelSettings, 
-  // nativeSettings.aggregationSettings, 
-  // userId, sessionId, searchSessionId, targetImageId, 
-  // );
-  //
+
 
   if (typeof sess.ranker.query !== "undefined")
   {
@@ -91,10 +80,9 @@ exports.submitImage = function(req, res)
   
     
     const actionsArray = sess.ranker.searchSession.actionsArray;
-    response.chartData = new Array();
-    
-    
 
+
+    response.chartData = new Array();
     // Construct chart data
     for (let i = 0; i < actionsArray.length; ++i)
     {
@@ -106,13 +94,47 @@ exports.submitImage = function(req, res)
     }
   
   }
+
+  const actionsArray = sess.ranker.searchSession.actionsArray;
+
+  const userId = 0;
+  const originType = sess.userLevel < 10 ? 0 : 10;
+  const sessionId = sess.id;
+  const searchSessionId = sess.ranker.searchSession.id;
+  const targetImageId = sess.ranker.searchSession.imageId;
+  const endStatus = response.giveUp ? 0 : 1;
+
+
+  let sessionDuration = 0;
   // If this session should be terminated
   if (response.correct || response.giveUp)
   {
-    const sessionDuration = rankerUtils.terminateSearchSession(sess);
+    sessionDuration = rankerUtils.terminateSearchSession(sess);
     response.sessionDuration = sessionDuration;
   }
   
+
+  // +++++++++++++++++++++++++++++++++++++++++++
+  // +++++++++++++++++++++++++++++++++++++++++++
+  // void ImageRanker::SubmitInteractiveSearchSubmit(
+  // InteractiveSearchOrigin originType, size_t imageId, RankingModelId modelId, AggregationId transformId,
+  // std::vector<std::string> modelSettings, std::vector<std::string> transformSettings,
+  // std::string sessionId, size_t searchSessionIndex, int endStatus, size_t sessionDuration,
+  // std::vector<InteractiveSearchAction> actions,
+  // size_t userId
+  if (actionsArray.length > 0)
+  {
+    global.imageRanker.SubmitInteractiveSearchSubmit(
+      originType, targetImageId, settingsForNative.rankingModel, settingsForNative.aggregation,
+      settingsForNative.rankingModelSettings, settingsForNative.aggregationSettings,
+      sessionId, searchSessionId, endStatus, sessionDuration,
+      actionsArray,
+      userId
+    );
+  }
+  
+  // +++++++++++++++++++++++++++++++++++++++++++
+  // +++++++++++++++++++++++++++++++++++++++++++
 
   global.logger.log('debug', "response: " + JSON.stringify(response, undefined, 4));
 

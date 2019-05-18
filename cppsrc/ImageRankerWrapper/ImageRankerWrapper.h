@@ -63,6 +63,8 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
    */
    Napi::Value RunGridTest(const Napi::CallbackInfo& info);
 
+   Napi::Value SubmitInteractiveSearchSubmit(const Napi::CallbackInfo& info);
+
    // std::pair<uint8_t, uint8_t> GetGridTestProgress() const;
    /*
    RETURN FORMAT:

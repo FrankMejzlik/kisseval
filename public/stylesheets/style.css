@@ -6,6 +6,9 @@ body {
   background-image: url(../images/generic/bg_neural.jpg);
 }
 
+.off-canvas-content {
+  min-height: 100vh;
+}
 .global-messages-section
 {
   position: relative;
@@ -30,6 +33,10 @@ body {
   display: none;
   top: 140px;
   z-index: 5;
+}
+
+.main-image-query {
+  /* height: 86vh; */
 }
 
 .oc-ranker-settings-left-section .medium-3 {
@@ -105,11 +112,15 @@ body {
 
 .flexible-developer-only-window {
   
-max-height: 44vh;
+/* max-height: 44vh; */
   
-min-height: 200px;
+/* min-height: 200px; */
   
-overflow: auto;
+/* overflow: auto; */
+}
+
+.flexible-developer-only-window .grid-container{
+max-width: 1920px;
 }
 
 .accordion-title::before
@@ -159,10 +170,10 @@ overflow: auto;
 }
 
 .developer-bottom-analysis-bar {
-  position: fixed;
+  position: absolute;
   max-width: none;
   padding: 0;
-  width: 100vw;
+  width: 100%;
   bottom: 0;
   z-index: 4;
 }
@@ -346,7 +357,7 @@ margin: 0 0 0 20px;
   position: absolute;
   right: -10px;
   top: 0;
-  padding: 4px 8px;
+  padding: 4px 6px;
   border-radius: 50%;
   background-color: #ff0000;
   top: -9px;
@@ -639,10 +650,51 @@ font-size: 17px
   padding-top: 10px;
 }
 
+#devAccordion {
+  max-height: 95vh;
+}
+
 ul {
   margin: 0 !important;
 }
+.active > #dragbar
+{
+  display: block;
+}
 
+
+
+#dragbar{
+  display: none;
+  background-color: transparent;
+  height:100%;
+  /* float: right; */
+  height: 5px;
+  width: 100%;
+  position: absolute;
+  cursor: row-resize;
+  top: 0;
+  left:  0;
+  z-index: 2;
+  text-align: center;
+}
+
+#dragbar .icon {
+position: absolute;
+width: 40px;
+height: 40px;
+font-size: 40px;
+top: -34px;
+font-weight: 800;
+}
+
+#ghostbar{
+  width:3px;
+  background-color:#000;
+  opacity:0.5;
+  position:absolute;
+  cursor: col-resize;
+  z-index:999}
 
 .just-clicker {
   position:absolute;
@@ -1005,7 +1057,12 @@ margin-bottom: 30px;
 }
 
 .oc-ranker-settings-left-section .numResults,
-.oc-ranker-settings-left-section .dataSource{
+.oc-ranker-settings-left-section .dataSource,
+.oc-ranker-settings-left-section .aggregationParameter,
+.oc-ranker-settings-left-section .rankingModel,
+.oc-ranker-settings-left-section .viret_queryOperations,
+.oc-ranker-settings-left-section .boolean_inBucketRanking,
+.oc-ranker-settings-left-section .keywordFrequency   {
   display: none;
 }
 
@@ -1174,6 +1231,17 @@ list-style: none;
 .model-props-list {
   margin-bottom: 20px !important;
 }
+
+
+.model-props-list .numResults,
+.model-props-list .aggregationParameter,
+.model-props-list .rankingModel,
+.model-props-list .viret_queryOperations,
+.model-props-list .boolean_inBucketRanking,
+.model-props-list .keywordFrequency   {
+  display: none;
+}
+
 
 .test-block {
   padding: 20px 20px 20px 20px;

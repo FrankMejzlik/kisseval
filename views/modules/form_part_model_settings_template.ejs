@@ -5,19 +5,33 @@
 </div>
 
 <div class="aggregation small-12 medium-3 cell">
-  <label>Aggregation
+  <label>Transformation function
     <select name="${nextPropertyIndex}][aggregation]">
       <option value="100" selected title="Softmax probabability vector from nerual network.">Softmax</option>
-      <option value="200">x^p</option>
+      <option value="200">Linear</option>
     </select>
   </label>
 </div>
 <div class="aggregationParameter small-12 medium-3 cell">
-  <label>Aggregation parameter
+  <label>Transformation parameter
     <input name="${nextPropertyIndex}][aggregationParameter]" type="number" value="1" step="0.1">
   </label>
 </div>
 
+<div class="rankingModelSimple small-12 medium-3 cell">
+  <label>Model
+    <select class="ranking-model-simple-select" onchange="projectSettings(this, ${nextPropertyIndex});"  name="${nextPropertyIndex}][rankingModelSimple]">
+      <option value="1-0" title="Boolean model without further ordering of images with same rate of unsatisfied clauses.">Boolean</option>
+      <option value="1-1" title="Boolean model with where images with same rate of unsatisfied clauses are sorted by SUM of rankings inside clauses.">BooleanSum</option>
+      <option value="1-2" title="Boolean model with where images with same rate of unsatisfied clauses are sorted by MAX of rankings inside clauses.">BooleanMax</option>
+      <option value="3-0" selected title="Logical ANDs are multiplied, ORs are summed.">Multiply/Sum</option>
+      <option value="3-1" title="Logical ANDs are multiplied, ORs take maximum.">Multiply/Max</option>
+      <option value="3-2" title="Logical ANDs are summed, ORs are summed.">Sum/Sum</option>
+      <option value="3-3" title="Logical ANDs are summed, ORs take maximum.">Sum/Max</option>
+      <option value="3-4" title="Logical ANDs take maximum, ORs take maximum.">Max/Max</option>
+    </select>
+  </label>
+</div>
 <div class="rankingModel small-12 medium-3 cell">
   <label>Ranking model
     <select class="ranking-model-select" name="${nextPropertyIndex}][rankingModel]">
@@ -42,6 +56,7 @@
     <select name="${nextPropertyIndex}][dataSource]">
       <option value="0" title="Queries that has been gathered from people developing this app." selected>Developers</option>
       <option value="1" title="Queries gathered from wild public on the internet.">Public</option>
+      <option value="999" title="Queries gathered from wild public on the internet.">All</option>
       </option>
     </select>
   </label>
@@ -57,7 +72,7 @@
     <div class="boolean_trueTreshold small-12 medium-3 cell">
       <label>
         True treshold
-        <input name="${nextPropertyIndex}][boolean_trueTreshold]" type="number" value="0.005" step="0.00001">
+        <input name="${nextPropertyIndex}][boolean_trueTreshold]" type="number" value="0.001" step="0.00001">
       </label>
     </div>
 
@@ -75,7 +90,7 @@
 </div>
 
 <!-- Viret base settings -->
-<div class="model-properties model-type-3 small-12 cell hidden-by-default">
+<div class="model-properties model-type-3 small-12 cell">
   <div class="grid-x grid-padding-x text-center">
     <div class="small-12 cell">
       <small>Model specific settings</small>
@@ -84,15 +99,18 @@
 
       <label>
         True treshold
-        <input name="${nextPropertyIndex}][viret_trueTreshold]" type="number" value="0.005" step="0.00001">
+        <input name="${nextPropertyIndex}][viret_trueTreshold]" type="number" value="0.0" step="0.00001">
       </label>
     </div>
 
     <div class="viret_queryOperations small-12 medium-3 cell">
       <label>Query operation
         <select class="query_operations-select" name="${nextPropertyIndex}][viret_queryOperations]">
-          <option value="0" selected>Multiply, Add</option>
-          <option value="1">Add only</option>
+          <option value="0" selected>Multiply / Sum</option>
+          <option value="1">Multiply / Max</option>
+          <option value="2">Sum / Sum</option>
+          <option value="3">Sum / Max</option>
+          <option value="4">Max / Max</option>
         </select>
       </label>
     </div>

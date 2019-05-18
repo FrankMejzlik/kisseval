@@ -1,0 +1,78 @@
+
+<script>
+function projectSettings(elem, index)
+{
+  const valuesArray = $(elem).val().split("-");
+  
+  // First value
+  switch (valuesArray[0])
+  {
+    // Boolean model
+    case "1":
+      element = document.getElementsByName(index + "][rankingModel]")[0];
+      element.value = "1";
+
+      // Create a new 'change' event
+      var event = new Event('change');
+      element.dispatchEvent(event);
+
+        switch (valuesArray[1])
+        {
+          // No bucket sorting
+          case "0":
+            document.getElementsByName(index + "][boolean_inBucketRanking]")[0].value = "0";
+            break;
+
+          // In bucket SUM
+          case "1":
+            document.getElementsByName(index + "][boolean_inBucketRanking]")[0].value = "1";
+            break;
+
+          // In bucket SUM
+          case "2":
+            document.getElementsByName(index + "][boolean_inBucketRanking]")[0].value = "2";
+            break;
+        }
+      break;
+
+    // Viret Base model
+    case "3":
+      element = document.getElementsByName(index + "][rankingModel]")[0];
+      element.value = "3";
+
+      // Create a new 'change' event
+      var event = new Event('change');
+      element.dispatchEvent(event);
+
+      switch (valuesArray[1])
+        {
+          // 
+          case "0":
+            document.getElementsByName(index + "][viret_queryOperations]")[0].value = "0";
+            break;
+
+          // 
+          case "1":
+            document.getElementsByName(index + "][viret_queryOperations]")[0].value = "1";
+            break;
+
+          // 
+          case "2":
+            document.getElementsByName(index + "][viret_queryOperations]")[0].value = "2";
+            break;
+
+            // 
+          case "3":
+            document.getElementsByName(index + "][viret_queryOperations]")[0].value = "3";
+            break;
+
+          // 
+          case "4":
+            document.getElementsByName(index + "][viret_queryOperations]")[0].value = "4";
+            break;
+        }
+      break;
+  }
+
+}
+</script>

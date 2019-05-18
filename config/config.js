@@ -8,6 +8,12 @@ const moduleLodaSh = require('lodash');
 // Get config file
 const config = require('./config.json');
 
+
+// Get ranker config
+global.ranker = new Object();
+global.ranker = require('./settings_ranker.json');
+
+
 // Default things are in development
 const defaultConfig = config.development;
 

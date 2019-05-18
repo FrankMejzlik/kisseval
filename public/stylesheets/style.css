@@ -6,6 +6,19 @@ body {
   background-image: url(../images/generic/bg_neural.jpg);
 }
 
+#rankerResultBoardChartCanvas {
+  min-width: 300px;
+  min-height: 200px;
+}
+
+.ranker-result-board {
+  display: none;
+}
+
+.ranker-result-board.active {
+  display: flex;
+}
+
 .off-canvas-content {
   min-height: 100vh;
 }
@@ -33,6 +46,7 @@ body {
   display: none;
   top: 140px;
   z-index: 5;
+  text-align: center;
 }
 
 .main-image-query {
@@ -45,8 +59,9 @@ body {
 
 .ranker-left-sidebar {
   background-color: rgb(151, 214, 213);
-  min-height: calc(100vh - 100px);
+  /* min-height: calc(100vh - 164px); */
   overflow: hidden;
+  height: calc(100vh - 68px);
 }
 
 #targetImageRankOut {
@@ -69,10 +84,15 @@ body {
   position: relative;
 }
 
+.misc-info-bar {
+  padding: 13px 10px 10px 10px;
+  text-align: center;
+}
+
 .image-grid-section {
   padding: 0 !important;
   max-width: 100%;
-  max-height: calc(100vh - 76px);
+  max-height: calc(100vh - 67px);
   overflow: auto;
 }
 
@@ -237,7 +257,25 @@ padding-bottom: 40px;
 
 .modal-image-data {
   text-align: left;
+
 }
+
+.modal-image-data a {
+  color: #da901a;
+  
+}
+
+.modal-image-data li {
+  list-style-position: inside;
+}
+
+
+.modal-image-data a:hover,
+.modal-image-data a:focus {
+  color: #000;
+  
+}
+
 
 ol {
   margin: 0;
@@ -245,6 +283,28 @@ ol {
 
 .reveal {
   width: 43em;
+}
+
+#modalImage {
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-bottom: 40px;
+  overflow: hidden;
+}
+
+#modalImage h5 {
+  position: relative;
+  margin: 0 0 26px 0;
+}
+
+#modalImage h5:after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  width: 4000%;
+  left: -50%;
+  height: 2px;
+  background-color: #c9c8c8;
 }
 
 .modal-image-data .probs-list {

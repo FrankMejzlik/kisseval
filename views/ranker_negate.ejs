@@ -424,14 +424,14 @@ function drawInteractiveSearchChart(chartDataArray)
     }
   }
 
-  function processAction(action, operand)
+  function processAction(action, operand, word)
   {
     // Stop printer if running
     clearInterval(currentPrinter);
     currentImagesToPrintArray = undefined;
 
     // Create AJAX call to get appropriate data
-    get('/ranker_negate_ajax_process_action?action=' + action + '&operand=' + operand)
+    get('/ranker_negate_ajax_process_action?action=' + action + '&operand=' + operand + '&operandWord=' + word)
       // If response OK
       .then((data) => {
 
@@ -495,7 +495,7 @@ function drawInteractiveSearchChart(chartDataArray)
 
 function addKeyword(keywordId, word, elem) 
 {
-  processAction(1, keywordId);
+  processAction(1, keywordId, word);
 
   if (typeof elem !== "undefined")
   {
@@ -518,7 +518,7 @@ function addKeyword(keywordId, word, elem)
 
 function moveFromNotToKeyword(keywordId, word, elem) 
 {
-  processAction(4, keywordId);
+  processAction(4, keywordId, word);
 
   if (typeof elem !== "undefined")
   {
@@ -543,7 +543,7 @@ function moveFromNotToKeyword(keywordId, word, elem)
 function addNotKeyword(keywordId, word, elem) 
 {
   
-  processAction(3, keywordId);
+  processAction(3, keywordId, word);
 
   if (typeof elem !== "undefined")
   {
@@ -569,7 +569,7 @@ function addNotKeyword(keywordId, word, elem)
 function moveFromKeywordToNot(keywordId, word, elem) 
 {
   
-  processAction(5, keywordId);
+  processAction(5, keywordId, word);
 
   if (typeof elem !== "undefined")
   {
@@ -610,7 +610,7 @@ function revertToSuggestedNoAction(keywordId, word)
 
 function revertToSuggested(keywordId, word, elem)
 {
-  processAction(0, keywordId);
+  processAction(0, keywordId, word);
 
   if (typeof elem !== "undefined")
   {
@@ -633,7 +633,7 @@ function revertToSuggested(keywordId, word, elem)
 
 function revertToSuggestedFromNot(keywordId, word, elem)
 {
-  processAction(2, keywordId);
+  processAction(2, keywordId, word);
 
   if (typeof elem !== "undefined")
   {

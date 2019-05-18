@@ -26,17 +26,18 @@ function validStateCheckSpecific(req, viewData)
   // Get session object reference
   const sess = req.session;
 
-  // Make sure that settings stored in session are initialized
-  utils.initializeModelSettings(sess);
-
-  // Initialize session counter if needed
-  if (typeof sess.ranker.searchSessionCounter == "undefined")
+  // Make sure ranker object exists
+  if (typeof sess.ranker === "undefined")
   {
-    sess.ranker.searchSessionCounter = 0;
+    sess.ranker = new Object();
+    sess.ranker.settings = new Object();
   }
 
-  viewData.ranker = new Object();
-  viewData.ranker.settings = sess.ranker.settings;
+  
+
+  // Make sure that settings stored in session are initialized
+  rankerUtils.initOrResumeInteractiveSearchSession(sess, viewData);
+
 }
 
 // GET request
@@ -51,10 +52,12 @@ router.get('/', function(req, res, next)
   validStateCheckGeneral(req, viewData);
   validStateCheckSpecific(req, viewData);
   
-  rankerUtils.terminateSearchSession(sess);
+  //rankerUtils.terminateSearchSession(sess);
 
 
   global.logger.log('debug', "sess.ranker:"+ JSON.stringify(sess.ranker, undefined, 4));
+
+  global.logger.log('debug', "viewData:"+ JSON.stringify(viewData, undefined, 4));
 
   // Rener ranker view
   res.render('ranker', viewData);

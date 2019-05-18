@@ -97,7 +97,7 @@
 
 
               // Call action
-              processAction(1, selVal);
+              processAction(1, selVal, selValWord);
 
 
               chechkboxCont = document.createElement("li");
@@ -190,13 +190,14 @@ autocomplete(document.getElementById("queryInput"), document.getElementById("sel
 function removeKeyword(e, t) 
 {
   const operand = $(t).parent().children("input[name='keyword']").val();
+  const operandWord = $(t).parent().children("input[name='keywordWord']").val();
 
   $(t).parent().remove();
 
 
 
   // Call action
-  processAction(0, operand);
+  processAction(0, operand, operandWord);
 
 }
 </script>

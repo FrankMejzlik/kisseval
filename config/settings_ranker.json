@@ -1,0 +1,40 @@
+{
+    "selectedModels": [
+        {
+            "aggregation": 200,
+            "aggregationParameter": 1,
+            "rankingModel": 3,
+            "keywordFrequency": 0,
+            
+            "viret_trueTreshold": 0.0,
+            "viret_queryOperations": 0
+        },
+        {
+            "aggregation": 200,
+            "aggregationParameter": 1,
+            "rankingModel": 3,
+            "keywordFrequency": 0,
+            
+            "viret_trueTreshold": 0.0,
+            "viret_queryOperations": 1
+        },
+        {
+            "aggregation": 200,
+            "aggregationParameter": 1,
+            "rankingModel": 3,
+            "keywordFrequency": 0,
+            
+            "viret_trueTreshold": 0.0,
+            "viret_queryOperations": 2
+        },
+        {
+            "aggregation": 200,
+            "aggregationParameter": 1,
+            "rankingModel": 3,
+            "keywordFrequency": 0,
+            
+            "viret_trueTreshold": 0.0,
+            "viret_queryOperations": 3
+        }
+    ]
+}

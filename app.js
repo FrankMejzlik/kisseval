@@ -124,6 +124,10 @@ global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d,e,f,g, h);
 
 global.imageRanker.Initialize();
 
+
+
+
+
 // Push all routers into express middleware stack
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

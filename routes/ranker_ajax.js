@@ -37,6 +37,18 @@ exports.submitImage = function(req, res)
 
 
   let response = new Object();
+
+  // If give up submit
+  if (imageId < 0)
+  {
+    response.giveUp = true;
+  } 
+  else 
+  {
+    response.giveUp = false;
+  }
+
+  
   
   // Is this correct image?
   response.correct = (imageId == sess.ranker.searchSession.imageId);
@@ -47,7 +59,9 @@ exports.submitImage = function(req, res)
   const targetImageId = sess.ranker.searchSession.imageId;
   const actionsArray = sess.ranker.searchSession.actionsArray;
 
-  const nativeSettings = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings);
+  // Get all needed things for calling native method
+  const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
+
 
   // NATIVE SUBMIT PROGRESS DATA!!!
   // global.imageRanker.SubmitInteractiveSearchSubmit(
@@ -58,13 +72,47 @@ exports.submitImage = function(req, res)
   // );
   //
 
-
-  // If correct answer, just end search session
-  if (response.correct)
+  if (typeof sess.ranker.query !== "undefined")
   {
-    rankerUtils.terminateSearchSession(sess);
-  }
+    if (sess.ranker.query.length > 0)
+    {
+      const queryPlain = sess.ranker.query.join("&");
 
+      response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
+        queryPlain, 
+        0, 
+        settingsForNative.aggregation, 
+        settingsForNative.rankingModel, 
+        settingsForNative.rankingModelSettings, 
+        settingsForNative.aggregationSettings,
+        sess.ranker.searchSession.imageId
+      );
+    }
+  
+    
+    const actionsArray = sess.ranker.searchSession.actionsArray;
+    response.chartData = new Array();
+    
+    
+
+    // Construct chart data
+    for (let i = 0; i < actionsArray.length; ++i)
+    {
+      const pair = new Object();
+      pair.index = i;
+      pair.value = actionsArray[i].score;
+
+      response.chartData.push(pair);
+    }
+  
+  }
+  // If this session should be terminated
+  if (response.correct || response.giveUp)
+  {
+    const sessionDuration = rankerUtils.terminateSearchSession(sess);
+    response.sessionDuration = sessionDuration;
+  }
+  
 
   global.logger.log('debug', "response: " + JSON.stringify(response, undefined, 4));
 
@@ -91,6 +139,7 @@ exports.getRandomImageAndStartSearchSession = function(req, res)
   let response = new Object();
   response.imageId = image.imageId;
   response.imageFilename = image.filename;
+  response.modelName = sess.ranker.settings.modelName;
 
   global.logger.log('debug', "response: " + JSON.stringify(response, undefined, 4));  
 
@@ -115,6 +164,7 @@ exports.getSelectedImageAndStartSearchSession = function(req, res)
    let response = new Object();
    response.imageId = image.imageId;
    response.imageFilename = image.filename;
+   response.modelName = sess.ranker.settings.modelName;
  
    if (global.gConfig.log_all) 
    { 
@@ -133,6 +183,7 @@ exports.processAction = function(req, res)
 
   const action = req.query.action;
   const operand = req.query.operand;
+  const operandWord = req.query.operandWord;
 
   global.logger.log('debug', "action = " + action + ", operand = " + operand);
 
@@ -143,6 +194,7 @@ exports.processAction = function(req, res)
   if (typeof sess.ranker.query === "undefined")
   {
     sess.ranker.query = new Array();
+    sess.ranker.queryWords = new Array();
   }
 
   if (action == 0)
@@ -151,18 +203,20 @@ exports.processAction = function(req, res)
 
     // Cut out this kw
     sess.ranker.query.splice(index, 1);
+    sess.ranker.queryWords.splice(index, 1);
   }
   else if (action == 1)
   {
     // Add keyword
     sess.ranker.query.push(operand);
+    sess.ranker.queryWords.push(operandWord);
   }
 
   const queryPlain = sess.ranker.query.join("&");
 
   let response = new Object();
   
-  if (sess.ranker.query.length > 0)
+  if (sess.ranker.query.length > -1)
   {
     response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
       queryPlain, 

@@ -31,6 +31,10 @@
         <div class="target-image-rank-cont small-4 cell">
           <span id="targetImageRankOut"></span>
         </div>
+
+        <div class="misc-info-bar small-4 cell">
+          <span id="currModelInfo"><%= ranker.settings.modelName ? "Current model: " + ranker.settings.modelName : "" %></span>
+        </div>
         
 
       </div>
@@ -41,22 +45,55 @@
       <div class="grid-x grid-padding-x align-left">  
 
         <!-- Image settings -->
-        <div class="get-random-image-cont small-4 cell">
-            <a class="button" onclick="getRandomImageToPreview(this);">RNG image</a>
+        <div class="get-random-image-cont small-4 cell" id="getRandomImageCont">
+
+          <% // If search session is running
+          if (typeof ranker.searchSession.imageId !== "undefined" && ranker.searchSession.imageId !== null) 
+          { %>
+
+            <a class="button alert" onclick="submitImage();">Give up!</a>
+
+          <% }
+          // If outside of search session
+          else
+          { %>
+
+            <a class="button" onclick="getRandomImageToPreview(this);">Random image</a>
+
+          <% } %>
+
         </div>
+        
         <div class="target-image-id-cont small-4 cell">
           
           <label class="target-image-id-label">Target image ID:
-            <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= ranker.targetImageId ? ranker.targetImageId : '' %>" />
+            <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= ranker.searchSession.imageId ? ranker.searchSession.imageId : '' %>" />
           </label>
+
         </div>
-        <div class="target-image-id-cont small-4 cell">
-          <a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>
+        <div class="get-selected-image-to-preview small-4 cell" id="getSelectedImageToPrevies">
+
+          <% // If search session is running
+          if (typeof ranker.searchSession.imageId !== "undefined" && ranker.searchSession.imageId !== null) 
+          { %>
+
+            
+
+          <% }
+          // If outside of search session
+          else
+          { %>
+
+            <a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>
+
+          <% } %>
+
+          
         </div>
 
         <!-- Image preview canvas -->
         <div class="image-preview small-12 cell">
-          <img id="targetImage" src="/images/generic/bg_neural.jpg" />
+          <img id="targetImage" src="/images/<%= ranker.searchSession.imageSrc ? ranker.searchSession.imageSrc : "generic/bg_neural.jpg" %>" />
         </div>
 
       </div>
@@ -69,31 +106,31 @@
 
         <div class="autocomplete-input-cont small-12 cell">
           <!-- Autocomplete text input -->
-          <input disabled type="text" id="queryInput" tabindex="1" name="query">
+          <input <%= ui.queryInputUnlocked ? "" : "disabled" %> type="text" id="queryInput" tabindex="1" name="query">
           <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
           
           <ul class="selected-keywords-list" id="selectedKeywordsList">
         
-            <% if (typeof keywords !== 'undefined') {
-                if (keywords instanceof Array) 
+            <% if (typeof ranker.query !== 'undefined') {
+                if (ranker.query instanceof Array) 
                 {
-                  for (var i = 0; i < keywords.length; ++i) {
+                  for (var i = 0; i < ranker.query.length; ++i) {
                   %>
               
 
-                    <li class="slected-keyword-checkbox">
-                      <input type="checkbox" name="keywordWord" value="<%= keywordsWords[i] %>" checked="">                
-                      <input type="checkbox" name="keyword" value="<%= keywords[i] %>" checked="">                
-                      <span><%= keywordsWords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
-                    </li>
+                <li class="slected-keyword-checkbox">
+                  <input type="checkbox" name="keywordWord" value="<%= ranker.queryWords[i] %>" checked="">                
+                  <input type="checkbox" name="keyword" value="<%= ranker.query[i] %>" checked="">                
+                  <span><%= ranker.queryWords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
+                </li>
 
               <%    }
               } else { %>
 
                 <li class="slected-keyword-checkbox">
-                <input type="checkbox" name="keywordWord" value="<%= keywordsWords %>" checked="">          
-                <input type="checkbox" name="keyword" value="<%= keywords %>" checked="">       
-                <span><%= keywordsWords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
+                <input type="checkbox" name="keywordWord" value="<%= ranker.queryWords %>" checked="">          
+                <input type="checkbox" name="keyword" value="<%= ranker.query %>" checked="">       
+                <span><%= ranker.queryWords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
               </li>
 
                 <%
@@ -113,6 +150,18 @@
 <!-- Images grid -->
 <div class="ranker-right-sidebar image-grid-section image-browser-main-tiles large-9 cell grid-container">
   
+  <div class="ranker-result-board grid-x grid-x align-center align-middle" id="rankerResultBoard">
+    <div class="result-actions-chart cell large-6">
+      <canvas id="rankerResultBoardChartCanvas"></canvas>
+    </div>
+
+    <div class="result-actions-chart cell large-6" id="resultInfo">
+      
+    </div>
+
+
+  </div>
+
   <ul id="resultImagesList" class="grid-x grid-x align-center align-middle">
 
   </ul>
@@ -270,9 +319,13 @@
   }
 }
 
-function drawInteractiveSearchChart(chartDataArray)
+function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 {
 
+  if (typeof chartDataArray === "undefined" || chartDataArray.length <= 0)
+  {
+    return;
+  }
   const returnedDataArray = chartDataArray;
 
   let datasets = new Array();
@@ -285,6 +338,11 @@ function drawInteractiveSearchChart(chartDataArray)
   for (var i = 0; i < returnedDataArray.length; ++i) 
   {
     const returnedData = returnedDataArray[i];
+
+    if (typeof returnedData === "undefined" || returnedData.length <= 0)
+    {
+      continue;
+    }
 
     // Calculate coefs for colour
     const r = (i % 3 == 0 ? 1 : 0) * 255;
@@ -327,7 +385,7 @@ function drawInteractiveSearchChart(chartDataArray)
     datasets
   }
 
-  const chartCanvas = document.getElementById("interactiveSearchChart");
+  const chartCanvas = targetCanvas;
                        
   // Create chart
   var ctx = chartCanvas.getContext('2d');
@@ -377,6 +435,12 @@ function drawInteractiveSearchChart(chartDataArray)
         $("#targetImage").attr("src", "/images/" + data.imageFilename);
         $("#queryInput").prop('disabled', false);
 
+        let viewData = new Object();
+        viewData.modelName = data.modelName;
+
+        // Edit HTML layout
+        putDocumentToPostStartState(viewData);
+
       })
       // If error occured
       .catch((err) => {
@@ -401,6 +465,13 @@ function drawInteractiveSearchChart(chartDataArray)
         $("#targetImageId").val(data.imageId);
         $("#targetImage").attr("src", "/images/" + data.imageFilename);
         $("#queryInput").prop('disabled', false);
+
+        let viewData = new Object();
+        viewData.modelName = data.modelName;
+
+
+        // Edit HTML layout
+        putDocumentToPostStartState(viewData);
 
       })
       // If error occured
@@ -436,9 +507,56 @@ function drawInteractiveSearchChart(chartDataArray)
     $mainGlobalMessageCont.hide();
   }
 
+
+function putDocumentToPostStartState(viewData)
+{
+  document.getElementById("rankerResultBoard").classList.remove("active");
+  document.getElementById("queryInput").disabled = false;
+
+  document.getElementById("currModelInfo").innerHTML = "Current model: " + viewData.modelName;
+  
+  document.getElementById("getRandomImageCont").innerHTML = '<a class="button alert" onclick="submitImage();">Give up!</a>';
+
+  document.getElementById("getSelectedImageToPrevies").innerHTML = '';  
+}
+
+
+function putDocumentToPostSubmitState()
+{
+  // Crear target image
+  clearTargetImage();
+
+  // Clear old grid
+  clearImageGrid();
+
+  document.getElementById("queryInput").disabled = true;
+
+  document.getElementById("getRandomImageCont").innerHTML = '<a class="button" onclick="getRandomImageToPreview(this);">Random image</a>';
+  document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>';  
+
+  document.getElementById("rankerResultBoard").classList.add("active");
+}
+
+function putDocumentToPreStartState()
+{
+  document.getElementById("getRandomImageCont").innerHTML = '<a class="button" onclick="getRandomImageToPreview(this);">Random image</a>';
+  document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>';  
+
+  document.getElementById("rankerResultBoard").classList.remove("active");
+}
+
+
   function submitImage(elem)
   {
-    const imageId = $(elem).parent().data("image-id");
+    let imageId;
+    if (typeof elem === "undefined")
+    {
+      imageId = -1;
+    }
+    else 
+    {
+      imageId = $(elem).parent().data("image-id");
+    }
 
     // Create AJAX call to get appropriate data
     get('/ranker_ajax_submit_image?imageId=' + imageId)
@@ -447,19 +565,54 @@ function drawInteractiveSearchChart(chartDataArray)
 
         data = JSON.parse(data);
 
-        // If correct image submitted
-        if (data.correct)
+        // If was give up call
+        if (data.giveUp || data.correct)
         {
-          clearTargetImage();
-          // Clear old grid
-          clearImageGrid();
+          
 
-          showGlobalMessage("Correct.", "Great job", 3000);
+          if (data.correct)
+          {
+            console.log("Showing correct submit image data.");
+
+            showGlobalMessage("Correct.", "Great job", 3000);
+          }
+          else 
+          {
+            console.log("Showing give up results");
+          }
+          
+          // Draw chart
+          let dataArray = new Array();
+          dataArray.push(data.chartData);
+          const canvas = document.getElementById("rankerResultBoardChartCanvas");
+
+          document.getElementById("resultInfo").innerHTML = "";
+
+          // Print info into result html
+          if (data && data.relevantImagesArray && data.relevantImagesArray.targetImageRank)
+          {
+            document.getElementById("resultInfo").innerHTML += "<h3>Final image rank: <span>" + data.relevantImagesArray.targetImageRank +"</span></h3>";
+          }
+          document.getElementById("resultInfo").innerHTML += "<h5>Time: <span>" + data.sessionDuration  + " s</span></h5>";
+
+          drawInteractiveSearchChart(dataArray, canvas);
+
+          putDocumentToPostSubmitState();
+
         } 
+        // Wrong image submit
         else 
         {
+          console.log("Showing invalid submit image data.");
+
           showGlobalMessage("Invalid image.", "Try again", 3000);
         }
+
+
+        
+
+        //currentPrinter = setInterval(printImagesFromTo, batchPrintTimeout);
+
       })
       // If error occured
       .catch((err) => {
@@ -491,14 +644,14 @@ function drawInteractiveSearchChart(chartDataArray)
     }
   }
 
-  function processAction(action, operand)
+  function processAction(action, operand, word)
   {
     // Stop printer if running
     clearInterval(currentPrinter);
     currentImagesToPrintArray = undefined;
 
     // Create AJAX call to get appropriate data
-    get('/ranker_ajax_process_action?action=' + action + '&operand=' + operand)
+    get('/ranker_ajax_process_action?action=' + action + '&operand=' + operand + '&operandWord=' + word)
       // If response OK
       .then((data) => {
 
@@ -524,7 +677,7 @@ function drawInteractiveSearchChart(chartDataArray)
             </button>\
             <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
               data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
-              <a class="button btn-submit success" onclick="submitImage(this);">S</a>\
+              <a class="button btn-submit success" onclick="submitImage(this);">&#10004</a>\
               <a class="just-clicker"  data-open="modalImage"></a>\
             </li>'
           );
@@ -533,7 +686,9 @@ function drawInteractiveSearchChart(chartDataArray)
         // Draw chart
         let dataArray = new Array();
         dataArray.push(data.chartData);
-        drawInteractiveSearchChart(dataArray);
+        const canvas = document.getElementById("interactiveSearchChart");
+
+        drawInteractiveSearchChart(dataArray, canvas);
 
         //currentPrinter = setInterval(printImagesFromTo, batchPrintTimeout);
 
@@ -548,7 +703,7 @@ function drawInteractiveSearchChart(chartDataArray)
 function addKeyword(keywordId, word) 
 {
   // xoxo
-  processAction(1, keywordId);
+  processAction(1, keywordId, word);
 
   const selectedContainer = document.getElementById("selectedKeywordsList");
 

@@ -181,13 +181,20 @@
         display: true,
         scaleLabel: {
           display: true,
-          labelString: 'Rank'
+          labelString: 'Action index'
         }
       }],
       yAxes: [{
+        type: 'logarithmic',
         display: true,
         ticks: {
-            beginAtZero: true
+          beginAtZero: true,
+          min: 0,
+          // \todo make dynamic
+          max: 20000,
+          callback: function(value, index, values) {
+              return Number(value);
+          }
         },
         scaleLabel: {
           display: true,

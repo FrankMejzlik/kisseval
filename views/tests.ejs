@@ -124,9 +124,6 @@
           // Configuration options go here
           options: {
           responsive: true,
-          animation: {
-              duration: 0
-          },
           title: {
             display: false,
             text: 'Test 1'
@@ -141,13 +138,24 @@
           },
           scales: {
             xAxes: [{
-              display: true,
+              type: 'logarithmic',
+               display: true,
+              ticks: {
+                beginAtZero: true,
+                min: 0,
+                // \todo make dynamic
+                //max: 20000,
+                callback: function(value, index, values) {
+                    return value;
+                }
+              },
               scaleLabel: {
                 display: true,
                 labelString: 'Rank'
               }
             }],
             yAxes: [{
+              
               display: true,
               scaleLabel: {
                 display: true,

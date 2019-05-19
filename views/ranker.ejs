@@ -291,36 +291,50 @@
       animation: {
           duration: 0
       },
-    responsive: true,
-    title: {
-      display: false,
-      text: ''
-    },
-    tooltips: {
-      mode: 'index',
-      intersect: false,
-    },
-    hover: {
-      mode: 'nearest',
-      intersect: true
-    },
-    scales: {
-      xAxes: [{
-        display: true,
-        scaleLabel: {
+      legend: {
+            display: false
+          },
+      responsive: true,
+      title: {
+        display: false,
+        text: ''
+      },
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true
+      },
+      scales: {
+        xAxes: [{
           display: true,
-          labelString: 'Rank'
-        }
-      }],
-      yAxes: [{
-        display: true,
-        ticks: {
-            beginAtZero: true
-        },
-        scaleLabel: {
+          scaleLabel: {
+            display: true,
+            labelString: 'Action index'
+          }
+        }],
+        yAxes: [{
+          type: 'logarithmic',
           display: true,
-          labelString: 'Target image rank'
-        }
+          ticks: {
+            beginAtZero: true,
+            autoSkip: true,
+            min: 0,
+            // \todo make dynamic
+            suggestedMax: 20000,
+            // Return an empty string to draw the tick line but hide the tick label
+            // Return `null` or `undefined` to hide the tick line entirely
+            maxTicksLimit: 10,
+            callback: function(value, index, values) {
+                return Number(value);
+            }
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Target image rank'
+          }
       }]
     }
   }
@@ -740,6 +754,9 @@ function switchModalImageHtmlContents(id)
       var html = '<button class="close-button" data-close aria-label="Close modal" type="button">\
           <span aria-hidden="true">&times;</span>\
         </button>';
+
+        html +="<span class='click-to-add-tip'>Click on words to add them to query<span class='click-image'>&#128410;</span><span class='click-image second'>&#128411;</span></span>";
+
       html +="<h3 class='id'>Image ID:" + data.imageId + "</h3>";
       html += "<hr />";
       html += "<div class='modal-image-data grid-x grid-padding-x align-center'>";

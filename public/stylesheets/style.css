@@ -19,6 +19,28 @@ body {
   display: none;
 }
 
+.click-to-add-tip {
+  position: absolute;
+  top: 173px;
+  left: 181px;
+  width: 130px;
+}
+
+
+.click-to-add-tip span {
+  position: absolute;
+  left: -25px;
+  font-size: 64px;
+  top: -60px;
+  color: #233656;
+}
+
+.click-to-add-tip span.second {
+  left: 73px;
+  font-size: 64px;
+  top: 6px;
+}
+
 .contact-us {
   background-color: #97d6d5;
   padding: 36px 0 23px 0;
@@ -354,8 +376,8 @@ padding-bottom: 40px;
 }
 
 .modal-image-data a {
-  color: #da901a;
-  
+  color: #233656;
+  text-decoration: underline;
 }
 
 .modal-image-data li {
@@ -365,8 +387,7 @@ padding-bottom: 40px;
 
 .modal-image-data a:hover,
 .modal-image-data a:focus {
-  color: #000;
-  
+  color: #cc4b37;
 }
 
 
@@ -928,19 +949,32 @@ background-position: center center;
   background-repeat: no-repeat;
   background-position: center center;
   text-align: center;
+
+}
+
+.rel-img-item:hover .btn-submit {
+  opacity: 1;
 }
 
 .rel-img-item .btn-submit {
+  opacity: 0;
+  transition: 0.1s ease-in-out;
   position: absolute;
+  font-size: 20px;
+  padding: 5px 8px;
   right: 0;
   z-index: 4;
   background-color: #65c346 !important;
   top:0;
+  box-shadow: -2px 2px 3px 0px #020202;
+  transform: translate(-0px, -0px);
 }
 
 .rel-img-item .btn-submit:hover,
 .rel-img-item .btn-submit:focus {
   background-color: #a3cd95 !important;
+  box-shadow: 0px 0px 3px 0px #020202;
+  transform: translate(-3px, 3px);
  
 }
 

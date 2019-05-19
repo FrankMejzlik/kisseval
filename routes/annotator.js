@@ -9,7 +9,7 @@ var router = express.Router();
 router.get('/', function(req, res, next) 
 {
   // Get current page slug
-  const currentPage = "annotator";
+  const currentPage = "query_annotator";
 
   let phonyQuery = "false";
 
@@ -33,7 +33,7 @@ router.get('/', function(req, res, next)
     // Initialize array of this session's images
     sess.gameWalkthrough = new Array();
 
-    res.redirect('/annotator')
+    res.redirect('/query_annotator')
   } 
 
   const totalGameLength = global.gConfig.gameLength + global.gConfig.tutorialLength;

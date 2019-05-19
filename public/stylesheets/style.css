@@ -15,6 +15,60 @@ body {
   min-height: 200px;
 }
 
+.page-title-section {
+
+}
+.page-title-section h1 {
+  color: #233656;
+  font-size: 34px;
+  font-weight: 600;
+  position: relative;
+}
+
+.page-title-section h1:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  height: 3px;
+  background-color: #cc4b37;
+  width: 240px;
+  top: 130%;
+}
+
+.section-header h2 {
+  color: #000000;
+  font-size: 26px;
+  font-weight: 300;
+  position: relative;
+  margin: 10px 0 30px 0;
+}
+
+.section-header h2:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  height: 2px;
+  background-color: #000000;
+  width: 100px;
+  top: 130%;
+}
+
+
+.section-header p 
+{
+  font-size: 16px;
+  font-weight:600;
+  color: #233656;
+}
+
+.statistics-models-showoff-section {
+  background-color: #97d6d55e;
+}
+.statistics-hyper-nonhyper-section {
+  background-color: #f0a9006b;
+}
 .ranker-result-board {
   display: none;
 }
@@ -323,10 +377,7 @@ max-width: 1920px;
 #gridTestProgress {
   display: none;
 }
-.section-header {
-padding-top: 40px;
-padding-bottom: 40px;
-}
+.section-header {padding-top: 20px;padding-bottom: 20px;}
 .hidden-by-default {
   display: none;
 }

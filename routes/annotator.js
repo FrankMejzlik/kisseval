@@ -147,7 +147,7 @@ router.post('/', function(req, res, next)
 
   
   // Redirect user back to game page
-  res.redirect(301, "/annotator/");
+  res.redirect(301, "/query_annotator/");
 });
 
 

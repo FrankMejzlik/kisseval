@@ -159,6 +159,23 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
   {
     // Variable with all settings
     result.aggregationSettings.push(String(settings.aggregationParameter));
+
+
+    // If MAX inner operation
+    if (
+      settings.viret_queryOperations == 1 ||
+      settings.viret_queryOperations == 3 ||
+      settings.viret_queryOperations == 4 ||
+      settings.boolean_inBucketRanking == 2
+    )
+    {
+      result.aggregationSettings.push(String("1"));
+    } 
+    else 
+    {
+      result.aggregationSettings.push(String("0"));
+    }
+
   }
   return result;
 };

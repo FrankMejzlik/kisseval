@@ -32,3 +32,4 @@ exports.find = function(req, res)
   // Send response
   res.jsonp(itemss);
 };
+

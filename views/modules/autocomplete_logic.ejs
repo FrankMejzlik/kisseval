@@ -31,7 +31,7 @@
       currentFocus = -1;
 
       // Create a <div> element that will contain the items (values)
-      a = document.createElement("dev");
+      a = document.createElement("div");
       // Set it's attributes
       a.setAttribute("id", this.id + "autocomplete-list");
       a.setAttribute("class", "autocomplete-items");
@@ -52,17 +52,25 @@
             // Create a DIV element for each element
             b = document.createElement("div");
 
-            // Make the matching letters bold
-            //b.innerHTML = "<strong>" + data[i].substr(0, val.length) + "</strong>";
-            //b.innerHTML += data[i].substr(val.length);
-
             const wordTitle = boldString(data[i][1], val);
             const wordDesc = boldString(data[i][2], val);
+            const exampleImagesFilenamesArr = data[i][3];
 
             b.innerHTML += "\
               <span class=\"keyword-title\">" + wordTitle + "</span><small>" + wordDesc + "</small>\
               <small class='wordnet-id'>" + data[i][0] + "</small>";
 
+
+            let str = "<ul class=\"example-images-list\">";
+            
+            for (let ii = 0; ii < exampleImagesFilenamesArr.length; ++ii)
+            {
+              str += "<li><img src='../images/thumbnails/" + exampleImagesFilenamesArr[ii] + "' /></li>";    
+            }
+
+            str += "</ul>";
+
+            b.innerHTML += str;
 
             // Insert a input field that will hold the current array item's value
             b.innerHTML += "<input type='hidden' name='keyword' value='" + data[i][1] + "'>";

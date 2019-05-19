@@ -286,7 +286,7 @@ exports.processAction = function(req, res)
 
 exports.getImageKeywordsForInteractiveSearch = function(req, res) 
 {
-  global.logger.log('debug', "=> processAction()");
+  global.logger.log('debug', "=> getImageKeywordsForInteractiveSearch()");
   const sess = req.session;
 
   const imageId = req.query.imageId;

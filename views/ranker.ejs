@@ -769,7 +769,19 @@ function switchModalImageHtmlContents(id)
       {
         html += "<li class='probs-list-item '>";
           html += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].wordnetId + ", \"" + nonHypernymsArray[i].word + "\")'>" + nonHypernymsArray[i].word +  "<span class='ranking'>" + nonHypernymsArray[i].ranking + "</span></a>";
+          
+          let str = "<ul class='example-images'>";
+          
+          const exampleImagesArr = nonHypernymsArray[i].exampleImages;
+          for (var ii = 0; ii < exampleImagesArr.length; ++ii) 
+          { 
             
+              str += "<li><img src='../images/thumbnails/" + exampleImagesArr[ii] + "' /></li>";    
+          }
+
+          str += "</ul>";
+
+        html += str;
         html += "</li>";
       }
       html += "</ol>";
@@ -786,6 +798,19 @@ function switchModalImageHtmlContents(id)
         html += "<li class='probs-list-item '>";
           html += "<a class='keyword' onclick='addKeyword(" + hypernymsArray[i].wordnetId + ", \"" + hypernymsArray[i].word + "\")'>" + hypernymsArray[i].word + "<span class='ranking'>" + hypernymsArray[i].ranking + "</span></a>";
             
+          let str = "<ul class='example-images'>";
+          
+          const exampleImagesArr = hypernymsArray[i].exampleImages;
+          for (var ii = 0; ii < exampleImagesArr.length; ++ii) 
+          { 
+            
+              str += "<li><img src='../images/thumbnails/" + exampleImagesArr[ii] + "' /></li>";    
+          }
+
+          str += "</ul>";
+
+        html += str;
+
         html += "</li>";
       }
       html += "</ol>";

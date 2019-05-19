@@ -1295,7 +1295,7 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
   Napi::Number numResults = info[1].As<Napi::Number>();
 
   // Call native method
-  std::pair<std::vector<std::tuple<size_t, std::string, float>>, std::vector<std::tuple<size_t, std::string, float>>> hypersNonHypersPair;
+  /*std::pair<std::vector<std::tuple<size_t, std::string, float>>, std::vector<std::tuple<size_t, std::string, float>>> hypersNonHypersPair;
   try 
   {
     hypersNonHypersPair = this->actualClass_->GetImageKeywordsForInteractiveSearch(imageId.Uint32Value(), numResults.Uint32Value());
@@ -1303,7 +1303,17 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
   catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }*/
+  std::pair<std::vector<std::tuple<size_t, std::string, float, std::vector<std::string>>>, std::vector<std::tuple<size_t, std::string, float, std::vector<std::string>>>> hypersNonHypersPair;
+  try
+  {
+    hypersNonHypersPair = this->actualClass_->GetImageKeywordsForInteractiveSearchWithExampleImages(imageId.Uint32Value(), numResults.Uint32Value());
   }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+    
 
 
   // Construct NAPI return object 
@@ -1367,6 +1377,27 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
           napi_set_property(env, pair, key, value);
         }
 
+        // Set "exampleImages"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "exampleImages", NAPI_AUTO_LENGTH, &key);
+          napi_value exampleImagesArr;
+          napi_create_array(env, &exampleImagesArr);
+
+          {
+            size_t ii{ 0ULL };
+            for (auto&& imageFilename : std::get<3>(probPair))
+            {
+              napi_value filenameNapi;
+              napi_create_string_utf8(env, imageFilename.data(), NAPI_AUTO_LENGTH, &filenameNapi);
+              napi_set_element(env, exampleImagesArr, ii, filenameNapi);
+
+              ++ii;
+            }
+          }
+          napi_set_property(env, pair, key, exampleImagesArr);
+        }
+
         napi_set_element(env, probVecArr, i, pair);
 
         ++i;
@@ -1422,6 +1453,27 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
           napi_set_property(env, pair, key, value);
         }
 
+        // Set "exampleImages"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "exampleImages", NAPI_AUTO_LENGTH, &key);
+          napi_value exampleImagesArr;
+          napi_create_array(env, &exampleImagesArr);
+
+          {
+            size_t ii{ 0ULL };
+            for (auto&& imageFilename : std::get<3>(probPair))
+            {
+              napi_value filenameNapi;
+              napi_create_string_utf8(env, imageFilename.data(), NAPI_AUTO_LENGTH, &filenameNapi);
+              napi_set_element(env, exampleImagesArr, ii, filenameNapi);
+
+              ++ii;
+            }
+          }
+          napi_set_property(env, pair, key, exampleImagesArr);
+        }
+
         napi_set_element(env, probVecArr, i, pair);
 
         ++i;
@@ -1449,14 +1501,25 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) 
   Napi::String prefix = info[0].As<Napi::String>();
 
   // Get suggested keywords
-  std::vector< std::tuple<size_t, std::string, std::string> > keywordData;
+  /*std::vector< std::tuple<size_t, std::string, std::string> > keywordData;
   try {
      keywordData = this->actualClass_->GetNearKeywords(prefix);
   } 
   catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }*/
+
+  std::vector<Keyword*> keywordData;
+  try {
+     keywordData = this->actualClass_->GetNearKeywordsWithImages(prefix);
   }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
 
 
   // Final return structure
@@ -1475,13 +1538,33 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) 
       napi_value word;
       napi_value description;
 
-      napi_create_uint32(env, std::get<0>(keyword), &wordnetId);
-      napi_create_string_utf8(env, std::get<1>(keyword).data(), std::get<1>(keyword).size(), &word);
-      napi_create_string_utf8(env, std::get<2>(keyword).data(), std::get<2>(keyword).size(), &description);
+      napi_create_uint32(env, keyword->m_wordnetId, &wordnetId);
+      napi_create_string_utf8(env, keyword->m_word.data(), NAPI_AUTO_LENGTH, &word);
+
+      std::string descriptionString{ this->actualClass_->GetKeywordDescriptionByWordnetId(keyword->m_wordnetId) };
+
+      napi_create_string_utf8(env, descriptionString.data(), NAPI_AUTO_LENGTH, &description);
+
+
+      // Create example images array
+      napi_value exampleImagesArr;
+      napi_create_array(env, &exampleImagesArr);
+
+      size_t ii{ 0ULL };
+      for (auto&& imageFilename : keyword->m_exampleImageFilenames)
+      {
+        napi_value filenameNapi;
+        napi_create_string_utf8(env, imageFilename.data(), NAPI_AUTO_LENGTH, &filenameNapi);
+        napi_set_element(env, exampleImagesArr, ii, filenameNapi);
+
+        ++ii;
+      }
+
 
       napi_set_element(env, tempArray, 0, wordnetId);
       napi_set_element(env, tempArray, 1, word);
       napi_set_element(env, tempArray, 2, description);
+      napi_set_element(env, tempArray, 3, exampleImagesArr);
 
       napi_set_element(env, result, i, tempArray);
 

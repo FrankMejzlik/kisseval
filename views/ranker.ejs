@@ -84,7 +84,7 @@
           else
           { %>
 
-            <a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>
+            <a class="button" onclick="getSelectedImageToPreview(this);" title="Sets target image to provided ID">Show image</a>
 
           <% } %>
 
@@ -121,7 +121,7 @@
                 <li class="slected-keyword-checkbox">
                   <input type="checkbox" name="keywordWord" value="<%= ranker.queryWords[i] %>" checked="">                
                   <input type="checkbox" name="keyword" value="<%= ranker.query[i] %>" checked="">                
-                  <span><%= ranker.queryWords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
+                  <span><%= ranker.queryWords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a>
                 </li>
 
               <%    }
@@ -130,7 +130,7 @@
                 <li class="slected-keyword-checkbox">
                 <input type="checkbox" name="keywordWord" value="<%= ranker.queryWords %>" checked="">          
                 <input type="checkbox" name="keyword" value="<%= ranker.query %>" checked="">       
-                <span><%= ranker.queryWords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);"> X</a>
+                <span><%= ranker.queryWords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a>
               </li>
 
                 <%
@@ -150,12 +150,19 @@
 <!-- Images grid -->
 <div class="ranker-right-sidebar image-grid-section image-browser-main-tiles large-9 cell grid-container">
   
-  <div class="ranker-result-board grid-x grid-x align-center align-middle" id="rankerResultBoard">
+  <div class="ranker-result-board grid-x grid-x align-center align-center" id="rankerResultBoard">
+    <div class="result-actions-board-title cell large-12">
+      <h1>Search session results</h1>
+    </div>
     <div class="result-actions-chart cell large-6">
+      <h2>Rank progress in time</h2>
       <canvas id="rankerResultBoardChartCanvas"></canvas>
     </div>
 
-    <div class="result-actions-chart cell large-6" id="resultInfo">
+    <div class="result-actions-info cell large-6">  
+      <h2>Other info</h2>
+      <div id="resultInfo">
+      </div>
       
     </div>
 
@@ -532,7 +539,7 @@ function putDocumentToPostSubmitState()
   document.getElementById("queryInput").disabled = true;
 
   document.getElementById("getRandomImageCont").innerHTML = '<a class="button" onclick="getRandomImageToPreview(this);">Random image</a>';
-  document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>';  
+  document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);" title="Sets target image to provided ID">Show image</a>';  
 
   document.getElementById("rankerResultBoard").classList.add("active");
 }
@@ -540,7 +547,8 @@ function putDocumentToPostSubmitState()
 function putDocumentToPreStartState()
 {
   document.getElementById("getRandomImageCont").innerHTML = '<a class="button" onclick="getRandomImageToPreview(this);">Random image</a>';
-  document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>';  
+  document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);" title="Sets target image to provided ID">Show image</a>'; 
+  
 
   document.getElementById("rankerResultBoard").classList.remove("active");
 }
@@ -605,7 +613,7 @@ function putDocumentToPreStartState()
         {
           console.log("Showing invalid submit image data.");
 
-          showGlobalMessage("Invalid image.", "Try again", 3000);
+          showGlobalMessage("Incorrect submit", "Sorry, this is not the correct image, please try again.", 3000);
         }
 
 
@@ -636,7 +644,7 @@ function putDocumentToPreStartState()
       $targetList.append(
         '<li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' +currentImagesToPrintArray[currentImageIndex].imageId + ')"\
         data-open="modalImage" data-image-id="' + currentImagesToPrintArray[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + currentImagesToPrintArray[currentImageIndex].filename + '\')">\
-          <a class="button btn-submit success" onclick="">S</a>\
+          <a class="button btn-submit success" onclick="" title="Submit this image">&#10004;</a>\
         </li>'
       );
 
@@ -677,7 +685,7 @@ function putDocumentToPreStartState()
             </button>\
             <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
               data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
-              <a class="button btn-submit success" onclick="submitImage(this);">&#10004</a>\
+              <a class="button btn-submit success" onclick="submitImage(this);" title="Submit this image">&#10004;</a>\
               <a class="just-clicker"  data-open="modalImage"></a>\
             </li>'
           );
@@ -712,7 +720,7 @@ function addKeyword(keywordId, word)
 
   chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + keywordId + "' checked>\
     <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
-    <span>" + word + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this);'> X</a>"
+    <span>" + word + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this);'>&#10006</a>"
 
   selectedContainer.appendChild(chechkboxCont);
 
@@ -729,10 +737,10 @@ function switchModalImageHtmlContents(id)
       const hypernymsArray = data.hypernymsArray;
       const nonHypernymsArray = data.nonHypernymsArray;
 
-      var html = "<div class='modal-image-data grid-x grid-padding-x align-center'>";
-      // html +="<img src='/images/" + resp.filename + "' />";
-      // html += "<h3 class='id'>Image ID:" + resp.imageId + "</h3>";
-      // html += "<hr />";
+      var html = "<h3 class='id'>Image ID:" + data.imageId + "</h3>";
+      html += "<hr />";
+      html += "<div class='modal-image-data grid-x grid-padding-x align-center'>";
+      
       html += "<div class='non-hypernyms cell small-6'>";
       html += "<h5>Keywords</h5>";
       html += "<ol class='non-hypernyms-list'>";

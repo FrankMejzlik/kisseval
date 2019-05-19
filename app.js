@@ -139,7 +139,7 @@ app.use('/scoreboard', scoreboardRouter);
 app.use('/docs', docsRouter);
 app.use('/collector', collectorRouter);
 
-app.use('/annotator', annotatorRouter);
+app.use('/query_annotator', annotatorRouter);
 //app.get('/annotator_ajax', annotatorAjaxRouter);
 
 app.use('/ranker', rankerRouter);

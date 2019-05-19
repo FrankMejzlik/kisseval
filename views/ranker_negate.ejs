@@ -51,7 +51,8 @@
           </label>
         </div>
         <div class="target-image-id-cont small-4 cell">
-          <a class="button" onclick="getSelectedImageToPreview(this);">Get selected</a>
+          <a class="button" onclick="getSelectedImageToPreview(this);" title="Sets target image to provided ID">Show image</a>
+          
         </div>
 
         <!-- Image preview canvas -->
@@ -416,7 +417,7 @@ function drawInteractiveSearchChart(chartDataArray)
       $targetList.append(
         '<li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' +currentImagesToPrintArray[currentImageIndex].imageId + ')"\
         data-open="modalImage" data-image-id="' + currentImagesToPrintArray[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + currentImagesToPrintArray[currentImageIndex].filename + '\')">\
-          <a class="button btn-submit success" onclick="">S</a>\
+          <a class="button btn-submit success" onclick="" title="Submit this image">&#10004;</a>\
         </li>'
       );
 
@@ -456,7 +457,7 @@ function drawInteractiveSearchChart(chartDataArray)
             </button>\
             <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
               data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
-              <a class="button btn-submit success" onclick="submitImage(this);">S</a>\
+              <a class="button btn-submit success" onclick="submitImage(this); title="Submit this image">&#10004;</a>\
               <a class="just-clicker"  data-open="modalImage"></a>\
             </li>'
           );
@@ -649,7 +650,7 @@ function revertToSuggestedFromNot(keywordId, word, elem)
     <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
     <a class='remove-keyword button green' onclick='addKeyword("+ keywordId + ",\"" + word + "\", this);'>&#10004;</a>\
     <span>" + word + "</span> \
-    <a class='remove-keyword button alert' onclick='addNotKeyword(" + keywordId + ",\"" + word + "\", t his);'>&#10006;</a>"
+    <a class='remove-keyword button alert' onclick='addNotKeyword(" + keywordId + ",\"" + word + "\", this);'>&#10006;</a>"
 
   selectedContainer.appendChild(chechkboxCont);
 }

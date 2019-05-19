@@ -122,6 +122,7 @@ exports.submitImage = function(req, res)
   // std::string sessionId, size_t searchSessionIndex, int endStatus, size_t sessionDuration,
   // std::vector<InteractiveSearchAction> actions,
   // size_t userId
+  
   if (actionsArray.length > 0)
   {
     global.imageRanker.SubmitInteractiveSearchSubmit(

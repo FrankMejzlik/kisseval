@@ -879,7 +879,48 @@ font-weight: 800;
   height: 100%;
   left: 0;
   top: 0;
+  /* z-index: 15; */
 }
+
+.just-clicker:after {
+ 
+content: '';
+ 
+background-image: url('../images/generic/icon_info.svg');
+ 
+position: absolute;
+ 
+top: 0;
+ 
+background-size: 40px;
+ 
+left: 0px;
+ 
+width: 100%;
+ 
+height: 100%;
+ 
+font-size: 20px;
+ 
+opacity: 0;
+ 
+/* pointer-events: none; */
+ 
+background-color: transparent;
+ 
+transition: 0.0s ease-in-out;
+ 
+background-repeat: no-repeat;
+ 
+background-position: center center;
+}
+
+.just-clicker:hover:after,
+.just-clicker:focus:after {
+  opacity: 1;
+}
+
+
 .rel-img-item {
   position: relative;
   max-height: 7vw;

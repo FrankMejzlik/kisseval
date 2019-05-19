@@ -737,7 +737,10 @@ function switchModalImageHtmlContents(id)
       const hypernymsArray = data.hypernymsArray;
       const nonHypernymsArray = data.nonHypernymsArray;
 
-      var html = "<h3 class='id'>Image ID:" + data.imageId + "</h3>";
+      var html = '<button class="close-button" data-close aria-label="Close modal" type="button">\
+          <span aria-hidden="true">&times;</span>\
+        </button>';
+      html +="<h3 class='id'>Image ID:" + data.imageId + "</h3>";
       html += "<hr />";
       html += "<div class='modal-image-data grid-x grid-padding-x align-center'>";
       

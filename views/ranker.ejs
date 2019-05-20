@@ -178,10 +178,34 @@
 
 
 <!-- Single image modal window -->
-<div class="reveal" id="modalImage" data-reveal data-src="999" data-overlay="false">
+<div class="full reveal" id="modalImage" data-reveal data-src="999" data-overlay="false">
+  
   <button class="close-button" data-close aria-label="Close modal" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
+
+  <div class="instructions">
+    <span class='click-to-add-tip'>Click on words to add them to query</span>
+  </div>
+
+  <div class="modal-header cell large-12">
+    <h3>Image ID:<span id="modalImageId"></span></h3>
+  </div>
+
+  <!-- Tabs navigation -->
+  <ul class="tabs" data-tabs id="modalImageTabs">
+    <li class="tabs-title is-active"><a data-tabs-target="modalImageTab1" href="#modalImageTab1" aria-selected="true">Labels</a></li>
+    <li class="tabs-title"><a data-tabs-target="modalImageTab2" href="#modalImageTab2">Pure hypernyms</a></li>
+  </ul>
+  <div class="tabs-content" data-tabs-content="modalImageTabs">
+    <div class="tabs-panel is-active" id="modalImageTab1">
+      
+    </div>
+    <div class="tabs-panel" id="modalImageTab2">
+      
+    </div>
+  </div>
+
 </div>
 
 
@@ -740,10 +764,19 @@ function addKeyword(keywordId, word)
 
 }
 
+
+
+
+
+
+const labelsContainer = document.getElementById("modalImageTab1");
+  const pureHyerpnymsContainer = document.getElementById("modalImageTab2");
+  const imageIdCont = document.getElementById("modalImageId");
+
 function switchModalImageHtmlContents(id) 
 {
+  
 
-  var $modal = $("#modalImage");
 
   $.ajax('/ranker_ajax_get_image_keywords_for_interactive_search?imageId=' + id)
     .done(function(data)
@@ -751,47 +784,44 @@ function switchModalImageHtmlContents(id)
       const hypernymsArray = data.hypernymsArray;
       const nonHypernymsArray = data.nonHypernymsArray;
 
-      var html = '<button class="close-button" data-close aria-label="Close modal" type="button">\
-          <span aria-hidden="true">&times;</span>\
-        </button>';
+      // Fill in image ID
+      imageIdCont.innerHTML = data.imageId;
 
-        html +="<span class='click-to-add-tip'>Click on words to add them to query<span class='click-image'>&#128410;</span><span class='click-image second'>&#128411;</span></span>";
+      /*
+        Labels
+       */
 
-      html +="<h3 class='id'>Image ID:" + data.imageId + "</h3>";
-      html += "<hr />";
-      html += "<div class='modal-image-data grid-x grid-padding-x align-center'>";
-      
-      html += "<div class='non-hypernyms cell small-6'>";
-      html += "<h5>Keywords</h5>";
-      html += "<ol class='non-hypernyms-list'>";
+      let labelsItemsHtml = "<ol class='labels-list non-hypernyms-list'>";
 
       for (var i = 0; i < nonHypernymsArray.length; ++i) 
       {
-        html += "<li class='probs-list-item '>";
-          html += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].wordnetId + ", \"" + nonHypernymsArray[i].word + "\")'>" + nonHypernymsArray[i].word +  "<span class='ranking'>" + nonHypernymsArray[i].ranking + "</span></a>";
+        labelsItemsHtml += "<li class='probs-list-item '>";
+        labelsItemsHtml += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].wordnetId + ", \"" + nonHypernymsArray[i].word + "\")'>" + nonHypernymsArray[i].word +  "<span class='ranking'>" + nonHypernymsArray[i].ranking + "</span></a>";
+        
+        let str = "<ul class='example-images'>";
+        
+        const exampleImagesArr = nonHypernymsArray[i].exampleImages;
+        for (var ii = 0; ii < exampleImagesArr.length; ++ii) 
+        { 
           
-          let str = "<ul class='example-images'>";
-          
-          const exampleImagesArr = nonHypernymsArray[i].exampleImages;
-          for (var ii = 0; ii < exampleImagesArr.length; ++ii) 
-          { 
-            
-              str += "<li><img src='../images/thumbnails/" + exampleImagesArr[ii] + "' /></li>";    
-          }
+            str += "<li><img src='../images/thumbnails/" + exampleImagesArr[ii] + "' /></li>";    
+        }
 
-          str += "</ul>";
+        str += "</ul>";
 
-        html += str;
-        html += "</li>";
+        labelsItemsHtml += str;
+        labelsItemsHtml += "</li>";
       }
-      html += "</ol>";
+      labelsItemsHtml += "</ol>";
 
-      html += "</div>";
+      // Push HTML inside
+      labelsContainer.innerHTML = labelsItemsHtml;
       
+      /*
+        Pure hypernyms
+       */
 
-      html += "<div class='hypernyms cell small-6'>";
-      html += "<h5>Hypernyms</h5>";  
-      html += "<ol class='hypernyms-list'>";
+      html = "<ol class='labels-list  hypernyms-list'>";
 
       for (var i = 0; i < hypernymsArray.length; ++i) 
       {
@@ -814,11 +844,9 @@ function switchModalImageHtmlContents(id)
         html += "</li>";
       }
       html += "</ol>";
-
-      html += "</div>";
-
-      // Switch HTML
-      $modal.html(html);
+      
+      // Push HTML inside
+      pureHyerpnymsContainer.innerHTML = html;
     }
   );
 }

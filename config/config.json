@@ -7,7 +7,7 @@
         "node_port": 8080,
         "json_indentation": 4,
         "title": "KISSEval",
-        "subtitle": "Keyword Image Ranking Evaluator",
+        "subtitle": "Keyword Interactive Search System Evaluator",
         "appMode": 0,
 
         "pathToImages": "/public/images/",

@@ -1301,7 +1301,7 @@ input[type=submit] {
 .autocomplete-items div {
   padding: 3px 10px;
   cursor: pointer;
-  min-height: 70px;
+  min-height: 60px;
   background-color: #fff;
   position: relative;
   border-bottom: 1px solid #d4d4d4;

@@ -1806,6 +1806,11 @@ list-style: none;
 .top-settings-list p {
   margin: 0;
 }
+.menu .menu-text {
+  margin-right: 0px;
+  width: 210px;
+  padding: 0px;
+}
 
 .test-block  [type='text'], 
 .test-block [type='password'], 

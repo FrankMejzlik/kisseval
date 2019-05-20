@@ -205,6 +205,10 @@ body {
   text-align: center;
 }
 
+#currModelInfo {
+  display: none;
+}
+
 .image-grid-section {
   padding: 0 !important;
   max-width: 100%;
@@ -832,8 +836,15 @@ font-size: 17px
 }
 
 .login-dev {
-  padding: 6px !important;
+  padding: 0px 0px !important;
+  width: 37px;
+  height: 39px;
 }
+
+.login-dev img {
+  width: 75px;
+}
+
 
 .feedback-popup .button {
   margin: 0;

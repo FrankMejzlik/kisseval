@@ -126,7 +126,7 @@ router.post('/', function(req, res, next)
     let sessionId = sess.id;
     let imageId = sess.gameImage.imageId;
 
-    let queryType = 1;
+    let queryType = 10;
 
     // Parameters: SessionID, ImageID, string query
 

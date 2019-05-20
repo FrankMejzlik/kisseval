@@ -220,6 +220,7 @@ exports.processAction = function(req, res)
     sess.ranker.queryWords = new Array();
   }
 
+  // Remove keyword
   if (action == 0)
   {
     const index = sess.ranker.query.indexOf(operand);
@@ -228,7 +229,15 @@ exports.processAction = function(req, res)
     sess.ranker.query.splice(index, 1);
     sess.ranker.queryWords.splice(index, 1);
   }
+  // Add keyword from autocomplete
   else if (action == 1)
+  {
+    // Add keyword
+    sess.ranker.query.push(operand);
+    sess.ranker.queryWords.push(operandWord);
+  }
+  // Add keyword from detail
+  else if (action == 2)
   {
     // Add keyword
     sess.ranker.query.push(operand);
@@ -253,10 +262,7 @@ exports.processAction = function(req, res)
 
     rankerUtils.pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);
   }
-  else 
-  {
-    rankerUtils.pushAction(sess, action, operand, 0);
-  }
+
 
   // If not dev, hide target image position
   if (sess.userLevel < 10)

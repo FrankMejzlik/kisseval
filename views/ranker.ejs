@@ -746,10 +746,17 @@ function putDocumentToPreStartState()
   }
 
 
-function addKeyword(keywordId, word) 
+function addKeyword(keywordId, word, source) 
 {
+  let keywordSource = 1;
+  // If source is detail window
+  if (source == 2)
+  {
+    keywordSource = 2;
+  }
+
   // xoxo
-  processAction(1, keywordId, word);
+  processAction(keywordSource, keywordId, word);
 
   const selectedContainer = document.getElementById("selectedKeywordsList");
 
@@ -796,7 +803,7 @@ function switchModalImageHtmlContents(id)
       for (var i = 0; i < nonHypernymsArray.length; ++i) 
       {
         labelsItemsHtml += "<li class='probs-list-item '>";
-        labelsItemsHtml += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].wordnetId + ", \"" + nonHypernymsArray[i].word + "\")'>" + nonHypernymsArray[i].word +  "<span class='ranking'>" + nonHypernymsArray[i].ranking + "</span></a>";
+        labelsItemsHtml += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].wordnetId + ", \"" + nonHypernymsArray[i].word + "\", 2)'>" + nonHypernymsArray[i].word +  "<span class='ranking'>" + nonHypernymsArray[i].ranking + "</span></a>";
         
         let str = "<ul class='example-images'>";
         
@@ -826,7 +833,7 @@ function switchModalImageHtmlContents(id)
       for (var i = 0; i < hypernymsArray.length; ++i) 
       {
         html += "<li class='probs-list-item '>";
-          html += "<a class='keyword' onclick='addKeyword(" + hypernymsArray[i].wordnetId + ", \"" + hypernymsArray[i].word + "\")'>" + hypernymsArray[i].word + "<span class='ranking'>" + hypernymsArray[i].ranking + "</span></a>";
+          html += "<a class='keyword' onclick='addKeyword(" + hypernymsArray[i].wordnetId + ", \"" + hypernymsArray[i].word + "\", 2)'>" + hypernymsArray[i].word + "<span class='ranking'>" + hypernymsArray[i].ranking + "</span></a>";
             
           let str = "<ul class='example-images'>";
           

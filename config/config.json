@@ -2,11 +2,11 @@
     "development": {
         "config_id": "development",
         "log_all": true,
-        "app_name": "KIREval",
+        "app_name": "KISSEval",
         "app_desc": "Keyword Image Ranking Evaluator.",
         "node_port": 8080,
         "json_indentation": 4,
-        "title": "KIREval",
+        "title": "KISSEval",
         "subtitle": "Keyword Image Ranking Evaluator",
         "appMode": 0,
 

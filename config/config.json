@@ -28,6 +28,14 @@
         "imagesDirList2": "files.txt",
         "idOffset2": 1,
 
+        "pathData3": "/data/dataset3/",
+        "softmaxFilename3": "05_googlenet.softmax",
+        "preSoftmaxFilename3": "05_googlenet.pre-softmax",
+        "deepFeaturesFilename3": "05_googlenet.deep-features",
+        "keywordClassesFilename3": "keyword_classes.txt",
+        "imagesDirList3": "05_googlenet.mapping.txt",
+        "idOffset3": 1,
+
         "gameLength": 7,
         "tutorialLength": 0
     },

@@ -311,6 +311,31 @@
             const form = document.getElementById("testForm" + formId);
             const $form = $(form);                        
 
+            // =========================================
+            // Print chart data into <pre> element
+
+            const chartParent = chartCanvas.parentElement;
+            var chartDataPre = document.createElement("pre");
+            
+
+            let dataString = "";
+            for (var ii = 0; ii < chartData.labels.length; ++ii)
+            {
+              dataString += chartData.labels[ii] + ",";
+
+              for (var jj = 0; jj < chartData.datasets.length; ++jj)
+              {
+
+                dataString += chartData.datasets[jj].data[ii] + ",";
+
+              }
+              dataString += '\n';
+            }
+            chartDataPre.innerHTML = dataString;
+            chartParent.appendChild(chartDataPre);
+
+            // ============================================
+
             // Create chart
             var ctx = chartCanvas.getContext('2d');
             var chart = new Chart(ctx, chartSettings);

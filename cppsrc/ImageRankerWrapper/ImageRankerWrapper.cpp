@@ -1613,6 +1613,10 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   // const std::string& query
   std::string query{info[0].As<Napi::String>().Utf8Value()};
 
+  // \todo implement properly
+  std::vector<std::string> queries;
+  queries.push_back(query);
+
   // size_t numResults
   size_t numResults = info[1].As<Napi::Number>().Uint32Value();
 
@@ -1683,7 +1687,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   std::pair<std::vector<ImageReference>, QueryResult> images;
   try {
      images = this->actualClass_->GetRelevantImagesWrapper(
-      query, numResults, 
+      queries, numResults, 
       (NetDataTransformation)aggregation, (RankingModelId)rankingModel, 
       settings, aggSettings,
       imageId
@@ -1776,6 +1780,10 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
   // const std::string& query
   std::string query{ info[0].As<Napi::String>().Utf8Value() };
 
+  // \todo implement properly
+  std::vector<std::string> queries;
+  queries.push_back(query);
+
   // size_t numResults
   size_t numResults = info[1].As<Napi::Number>().Uint32Value();
 
@@ -1846,7 +1854,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
   std::tuple<std::vector<ImageReference>, std::vector<std::tuple<size_t, std::string, float>>, QueryResult> images;
   try {
     images = this->actualClass_->GetRelevantImagesWithSuggestedWrapper(
-      query, numResults,
+      queries, numResults,
       (NetDataTransformation)aggregation, (RankingModelId)rankingModel,
       settings, aggSettings,
       imageId

@@ -178,6 +178,21 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
         throw "Unknown model type.";
     }  
   }
+
+  if (
+    settings.viret_queryOperations == "2" || settings.viret_queryOperations == 2 ||
+    settings.viret_queryOperations == "3" || settings.viret_queryOperations == 3
+  ) 
+  {
+    result.rankingModelSettings.push(String("0"));
+  }
+  else 
+  {
+    result.rankingModelSettings.push(String("1"));
+  }
+  
+  result.rankingModelSettings.push(String("2"));
+
   result.aggregation = Number(settings.aggregation);
   result.aggregationSettings = new Array();
   {

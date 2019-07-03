@@ -410,7 +410,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
   Napi::Array gridTestSettingsArray = info[0].As<Napi::Array>();
   for (size_t i = 0; i < gridTestSettingsArray.Length(); i++)
   {
-    std::tuple<AggregationId, RankingModelId, QueryOriginId, std::vector<std::string>, std::vector<std::string>> metaResult;
+    std::tuple<NetDataTransformation, RankingModelId, QueryOriginId, std::vector<std::string>, std::vector<std::string>> metaResult;
 
     Napi::Value v = gridTestSettingsArray[i];
 
@@ -423,7 +423,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
       {
         if (v.IsNumber())
         {
-          AggregationId agg = static_cast<AggregationId>((uint32_t)v.As<Napi::Number>().Uint32Value());
+          NetDataTransformation agg = static_cast<NetDataTransformation>((uint32_t)v.As<Napi::Number>().Uint32Value());
 
           std::get<0>(metaResult) = agg;
         }
@@ -503,7 +503,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
     for (auto&& settings : gridTestSettings)
     {
       std::cout << i << ": " << std::endl;
-      std::cout << "AggregationId = " << (size_t)std::get<0>(settings) << std::endl;
+      std::cout << "NetDataTransformation = " << (size_t)std::get<0>(settings) << std::endl;
       std::cout << "RankingModelId = " << (size_t)std::get<1>(settings) << std::endl;
       std::cout << "QueryOriginId = " << (size_t)std::get<2>(settings) << std::endl;
 
@@ -686,7 +686,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 
   // Process arguments
   int length = info.Length();
-  if (length != 5)
+  if (length != 6)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::RunModelTest)").ThrowAsJavaScriptException();
   }
@@ -695,10 +695,29 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   Napi::Number modelType = info[1].As<Napi::Number>();
   Napi::Number dataSource = info[2].As<Napi::Number>();
 
+  //
+  // Get simulated user settings vector
+  //
+  std::vector<std::string> simulatedUserSettings;
+
+  Napi::Array simulatedUsersettingsArray = info[3].As<Napi::Array>();
+  for(size_t i = 0; i < simulatedUsersettingsArray.Length(); i++)
+  {
+    Napi::Value v = simulatedUsersettingsArray[i];
+    if (v.IsString())
+    {
+      std::string value = (std::string)v.As<Napi::String>();
+      simulatedUserSettings.push_back(value);
+    }
+  }
+
+
+  //
   // Get settings vector
+  //
   std::vector<std::string> settings;
 
-  Napi::Array settingsArray = info[3].As<Napi::Array>();
+  Napi::Array settingsArray = info[4].As<Napi::Array>();
   for(size_t i = 0; i < settingsArray.Length(); i++)
   {
     Napi::Value v = settingsArray[i];
@@ -712,7 +731,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   // Aggregation settings
   std::vector<std::string> aggSettings;
 
-  Napi::Array aggSettingsArray = info[4].As<Napi::Array>();
+  Napi::Array aggSettingsArray = info[5].As<Napi::Array>();
   for (size_t k{0ULL}; k < aggSettingsArray.Length(); k++)
   {
     Napi::Value val = aggSettingsArray[k];
@@ -752,10 +771,10 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   ChartData chartDataPairs;
   try {
     chartDataPairs = this->actualClass_->RunModelTestWrapper(
-      (AggregationId)aggFn.Uint32Value(),
+      (NetDataTransformation)aggFn.Uint32Value(),
       (RankingModelId)modelType.Uint32Value(), 
       (QueryOriginId)dataSource.Uint32Value(),
-      settings, aggSettings
+      simulatedUserSettings, settings, aggSettings
     );
   } 
   catch (const std::exception& e)
@@ -916,7 +935,7 @@ Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::Callba
   try {
     this->actualClass_->SubmitInteractiveSearchSubmit(
       (InteractiveSearchOrigin)originType, targetImageId, 
-      (RankingModelId)modelId, (AggregationId)transformationId,
+      (RankingModelId)modelId, (NetDataTransformation)transformationId,
       modelSettings, transformationSettings,
       sessionId, searchSessionId, endStatus, sessionDuration,
       actions, userId
@@ -1640,7 +1659,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   std::cout << "CALLING NATIVE 'GetRelevantImagesWrapper' with args:" << std::endl;
   std::cout << "query = " << query << std::endl;
   std::cout << "numResults = " << numResults << std::endl;
-  std::cout << "aggregationId = " << aggregation << std::endl;
+  std::cout << "NetDataTransformation = " << aggregation << std::endl;
   std::cout << "rankingModelId = " << rankingModel << std::endl;
 
   std::cout << "\t modelSettings = " << std::endl;
@@ -1665,7 +1684,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   try {
      images = this->actualClass_->GetRelevantImagesWrapper(
       query, numResults, 
-      (AggregationId)aggregation, (RankingModelId)rankingModel, 
+      (NetDataTransformation)aggregation, (RankingModelId)rankingModel, 
       settings, aggSettings,
       imageId
     );
@@ -1803,7 +1822,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
   std::cout << "CALLING NATIVE 'GetRelevantImagesWithSuggestedWrapper' with args:" << std::endl;
   std::cout << "query = " << query << std::endl;
   std::cout << "numResults = " << numResults << std::endl;
-  std::cout << "aggregationId = " << aggregation << std::endl;
+  std::cout << "NetDataTransformation = " << aggregation << std::endl;
   std::cout << "rankingModelId = " << rankingModel << std::endl;
 
   std::cout << "\t modelSettings = " << std::endl;
@@ -1828,7 +1847,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
   try {
     images = this->actualClass_->GetRelevantImagesWithSuggestedWrapper(
       query, numResults,
-      (AggregationId)aggregation, (RankingModelId)rankingModel,
+      (NetDataTransformation)aggregation, (RankingModelId)rankingModel,
       settings, aggSettings,
       imageId
     );

@@ -101,22 +101,22 @@ const a = path.join(global.rootDir, global.gConfig.pathToImages);
 
 // Dataset specific properties
 // DATASET 2
-const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.preSoftmaxFilename2);
-const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
-const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
-const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
-const f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
-const g = global.gConfig.idOffset2;
-const h = global.gConfig.appMode;
-
-
-// const b = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.preSoftmaxFilename3);
-// const c = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.keywordClassesFilename3);
-// const d = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.softmaxFilename3);
-// const e = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.deepFeaturesFilename3);
-// const f = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.imagesDirList3);
-// const g = global.gConfig.idOffset3;
+// const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.preSoftmaxFilename2);
+// const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
+// const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
+// const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
+// const f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
+// const g = global.gConfig.idOffset2;
 // const h = global.gConfig.appMode;
+
+
+const b = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.preSoftmaxFilename3);
+const c = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.keywordClassesFilename3);
+const d = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.softmaxFilename3);
+const e = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.deepFeaturesFilename3);
+const f = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.imagesDirList3);
+const g = global.gConfig.idOffset3;
+const h = global.gConfig.appMode;
 
 console.log(a);
 console.log(b);

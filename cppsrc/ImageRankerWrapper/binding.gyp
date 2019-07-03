@@ -13,8 +13,8 @@
         'include_dirs': [
             "<!@(node -p \"require('node-addon-api').include\")",
             "ImageRanker/ImageRanker/src/",
-            "ImageRanker/ImageRanker/src/aggregations/",
-            "ImageRanker/ImageRanker/src/ranking_models/",
+            "ImageRanker/ImageRanker/src/transformations/",
+            "ImageRanker/ImageRanker/src/aggregation_models/",
             "ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/include/"
         ],
         'libraries': [],

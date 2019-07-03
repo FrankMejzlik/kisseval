@@ -2,10 +2,10 @@
 const util = require('util');
 const utils = require("../routes/utils/utils");
 
-var RunModelTest = function (aggFn, modelType, dataSource, settingsArray, aggSettingsArray) 
+var RunModelTest = function (aggFn, modelType, dataSource, simulatedUserSettings, settingsArray, aggSettingsArray) 
 {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
+  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, simulatedUserSettings, settingsArray, aggSettingsArray);
 
   return result;
 }
@@ -47,6 +47,7 @@ exports.RunModelTest = function(req, res)
       nativeModelSettings.aggregation,
       nativeModelSettings.rankingModel, 
       nativeModelSettings.dataSource, 
+      nativeModelSettings.simulatedUserSettings, 
       nativeModelSettings.rankingModelSettings, 
       nativeModelSettings.aggregationSettings
       );

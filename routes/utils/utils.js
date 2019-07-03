@@ -7,7 +7,9 @@ exports.getDefaultModelSettingsObject = function ()
   selectedSettings.aggregation = 100;
   selectedSettings.aggregationParameter = 1;
   selectedSettings.rankingModel = 3;
+
   selectedSettings.dataSource = 0;
+  selectedSettings.simulatedUser_exponent = 1;
   
   selectedSettings.keywordFrequency = 0;
 
@@ -76,9 +78,15 @@ exports.parseModelSettingsFromForm = function(formBbody)
   {
     settings.keywordFrequency = Number(formBbody.keywordFrequency);
   }
+
+
   if (typeof formBbody.dataSource !== "undefined")
   {
     settings.dataSource = Number(formBbody.dataSource);
+  }
+  if (typeof formBbody.simulatedUser_exponent !== "undefined")
+  {
+    settings.simulatedUser_exponent = Number(formBbody.simulatedUser_exponent);
   }
 
   if (typeof formBbody.keywordFrequency !== "undefined")
@@ -116,7 +124,23 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
   
   result.numResults = Number(settings.numResults);
   result.keywordFrequency = Number(settings.keywordFrequency);
+
   result.dataSource = Number(settings.dataSource);
+
+
+  // =========================================
+  // Simulated user settings
+
+  result.simulatedUserSettings = new Array();
+
+  // 0 => Simulated user exponent
+  result.simulatedUserSettings.push(String(settings.simulatedUser_exponent));
+
+
+
+  //===========================================
+  // Ranking model settings
+
   result.rankingModel = Number(settings.rankingModel);
   result.rankingModelSettings = new Array();
   {

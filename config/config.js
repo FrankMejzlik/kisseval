@@ -8,12 +8,6 @@ const moduleLodaSh = require('lodash');
 // Get config file
 const config = require('./config.json');
 
-
-// Get ranker config
-global.ranker = new Object();
-global.ranker = require('./settings_ranker.json');
-
-
 // Default things are in development
 const defaultConfig = config.development;
 
@@ -24,7 +18,13 @@ const environment = process.env.NODE_ENV || 'development';
 const environmentConfig = config[environment];
 
 // Merge to final config
-const finalConfig = moduleLodaSh.merge(defaultConfig, environmentConfig);
+let finalConfig = moduleLodaSh.merge(defaultConfig, environmentConfig);
+
+
+// Add ranker config to it
+finalConfig.ranker = new Object();
+finalConfig.ranker = require('./settings_ranker.json');
+
 
 // Store final config in globals
 global.gConfig = finalConfig;

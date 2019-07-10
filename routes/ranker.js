@@ -26,14 +26,8 @@ function validStateCheckSpecific(req, viewData)
   // Get session object reference
   const sess = req.session;
 
-  // Make sure ranker object exists
-  if (typeof sess.ranker === "undefined")
-  {
-    sess.ranker = new Object();
-    sess.ranker.settings = new Object();
-  }
 
-  
+  rankerUtils.checkOrInitSessionRankerObject(sess);
 
   // Make sure that settings stored in session are initialized
   rankerUtils.initOrResumeInteractiveSearchSession(sess, viewData);

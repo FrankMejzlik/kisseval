@@ -263,7 +263,7 @@ body {
 }
 
 .button.icon-settings {
-  display: none;
+  /* display: none; */
   width: 40px;
   padding: 5px;
   background-color: transparent;

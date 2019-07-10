@@ -29,6 +29,8 @@ var GetGridProgressWrapper = function ()
 
 exports.RunModelTest = function(req, res) 
 {
+  const sess = req.session;
+
   // Construct response Object
   let  responseData = new Object();
   
@@ -40,7 +42,7 @@ exports.RunModelTest = function(req, res)
 
   for (var i = 0; i < formDataArray.length; ++i)
   {
-    const nativeModelSettings = utils.convertSettingsObjectToNativeFormat(utils.parseModelSettingsFromForm(formDataArray[i]));
+    const nativeModelSettings = utils.convertSettingsObjectToNativeFormat(utils.parseModelSettingsFromForm(sess, formDataArray[i]));
 
     // Run model test
     const chartData = RunModelTest(

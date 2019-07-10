@@ -1,5 +1,6 @@
 
 
+
 var eActions = { 
   "removeKeyword":0,
   "addKeyword":1 
@@ -16,12 +17,10 @@ exports.initOrResumeInteractiveSearchSession = function(sess, viewData)
 
     // Fill dummy view data
     viewData.ranker = new Object();
-    viewData.ranker.settings = new Object();
-    viewData.ranker.searchSession = new Object();
-
-    viewData.ui = new Object();
-    viewData.ui.queryInputUnlocked = true;
+    viewData.ranker.settings = sess.ranker.settings;
     
+    viewData.ui = new Object();
+    viewData.ui.queryInputUnlocked = true; 
 
   }
   // Search session running
@@ -39,19 +38,31 @@ exports.initOrResumeInteractiveSearchSession = function(sess, viewData)
     viewData.ranker.query = sess.ranker.query;
     viewData.ranker.queryWords = sess.ranker.queryWords;
 
+
+
     // Unlock input
     viewData.ui = new Object();
     viewData.ui.queryInputUnlocked = true;
-
-    // If not dev
-    if (sess.userLevel < 10)
-    {
-      // Hide info about used model
-      viewData.ranker.settings.modelName = undefined;
-    }
   }
 
+  viewData.ranker.settings.aggregationModelSimple = exports.getModelNumberNameFromSession(sess);
+
   global.logger.log('debug', "<= initOrResumeInteractiveSearchSession");
+}
+
+exports.checkOrInitSessionRankerObject = function(sess)
+{
+  if (typeof sess.ranker === "undefined")
+  {
+    sess.ranker = new Object();
+  }
+
+  // Make sure ranker settings object exits
+  if (typeof sess.ranker.settings === "undefined")
+  {
+    // Copy default ranker settings to this session
+    sess.ranker.settings = JSON.parse(JSON.stringify(global.gConfig.ranker));
+  }
 }
 
 exports.initializeRankerModelSettings = function(sess)
@@ -63,10 +74,8 @@ exports.initializeRankerModelSettings = function(sess)
   // If ranker session object not initialized yet
   if (typeof sess.ranker === "undefined")
   {
-    if (global.gConfig.log_all)
-    {
-      console.log("Initializing sess.ranker object for session " + sess.id);
-    }
+    global.logger.log('debug',"Initializing sess.ranker object for session " + sess.id);
+    
     sess.ranker = new Object();
   }
   if (typeof sess.ranker.settings === "undefined")
@@ -90,15 +99,77 @@ exports.initializeRankerModelSettings = function(sess)
   global.logger.log('debug', "<= initOrResumeInteractiveSearchSession");
 };
 
+exports.getModelNumberNameFromSession = function(sess)
+{
+  let first = "";
+  let second = "";
+  switch (sess.ranker.settings.aggregationModel.id)
+  {
+    // Boolean
+    case 1:
+      switch (sess.ranker.settings.aggregationModel.boolean.inBucketRanking)
+      {
+        case 0:
+            first = "1";
+            second = "0";
+        break;
+
+        case 1:
+            first = "1";
+            second = "1";
+        break;
+
+        case 2:
+            first = "1";
+            second = "2";
+        break;
+
+      }
+      break;
+
+    // Viret
+    case 3:
+      switch (sess.ranker.settings.aggregationModel.viret.queryOperations)
+      {
+        case 0:
+            first = "3";
+            second = "0";
+        break;
+
+        case 1:
+            first = "3";
+            second = "1";
+        break;
+
+        case 2:
+            first = "3";
+            second = "2";
+        break;
+
+        case 3:
+            first = "3";
+            second = "3";
+        break;
+
+      }
+      break;
+
+    default:
+
+  }
+
+  return first + "-" + second;
+}
+
 exports.getModelNameFromSession = function(sess)
 {
   let first = "";
   let second = "";
-  switch (sess.ranker.settings.rankingModel)
+  switch (sess.ranker.settings.aggregationModel.id)
   {
     // Viret
     case 3:
-      switch (sess.ranker.settings.viret_queryOperations)
+      switch (sess.ranker.settings.aggregationModel.viret.queryOperations)
       {
         case 0:
             first = "mult";
@@ -184,13 +255,6 @@ exports.terminateSearchSession = function(sess)
 exports.startSearchSession = function(sess, imageId, imageSrc)
 {
   global.logger.log('debug', "=> startSearchSession()");
-
-  if (typeof sess.ranker === "undefined")
-  {
-    sess.ranker = new Object();
-  }
-
-  exports.initializeRankerModelSettings(sess);
 
   // Initialize session counter if needed
   if (typeof sess.ranker.searchSessionCounter == "undefined")

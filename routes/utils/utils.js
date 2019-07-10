@@ -1,118 +1,88 @@
 
-exports.getDefaultModelSettingsObject = function ()
-{
-  selectedSettings = new Object();
 
-  selectedSettings.numResults = 500;
-  selectedSettings.aggregation = 100;
-  selectedSettings.aggregationParameter = 1;
-  selectedSettings.rankingModel = 3;
+const rankerUtils = require("./ranker_utils");
 
-  selectedSettings.dataSource = 0;
-  selectedSettings.simulatedUser_exponent = 1;
+exports.parseModelSettingsFromForm = function(sess, formBbody)
+{ 
+  rankerUtils.checkOrInitSessionRankerObject(sess);
+
+  // Get reference to current values
+  const settings = sess.ranker.settings;
   
-  selectedSettings.keywordFrequency = 0;
-
-  selectedSettings.boolean_trueTreshold = 0.001;
-  selectedSettings.boolean_inBucketRanking = 0;
-
-  selectedSettings.viret_trueTreshold = 0.0;
-  selectedSettings.viret_queryOperations = 0;
-
-  return selectedSettings;
-}
-
-exports.initializeModelSettings = function(sessionObject, predefinedIndex)
-{ 
-  // If ranker session object not initialized yet
-  if (typeof sessionObject.ranker === "undefined")
-  {
-    if (global.gConfig.log_all)
-    {
-      console.log("Initializing sess.ranker object for session " + sessionObject.id);
-    }
-    sessionObject.ranker = new Object();
-  }
-  if (typeof sessionObject.ranker.settings === "undefined")
-  {
-    // If we want to load specific settings
-    if (typeof predefinedIndex !== "undefined")
-    {
-      sessionObject.ranker.settings = global.ranker.selectedModels[predefinedIndex];
-    }
-    else 
-    {
-      sessionObject.ranker.settings = exports.getDefaultModelSettingsObject();
-    }
-    
-  }
-};
-
-
-
-exports.parseModelSettingsFromForm = function(formBbody)
-{ 
-  // Get default values
-  let settings = exports.getDefaultModelSettingsObject();
-
+  //
   // If some are set, just overwrite them
+  //
+
+  // Number of results
   if (typeof formBbody.numResults !== "undefined")
   {
     settings.numResults = Number(formBbody.numResults);
   }   
-  if (typeof formBbody.aggregation !== "undefined")
-  {
-    settings.aggregation = Number(formBbody.aggregation);
-  }
-  if (typeof formBbody.aggregationParameter !== "undefined")
-  {
-    settings.aggregationParameter = Number(formBbody.aggregationParameter);
-  }
-  if (typeof formBbody.rankingModel !== "undefined")
-  {
-    settings.rankingModel = Number(formBbody.rankingModel);
-  }
-
-
+  // Keyword frequency settings
   if (typeof formBbody.keywordFrequency !== "undefined")
   {
     settings.keywordFrequency = Number(formBbody.keywordFrequency);
   }
 
-
-  if (typeof formBbody.dataSource !== "undefined")
+  // Transformation
   {
-    settings.dataSource = Number(formBbody.dataSource);
-  }
-  if (typeof formBbody.simulatedUser_exponent !== "undefined")
-  {
-    settings.simulatedUser_exponent = Number(formBbody.simulatedUser_exponent);
-  }
-
-  if (typeof formBbody.keywordFrequency !== "undefined")
-  {
-    settings.keywordFrequency = Number(formBbody.keywordFrequency);
-  }
-  
-
-  // Boolean specific
-  if (typeof formBbody.boolean_trueTreshold !== "undefined")
-  {
-    settings.boolean_trueTreshold = Number(formBbody.boolean_trueTreshold);
-  }
-  if (typeof formBbody.boolean_inBucketRanking !== "undefined")
-  {
-    settings.boolean_inBucketRanking = Number(formBbody.boolean_inBucketRanking);
+    // Transformation ID
+    if (typeof formBbody.aggregation !== "undefined")
+    {
+      settings.transformation.id = Number(formBbody.aggregation);
+    }
+    // Transformation parameter
+    if (typeof formBbody.aggregationParameter !== "undefined")
+    {
+      settings.transformation.parameter = Number(formBbody.aggregationParameter);
+    }
   }
 
-  // Viret specific
-  if (typeof formBbody.viret_trueTreshold !== "undefined")
+  // Aggregation model
   {
-    settings.viret_trueTreshold = Number(formBbody.viret_trueTreshold);
+    // Aggregation model ID
+    if (typeof formBbody.rankingModel !== "undefined")
+    {
+      settings.aggregationModel.id = Number(formBbody.rankingModel);
+    }
+
+    // Boolean specific
+    if (typeof formBbody.boolean_trueTreshold !== "undefined")
+    {
+      settings.aggregationModel.boolean.trueTreshold = Number(formBbody.boolean_trueTreshold);
+    }
+    if (typeof formBbody.boolean_inBucketRanking !== "undefined")
+    {
+      settings.aggregationModel.boolean.inBucketRanking = Number(formBbody.boolean_inBucketRanking);
+    }
+
+    // Viret specific
+    if (typeof formBbody.viret_trueTreshold !== "undefined")
+    {
+      settings.aggregationModel.viret.trueTreshold = Number(formBbody.viret_trueTreshold);
+    }
+    if (typeof formBbody.viret_queryOperations !== "undefined")
+    {
+      settings.aggregationModel.viret.queryOperations = Number(formBbody.viret_queryOperations);
+    }
+   
   }
-  if (typeof formBbody.viret_queryOperations !== "undefined")
+
+  // Model tests
   {
-    settings.viret_queryOperations = Number(formBbody.viret_queryOperations);
+    if (typeof formBbody.dataSource !== "undefined")
+    {
+      settings.modelTests.dataSource = Number(formBbody.dataSource);
+    }
+    
+  }
+
+  // Simulated user
+  {
+    if (typeof formBbody.simulatedUser_exponent !== "undefined")
+    {
+      settings.simulatedUser.exponent = Number(formBbody.simulatedUser_exponent);
+    }
   }
 
   return settings;
@@ -125,7 +95,7 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
   result.numResults = Number(settings.numResults);
   result.keywordFrequency = Number(settings.keywordFrequency);
 
-  result.dataSource = Number(settings.dataSource);
+  result.dataSource = Number(settings.modelTests.dataSource);
 
 
   // =========================================
@@ -134,14 +104,14 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
   result.simulatedUserSettings = new Array();
 
   // 0 => Simulated user exponent
-  result.simulatedUserSettings.push(String(settings.simulatedUser_exponent));
+  result.simulatedUserSettings.push(String(settings.simulatedUser.exponent));
 
 
 
   //===========================================
   // Ranking model settings
 
-  result.rankingModel = Number(settings.rankingModel);
+  result.rankingModel = Number(settings.aggregationModel.id);
   result.rankingModelSettings = new Array();
   {
     switch (result.rankingModel)
@@ -153,10 +123,10 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
         result.rankingModelSettings.push(String(settings.keywordFrequency));
         
         // 1 ->
-        result.rankingModelSettings.push(String(settings.boolean_trueTreshold));
+        result.rankingModelSettings.push(String(settings.aggregationModel.boolean.trueTreshold));
   
         // 2 =>
-        result.rankingModelSettings.push(String(settings.boolean_inBucketRanking));
+        result.rankingModelSettings.push(String(settings.aggregationModel.boolean.inBucketRanking));
       }
       break;
   
@@ -167,10 +137,10 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
         result.rankingModelSettings.push(String(settings.keywordFrequency));
 
         // 0 =>
-        result.rankingModelSettings.push(String(settings.viret_trueTreshold));
+        result.rankingModelSettings.push(String(settings.aggregationModel.viret.trueTreshold));
   
         // 1 =>
-        result.rankingModelSettings.push(String(settings.viret_queryOperations));
+        result.rankingModelSettings.push(String(settings.aggregationModel.viret.queryOperations));
       }
       break;
   
@@ -179,33 +149,43 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
     }  
   }
 
+  //
+  // Temporal queries setup
+  //
+  // Setup inner and outter temporal query operations
   if (
-    settings.viret_queryOperations == "2" || settings.viret_queryOperations == 2 ||
-    settings.viret_queryOperations == "3" || settings.viret_queryOperations == 3
+    settings.aggregationModel.viret.queryOperations == "2" || settings.aggregationModel.viret.queryOperations == 2 ||
+    settings.aggregationModel.viret.queryOperations == "3" || settings.aggregationModel.viret.queryOperations == 3 ||
+    settings.aggregationModel.id == "1" || settings.aggregationModel.id == 1 // For Boolean
   ) 
   {
+    // Outter set to SUM
     result.rankingModelSettings.push(String("0"));
   }
   else 
   {
+    // Outter set to PRODUCT
     result.rankingModelSettings.push(String("1"));
   }
   
+  // Inner always set to MAX
   result.rankingModelSettings.push(String("2"));
 
-  result.aggregation = Number(settings.aggregation);
+
+
+  result.aggregation = Number(settings.transformation.id);
   result.aggregationSettings = new Array();
   {
     // Variable with all settings
-    result.aggregationSettings.push(String(settings.aggregationParameter));
+    result.aggregationSettings.push(String(settings.transformation.parameter));
 
 
     // If MAX inner operation
     if (
-      settings.viret_queryOperations == 1 ||
-      settings.viret_queryOperations == 3 ||
-      settings.viret_queryOperations == 4 ||
-      settings.boolean_inBucketRanking == 2
+      settings.aggregationModel.viret.queryOperations == 1 ||
+      settings.aggregationModel.viret.queryOperations == 3 ||
+      settings.aggregationModel.viret.queryOperations == 4 ||
+      settings.aggregationModel.boolean.inBucketRanking == 2
     )
     {
       result.aggregationSettings.push(String("1"));

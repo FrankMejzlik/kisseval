@@ -8,6 +8,7 @@ const rankerUtils = require("../routes/utils/ranker_utils");
 
 exports.submitSettings = function(req, res) 
 {
+  global.logger.log('debug', "=> submitSettings()");
   const sess = req.session;
 
   // Save new settings into session
@@ -15,15 +16,12 @@ exports.submitSettings = function(req, res)
   {
     sess.ranker = new Object();
   }
-  sess.ranker.settings = utils.parseModelSettingsFromForm(req.query[0]);
 
-  if (global.gConfig.log_all) 
-  {
-    console.log("Setting ranker settings to:");
-    console.log(sess.ranker.settings);
-    console.log("==============================");
-  }
-  
+  // Parse provided settings from submitted form
+  utils.parseModelSettingsFromForm(sess, req.query[0]);
+
+  global.logger.log('debug', "Setting ranker settings to: sess.ranker.settings" + JSON.stringify(sess.ranker.settings, undefined, 4));
+  global.logger.log('debug', "<= submitSettings()");
   res.redirect('/ranker');
 };
 

@@ -114,7 +114,7 @@ const h = global.gConfig.appMode;
 // const c = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.keywordClassesFilename3);
 // const d = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.softmaxFilename3);
 // const e = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.deepFeaturesFilename3);
-// const f = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.imagesDirList3);
+// const f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
 // const g = global.gConfig.idOffset3;
 // const h = global.gConfig.appMode;
 

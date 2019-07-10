@@ -48,12 +48,13 @@
         <div class="get-random-image-cont small-4 cell" id="getRandomImageCont">
 
           <% // If search session is running
+          if (typeof ranker.searchSession !== "undefined"){
           if (typeof ranker.searchSession.imageId !== "undefined" && ranker.searchSession.imageId !== null) 
           { %>
 
             <a class="button alert" onclick="submitImage();">Give up!</a>
 
-          <% }
+          <% }}
           // If outside of search session
           else
           { %>
@@ -67,14 +68,14 @@
         <div class="target-image-id-cont small-4 cell">
           
           <label class="target-image-id-label">Target image ID:
-            <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= ranker.searchSession.imageId ? ranker.searchSession.imageId : '' %>" />
+            <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= ranker.searchSession && ranker.searchSession.imageId ? ranker.searchSession.imageId : '' %>" />
           </label>
 
         </div>
         <div class="get-selected-image-to-preview small-4 cell" id="getSelectedImageToPrevies">
 
           <% // If search session is running
-          if (typeof ranker.searchSession.imageId !== "undefined" && ranker.searchSession.imageId !== null) 
+          if (typeof ranker.searchSession !== "undefined" && typeof ranker.searchSession.imageId !== "undefined" && ranker.searchSession.imageId !== null) 
           { %>
 
             
@@ -93,7 +94,7 @@
 
         <!-- Image preview canvas -->
         <div class="image-preview small-12 cell">
-          <img id="targetImage" src="/images/<%= ranker.searchSession.imageSrc ? ranker.searchSession.imageSrc : "generic/bg_neural.jpg" %>" />
+          <img id="targetImage" src="/images/<%= ranker.searchSession && ranker.searchSession.imageSrc ? ranker.searchSession.imageSrc : "generic/bg_neural.jpg" %>" />
         </div>
 
       </div>

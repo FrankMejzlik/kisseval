@@ -1,13 +1,43 @@
 {
-    "selectedModels": [
+    "numResults": 100,
+    "keywordFrequency": 0,
+
+    "transformation":  
+    {
+        "id": 200,
+        "parameter": 1,
+        "softmax":
         {
-            "aggregation": 200,
-            "aggregationParameter": 1,
-            "rankingModel": 3,
-            "keywordFrequency": 0,
+
+        },
+        "linear":
+        {
             
-            "viret_trueTreshold": 0.0,
-            "viret_queryOperations": 0
         }
-    ]
+    },
+    "aggregationModel":
+    {
+        "id" : 3,
+
+        "viret" :
+        {
+            "trueTreshold": 0.0,
+            "queryOperations": 0
+        },
+        "boolean":
+        {
+            "trueTreshold": 0,
+            "inBucketRanking": 0
+        }
+    },
+    
+    "modelTests": 
+    {
+        "dataSource": 0
+    },
+    
+    "simulatedUser":
+    {
+        "exponent": 1
+    }
 }

@@ -1385,7 +1385,11 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }*/
-  std::pair<std::vector<std::tuple<size_t, std::string, float, std::vector<std::string>>>, std::vector<std::tuple<size_t, std::string, float, std::vector<std::string>>>> hypersNonHypersPair;
+  std::tuple<
+    std::vector<std::tuple<size_t, std::string, float, std::vector<std::string>>>, 
+    std::vector<std::tuple<size_t, std::string, float, std::vector<std::string>>>,
+    std::vector<std::pair<size_t, std::string>>
+  > hypersNonHypersPair;
   try
   {
     hypersNonHypersPair = this->actualClass_->GetImageKeywordsForInteractiveSearchWithExampleImages(imageId.Uint32Value(), numResults.Uint32Value());
@@ -1423,7 +1427,7 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
     napi_create_array(env, &probVecArr);
     {
       size_t i{ 0ULL };
-      for (auto&& probPair : hypersNonHypersPair.first)
+      for (auto&& probPair : std::get<0>(hypersNonHypersPair))
       {
         napi_value pair;
         napi_create_object(env, &pair);
@@ -1499,7 +1503,7 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
     napi_create_array(env, &probVecArr);
     {
       size_t i{ 0ULL };
-      for (auto&& probPair : hypersNonHypersPair.second)
+      for (auto&& probPair : std::get<1>(hypersNonHypersPair))
       {
         napi_value pair;
         napi_create_object(env, &pair);
@@ -1553,6 +1557,51 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
             }
           }
           napi_set_property(env, pair, key, exampleImagesArr);
+        }
+
+        napi_set_element(env, probVecArr, i, pair);
+
+        ++i;
+      }
+      
+    }
+    napi_set_property(env, result, probVecKey, probVecArr);
+  }
+
+  // Set "shotFrames"
+  {
+    std::string probVecKeyString{ "shotFrames" };
+    napi_value probVecKey;
+    napi_create_string_utf8(env, probVecKeyString.data(), probVecKeyString.size(), &probVecKey);
+
+    // Create array
+    napi_value probVecArr;
+    napi_create_array(env, &probVecArr);
+    {
+      size_t i{ 0ULL };
+      for (auto&& probPair : std::get<2>(hypersNonHypersPair))
+      {
+        napi_value pair;
+        napi_create_object(env, &pair);
+
+        // Set "frameId"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "frameId", NAPI_AUTO_LENGTH, &key);
+          napi_value value;
+          napi_create_uint32(env, probPair.first, &value);
+
+          napi_set_property(env, pair, key, value);
+        }
+
+        // Set "frameFilename"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "frameFilename", NAPI_AUTO_LENGTH, &key);
+          napi_value value;
+          napi_create_string_utf8(env, probPair.second.data(), NAPI_AUTO_LENGTH, &value);
+
+          napi_set_property(env, pair, key, value);
         }
 
         napi_set_element(env, probVecArr, i, pair);

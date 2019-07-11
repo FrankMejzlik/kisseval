@@ -233,6 +233,11 @@
   <div class="modal-header cell large-12">
     <h3>Image ID:<span id="modalImageId"></span></h3>
   </div>
+  <div>
+    <ul id="sucFramesCont">
+
+    </ul>
+  </div>
 
   <!-- Tabs navigation -->
   <ul class="tabs" data-tabs id="modalImageTabs">
@@ -860,6 +865,7 @@ function addKeyword(keywordId, word, source)
 const labelsContainer = document.getElementById("modalImageTab1");
   const pureHyerpnymsContainer = document.getElementById("modalImageTab2");
   const imageIdCont = document.getElementById("modalImageId");
+  const succFramesCont = document.getElementById("sucFramesCont");
 
 function switchModalImageHtmlContents(id) 
 {
@@ -871,9 +877,23 @@ function switchModalImageHtmlContents(id)
     {
       const hypernymsArray = data.hypernymsArray;
       const nonHypernymsArray = data.nonHypernymsArray;
+      const shotFrames = data.shotFrames;
 
       // Fill in image ID
       imageIdCont.innerHTML = data.imageId;
+
+      // 
+      // Fill in succ frames
+      //
+      let succFramesHtml = "<li class='shot-frame-praview'>";
+      for (var i = 0; i < shotFrames.length; ++i) 
+      {
+        succFramesHtml += "<img src='../images/thumbnails/" + shotFrames[i].frameFilename + "' />";
+        succFramesHtml += "<small>" + shotFrames[i].frameId + "</small>";
+      }
+      succFramesHtml += "</li>";
+      succFramesCont.innerHTML = succFramesHtml;
+
 
       /*
         Labels

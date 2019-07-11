@@ -69,7 +69,15 @@ exports.submitImage = function(req, res)
   {
     if (sess.ranker.query.length > 0)
     {
+      let queries = new Array();
       const queryPlain = sess.ranker.query.join("&");
+      queries.push(queryPlain);
+      if (typeof sess.ranker.query2 !== "undefined" && sess.ranker.query2.length > 0) 
+      {
+        const queryPlain2 = sess.ranker.query2.join("&");
+        queries.push(queryPlain2);
+      }
+      
 
       response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
         queryPlain, 

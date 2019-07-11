@@ -7,7 +7,7 @@
   }
 
 
-  function autocomplete(inp, selectedContainer) {
+  function autocomplete(inp, selectedContainer, queryNr) {
 
   var currentFocus;
 
@@ -109,7 +109,7 @@
 
 
               // Call action
-              processAction(1, selVal, selValWord);
+              processAction((10 * queryNr) + 1, selVal, selValWord);
 
 
               chechkboxCont = document.createElement("li");
@@ -117,7 +117,7 @@
 
               chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + selVal + "' checked>\
                 <input type='checkbox' name='keywordWord' value='" + selValWord + "' checked>\
-                <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this);'>&#10006</a>"
+                <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this, " + queryNr + ");'>&#10006</a>"
 
               selectedContainer.appendChild(chechkboxCont);
 
@@ -194,11 +194,12 @@
 }
 
 // Call autocomplete on desired input field
-autocomplete(document.getElementById("queryInput"), document.getElementById("selectedKeywordsList"));
+autocomplete(document.getElementById("queryInput"), document.getElementById("selectedKeywordsList"), 0);
+autocomplete(document.getElementById("queryInput2"), document.getElementById("selectedKeywordsList2"), 1);
 
 
 
-function removeKeyword(e, t) 
+function removeKeyword(e, t, queryNr) 
 {
   const operand = $(t).parent().children("input[name='keyword']").val();
   const operandWord = $(t).parent().children("input[name='keywordWord']").val();
@@ -208,7 +209,7 @@ function removeKeyword(e, t)
 
 
   // Call action
-  processAction(0, operand, operandWord);
+  processAction((10 * queryNr) + 0, operand, operandWord);
 
 }
 </script>

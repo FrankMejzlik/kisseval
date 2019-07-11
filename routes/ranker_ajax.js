@@ -227,6 +227,9 @@ exports.processAction = function(req, res)
   // Get all needed things for calling native method
   const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
 
+  //
+  // Query 1
+  //
 
   if (typeof sess.ranker.query === "undefined")
   {
@@ -258,14 +261,57 @@ exports.processAction = function(req, res)
     sess.ranker.queryWords.push(operandWord);
   }
 
+  //
+  // Query 2
+  //
+  if (typeof sess.ranker.query2 === "undefined")
+  {
+    sess.ranker.query2 = new Array();
+    sess.ranker.queryWords2 = new Array();
+  }
+
+  // Remove keyword
+  if (action == 10)
+  {
+    const index = sess.ranker.query2.indexOf(operand);
+
+    // Cut out this kw
+    sess.ranker.query2.splice(index, 1);
+    sess.ranker.queryWords2.splice(index, 1);
+  }
+  // Add keyword from autocomplete
+  else if (action == 11)
+  {
+    // Add keyword
+    sess.ranker.query2.push(operand);
+    sess.ranker.queryWords2.push(operandWord);
+  }
+  // Add keyword from detail
+  else if (action == 12)
+  {
+    // Add keyword
+    sess.ranker.query2.push(operand);
+    sess.ranker.queryWords2.push(operandWord);
+  }
+
+  // Join queries with ampersand
   const queryPlain = sess.ranker.query.join("&");
+  const queryPlain2 = sess.ranker.query2.join("&");
+
+  let queriesPlain = new Array();
+  
+  queriesPlain.push(queryPlain);
+  if (queryPlain2 != "")
+  {
+    queriesPlain.push(queryPlain2);
+  }
 
   let response = new Object();
   
   if (sess.ranker.query.length > -1)
   {
     response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
-      queryPlain, 
+      queriesPlain, 
       1000, 
       settingsForNative.aggregation, 
       settingsForNative.rankingModel, 

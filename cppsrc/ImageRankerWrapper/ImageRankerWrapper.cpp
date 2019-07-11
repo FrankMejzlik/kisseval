@@ -1672,12 +1672,17 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   }
 
   // Transfer JS args to C args
-  // const std::string& query
-  std::string query{info[0].As<Napi::String>().Utf8Value()};
-
-  // \todo implement properly
   std::vector<std::string> queries;
-  queries.push_back(query);
+  Napi::Array queriesArray = info[0].As<Napi::Array>();
+  for (size_t k{ 0ULL }; k < queriesArray.Length(); k++)
+  {
+    Napi::Value val = queriesArray[k];
+    if (val.IsString())
+    {
+      std::string value = (std::string)val.As<Napi::String>().Utf8Value();
+      queries.push_back(value);
+    }
+  }
 
   // size_t numResults
   size_t numResults = info[1].As<Napi::Number>().Uint32Value();
@@ -1723,7 +1728,11 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
 #if LOG_CALLS
 
   std::cout << "CALLING NATIVE 'GetRelevantImagesWrapper' with args:" << std::endl;
-  std::cout << "query = " << query << std::endl;
+  std::cout << "\t queries = " << std::endl;
+  for (auto&& query : queries)
+  {
+    std::cout << "\t\t" << query << std::endl;
+  }
   std::cout << "numResults = " << numResults << std::endl;
   std::cout << "NetDataTransformation = " << aggregation << std::endl;
   std::cout << "rankingModelId = " << rankingModel << std::endl;

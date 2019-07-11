@@ -1502,6 +1502,11 @@ margin-bottom: 30px;
   border-top: 1px solid #cc4b37;
   padding-top: 20px;
 }
+
+.get-selected-image-to-preview {
+  display: none;
+}
+
 .autocomplete-form {
   /* max-width: 300px; */
   text-align: center;
@@ -1579,6 +1584,25 @@ font-size: 12px;
 text-align: center;
 }
 
+#targetImagesCont {
+  list-style: none;
+}
+
+#targetImagesCont li {
+  position: absolute;
+}
+
+#targetImagesCont li:nth-child(1) {
+  width: 60%;
+  left:0;
+  top: 0;
+}
+
+#targetImagesCont li:nth-child(2) {
+  width: 40%;
+  right: 0;
+  top: 0;
+}
 
 .target-image-id-cont {
   text-align: right;

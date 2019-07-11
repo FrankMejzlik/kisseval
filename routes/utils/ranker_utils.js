@@ -233,7 +233,6 @@ exports.terminateSearchSession = function(sess)
 
   sess.ranker.query = undefined;
   sess.ranker.queryWords = undefined;
-  sess.ranker.settings = undefined;
 
   global.logger.log('debug', "Terminating search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");  
 
@@ -252,7 +251,7 @@ exports.terminateSearchSession = function(sess)
   return sessionDurationInSeconds;
 }
 
-exports.startSearchSession = function(sess, imageId, imageSrc)
+exports.startSearchSession = function(sess, targetImages)
 {
   global.logger.log('debug', "=> startSearchSession()");
 
@@ -266,8 +265,9 @@ exports.startSearchSession = function(sess, imageId, imageSrc)
   sess.ranker.searchSession = new Object();
   // Git it unique ID
   sess.ranker.searchSession.id = sess.ranker.searchSessionCounter;
-  sess.ranker.searchSession.imageId = imageId;
-  sess.ranker.searchSession.imageSrc = imageSrc;
+
+  sess.ranker.searchSession.targetImages = targetImages;
+
   sess.ranker.searchSession.query = new Array();
   sess.ranker.searchSession.actionsArray = new Array();
 

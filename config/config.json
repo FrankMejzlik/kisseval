@@ -36,8 +36,19 @@
         "imagesDirList3": "05_googlenet.mapping.txt",
         "idOffset3": 1,
 
+        "trecvidTest": {
+
+        },
+        "trecvid": {
+
+        },
+
         "gameLength": 7,
-        "tutorialLength": 0
+        "tutorialLength": 0,
+
+        "rankerConfig": {
+            "previewSequenceLength": 2
+        }
     },
     "staging": {
         "config_id": "staging",

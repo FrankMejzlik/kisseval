@@ -14,6 +14,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("RunGridTest", &ImageRankerWrapper::RunGridTest),
     InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
     InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage),
+    InstanceMethod("GetRandomImageSequence", &ImageRankerWrapper::GetRandomImageSequence),
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
     InstanceMethod("GetRelevantImagesPlainQuery", &ImageRankerWrapper::GetRelevantImagesPlainQuery),
     InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
@@ -390,6 +391,67 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
   return Napi::Object(env, result);
 }
 
+Napi::Value ImageRankerWrapper::GetRandomImageSequence(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 1)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
+  }
+
+  size_t seqLength = info[0].As<Napi::Number>().Uint32Value();  
+
+  // Call native method
+  std::vector<ImageReference> images;
+  try {
+    images =  this->actualClass_->GetRandomImageSequence(seqLength);
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  // Construct NAPI return object 
+  napi_value totalResult;
+  napi_create_array(env, &totalResult);
+
+  size_t i{0ULL};
+  for (auto&& image : images)
+  {
+    napi_value result;
+    napi_create_object(env, &result);
+    // Set "imageId"
+    {
+      napi_value imageIdKey;
+      napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
+      napi_value imageId;
+      napi_create_uint32(env, std::get<0>(image), &imageId);
+
+      napi_set_property(env, result, imageIdKey, imageId);
+    }
+
+    // Set "filename"
+    {
+      napi_value filenameKey;
+      napi_create_string_utf8(env, "filename", 8, &filenameKey);
+      napi_value filename;
+      napi_create_string_utf8(env, std::get<1>(image).data(), std::get<1>(image).size(), &filename);
+
+      napi_set_property(env, result, filenameKey, filename);
+    }
+
+    // Set this value to result array
+    napi_set_element(env, totalResult, i, result);
+    
+    ++i;
+  }
+
+  return Napi::Object(env, totalResult);
+}
 
 
 Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)

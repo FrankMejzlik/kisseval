@@ -3,7 +3,6 @@ var express = require('express');
 var router = express.Router();
 
 const utils = require("../routes/utils/utils");
-
 const rankerUtils = require("../routes/utils/ranker_utils");
 
 function validStateCheckGeneral(req, viewData)
@@ -26,7 +25,6 @@ function validStateCheckSpecific(req, viewData)
   // Get session object reference
   const sess = req.session;
 
-
   rankerUtils.checkOrInitSessionRankerObject(sess);
 
   // Make sure that settings stored in session are initialized
@@ -46,9 +44,6 @@ router.get('/', function(req, res, next)
   validStateCheckGeneral(req, viewData);
   validStateCheckSpecific(req, viewData);
   
-  //rankerUtils.terminateSearchSession(sess);
-
-
   global.logger.log('debug', "sess.ranker:"+ JSON.stringify(sess.ranker, undefined, 4));
 
   global.logger.log('debug', "viewData:"+ JSON.stringify(viewData, undefined, 4));

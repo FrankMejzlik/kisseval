@@ -49,7 +49,7 @@
 
           <% // If search session is running
           if (typeof ranker.searchSession !== "undefined"){
-          if (typeof ranker.searchSession.imageId !== "undefined" && ranker.searchSession.imageId !== null) 
+          if (typeof ranker.searchSession.targetImages[0].imageId !== "undefined" && ranker.searchSession.targetImages[0].imageId !== null) 
           { %>
 
             <a class="button alert" onclick="submitImage();">Give up!</a>
@@ -68,14 +68,14 @@
         <div class="target-image-id-cont small-4 cell">
           
           <label class="target-image-id-label">Target image ID:
-            <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= ranker.searchSession && ranker.searchSession.imageId ? ranker.searchSession.imageId : '' %>" />
+            <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= ranker.searchSession && ranker.searchSession.targetImages[0].imageId ? ranker.searchSession.targetImages[0].imageId : '' %>" />
           </label>
 
         </div>
         <div class="get-selected-image-to-preview small-4 cell" id="getSelectedImageToPrevies">
 
           <% // If search session is running
-          if (typeof ranker.searchSession !== "undefined" && typeof ranker.searchSession.imageId !== "undefined" && ranker.searchSession.imageId !== null) 
+          if (typeof ranker.searchSession !== "undefined" && typeof ranker.searchSession.targetImages[0].imageId !== "undefined" && ranker.searchSession.targetImages[0].imageId !== null) 
           { %>
 
             
@@ -93,9 +93,9 @@
         </div>
 
         <!-- Image preview canvas -->
-        <div class="image-preview small-12 cell">
-          <img id="targetImage" src="/images/<%= ranker.searchSession && ranker.searchSession.imageSrc ? ranker.searchSession.imageSrc : "generic/bg_neural.jpg" %>" />
-        </div>
+        <ul class="image-preview small-12 cell" id="targetImagesCont">
+          <li><img id="targetImage" src="/images/<%= ranker.searchSession && ranker.searchSession.imageSrc ? ranker.searchSession.imageSrc : "generic/bg_neural.jpg" %>" /></li>
+        </ul>
 
       </div>
     </section>
@@ -461,6 +461,23 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
   {
     $("#targetImage").attr("src", "/images/generic/bg_neural.jpg");
     $("#targetImageId").val(0);
+
+    let ul = document.getElementById("targetImagesCont");
+
+    // Remove all current child nodes
+    while (ul.firstChild) 
+    {
+      ul.removeChild(ul.firstChild);
+    }
+
+    // Append default image
+    let li = document.createElement("li");
+    let img = document.createElement("img");
+    img.setAttribute("src", "/images/generic/bg_neural.jpg");
+    img.setAttribute("class", "seq-img-0");
+    li.appendChild(img);
+
+    ul.appendChild(li);
   }
 
   function getRandomImageToPreview(elem)
@@ -471,14 +488,35 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
     // Create AJAX call to get appropriate data
     get('/ranker_ajax_get_random_image_and_start_search_session')
       // If response OK
-      .then((data) => {
-
-        
-
+      .then((data) => 
+      {
         data = JSON.parse(data);
 
-        $("#targetImageId").val(data.imageId);
-        $("#targetImage").attr("src", "/images/" + data.imageFilename);
+        // Get parent <ul> element for image previews
+        let ul = document.getElementById("targetImagesCont");
+
+        // Remove all current child nodes
+        while (ul.firstChild) 
+        {
+          ul.removeChild(ul.firstChild);
+        }
+
+        // Iterate over all fetched images from video sequence
+        for (let i = 0; i < data.length; ++i)
+        {
+          let li = document.createElement("li");
+          let img = document.createElement("img");
+          img.setAttribute("src", "/images/" + data[i].imageFilename);
+          img.setAttribute("class", "seq-img-" + i);
+          li.appendChild(img);
+
+          ul.appendChild(li);
+        }  
+
+        // Fill in just first image ID
+        $("#targetImageId").val(data[0].imageId);
+
+        // Set query input to enabled state
         $("#queryInput").prop('disabled', false);
 
         let viewData = new Object();
@@ -489,7 +527,8 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 
       })
       // If error occured
-      .catch((err) => {
+      .catch((err) => 
+      {
           // Do stuff on error...
       });
   }

@@ -46,12 +46,18 @@ exports.submitImage = function(req, res)
     response.giveUp = false;
   }
 
-  
-  
   // Is this correct image?
-  response.correct = (imageId == sess.ranker.searchSession.imageId);
-
+  response.correct = false;
   
+  // Check submited image against sequence of images
+  for (let i = 0; i < sess.ranker.searchSession.targetImages.length; ++i)
+  {
+    if (sess.ranker.searchSession.targetImages[i].imageId == imageId)
+    {
+      response.correct = true;
+      break;
+    }
+  }
 
   // Get all needed things for calling native method
   const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
@@ -72,7 +78,7 @@ exports.submitImage = function(req, res)
         settingsForNative.rankingModel, 
         settingsForNative.rankingModelSettings, 
         settingsForNative.aggregationSettings,
-        sess.ranker.searchSession.imageId
+        sess.ranker.searchSession.targetImages[0].imageId
       );
     }
   
@@ -99,7 +105,7 @@ exports.submitImage = function(req, res)
   const originType = sess.userLevel < 10 ? 0 : 10;
   const sessionId = sess.id;
   const searchSessionId = sess.ranker.searchSession.id;
-  const targetImageId = sess.ranker.searchSession.imageId;
+  const targetImageId = sess.ranker.searchSession.targetImages[0].imageId;
   const endStatus = response.giveUp ? 0 : 1;
 
 
@@ -151,25 +157,35 @@ exports.getRandomImageAndStartSearchSession = function(req, res)
   // Terminate old session if any
   rankerUtils.terminateSearchSession(sess);
 
-  // Get random image
-  const image = global.imageRanker.GetRandomImage();
+  // Get single random image
+  //const image = global.imageRanker.GetRandomImage();
+
+  // Get sequence of images from single video
+  const images = global.imageRanker.GetRandomImageSequence(global.gConfig.rankerConfig.previewSequenceLength);
 
   // Start new session with this image
-  rankerUtils.startSearchSession(sess, image.imageId, image.filename);
+  rankerUtils.startSearchSession(sess, images);
 
-  let response = new Object();
-  response.imageId = image.imageId;
-  response.imageFilename = image.filename;
-  response.modelName = sess.ranker.settings.modelName;
+  let responseArray = new Array();
 
-  global.logger.log('debug', "response: " + JSON.stringify(response, undefined, 4));  
+  for (let i = 0; i < images.length; ++i)
+  {
+    let response = new Object();
+    response.imageId = images[i].imageId;
+    response.imageFilename = images[i].filename;
+
+    responseArray.push(response);
+  }
+
+  global.logger.log('debug', "response: " + JSON.stringify(responseArray, undefined, 4));  
 
   global.logger.log('debug', "<= getRandomImageAndStartSearchSession()");
-  res.jsonp(response);
+  res.jsonp(responseArray);
 }
 
 exports.getSelectedImageAndStartSearchSession = function(req, res) 
 {
+  // \todo Implement with image sequences
   global.logger.log('debug', "=> getSelectedImageAndStartSearchSession()");
   const sess = req.session;
 
@@ -255,7 +271,7 @@ exports.processAction = function(req, res)
       settingsForNative.rankingModel, 
       settingsForNative.rankingModelSettings, 
       settingsForNative.aggregationSettings,
-      sess.ranker.searchSession.imageId
+      sess.ranker.searchSession.targetImages[0].imageId
     );
 
     rankerUtils.pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);

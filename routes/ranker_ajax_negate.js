@@ -39,15 +39,26 @@ exports.submitImage = function(req, res)
   let response = new Object();
   
   // Is this correct image?
-  response.correct = (imageId == sess.ranker.searchSession.imageId);
+  response.correct = false;
+  
+  // Check submited image against sequence of images
+  for (let i = 0; i < sess.ranker.searchSession.targetImages.length; ++i)
+  {
+    if (sess.ranker.searchSession.targetImages[i].imageId == imageId)
+    {
+      response.correct = true;
+      break;
+    }
+  }
+  
 
-  const userId = 0;
-  const sessionId = sess.id;
-  const searchSessionId = sess.ranker.searchSession.id;
-  const targetImageId = sess.ranker.searchSession.imageId;
-  const actionsArray = sess.ranker.searchSession.actionsArray;
+  // const userId = 0;
+  // const sessionId = sess.id;
+  // const searchSessionId = sess.ranker.searchSession.id;
+  // const targetImageId = sess.ranker.searchSession.targetImages[0].imageId;
+  // const actionsArray = sess.ranker.searchSession.actionsArray;
 
-  const nativeSettings = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings);
+  // const nativeSettings = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings);
 
   // NATIVE SUBMIT PROGRESS DATA!!!
   // global.imageRanker.SubmitInteractiveSearchSubmit(
@@ -208,7 +219,7 @@ exports.processAction = function(req, res)
       settingsForNative.rankingModel, 
       settingsForNative.rankingModelSettings, 
       settingsForNative.aggregationSettings,
-      sess.ranker.searchSession.imageId
+      sess.ranker.searchSession.targetImages[0].imageId
     );
 
     rankerUtils.pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);

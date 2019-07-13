@@ -2,8 +2,9 @@
 var express = require('express');
 var router = express.Router();
 
-const utils = require("../routes/utils/utils");
-const rankerUtils = require("../routes/utils/ranker_utils");
+const utils = require("./utils/utils");
+const rankerUtils = require("./utils/ranker_utils");
+const trecvidRankerUtils = require("./utils/trecvid_ranker_utils");
 
 function validStateCheckGeneral(req, viewData)
 {
@@ -14,7 +15,7 @@ function validStateCheckGeneral(req, viewData)
   utils.resolveUserLevel(sess);
 
   // Get current page slug
-  viewData.currentPage = "ranker";
+  viewData.currentPage = "trecvid_ranker";
   viewData.ocRankerSettingsLeft_ranker = true;
   viewData.ocRankerSettingsLeft_ranker_formActionAddress = "/ranker_ajax_submit_settings";
   viewData.userLevel = sess.userLevel;
@@ -28,7 +29,7 @@ function validStateCheckSpecific(req, viewData)
   rankerUtils.checkOrInitSessionRankerObject(sess);
 
   // Make sure that settings stored in session are initialized
-  rankerUtils.initOrResumeInteractiveSearchSession(sess, viewData);
+  trecvidRankerUtils.initOrResumeTrecvidTaskSession(sess, viewData);
 
 }
 
@@ -49,7 +50,7 @@ router.get('/', function(req, res, next)
   global.logger.log('debug', "viewData:" + JSON.stringify(viewData, undefined, 4));
 
   // Rener ranker view
-  res.render('ranker', viewData);
+  res.render('trecvid_ranker', viewData);
 });
 
 

@@ -115,6 +115,8 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   */
   Napi::Value GetRelevantImagesPlainQuery(const Napi::CallbackInfo& info);
 
+  Napi::Value TrecvidGetRelevantShots(const Napi::CallbackInfo& info);
+
   // RETURN FORMAT:
   // const chartData = [
   //   { index: 0, value: 10 },

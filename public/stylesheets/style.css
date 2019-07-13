@@ -315,7 +315,7 @@ max-width: 1920px;
 }
 
 .menu-item  {
-  width: 27%;
+  width: 17%;
   text-align: center;
 }
 
@@ -851,6 +851,17 @@ font-size: 17px
   
 }
 
+#trecvidHistory
+{
+  text-align: left;
+}
+
+
+#trecvidHistory p 
+{
+  border-bottom: 1px solid #aaa;
+}
+
 .large-12 {
   width: 100%;
 }
@@ -1237,6 +1248,10 @@ input[type=submit] {
   text-align: left;
 }
 
+.trecvid_ranker .autocomplete-items .example-images-list {
+  display: none;
+}
+
 .autocomplete-items .example-images-list {
   position: absolute;
   left: 100%;
@@ -1496,11 +1511,16 @@ margin-bottom: 30px;
 }
 
 
+
 .image-preview-section {
   margin-bottom: 15px;
   margin-top: 0px;
   border-top: 1px solid #cc4b37;
   padding-top: 20px;
+}
+
+.trecvid_ranker .image-preview-section {
+  display: none;
 }
 
 .get-selected-image-to-preview {
@@ -1801,6 +1821,12 @@ list-style: none;
   margin: 0;
   font-size: 12px;
   height: 1.6rem;
+}
+
+.shot-frame-praview
+{
+  max-width: 10%;
+  display: inline-block;
 }
 
 .top-settings {

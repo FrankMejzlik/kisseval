@@ -69,7 +69,7 @@
             
             for (let ii = 0; ii < exampleImagesFilenamesArr.length; ++ii)
             {
-              str += "<li><img src='../images/thumbnails/" + exampleImagesFilenamesArr[ii] + "' /></li>";    
+              str += "<li><img src='../images/" + exampleImagesFilenamesArr[ii] + "' /></li>";    
             }
 
             str += "</ul>";
@@ -115,9 +115,19 @@
               chechkboxCont = document.createElement("li");
               chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
 
-              chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + selVal + "' checked>\
+              if (queryNr == 1)
+              {
+                chechkboxCont.innerHTML += "<input type='checkbox' name='keyword2' value='" + selVal + "' checked>\
+                <input type='checkbox' name='keywordWord2' value='" + selValWord + "' checked>\
+                <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this, " + queryNr + ");'>&#10006</a>"
+              }
+              else
+              {
+                chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + selVal + "' checked>\
                 <input type='checkbox' name='keywordWord' value='" + selValWord + "' checked>\
                 <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this, " + queryNr + ");'>&#10006</a>"
+              }
+              
 
               selectedContainer.appendChild(chechkboxCont);
 

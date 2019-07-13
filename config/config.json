@@ -8,7 +8,7 @@
         "json_indentation": 4,
         "title": "KISSEval",
         "subtitle": "Keyword Interactive Search System Evaluator",
-        "appMode": 0,
+        "appMode": 2,
 
         "pathToImages": "/public/images/",
         "pathData": "/data/dataset1/",
@@ -36,12 +36,14 @@
         "imagesDirList3": "05_googlenet.mapping.txt",
         "idOffset3": 1,
 
-        "trecvidTest": {
-
-        },
-        "trecvid": {
-
-        },
+        "pathData4": "/data/trecvid_data/",
+        "softmaxFilename4": "",
+        "preSoftmaxFilename4": "net_data/nasnet_large.pre-softmax",
+        "deepFeaturesFilename4": "",
+        "keywordClassesFilename4": "net_data/keyword_classes.txt",
+        "imagesDirList4": "keyframes/filelist.txt",
+        "idOffset4": 1,
+        
 
         "gameLength": 7,
         "tutorialLength": 0,

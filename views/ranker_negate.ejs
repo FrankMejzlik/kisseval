@@ -423,7 +423,7 @@ function drawInteractiveSearchChart(chartDataArray)
     {
       $targetList.append(
         '<li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' +currentImagesToPrintArray[currentImageIndex].imageId + ')"\
-        data-open="modalImage" data-image-id="' + currentImagesToPrintArray[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + currentImagesToPrintArray[currentImageIndex].filename + '\')">\
+        data-open="modalImage" data-image-id="' + currentImagesToPrintArray[currentImageIndex].imageId + '" style="background-image: url(\'/images/' + currentImagesToPrintArray[currentImageIndex].filename + '\')">\
           <a class="button btn-submit success" onclick="" title="Submit this image">&#10004;</a>\
         </li>'
       );
@@ -463,7 +463,7 @@ function drawInteractiveSearchChart(chartDataArray)
               <span aria-hidden="true">&times;</span>\
             </button>\
             <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
-              data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/thumbnails/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
+              data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
               <a class="button btn-submit success" onclick="submitImage(this); title="Submit this image">&#10004;</a>\
               <a class="just-clicker"  data-open="modalImage"></a>\
             </li>'

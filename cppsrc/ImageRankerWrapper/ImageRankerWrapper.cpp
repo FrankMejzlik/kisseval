@@ -17,6 +17,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("GetRandomImageSequence", &ImageRankerWrapper::GetRandomImageSequence),
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
     InstanceMethod("GetRelevantImagesPlainQuery", &ImageRankerWrapper::GetRelevantImagesPlainQuery),
+    InstanceMethod("TrecvidGetRelevantShots", &ImageRankerWrapper::TrecvidGetRelevantShots),
     InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
     InstanceMethod("GetImageKeywordsForInteractiveSearch", &ImageRankerWrapper::GetImageKeywordsForInteractiveSearch),
     InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex),
@@ -882,7 +883,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 }
 
 
-// xoxo
+
 Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
@@ -2100,4 +2101,185 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
   }
 
   return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::TrecvidGetRelevantShots(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  std::cout << "CALLING NATIVE 'GetRelevantImages' with args:" << std::endl;
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 8)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
+  }
+
+  // Transfer JS args to C args
+  std::vector<std::string> queries;
+  Napi::Array queriesArray = info[0].As<Napi::Array>();
+  for (size_t k{ 0ULL }; k < queriesArray.Length(); k++)
+  {
+    Napi::Value val = queriesArray[k];
+    if (val.IsString())
+    {
+      std::string value = (std::string)val.As<Napi::String>().Utf8Value();
+      queries.push_back(value);
+    }
+  }
+
+  // size_t numResults
+  size_t numResults = info[1].As<Napi::Number>().Uint32Value();
+
+  // Aggregation aggFn
+  size_t aggregation = info[2].As<Napi::Number>().Uint32Value();
+
+  // RankingModel rankingModel
+  size_t rankingModel = info[3].As<Napi::Number>().Uint32Value();
+
+  // const ModelSettings& settings
+  std::vector<std::string> settings;
+
+  Napi::Array settingsArray = info[4].As<Napi::Array>();
+  for (size_t k{0ULL}; k < settingsArray.Length(); k++)
+  {
+    Napi::Value val = settingsArray[k];
+    if (val.IsString())
+    {
+      std::string value = (std::string)val.As<Napi::String>().Utf8Value();
+      settings.push_back(value);
+    }
+  }
+
+  // Aggregation settings
+  std::vector<std::string> aggSettings;
+
+  Napi::Array aggSettingsArray = info[5].As<Napi::Array>();
+  for (size_t k{0ULL}; k < aggSettingsArray.Length(); k++)
+  {
+    Napi::Value val = aggSettingsArray[k];
+    if (val.IsString())
+    {
+      std::string value = (std::string)val.As<Napi::String>().Utf8Value();
+      aggSettings.push_back(value);
+    }
+  }
+
+  size_t sessionDuation = info[6].As<Napi::Number>().FloatValue();
+
+  // size_t imageId = SIZE_T_ERROR_VALUE
+  size_t imageId = info[7].As<Napi::Number>().Uint32Value();
+
+#if LOG_CALLS
+
+  std::cout << "CALLING NATIVE 'GetRelevantImagesWrapper' with args:" << std::endl;
+  std::cout << "\t queries = " << std::endl;
+  for (auto&& query : queries)
+  {
+    std::cout << "\t\t" << query << std::endl;
+  }
+  std::cout << "numResults = " << numResults << std::endl;
+  std::cout << "NetDataTransformation = " << aggregation << std::endl;
+  std::cout << "rankingModelId = " << rankingModel << std::endl;
+
+  std::cout << "\t modelSettings = " << std::endl;
+  for (auto&& modelOpt : settings)
+  {
+    std::cout << "\t\t" << modelOpt << std::endl;
+  }
+
+  std::cout << "\t aggSettings = " << std::endl;
+  for (auto&& modelOpt : aggSettings)
+  {
+    std::cout << "\t\t" << modelOpt << std::endl;
+  }
+
+  std::cout << "sessionDuation = " << sessionDuation << std::endl;
+  std::cout << "imageId = " << imageId << std::endl;
+  std::cout << "===================" << std::endl;
+
+#endif
+
+  // Call native method: Get vector of relevant images
+  std::tuple<float, std::vector<std::pair<size_t, size_t>>> durationShotsPair;
+  try {
+      durationShotsPair = this->actualClass_->TrecvidGetRelevantShots(
+      queries, numResults, 
+      (NetDataTransformation)aggregation, (RankingModelId)rankingModel, 
+      settings, aggSettings,
+      sessionDuation,
+      imageId
+    );
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  napi_value result;
+  napi_create_object(env, &result);
+
+
+  // // "elapsedTime"
+  // {
+    
+  //   napi_value key;
+  //   napi_create_string_utf8(env, "elapsedTime", NAPI_AUTO_LENGTH, &key);
+
+  //   napi_value value;
+  //   napi_create_double(env, std::get<0>(durationShotsPair), &value);
+
+  //   napi_set_property(env, result, key, value);
+  // }
+
+
+  // // "shots"
+  // {
+  //   napi_value imagesKey;
+  //   napi_create_string_utf8(env, "shots", NAPI_AUTO_LENGTH, &imagesKey);
+
+  //   napi_value resultImageArray;
+  //   napi_create_array(env, &resultImageArray);
+  //   {
+
+  //     size_t i{ 0ULL };
+  //     for (auto&& [videoId, shotId] : std::get<1>(durationShotsPair))
+  //     {
+
+  //       // Construct NAPI return object 
+  //       napi_value videoShotIdsPair;
+  //       napi_create_object(env, &videoShotIdsPair);
+
+  //       // Set "videoId"
+  //       {
+  //         napi_value key;
+  //         napi_create_string_utf8(env, "videoId", NAPI_AUTO_LENGTH, &key);
+  //         napi_value value;
+  //         napi_create_uint32(env, videoId, &value);
+
+  //         napi_set_property(env, videoShotIdsPair, key, value);
+  //       }
+
+  //       // Set "shotId"
+  //       {
+  //         napi_value key;
+  //         napi_create_string_utf8(env, "shotId", NAPI_AUTO_LENGTH, &key);
+  //         napi_value value;
+  //         napi_create_uint32(env, shotId, &value);
+
+  //         napi_set_property(env, videoShotIdsPair, key, value);
+  //       }
+
+  //       napi_set_element(env, resultImageArray, i, videoShotIdsPair);
+
+  //       ++i;
+  //     }
+  //   }
+  //   napi_set_property(env, result, imagesKey, resultImageArray);
+  // }
+
+  return Napi::Object(env, result);
+  
 }

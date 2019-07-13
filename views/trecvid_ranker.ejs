@@ -123,7 +123,7 @@
                 <li class="slected-keyword-checkbox">
                   <input type="checkbox" name="keywordWord" value="<%= ranker.queryWords[i] %>" checked="">                
                   <input type="checkbox" name="keyword" value="<%= ranker.query[i] %>" checked="">                
-                  <span><%= ranker.queryWords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 0);">&#10006</a>
+                  <span><%= ranker.queryWords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a>
                 </li>
 
               <%    }
@@ -132,7 +132,7 @@
                 <li class="slected-keyword-checkbox">
                 <input type="checkbox" name="keywordWord" value="<%= ranker.queryWords %>" checked="">          
                 <input type="checkbox" name="keyword" value="<%= ranker.query %>" checked="">       
-                <span><%= ranker.queryWords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 0);">&#10006</a>
+                <span><%= ranker.queryWords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a>
               </li>
 
                 <%
@@ -162,7 +162,7 @@
                 <li class="slected-keyword-checkbox">
                   <input type="checkbox" name="keywordWord2" value="<%= ranker.queryWords2[i] %>" checked="">                
                   <input type="checkbox" name="keyword2" value="<%= ranker.query2[i] %>" checked="">                
-                  <span><%= ranker.queryWords2[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 1);">&#10006</a>
+                  <span><%= ranker.queryWords2[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a>
                 </li>
 
               <%    }
@@ -171,7 +171,7 @@
                 <li class="slected-keyword-checkbox">
                 <input type="checkbox" name="keywordWord2" value="<%= ranker.queryWords2 %>" checked="">          
                 <input type="checkbox" name="keyword2" value="<%= ranker.query2 %>" checked="">       
-                <span><%= ranker.queryWords2 %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 1);">&#10006</a>
+                <span><%= ranker.queryWords2 %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a>
               </li>
 
                 <%
@@ -184,160 +184,17 @@
 
       </div>
 
+
     </form>
-    
-
+    <hr />
+    <div id="trecvidHistory" class="large-12 cell grid-container"></div>
   </div>
 
-<!-- Images grid -->
-<div class="ranker-right-sidebar image-grid-section image-browser-main-tiles large-9 cell grid-container">
+<!-- Page content -->
+<div id="trecvidContent" class="ranker-right-sidebar image-grid-section image-browser-main-tiles large-9 cell grid-container">
   
-  <div class="ranker-result-board grid-x grid-x align-center align-center" id="rankerResultBoard">
-    <div class="result-actions-board-title cell large-12">
-      <h1>Search session results</h1>
-    </div>
-    <div class="result-actions-chart cell large-6">
-      <h2>Rank progress in time</h2>
-      <canvas id="rankerResultBoardChartCanvas"></canvas>
-    </div>
-
-    <div class="result-actions-info cell large-6">  
-      <h2>Other info</h2>
-      <div id="resultInfo">
-      </div>
-      
-    </div>
-
-
-  </div>
-
-  <ul id="resultImagesList" class="grid-x grid-x align-center align-middle">
-
-  </ul>
 
 </div>
-
-
-
-<!-- Single image modal window -->
-<div class="full reveal" id="modalImage" data-reveal data-src="999" data-overlay="false">
-  
-  <button class="close-button" data-close aria-label="Close modal" type="button">
-    <span aria-hidden="true">&times;</span>
-  </button>
-
-  <div class="instructions">
-    <span class='click-to-add-tip'>Click on words to add them to query</span>
-  </div>
-
-  <div class="modal-header cell large-12">
-    <h3>Image ID:<span id="modalImageId"></span></h3>
-  </div>
-  <div>
-    <ul id="sucFramesCont">
-
-    </ul>
-  </div>
-
-  <!-- Tabs navigation -->
-  <ul class="tabs" data-tabs id="modalImageTabs">
-    <li class="tabs-title is-active"><a data-tabs-target="modalImageTab1" href="#modalImageTab1" aria-selected="true">Labels</a></li>
-    <li class="tabs-title"><a data-tabs-target="modalImageTab2" href="#modalImageTab2">Pure hypernyms</a></li>
-  </ul>
-  <div class="tabs-content" data-tabs-content="modalImageTabs">
-    <div class="tabs-panel is-active" id="modalImageTab1">
-      
-    </div>
-    <div class="tabs-panel" id="modalImageTab2">
-      
-    </div>
-  </div>
-
-</div>
-
-
-<% if (typeof userLevel != 'undefined') 
-{
-  if (userLevel >= 5) 
-  { %>
-    <div class="developer-bottom-analysis-bar grid-container">
-
-      <ul class="accordion" id="devAccordion" data-slide-speed="0" data-accordion data-allow-all-closed="true">
-        <div id="dragbar"><span class="icon"><img src="../images/generic/icon_gripping_hand.svg" /></span></div>
-        <li class="accordion-item" data-accordion-item>
-          <!-- Accordion tab title -->
-          <a href="#" class="accordion-title">Analysis</a>
-
-          <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
-          <div class="accordion-content flexible-developer-only-window" data-tab-content>
-            
-            <div class="current-session-chart-const small-6 cell">
-              <canvas class="chart-canvas" id="interactiveSearchChart"></canvas> 
-            </div>
-
-          </div>
-        </li>
-      </ul>
-
-    </div>
-
-    <script>
-
-      $(document).ready(function() {
-        $('#devAccordion')
-          .on("down.zf.accordion", function(e, $panel) 
-          {
-            $("#dragbar").show();
-          })
-          .on("up.zf.accordion", function(e, $panel) 
-          {
-
-            $("#dragbar").hide();
-            $('#devAccordion').css("height", "auto");
-            
-          });
-      });
-
-
-
-      var i = 0;
-      var dragging = false;
-      $('#dragbar').mousedown(function(e){
-          e.preventDefault();
-          
-          dragging = true;
-          var main = $('#devAccordion');
-          var ghostbar = $('<div>',
-                            {id:'ghostbar',
-                            css: {
-                                    height: "5px",
-                                    width: "100%",
-                                    top: main.offset().top,
-                                    left: main.offset().left
-                                  }
-                            }).appendTo('body');
-          
-            $(document).mousemove(function(e){
-              ghostbar.css("top",e.pageY+2);
-          });
-          
-        });
-
-      $(document).mouseup(function(e){
-        if (dragging) 
-        {
-            var percentage = 100 -(e.pageY / window.innerHeight) * 100;
-            
-            $('#devAccordion').css("height", percentage + "vh");
-            $('#ghostbar').remove();
-            $(document).unbind('mousemove');
-            dragging = false;
-        }
-      });
-    </script>
-  <% }
-} %>
-
 
 <!-- Include autocomplete module -->
 <%- include modules/autocomplete_logic_ranker.ejs %>
@@ -494,6 +351,14 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 
 
 <script>
+
+  $(document).ready(
+    function()
+    {
+      setToNoRunState();
+    }
+  );
+
   function clearImageGrid()
   {
     $targetList = $("#resultImagesList");
@@ -778,6 +643,7 @@ function putDocumentToPreStartState()
 
   function processAction(action, operand, word)
   {
+    return;
     // Stop printer if running
     clearInterval(currentPrinter);
     currentImagesToPrintArray = undefined;
@@ -830,6 +696,162 @@ function putDocumentToPreStartState()
           // Do stuff on error...
       });
   }
+
+// xoxo
+
+const contentElem = document.getElementById("trecvidContent");
+
+function setToNoRunState()
+{
+  let html = "<h2>Select what run type you want to start.</h2>";
+  html += "<a onclick='startRunNormal();' class='button'>Start normal run</a>";
+  html += "<a onclick='startRunProgress();' class='button'>Start progress run</a>";
+  
+  contentElem.innerHTML = html;
+}
+
+function setToTaskRunningState(taskId, taskString)
+{
+  let html = "<h2>Task ID: " + taskId + "</h2>";
+  html += "<h3>Task: " + taskString + "</h3>";
+  html += "<hr />";
+  html += "<a onclick='submitTask();' class='button'>Submit task</a>";
+  html += "<a onclick='nextTask();' class='button'>Next task</a>";
+
+  contentElem.innerHTML = html;
+}
+
+function setToTaskSubmittedState()
+{
+  let html = "<h2>Task submitted, you can go on to next one.</h2>";
+  html += "<a onclick='nextTask();' class='button'>Next task</a>";
+
+  contentElem.innerHTML = html;
+}
+
+function nextTask()
+{
+  // Create AJAX call to get appropriate data
+  post('/trecvid_ranker_ajax_next_task')
+    // If response OK
+    .then((data) => {
+
+      data = JSON.parse(data);
+
+      setToTaskRunningState(data.taskId, data.taskString);
+
+    })
+    // If error occured
+    .catch((err) => {
+        // Do stuff on error...
+    });
+}
+
+function startRunNormal()
+{
+  // Create AJAX call to get appropriate data
+  post('/trecvid_ranker_ajax_start_run_normal')
+    // If response OK
+    .then((data) => {
+
+      data = JSON.parse(data);
+
+      setToTaskRunningState(data.taskId, data.taskString);
+
+    })
+    // If error occured
+    .catch((err) => {
+        // Do stuff on error...
+    });
+}
+
+function startRunProgress()
+{
+  // Create AJAX call to get appropriate data
+  post('/trecvid_ranker_ajax_start_run_progress')
+    // If response OK
+    .then((data) => {
+
+      data = JSON.parse(data);
+
+      setToTaskRunningState(data.taskId, data.taskString);
+
+    })
+    // If error occured
+    .catch((err) => {
+        // Do stuff on error...
+    });
+}
+
+let words1Last = new Array();
+
+function submitTask()
+{
+  var keywords = new Array(); 
+  var keywords2 = new Array(); 
+  var keywordsWords = new Array(); 
+  var keywordsWords2 = new Array(); 
+
+  $('[name="keyword"]').each(function(){
+    keywords.push($(this).val()); 
+  });
+
+  $('[name="keyword2"]').each(function(){
+    keywords2.push($(this).val()); 
+  });
+
+  $('[name="keywordWord"]').each(function(){
+    keywordsWords.push($(this).val()); 
+  });
+
+  $('[name="keywordWord2"]').each(function(){
+    keywordsWords2.push($(this).val()); 
+  });
+
+
+  var inputData = new Object;
+  inputData.keyword = keywords;
+  inputData.keywordWord = keywordsWords;
+  inputData.keyword2 = keywords2;
+  inputData.keywordWord2 = keywordsWords2; 
+
+
+  // Create AJAX call to get appropriate data
+  post('/trecvid_ranker_ajax_submit_task', JSON.stringify(inputData))
+    // If response OK
+    .then((data) => {
+
+      data = JSON.parse(data);
+
+      const hist = document.getElementById("trecvidHistory");
+
+      hist.innerHTML = hist.innerHTML + "<p>Q1: " + keywordsWords.toString() + "<br /> Q2: </p>" + keywordsWords2.toString();
+
+      switch(data)
+      {
+        // Was last run, end run
+        case 0:
+          setToNoRunState();
+          break;
+
+        // Nothing happens
+        case 1:
+
+          break;
+
+        // Go to task submitted state
+        case 2:
+          setToTaskSubmittedState();
+          break;
+      }
+
+    })
+    // If error occured
+    .catch((err) => {
+        // Do stuff on error...
+    });
+
+}
 
 
 function addKeyword(keywordId, word, source) 
@@ -885,15 +907,13 @@ function switchModalImageHtmlContents(id)
       // 
       // Fill in succ frames
       //
-      let succFramesHtml = "";
+      let succFramesHtml = "<li class='shot-frame-praview'>";
       for (var i = 0; i < shotFrames.length; ++i) 
       {
-        succFramesHtml += "<li class='shot-frame-praview'>";
         succFramesHtml += "<img src='../images/" + shotFrames[i].frameFilename + "' />";
         succFramesHtml += "<small>" + shotFrames[i].frameId + "</small>";
-        succFramesHtml += "</li>";
       }
-      
+      succFramesHtml += "</li>";
       succFramesCont.innerHTML = succFramesHtml;
 
 

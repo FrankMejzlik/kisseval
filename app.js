@@ -27,6 +27,8 @@ var docsRouter = require('./routes/docs');
 const annotatorRouter = require("./routes/annotator");
 const annotatorAjaxRouter = require("./routes/annotator_ajax");
 const rankerRouter = require("./routes/ranker");
+const trecvidRankerRouter = require("./routes/trecvid_ranker");
+const trecvidAjaxRankerRouter = require("./routes/trecvid_ranker_ajax");
 const rankerNegateRouter = require("./routes/ranker_negate");
 const rankerAjaxRouter = require("./routes/ranker_ajax");
 const rankerAjaxNegateRouter = require("./routes/ranker_ajax_negate");
@@ -96,46 +98,110 @@ app.use(session({ secret: 'matfyz', resave: false, saveUninitialized: true, }));
 // Get ImageRanker C++ library
 const imageRanker = require(path.join(__dirname, 'build/Release/image_ranker.node'));
 
-// Shared property
-const a = path.join(global.rootDir, global.gConfig.pathToImages);
+// SELECT DATASET
+const inputData = 4;
+
+// Do you even TRECVID?
+const doTrecvid =  true;
+const testTrecvid = true;
+
+// Vars for ImageRanker constructor args
+let a = path.join(global.rootDir, global.gConfig.pathToImages);
+let b;
+let c;
+let d;
+let e;
+let f;
+let g;
+let h = global.gConfig.appMode;
+
+let outputPath;
+let normalTasks;
+let progressTasks;
 
 // Dataset specific properties
-// DATASET 2
-const b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.preSoftmaxFilename2);
-const c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
-const d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
-const e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
-const f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
-const g = global.gConfig.idOffset2;
-const h = global.gConfig.appMode;
+switch(inputData)
+{
+  // NasNet, V3C1 20k dataset
+case 2:
+  
+  b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.preSoftmaxFilename2);
+  c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
+  d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
+  e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
+  f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
+  g = global.gConfig.idOffset2;
 
+  break;
 
-// const b = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.preSoftmaxFilename3);
-// const c = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.keywordClassesFilename3);
-// const d = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.softmaxFilename3);
-// const e = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.deepFeaturesFilename3);
-// const f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
-// const g = global.gConfig.idOffset3;
-// const h = global.gConfig.appMode;
+  // GoogLeNet, V3C1 20k dataset
+case 3:
+  
+  b = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.preSoftmaxFilename3);
+  c = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.keywordClassesFilename3);
+  d = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.softmaxFilename3);
+  e = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.deepFeaturesFilename3);
+  f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
+  g = global.gConfig.idOffset3;
 
-console.log(a);
-console.log(b);
-console.log(c);
-console.log(d);
-console.log(e);
-console.log(f);
-console.log(g);
-console.log(g);
+  break;
+
+  // NasNet, V3C1 1M dataset
+  //  => TRECVID data
+case 4:
+  
+  b = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.preSoftmaxFilename4);
+  c = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.keywordClassesFilename4);
+  d = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.softmaxFilename4);
+  e = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.deepFeaturesFilename4);
+  f = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.imagesDirList4);
+  g = global.gConfig.idOffset4;
+
+  if (doTrecvid)
+  {
+    // Setup filepaths to task sources
+    outputPath = path.join(global.rootDir, "/output/");
+
+    // If just testing TRECVID 
+    if (testTrecvid)
+    {
+      normalTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/testing/tasks_normal.txt");
+      progressTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/testing/tasks_progress.txt");  
+    }
+    else 
+    {
+      normalTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/2019/tasks_normal.txt");
+      progressTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/2019/tasks_progress.txt");
+    }
+
+    global.gConfig.outputPath = outputPath;
+    global.gConfig.normalTasks = normalTasks;
+    global.gConfig.progressTasks = progressTasks;
+
+    // Log it out
+    global.logger.log('debug', "TRECVID SPECIFIC:");
+  }
+
+  break;
+}
+
+// Log 
+global.logger.log('debug', "ImageRanker constructor arguments:");
+global.logger.log('debug', a);
+global.logger.log('debug', b);
+global.logger.log('debug', c);
+global.logger.log('debug', d);
+global.logger.log('debug', e);
+global.logger.log('debug', f);
+global.logger.log('debug', g);
+global.logger.log('debug', h);
 
 
 // Create global instance if ImageRanker
-global.imageRanker = new imageRanker.ImageRankerWrapper(a,b,c,d,e,f,g, h);
+global.imageRanker = new imageRanker.ImageRankerWrapper(a, b, c, d, e, f, g, h);
 
+// Initialize ImageRanker instance
 global.imageRanker.Initialize();
-
-
-
-
 
 // Push all routers into express middleware stack
 app.use('/', indexRouter);
@@ -149,15 +215,14 @@ app.use('/docs', docsRouter);
 app.use('/collector', collectorRouter);
 
 app.use('/query_annotator', annotatorRouter);
-//app.get('/annotator_ajax', annotatorAjaxRouter);
 
 app.use('/ranker', rankerRouter);
 app.use('/ranker_negate', rankerNegateRouter);
+app.use('/trecvid_ranker', trecvidRankerRouter);
 
-//app.get('/ranker_ajax', rankerAjaxRouter);
 
 app.use('/statistics', statisticsRouter);
-//app.use('/statistics_ajax', statisticsAjaxRouter);
+
 
 // Ranker AJAXes
 app.get('/ranker_ajax_submit_settings', rankerAjaxRouter.submitSettings);
@@ -173,6 +238,12 @@ app.get('/ranker_negate_ajax_get_random_image_and_start_search_session', rankerA
 app.get('/ranker_negate_ajax_get_selected_image_and_start_search_session', rankerAjaxNegateRouter.getSelectedImageAndStartSearchSession);
 app.get('/ranker_negate_ajax_process_action', rankerAjaxNegateRouter.processAction);
 app.get('/ranker_negate_ajax_get_image_keywords_for_interactive_search', rankerAjaxNegateRouter.getImageKeywordsForInteractiveSearch);
+
+// Trecvid ranker AJAXes
+app.post('/trecvid_ranker_ajax_start_run_normal', trecvidAjaxRankerRouter.startRunNormal);
+app.post('/trecvid_ranker_ajax_start_run_progress', trecvidAjaxRankerRouter.startRunProgress);
+app.post('/trecvid_ranker_ajax_submit_task', trecvidAjaxRankerRouter.submitTaskk);
+app.post('/trecvid_ranker_ajax_next_task', trecvidAjaxRankerRouter.nextTask);
 
 
 // Allow only GET requests to 'collector_ajax' router

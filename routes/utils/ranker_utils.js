@@ -38,6 +38,9 @@ exports.initOrResumeInteractiveSearchSession = function(sess, viewData)
     viewData.ranker.query = sess.ranker.query;
     viewData.ranker.queryWords = sess.ranker.queryWords;
 
+    viewData.ranker.query2 = sess.ranker.query2;
+    viewData.ranker.queryWords2 = sess.ranker.queryWords2;
+
 
 
     // Unlock input

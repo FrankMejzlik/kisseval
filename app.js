@@ -242,7 +242,7 @@ app.get('/ranker_negate_ajax_get_image_keywords_for_interactive_search', rankerA
 // Trecvid ranker AJAXes
 app.post('/trecvid_ranker_ajax_start_run_normal', trecvidAjaxRankerRouter.startRunNormal);
 app.post('/trecvid_ranker_ajax_start_run_progress', trecvidAjaxRankerRouter.startRunProgress);
-app.post('/trecvid_ranker_ajax_submit_task', trecvidAjaxRankerRouter.submitTaskk);
+app.post('/trecvid_ranker_ajax_submit_task', trecvidAjaxRankerRouter.submitTask);
 app.post('/trecvid_ranker_ajax_next_task', trecvidAjaxRankerRouter.nextTask);
 
 

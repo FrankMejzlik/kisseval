@@ -154,21 +154,18 @@ exports.printXmlShots = function(sess, elapsedTime, shots)
   const taskId = sess.trecvidRun.tasks[sess.trecvidSession.currTaskIdx].id;
 
   let totalString = '\t\t <videoAdhocSearchTopicResult tNum="' + taskId + '" elapsedTime="' + elapsedTime + '">\n';
-  let i = 0;
+
   for (i in shots)
   {
-    ++i;
-
     // Add enough zeros
-    const shotIdPadded = String(shots[i].videoId).padStart(5, '0');
+    const videoIdPadded = String(shots[i].videoId).padStart(5, '0');
 
-    totalString = 
-    '\t\t\t <item seqNum="'+ i + '" shotId="shot' + shotIdPadded + '_' + shots[i].shotId + '"/> \n';
-  
-    // Append to file
-    fs.appendFileSync(sess.trecvidRun.outputFilepath, footerString);
+    totalString += 
+    '\t\t\t <item seqNum="'+ i + '" shotId="shot' + videoIdPadded + '_' + shots[i].shotId + '"/> \n';
   }
 
   totalString += '\t\t</videoAdhocSearchTopicResult>';
-  
+
+  // Append to file
+  fs.appendFileSync(sess.trecvidRun.outputFilepath, totalString);
 }

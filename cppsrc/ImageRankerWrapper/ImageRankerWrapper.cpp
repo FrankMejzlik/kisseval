@@ -2222,63 +2222,63 @@ Napi::Value ImageRankerWrapper::TrecvidGetRelevantShots(const Napi::CallbackInfo
   napi_create_object(env, &result);
 
 
-  // // "elapsedTime"
-  // {
+  // "elapsedTime"
+  {
     
-  //   napi_value key;
-  //   napi_create_string_utf8(env, "elapsedTime", NAPI_AUTO_LENGTH, &key);
+    napi_value key;
+    napi_create_string_utf8(env, "elapsedTime", NAPI_AUTO_LENGTH, &key);
 
-  //   napi_value value;
-  //   napi_create_double(env, std::get<0>(durationShotsPair), &value);
+    napi_value value;
+    napi_create_double(env, std::get<0>(durationShotsPair), &value);
 
-  //   napi_set_property(env, result, key, value);
-  // }
+    napi_set_property(env, result, key, value);
+  }
 
 
-  // // "shots"
-  // {
-  //   napi_value imagesKey;
-  //   napi_create_string_utf8(env, "shots", NAPI_AUTO_LENGTH, &imagesKey);
+  // "shots"
+  {
+    napi_value imagesKey;
+    napi_create_string_utf8(env, "shots", NAPI_AUTO_LENGTH, &imagesKey);
 
-  //   napi_value resultImageArray;
-  //   napi_create_array(env, &resultImageArray);
-  //   {
+    napi_value resultImageArray;
+    napi_create_array(env, &resultImageArray);
+    {
 
-  //     size_t i{ 0ULL };
-  //     for (auto&& [videoId, shotId] : std::get<1>(durationShotsPair))
-  //     {
+      size_t i{ 0ULL };
+      for (auto&& [videoId, shotId] : std::get<1>(durationShotsPair))
+      {
 
-  //       // Construct NAPI return object 
-  //       napi_value videoShotIdsPair;
-  //       napi_create_object(env, &videoShotIdsPair);
+        // Construct NAPI return object 
+        napi_value videoShotIdsPair;
+        napi_create_object(env, &videoShotIdsPair);
 
-  //       // Set "videoId"
-  //       {
-  //         napi_value key;
-  //         napi_create_string_utf8(env, "videoId", NAPI_AUTO_LENGTH, &key);
-  //         napi_value value;
-  //         napi_create_uint32(env, videoId, &value);
+        // Set "videoId"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "videoId", NAPI_AUTO_LENGTH, &key);
+          napi_value value;
+          napi_create_uint32(env, videoId, &value);
 
-  //         napi_set_property(env, videoShotIdsPair, key, value);
-  //       }
+          napi_set_property(env, videoShotIdsPair, key, value);
+        }
 
-  //       // Set "shotId"
-  //       {
-  //         napi_value key;
-  //         napi_create_string_utf8(env, "shotId", NAPI_AUTO_LENGTH, &key);
-  //         napi_value value;
-  //         napi_create_uint32(env, shotId, &value);
+        // Set "shotId"
+        {
+          napi_value key;
+          napi_create_string_utf8(env, "shotId", NAPI_AUTO_LENGTH, &key);
+          napi_value value;
+          napi_create_uint32(env, shotId, &value);
 
-  //         napi_set_property(env, videoShotIdsPair, key, value);
-  //       }
+          napi_set_property(env, videoShotIdsPair, key, value);
+        }
 
-  //       napi_set_element(env, resultImageArray, i, videoShotIdsPair);
+        napi_set_element(env, resultImageArray, i, videoShotIdsPair);
 
-  //       ++i;
-  //     }
-  //   }
-  //   napi_set_property(env, result, imagesKey, resultImageArray);
-  // }
+        ++i;
+      }
+    }
+    napi_set_property(env, result, imagesKey, resultImageArray);
+  }
 
   return Napi::Object(env, result);
   

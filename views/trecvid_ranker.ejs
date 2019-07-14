@@ -698,8 +698,24 @@ function putDocumentToPreStartState()
   }
 
 // xoxo
-
 const contentElem = document.getElementById("trecvidContent");
+
+function clearQueries()
+{
+  const q1List = document.getElementById("selectedKeywordsList");
+  const q2List = document.getElementById("selectedKeywordsList2");
+
+  while (q1List.firstChild) 
+  {
+    q1List.removeChild(q1List.firstChild);
+  }
+
+  while (q2List.firstChild) 
+  {
+    q2List.removeChild(q2List.firstChild);
+  }
+
+}
 
 function setToNoRunState()
 {
@@ -708,6 +724,8 @@ function setToNoRunState()
   html += "<a onclick='startRunProgress();' class='button'>Start progress run</a>";
   
   contentElem.innerHTML = html;
+
+  clearQueries();
 }
 
 function setToTaskRunningState(taskId, taskString)
@@ -716,7 +734,6 @@ function setToTaskRunningState(taskId, taskString)
   html += "<h3>Task: " + taskString + "</h3>";
   html += "<hr />";
   html += "<a onclick='submitTask();' class='button'>Submit task</a>";
-  html += "<a onclick='nextTask();' class='button'>Next task</a>";
 
   contentElem.innerHTML = html;
 }
@@ -727,6 +744,7 @@ function setToTaskSubmittedState()
   html += "<a onclick='nextTask();' class='button'>Next task</a>";
 
   contentElem.innerHTML = html;
+  clearQueries();
 }
 
 function nextTask()

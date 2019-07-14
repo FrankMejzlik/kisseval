@@ -79,7 +79,7 @@ exports.nextTask = function(req, res)
   res.jsonp(response);
 }
 
-exports.submitTaskk = function(req, res) 
+exports.submitTask = function(req, res) 
 {
   global.logger.log('debug', "=> submitTask()");
   const sess = req.session;
@@ -148,21 +148,16 @@ exports.submitTaskk = function(req, res)
     const sessionDurationInSeconds = Math.floor(microSecondsDiff/(1000));
 
 
-    // const resultShots = global.imageRanker.TrecvidGetRelevantShots(
-    //   queriesPlain, 
-    //   1000, 
-    //   settingsForNative.aggregation, 
-    //   settingsForNative.rankingModel, 
-    //   settingsForNative.rankingModelSettings, 
-    //   settingsForNative.aggregationSettings,
-    //   sessionDurationInSeconds,
-    //   0
-    // );
-
-    let resultShots = new Object();
-    resultShots.elapsedTime = 1.0;
-    resultShots.shots = new Array();
-
+    const resultShots = global.imageRanker.TrecvidGetRelevantShots(
+      queriesPlain, 
+      1000, 
+      settingsForNative.aggregation, 
+      settingsForNative.rankingModel, 
+      settingsForNative.rankingModelSettings, 
+      settingsForNative.aggregationSettings,
+      sessionDurationInSeconds,
+      0
+    );
 
     // ===============================
     // Print provided results into output XML

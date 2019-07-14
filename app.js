@@ -103,7 +103,7 @@ const inputData = 4;
 
 // Do you even TRECVID?
 const doTrecvid =  true;
-const testTrecvid = true;
+const testTrecvid = false;
 
 // Vars for ImageRanker constructor args
 let a = path.join(global.rootDir, global.gConfig.pathToImages);

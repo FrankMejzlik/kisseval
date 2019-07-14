@@ -81,10 +81,12 @@ exports.startTrecvidTaskSession = function(sess)
 {
   global.logger.log('debug', "=> startTrecvidTaskSession()");
 
-
-  sess.trecvidSession = new Object();
-  sess.trecvidSession.currTaskIdx = 0;
-
+  // Start new
+  if (typeof sess.trecvidSession === "undefined")
+  {
+    sess.trecvidSession = new Object();
+    sess.trecvidSession.currTaskIdx = 0;
+  }
  
 
   var date = new Date();
@@ -166,10 +168,47 @@ exports.terminateTrecvidRun = function(sess)
 
 exports.printXmlHeader = function(sess)
 {
+  let descString = "";
+
+  if (sess.ranker.settings.transformation.id == 100)
+  {
+    descString += "transformation: Softmax, ";
+  }
+  else if (sess.ranker.settings.transformation.id == 200)
+  {
+    descString += "transformation: Linear, ";
+  }
+
+  if (sess.ranker.settings.aggregationModel.id == 3)
+  {
+    descString += "model: Viret, ";
+    if (sess.ranker.settings.aggregationModel.viret.queryOperations == 0)
+    {
+      descString += "Product + Sum";
+    }
+    else if (sess.ranker.settings.aggregationModel.viret.queryOperations == 1)
+    {
+      descString += "Product + Max";
+    }
+    else if (sess.ranker.settings.aggregationModel.viret.queryOperations == 2)
+    {
+      descString += "Sum + Sum";
+    }
+    else if (sess.ranker.settings.aggregationModel.viret.queryOperations == 3)
+    {
+      descString += "Sum + Max";
+    }
+  }
+  else if (sess.ranker.settings.aggregationModel.id == 1)
+  {
+    descString += "model: Boolean, ";
+  }
+
+
   let headerString = 
     '<!DOCTYPE videoAdhocSearchResults SYSTEM "https://www-nlpir.nist.gov/projects/tv2019/dtds/videoAdhocSearchResults.dtd">\n\n\
     <videoAdhocSearchResults>\n\
-    \t<videoAdhocSearchRunResult trType="A" class="M" task="'+ sess.trecvidRun.runType + '" novelty="C" pid="SIRET" priority="1" desc="">\n';
+    \t<videoAdhocSearchRunResult trType="A" class="M" task="'+ sess.trecvidRun.runType + '" novelty="C" pid="SIRET" priority="1" desc="' + descString + '">\n';
 
   // Append to file
   fs.appendFileSync(sess.trecvidRun.outputFilepath, headerString);
@@ -195,14 +234,15 @@ exports.printXmlShots = function(sess, elapsedTime, shots)
 
   for (i in shots)
   {
+    const iNum = Number(i) + 1;
     // Add enough zeros
     const videoIdPadded = String(shots[i].videoId).padStart(5, '0');
 
     totalString += 
-    '\t\t\t <item seqNum="'+ i + '" shotId="shot' + videoIdPadded + '_' + shots[i].shotId + '"/> \n';
+    '\t\t\t <item seqNum="'+ iNum + '" shotId="shot' + videoIdPadded + '_' + shots[i].shotId + '"/> \n';
   }
 
-  totalString += '\t\t</videoAdhocSearchTopicResult>';
+  totalString += '\t\t</videoAdhocSearchTopicResult>\n';
 
   // Append to file
   fs.appendFileSync(sess.trecvidRun.outputFilepath, totalString);

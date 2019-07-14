@@ -13,6 +13,8 @@ exports.startRunNormal = function(req, res)
   // Get session object reference
   const sess = req.session;
 
+  sess.trecvidSession = undefined;
+
   // Start RUN
   trecvidRankerUtils.startTrecvidRun(sess, global.gConfig.normalTasks, "M");
 
@@ -39,6 +41,8 @@ exports.startRunProgress = function(req, res)
   // Get session object reference
   const sess = req.session;
 
+  sess.trecvidSession = undefined;
+
   // Start RUN
   trecvidRankerUtils.startTrecvidRun(sess, global.gConfig.progressTasks, "P");
 
@@ -59,10 +63,12 @@ exports.startRunProgress = function(req, res)
 
 exports.nextTask = function(req, res) 
 {
-  // Gsesset session object reference
+  global.logger.log('debug', "=> nextTask()");
+
+  // Reset session object reference
   const sess = req.session;
 
-  global.logger.log('debug', "=> nextTask()");
+  
 
   // Terminate this task session
   trecvidRankerUtils.startTrecvidTaskSession(sess);

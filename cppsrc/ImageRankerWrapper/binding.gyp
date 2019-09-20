@@ -7,6 +7,10 @@
             "ImageRanker/ImageRanker/src/KeywordsContainer.cpp",
             "ImageRanker/ImageRanker/src/Database.cpp",
             "ImageRanker/ImageRanker/src/GridTest.cpp",
+            "ImageRanker/ImageRanker/src/FileParser.cpp",
+            "ImageRanker/ImageRanker/src/ranking_models/ViretModel.cpp",
+            "ImageRanker/ImageRanker/src/ranking_models/RankingModelBase.cpp",
+            "ImageRanker/ImageRanker/src/ranking_models/BooleanBucketModel.cpp",
             "ImageRankerWrapper.cpp",
         ],
 
@@ -14,7 +18,7 @@
             "<!@(node -p \"require('node-addon-api').include\")",
             "ImageRanker/ImageRanker/src/",
             "ImageRanker/ImageRanker/src/transformations/",
-            "ImageRanker/ImageRanker/src/aggregation_models/",
+            "ImageRanker/ImageRanker/src/ranking_models/",
             "ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/include/"
         ],
         'libraries': [],

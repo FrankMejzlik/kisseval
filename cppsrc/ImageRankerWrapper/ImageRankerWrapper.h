@@ -91,14 +91,14 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
 
   Napi::Value GetRelevantImagesWithSuggestedPlainQuery(const Napi::CallbackInfo& info);
 
-  //ImageRanker::ImageReference GetRandomImage() const;
+  //ImageRanker::std::string GetRandomImage() const;
   Napi::Value GetRandomImage(const Napi::CallbackInfo& info);
   Napi::Value GetRandomImageSequence(const Napi::CallbackInfo& info);
 
-  //ImageRanker::ImageReference GetNearKeywords(const std::string& prefix);
+  //ImageRanker::std::string GetNearKeywords(const std::string& prefix);
   Napi::Value GetNearKeywords(const Napi::CallbackInfo& info);
 
-  //std::vector<ImageReference> GetRelevantImages(const std::string& query, RankingModel rankingModel = DEFAULT_RANKING_MODEL) const;
+  //std::vector<std::string> GetRelevantImages(const std::string& query, RankingModel rankingModel = DEFAULT_RANKING_MODEL) const;
   /* DYNAMIC RETURN:
   [
     {

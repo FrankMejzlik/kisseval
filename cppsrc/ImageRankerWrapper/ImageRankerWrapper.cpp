@@ -1,3 +1,6 @@
+#include "common.h"
+#include "utility.h"
+
 #include "ImageRankerWrapper.h"
 
 #include <stdexcept>
@@ -39,7 +42,8 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
-ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::ObjectWrap<ImageRankerWrapper>(info)  {
+ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::ObjectWrap<ImageRankerWrapper>(info)  
+{
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
 
@@ -52,23 +56,108 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
 
   // Convert arguments
   std::string imagesPath = info[0].As<Napi::String>().Utf8Value();
-  std::string rawNetRankingFilepath = info[1].As<Napi::String>().Utf8Value();
-  std::string keywordClassesFilepath = info[2].As<Napi::String>().Utf8Value();
-  std::string softmaxFilepath = info[3].As<Napi::String>().Utf8Value();
-  std::string deepFeaturesFilepath = info[4].As<Napi::String>().Utf8Value();
+
+  std::vector<std::tuple<eKeywordsDataType, std::string>> keywordsFileRefs;
+  Napi::Array napiArray = info[1].As<Napi::Array>();
+  for(size_t i = 0; i < napiArray.Length(); i++)
+  {
+    Napi::Value v = napiArray[i];
+    if (v.IsObject())
+    {
+      Napi::Object o = v.As<Napi::Object>();
+
+      eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+      std::string filepath = static_cast<std::string>(o.Get("filepath").As<Napi::String>());
+
+     keywordsFileRefs.emplace_back(kwDataType, filepath);
+    }
+  }
+
+  std::vector<std::tuple<eKeywordsDataType, eImageScoringDataType, std::string>> imageScoringFileRefs;
+  napiArray = info[2].As<Napi::Array>();
+  for(size_t i = 0; i < napiArray.Length(); i++)
+  {
+    Napi::Value v = napiArray[i];
+    if (v.IsObject())
+    {
+      Napi::Object o = v.As<Napi::Object>();
+
+      eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+      eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+      std::string filepath = static_cast<std::string>(o.Get("filepath").As<Napi::String>());
+
+     imageScoringFileRefs.emplace_back(kwDataType, scoringDataType, filepath);
+    }
+  }
+
+  std::vector<std::tuple<eKeywordsDataType, eImageScoringDataType, std::string>> imageSoftmaxScoringFileRefs;
+  napiArray = info[3].As<Napi::Array>();
+  for(size_t i = 0; i < napiArray.Length(); i++)
+  {
+    Napi::Value v = napiArray[i];
+    if (v.IsObject())
+    {
+      Napi::Object o = v.As<Napi::Object>();
+
+      eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+      eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+      std::string filepath = static_cast<std::string>(o.Get("filepath").As<Napi::String>());
+
+     imageSoftmaxScoringFileRefs.emplace_back(kwDataType, scoringDataType, filepath);
+    }
+  }
+
+  std::vector<std::tuple<eKeywordsDataType, eImageScoringDataType, std::string>> deepFeaturesFileRefs;
+  napiArray = info[4].As<Napi::Array>();
+  for(size_t i = 0; i < napiArray.Length(); i++)
+  {
+    Napi::Value v = napiArray[i];
+    if (v.IsObject())
+    {
+      Napi::Object o = v.As<Napi::Object>();
+
+      eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+      eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+      std::string filepath = static_cast<std::string>(o.Get("filepath").As<Napi::String>());
+
+     deepFeaturesFileRefs.emplace_back(kwDataType, scoringDataType, filepath);
+    }
+  }
+
   std::string imageToIdMapFilepath = info[5].As<Napi::String>().Utf8Value();
   size_t idOffset = info[6].As<Napi::Number>().Uint32Value();
-  ImageRanker::Mode mode = static_cast<ImageRanker::Mode>(info[7].As<Napi::Number>().Uint32Value());
+  ImageRanker::eMode mode = static_cast<ImageRanker::eMode>(info[7].As<Napi::Number>().Uint32Value());
 
 #if LOG_CALLS
 
   std::cout << "===================================" << std::endl;
   std::cout << "CALL: ImageRanker() with arguments:" << std::endl;
   std::cout << "\t imagesPath = " << imagesPath << std::endl;
-  std::cout << "\t rawNetRankingFilepath = " << rawNetRankingFilepath << std::endl;
-  std::cout << "\t keywordClassesFilepath = " << keywordClassesFilepath << std::endl;
-  std::cout << "\t softmaxFilepath = " << softmaxFilepath << std::endl;
-  std::cout << "\t deepFeaturesFilepath = " << deepFeaturesFilepath << std::endl;
+
+  std::cout << "\t keywordsFileRefs =" << std::endl;
+  for (auto&& [kwId, filepath] : keywordsFileRefs)
+  {
+    std::cout << "\t\t(" << ToString(kwId) << ", " << ")," << std::endl;
+  }
+
+  std::cout << "\t imageScoringFileRefs =" << std::endl;
+  for (auto&& [kwId, scId, filepath] : imageScoringFileRefs)
+  {
+    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) << ", " << ")," << std::endl;
+  }
+
+  std::cout << "\t imageSoftmaxScoringFileRefs =" << std::endl;
+  for (auto&& [kwId, scId, filepath] : imageSoftmaxScoringFileRefs)
+  {
+    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) << ", " << ")," << std::endl;
+  }
+
+  std::cout << "\t deepFeaturesFileRefs =" << std::endl;
+  for (auto&& [kwId, scId, filepath] : deepFeaturesFileRefs)
+  {
+    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) << ", " << ")," << std::endl;
+  }
+
   std::cout << "\t imageToIdMapFilepath = " << imageToIdMapFilepath << std::endl;
   std::cout << "\t idOffset = " << idOffset << std::endl;
   std::cout << "\t mode = " << (size_t)mode << std::endl;
@@ -80,10 +169,10 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
   try {
     this->actualClass_ = new ImageRanker(
       imagesPath,
-      rawNetRankingFilepath,
-      keywordClassesFilepath,
-      softmaxFilepath,
-      deepFeaturesFilepath,
+      keywordsFileRefs,
+      imageScoringFileRefs,
+      imageSoftmaxScoringFileRefs,
+      deepFeaturesFileRefs,
       imageToIdMapFilepath,
       idOffset,
       mode
@@ -356,7 +445,7 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
   }
 
   // Call native method
-  ImageReference image;
+  const Image* image;
   try {
     image =  this->actualClass_->GetRandomImage();
   } 
@@ -374,7 +463,7 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
     napi_value imageIdKey;
     napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
     napi_value imageId;
-    napi_create_uint32(env, std::get<0>(image), &imageId);
+    napi_create_uint32(env, image->m_imageId, &imageId);
 
     napi_set_property(env, result, imageIdKey, imageId);
   }
@@ -384,7 +473,7 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
     napi_value filenameKey;
     napi_create_string_utf8(env, "filename", 8, &filenameKey);
     napi_value filename;
-    napi_create_string_utf8(env, std::get<1>(image).data(), std::get<1>(image).size(), &filename);
+    napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
 
     napi_set_property(env, result, filenameKey, filename);
   }
@@ -407,7 +496,7 @@ Napi::Value ImageRankerWrapper::GetRandomImageSequence(const Napi::CallbackInfo&
   size_t seqLength = info[0].As<Napi::Number>().Uint32Value();  
 
   // Call native method
-  std::vector<ImageReference> images;
+  std::vector<const Image*> images;
   try {
     images =  this->actualClass_->GetRandomImageSequence(seqLength);
   } 
@@ -430,7 +519,7 @@ Napi::Value ImageRankerWrapper::GetRandomImageSequence(const Napi::CallbackInfo&
       napi_value imageIdKey;
       napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
       napi_value imageId;
-      napi_create_uint32(env, std::get<0>(image), &imageId);
+      napi_create_uint32(env, image->m_imageId, &imageId);
 
       napi_set_property(env, result, imageIdKey, imageId);
     }
@@ -440,7 +529,7 @@ Napi::Value ImageRankerWrapper::GetRandomImageSequence(const Napi::CallbackInfo&
       napi_value filenameKey;
       napi_create_string_utf8(env, "filename", 8, &filenameKey);
       napi_value filename;
-      napi_create_string_utf8(env, std::get<1>(image).data(), std::get<1>(image).size(), &filename);
+      napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
 
       napi_set_property(env, result, filenameKey, filename);
     }
@@ -473,7 +562,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
   Napi::Array gridTestSettingsArray = info[0].As<Napi::Array>();
   for (size_t i = 0; i < gridTestSettingsArray.Length(); i++)
   {
-    std::tuple<NetDataTransformation, RankingModelId, QueryOriginId, std::vector<std::string>, std::vector<std::string>> metaResult;
+    std::tuple<InputDataTransformId, RankingModelId, QueryOriginId, std::vector<std::string>, std::vector<std::string>> metaResult;
 
     Napi::Value v = gridTestSettingsArray[i];
 
@@ -486,7 +575,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
       {
         if (v.IsNumber())
         {
-          NetDataTransformation agg = static_cast<NetDataTransformation>((uint32_t)v.As<Napi::Number>().Uint32Value());
+          InputDataTransformId agg = static_cast<InputDataTransformId>((uint32_t)v.As<Napi::Number>().Uint32Value());
 
           std::get<0>(metaResult) = agg;
         }
@@ -566,7 +655,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
     for (auto&& settings : gridTestSettings)
     {
       std::cout << i << ": " << std::endl;
-      std::cout << "NetDataTransformation = " << (size_t)std::get<0>(settings) << std::endl;
+      std::cout << "InputDataTransformId = " << (size_t)std::get<0>(settings) << std::endl;
       std::cout << "RankingModelId = " << (size_t)std::get<1>(settings) << std::endl;
       std::cout << "QueryOriginId = " << (size_t)std::get<2>(settings) << std::endl;
 
@@ -749,21 +838,33 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 
   // Process arguments
   int length = info.Length();
-  if (length != 6)
+  if (length != 7)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::RunModelTest)").ThrowAsJavaScriptException();
   }
 
-  Napi::Number aggFn = info[0].As<Napi::Number>();
-  Napi::Number modelType = info[1].As<Napi::Number>();
-  Napi::Number dataSource = info[2].As<Napi::Number>();
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+
+  Napi::Number aggFn = info[1].As<Napi::Number>();
+  Napi::Number modelType = info[2].As<Napi::Number>();
+  Napi::Number dataSource = info[3].As<Napi::Number>();
 
   //
   // Get simulated user settings vector
   //
   std::vector<std::string> simulatedUserSettings;
 
-  Napi::Array simulatedUsersettingsArray = info[3].As<Napi::Array>();
+  Napi::Array simulatedUsersettingsArray = info[4].As<Napi::Array>();
   for(size_t i = 0; i < simulatedUsersettingsArray.Length(); i++)
   {
     Napi::Value v = simulatedUsersettingsArray[i];
@@ -780,7 +881,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   //
   std::vector<std::string> settings;
 
-  Napi::Array settingsArray = info[4].As<Napi::Array>();
+  Napi::Array settingsArray = info[5].As<Napi::Array>();
   for(size_t i = 0; i < settingsArray.Length(); i++)
   {
     Napi::Value v = settingsArray[i];
@@ -794,7 +895,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   // Aggregation settings
   std::vector<std::string> aggSettings;
 
-  Napi::Array aggSettingsArray = info[5].As<Napi::Array>();
+  Napi::Array aggSettingsArray = info[6].As<Napi::Array>();
   for (size_t k{0ULL}; k < aggSettingsArray.Length(); k++)
   {
     Napi::Value val = aggSettingsArray[k];
@@ -834,7 +935,8 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   ChartData chartDataPairs;
   try {
     chartDataPairs = this->actualClass_->RunModelTestWrapper(
-      (NetDataTransformation)aggFn.Uint32Value(),
+      kwScDataId,
+      (InputDataTransformId)aggFn.Uint32Value(),
       (RankingModelId)modelType.Uint32Value(), 
       (QueryOriginId)dataSource.Uint32Value(),
       simulatedUserSettings, settings, aggSettings
@@ -881,8 +983,6 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 
   return Napi::Object(env, result);
 }
-
-
 
 Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::CallbackInfo& info)
 {
@@ -998,7 +1098,7 @@ Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::Callba
   try {
     this->actualClass_->SubmitInteractiveSearchSubmit(
       (InteractiveSearchOrigin)originType, targetImageId, 
-      (RankingModelId)modelId, (NetDataTransformation)transformationId,
+      (RankingModelId)modelId, (InputDataTransformId)transformationId,
       modelSettings, transformationSettings,
       sessionId, searchSessionId, endStatus, sessionDuration,
       actions, userId
@@ -1324,35 +1424,35 @@ Napi::Value ImageRankerWrapper::GetImageDataById(const Napi::CallbackInfo& info)
     napi_create_array(env, &probVecArr);
     {
       size_t i{ 0ULL };
-      for (auto&& probPair : image->m_rawNetRankingSorted)
-      {
-        napi_value pair;
-        napi_create_object(env, &pair);
+      // for (auto&& probPair : image->m_rawNetRankingSorted)
+      // {
+      //   napi_value pair;
+      //   napi_create_object(env, &pair);
 
-        // Set "index"
-        {
-          napi_value key;
-          napi_create_string_utf8(env, "index", 5, &key);
-          napi_value value;
-          napi_create_uint32(env, probPair.first, &value);
+      //   // Set "index"
+      //   {
+      //     napi_value key;
+      //     napi_create_string_utf8(env, "index", 5, &key);
+      //     napi_value value;
+      //     napi_create_uint32(env, probPair.first, &value);
 
-          napi_set_property(env, pair, key, value);
-        }
+      //     napi_set_property(env, pair, key, value);
+      //   }
 
-        // Set "prob"
-        {
-          napi_value key;
-          napi_create_string_utf8(env, "prob", 4, &key);
-          napi_value value;
-          napi_create_double(env, probPair.second, &value);
+      //   // Set "prob"
+      //   {
+      //     napi_value key;
+      //     napi_create_string_utf8(env, "prob", 4, &key);
+      //     napi_value value;
+      //     napi_create_double(env, probPair.second, &value);
 
-          napi_set_property(env, pair, key, value);
-        }
+      //     napi_set_property(env, pair, key, value);
+      //   }
 
-        napi_set_element(env, probVecArr, i, pair);
+      //   napi_set_element(env, probVecArr, i, pair);
 
-        ++i;
-      }
+      //   ++i;
+      // }
       
     }
     napi_set_property(env, result, probVecKey, probVecArr);
@@ -1368,7 +1468,7 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
 
   // Process arguments
   int length = info.Length();
-  if (length != 2)
+  if (length != 4)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetImageKeywordsForInteractiveSearch)").ThrowAsJavaScriptException();
   }
@@ -1376,16 +1476,21 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
   Napi::Number imageId = info[0].As<Napi::Number>();
   Napi::Number numResults = info[1].As<Napi::Number>();
 
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[2];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+
+  Napi::Boolean withExampleImages = info[3].As<Napi::Boolean>();
+
   // Call native method
-  /*std::pair<std::vector<std::tuple<size_t, std::string, float>>, std::vector<std::tuple<size_t, std::string, float>>> hypersNonHypersPair;
-  try 
-  {
-    hypersNonHypersPair = this->actualClass_->GetImageKeywordsForInteractiveSearch(imageId.Uint32Value(), numResults.Uint32Value());
-  } 
-  catch (const std::exception& e)
-  {
-    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
-  }*/
   std::tuple<
     std::vector<std::tuple<size_t, std::string, float, std::vector<std::string>>>, 
     std::vector<std::tuple<size_t, std::string, float, std::vector<std::string>>>,
@@ -1393,7 +1498,10 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
   > hypersNonHypersPair;
   try
   {
-    hypersNonHypersPair = this->actualClass_->GetImageKeywordsForInteractiveSearchWithExampleImages(imageId.Uint32Value(), numResults.Uint32Value());
+    hypersNonHypersPair = this->actualClass_->GetImageKeywordsForInteractiveSearch(
+      imageId.Uint32Value(), numResults.Uint32Value(),
+      kwScDataId, withExampleImages.Value()
+      );
   }
   catch (const std::exception& e)
   {
@@ -1618,32 +1726,25 @@ Napi::Value ImageRankerWrapper::GetImageKeywordsForInteractiveSearch(const Napi:
 }
 
 
-Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) {
+Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) 
+{
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
 
   // Process arguments
   int length = info.Length();
 
-  if (length != 1) {
+  if (length != 2) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
   
   Napi::String prefix = info[0].As<Napi::String>();
+  Napi::Boolean withExampleImages = info[1].As<Napi::Boolean>();
 
   // Get suggested keywords
-  /*std::vector< std::tuple<size_t, std::string, std::string> > keywordData;
-  try {
-     keywordData = this->actualClass_->GetNearKeywords(prefix);
-  } 
-  catch (const std::exception& e)
-  {
-    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
-  }*/
-
   std::vector<Keyword*> keywordData;
   try {
-     keywordData = this->actualClass_->GetNearKeywordsWithImages(prefix);
+     keywordData = this->actualClass_->GetNearKeywords(prefix.Utf8Value(), withExampleImages.Value());
   }
   catch (const std::exception& e)
   {
@@ -1705,8 +1806,6 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info) 
   return Napi::Object(env, result);
 }
 
-
-
 Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
@@ -1716,14 +1815,26 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
 
   // Process arguments
   int length = info.Length();
-  if (length != 7)
+  if (length != 9)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
   }
 
   // Transfer JS args to C args
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+
   std::vector<std::string> queries;
-  Napi::Array queriesArray = info[0].As<Napi::Array>();
+  Napi::Array queriesArray = info[1].As<Napi::Array>();
   for (size_t k{ 0ULL }; k < queriesArray.Length(); k++)
   {
     Napi::Value val = queriesArray[k];
@@ -1735,18 +1846,18 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   }
 
   // size_t numResults
-  size_t numResults = info[1].As<Napi::Number>().Uint32Value();
+  size_t numResults = info[2].As<Napi::Number>().Uint32Value();
 
   // Aggregation aggFn
-  size_t aggregation = info[2].As<Napi::Number>().Uint32Value();
+  size_t aggregation = info[3].As<Napi::Number>().Uint32Value();
 
   // RankingModel rankingModel
-  size_t rankingModel = info[3].As<Napi::Number>().Uint32Value();
+  size_t rankingModel = info[4].As<Napi::Number>().Uint32Value();
 
   // const ModelSettings& settings
   std::vector<std::string> settings;
 
-  Napi::Array settingsArray = info[4].As<Napi::Array>();
+  Napi::Array settingsArray = info[5].As<Napi::Array>();
   for (size_t k{0ULL}; k < settingsArray.Length(); k++)
   {
     Napi::Value val = settingsArray[k];
@@ -1760,7 +1871,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   // Aggregation settings
   std::vector<std::string> aggSettings;
 
-  Napi::Array aggSettingsArray = info[5].As<Napi::Array>();
+  Napi::Array aggSettingsArray = info[6].As<Napi::Array>();
   for (size_t k{0ULL}; k < aggSettingsArray.Length(); k++)
   {
     Napi::Value val = aggSettingsArray[k];
@@ -1773,18 +1884,21 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
 
 
   // size_t imageId = SIZE_T_ERROR_VALUE
-  size_t imageId = info[6].As<Napi::Number>().Uint32Value();
+  size_t imageId = info[7].As<Napi::Number>().Uint32Value();
+
+  bool withOccuranceValue = (info[8].As<Napi::Boolean>()).Value();
 
 #if LOG_CALLS
 
   std::cout << "CALLING NATIVE 'GetRelevantImagesWrapper' with args:" << std::endl;
+  std::cout << "kwScDataId = (" << ToString(std::get<0>(kwScDataId)) << ", " << ToString(std::get<1>(kwScDataId)) << ")" << std::endl;
   std::cout << "\t queries = " << std::endl;
   for (auto&& query : queries)
   {
     std::cout << "\t\t" << query << std::endl;
   }
   std::cout << "numResults = " << numResults << std::endl;
-  std::cout << "NetDataTransformation = " << aggregation << std::endl;
+  std::cout << "InputDataTransformId = " << aggregation << std::endl;
   std::cout << "rankingModelId = " << rankingModel << std::endl;
 
   std::cout << "\t modelSettings = " << std::endl;
@@ -1800,18 +1914,20 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
   }
 
   std::cout << "imageId = " << imageId << std::endl;
+  std::cout << "withOccuranceValue = " << withOccuranceValue << std::endl;
   std::cout << "===================" << std::endl;
 
 #endif
 
   // Call native method: Get vector of relevant images
-  std::pair<std::vector<ImageReference>, QueryResult> images;
+  std::tuple<std::vector<const Image*>, std::vector<KeywordOccurance>, size_t> images;
   try {
-     images = this->actualClass_->GetRelevantImagesWrapper(
+     images = this->actualClass_->GetRelevantImages(
+      kwScDataId,
       queries, numResults, 
-      (NetDataTransformation)aggregation, (RankingModelId)rankingModel, 
+      (InputDataTransformId)aggregation, (RankingModelId)rankingModel, 
       settings, aggSettings,
-      imageId
+      imageId, withOccuranceValue
     );
   } 
   catch (const std::exception& e)
@@ -1829,7 +1945,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
     napi_create_string_utf8(env, "targetImageRank", 15, &key);
 
     napi_value value;
-    napi_create_uint32(env, images.second.m_targetImageRank, &value);
+    napi_create_uint32(env, std::get<2>(images), &value);
 
     napi_set_property(env, result, key, value);
   }
@@ -1845,7 +1961,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
     {
 
       size_t i{ 0ULL };
-      for (auto&& image : images.first)
+      for (auto&& image : std::get<0>(images))
       {
 
         // Construct NAPI return object 
@@ -1857,7 +1973,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
           napi_value imageIdKey;
           napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
           napi_value imageId;
-          napi_create_uint32(env, std::get<0>(image), &imageId);
+          napi_create_uint32(env, image->m_imageId, &imageId);
 
           napi_set_property(env, imageItem, imageIdKey, imageId);
         }
@@ -1867,7 +1983,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesPlainQuery(const Napi::Callback
           napi_value filenameKey;
           napi_create_string_utf8(env, "filename", 8, &filenameKey);
           napi_value filename;
-          napi_create_string_utf8(env, std::get<1>(image).data(), std::get<1>(image).size(), &filename);
+          napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
 
           napi_set_property(env, imageItem, filenameKey, filename);
         }
@@ -1892,32 +2008,45 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
 
   // Process arguments
   int length = info.Length();
-  if (length != 7)
+  if (length != 9)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery)").ThrowAsJavaScriptException();
   }
 
   // Transfer JS args to C args
+
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+
   // const std::string& query
-  std::string query{ info[0].As<Napi::String>().Utf8Value() };
+  std::string query{ info[1].As<Napi::String>().Utf8Value() };
 
   // \todo implement properly
   std::vector<std::string> queries;
   queries.push_back(query);
 
   // size_t numResults
-  size_t numResults = info[1].As<Napi::Number>().Uint32Value();
+  size_t numResults = info[2].As<Napi::Number>().Uint32Value();
 
   // Aggregation aggFn
-  size_t aggregation = info[2].As<Napi::Number>().Uint32Value();
+  size_t aggregation = info[3].As<Napi::Number>().Uint32Value();
 
   // RankingModel rankingModel
-  size_t rankingModel = info[3].As<Napi::Number>().Uint32Value();
+  size_t rankingModel = info[4].As<Napi::Number>().Uint32Value();
 
   // const ModelSettings& settings
   std::vector<std::string> settings;
 
-  Napi::Array settingsArray = info[4].As<Napi::Array>();
+  Napi::Array settingsArray = info[5].As<Napi::Array>();
   for (size_t k{ 0ULL }; k < settingsArray.Length(); k++)
   {
     Napi::Value val = settingsArray[k];
@@ -1931,7 +2060,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
   // Aggregation settings
   std::vector<std::string> aggSettings;
 
-  Napi::Array aggSettingsArray = info[5].As<Napi::Array>();
+  Napi::Array aggSettingsArray = info[6].As<Napi::Array>();
   for (size_t k{ 0ULL }; k < aggSettingsArray.Length(); k++)
   {
     Napi::Value val = aggSettingsArray[k];
@@ -1944,14 +2073,16 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
 
 
   // size_t imageId = SIZE_T_ERROR_VALUE
-  size_t imageId = info[6].As<Napi::Number>().Uint32Value();
+  size_t imageId = info[7].As<Napi::Number>().Uint32Value();
+
+  bool withOccuranceValue = (info[8].As<Napi::Boolean>()).Value();
 
 #if LOG_CALLS
 
   std::cout << "CALLING NATIVE 'GetRelevantImagesWithSuggestedWrapper' with args:" << std::endl;
   std::cout << "query = " << query << std::endl;
   std::cout << "numResults = " << numResults << std::endl;
-  std::cout << "NetDataTransformation = " << aggregation << std::endl;
+  std::cout << "InputDataTransformId = " << aggregation << std::endl;
   std::cout << "rankingModelId = " << rankingModel << std::endl;
 
   std::cout << "\t modelSettings = " << std::endl;
@@ -1972,11 +2103,12 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
 #endif
 
   // Call native method: Get vector of relevant images
-  std::tuple<std::vector<ImageReference>, std::vector<std::tuple<size_t, std::string, float>>, QueryResult> images;
+  std::tuple<std::vector<const Image*>, std::vector<KeywordOccurance>, size_t> images;
   try {
-    images = this->actualClass_->GetRelevantImagesWithSuggestedWrapper(
+    images = this->actualClass_->GetRelevantImages(
+      kwScDataId,
       queries, numResults,
-      (NetDataTransformation)aggregation, (RankingModelId)rankingModel,
+      (InputDataTransformId)aggregation, (RankingModelId)rankingModel,
       settings, aggSettings,
       imageId
     );
@@ -1996,7 +2128,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
     napi_create_string_utf8(env, "targetImageRank", NAPI_AUTO_LENGTH, &key);
 
     napi_value value;
-    napi_create_uint32(env, std::get<2>(images).m_targetImageRank, &value);
+    napi_create_uint32(env, std::get<2>(images), &value);
 
     napi_set_property(env, result, key, value);
   }
@@ -2010,47 +2142,47 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
     napi_create_array(env, &suggKeywordsArray);
     {
       size_t i{ 0ULL };
-      for (auto&& kw : std::get<1>(images))
-      {
+      // for (auto&& kw : std::get<1>(images))
+      // {
 
-        // Construct NAPI return object 
-        napi_value suggKeywordObj;
-        napi_create_object(env, &suggKeywordObj);
+      //   // Construct NAPI return object 
+      //   napi_value suggKeywordObj;
+      //   napi_create_object(env, &suggKeywordObj);
 
-        // Set "wordnetId"
-        {
-          napi_value wordnetIdKey;
-          napi_create_string_utf8(env, "wordnetId", NAPI_AUTO_LENGTH, &wordnetIdKey);
-          napi_value imageId;
-          napi_create_uint32(env, std::get<0>(kw), &imageId);
+      //   // Set "wordnetId"
+      //   {
+      //     napi_value wordnetIdKey;
+      //     napi_create_string_utf8(env, "wordnetId", NAPI_AUTO_LENGTH, &wordnetIdKey);
+      //     napi_value imageId;
+      //     napi_create_uint32(env, std::get<0>(kw), &imageId);
 
-          napi_set_property(env, suggKeywordObj, wordnetIdKey, imageId);
-        }
+      //     napi_set_property(env, suggKeywordObj, wordnetIdKey, imageId);
+      //   }
 
-        // Set "word"
-        {
-          napi_value filenameKey;
-          napi_create_string_utf8(env, "word", NAPI_AUTO_LENGTH, &filenameKey);
-          napi_value filename;
-          napi_create_string_utf8(env, std::get<1>(kw).data(), NAPI_AUTO_LENGTH, &filename);
+      //   // Set "word"
+      //   {
+      //     napi_value filenameKey;
+      //     napi_create_string_utf8(env, "word", NAPI_AUTO_LENGTH, &filenameKey);
+      //     napi_value filename;
+      //     napi_create_string_utf8(env, std::get<1>(kw).data(), NAPI_AUTO_LENGTH, &filename);
 
-          napi_set_property(env, suggKeywordObj, filenameKey, filename);
-        }
+      //     napi_set_property(env, suggKeywordObj, filenameKey, filename);
+      //   }
 
-        // Set "frequencyRating"
-        {
-          napi_value filenameKey;
-          napi_create_string_utf8(env, "frequencyRating", NAPI_AUTO_LENGTH, &filenameKey);
-          napi_value frequencyRating;
-          napi_create_double(env, std::get<2>(kw), &frequencyRating);
+      //   // Set "frequencyRating"
+      //   {
+      //     napi_value filenameKey;
+      //     napi_create_string_utf8(env, "frequencyRating", NAPI_AUTO_LENGTH, &filenameKey);
+      //     napi_value frequencyRating;
+      //     napi_create_double(env, std::get<2>(kw), &frequencyRating);
 
-          napi_set_property(env, suggKeywordObj, filenameKey, frequencyRating);
-        }
+      //     napi_set_property(env, suggKeywordObj, filenameKey, frequencyRating);
+      //   }
 
-        napi_set_element(env, suggKeywordsArray, i, suggKeywordObj);
+      //   napi_set_element(env, suggKeywordsArray, i, suggKeywordObj);
 
-        ++i;
-      }
+      //   ++i;
+      // }
     }
     napi_set_property(env, result, imagesKey, suggKeywordsArray);
   }
@@ -2077,7 +2209,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
           napi_value imageIdKey;
           napi_create_string_utf8(env, "imageId", NAPI_AUTO_LENGTH, &imageIdKey);
           napi_value imageId;
-          napi_create_uint32(env, std::get<0>(image), &imageId);
+          napi_create_uint32(env, image->m_imageId, &imageId);
 
           napi_set_property(env, imageItem, imageIdKey, imageId);
         }
@@ -2087,7 +2219,7 @@ Napi::Value ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery(const N
           napi_value filenameKey;
           napi_create_string_utf8(env, "filename", NAPI_AUTO_LENGTH, &filenameKey);
           napi_value filename;
-          napi_create_string_utf8(env, std::get<1>(image).data(), NAPI_AUTO_LENGTH, &filename);
+          napi_create_string_utf8(env, image->m_filename.data(), NAPI_AUTO_LENGTH, &filename);
 
           napi_set_property(env, imageItem, filenameKey, filename);
         }
@@ -2112,14 +2244,27 @@ Napi::Value ImageRankerWrapper::TrecvidGetRelevantShots(const Napi::CallbackInfo
 
   // Process arguments
   int length = info.Length();
-  if (length != 8)
+  if (length != 9)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
   }
 
   // Transfer JS args to C args
+
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+
   std::vector<std::string> queries;
-  Napi::Array queriesArray = info[0].As<Napi::Array>();
+  Napi::Array queriesArray = info[1].As<Napi::Array>();
   for (size_t k{ 0ULL }; k < queriesArray.Length(); k++)
   {
     Napi::Value val = queriesArray[k];
@@ -2131,18 +2276,18 @@ Napi::Value ImageRankerWrapper::TrecvidGetRelevantShots(const Napi::CallbackInfo
   }
 
   // size_t numResults
-  size_t numResults = info[1].As<Napi::Number>().Uint32Value();
+  size_t numResults = info[2].As<Napi::Number>().Uint32Value();
 
   // Aggregation aggFn
-  size_t aggregation = info[2].As<Napi::Number>().Uint32Value();
+  size_t aggregation = info[3].As<Napi::Number>().Uint32Value();
 
   // RankingModel rankingModel
-  size_t rankingModel = info[3].As<Napi::Number>().Uint32Value();
+  size_t rankingModel = info[4].As<Napi::Number>().Uint32Value();
 
   // const ModelSettings& settings
   std::vector<std::string> settings;
 
-  Napi::Array settingsArray = info[4].As<Napi::Array>();
+  Napi::Array settingsArray = info[5].As<Napi::Array>();
   for (size_t k{0ULL}; k < settingsArray.Length(); k++)
   {
     Napi::Value val = settingsArray[k];
@@ -2156,7 +2301,7 @@ Napi::Value ImageRankerWrapper::TrecvidGetRelevantShots(const Napi::CallbackInfo
   // Aggregation settings
   std::vector<std::string> aggSettings;
 
-  Napi::Array aggSettingsArray = info[5].As<Napi::Array>();
+  Napi::Array aggSettingsArray = info[6].As<Napi::Array>();
   for (size_t k{0ULL}; k < aggSettingsArray.Length(); k++)
   {
     Napi::Value val = aggSettingsArray[k];
@@ -2167,10 +2312,10 @@ Napi::Value ImageRankerWrapper::TrecvidGetRelevantShots(const Napi::CallbackInfo
     }
   }
 
-  size_t sessionDuation = info[6].As<Napi::Number>().FloatValue();
+  size_t sessionDuation = info[7].As<Napi::Number>().FloatValue();
 
   // size_t imageId = SIZE_T_ERROR_VALUE
-  size_t imageId = info[7].As<Napi::Number>().Uint32Value();
+  size_t imageId = info[8].As<Napi::Number>().Uint32Value();
 
 #if LOG_CALLS
 
@@ -2181,7 +2326,7 @@ Napi::Value ImageRankerWrapper::TrecvidGetRelevantShots(const Napi::CallbackInfo
     std::cout << "\t\t" << query << std::endl;
   }
   std::cout << "numResults = " << numResults << std::endl;
-  std::cout << "NetDataTransformation = " << aggregation << std::endl;
+  std::cout << "InputDataTransformId = " << aggregation << std::endl;
   std::cout << "rankingModelId = " << rankingModel << std::endl;
 
   std::cout << "\t modelSettings = " << std::endl;
@@ -2205,9 +2350,10 @@ Napi::Value ImageRankerWrapper::TrecvidGetRelevantShots(const Napi::CallbackInfo
   // Call native method: Get vector of relevant images
   std::tuple<float, std::vector<std::pair<size_t, size_t>>> durationShotsPair;
   try {
-      durationShotsPair = this->actualClass_->TrecvidGetRelevantShots(
+    durationShotsPair = this->actualClass_->TrecvidGetRelevantShots(
+      kwScDataId,
       queries, numResults, 
-      (NetDataTransformation)aggregation, (RankingModelId)rankingModel, 
+      (InputDataTransformId)aggregation, (RankingModelId)rankingModel, 
       settings, aggSettings,
       sessionDuation,
       imageId

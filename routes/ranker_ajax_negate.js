@@ -211,8 +211,12 @@ exports.processAction = function(req, res)
   
   if (sess.ranker.query.length > 0)
   {
-    //response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
-    response.relevantImagesArray = global.imageRanker.GetRelevantImagesWithSuggestedPlainQuery(
+    const kwScDataType = new Object();
+    kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+    kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+
+    response.relevantImagesArray = global.imageRanker.GetRelevantImages(
+      kwScDataType,
       queryPlain, 
       1000, 
       settingsForNative.aggregation, 
@@ -262,9 +266,11 @@ exports.getImageKeywordsForInteractiveSearch = function(req, res)
 
   const imageId = req.query.imageId;
 
-  //global.logger.log('debug', "action = " + action + ", operand = " + operand);
+  const kwScDataType = new Object();
+  kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+  kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(Number(imageId), 30);
+  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(Number(imageId), 30, kwScDataType, true);
 
   global.logger.log('debug', "<= processAction()");
   res.jsonp(response);

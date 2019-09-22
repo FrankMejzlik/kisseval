@@ -98,17 +98,7 @@
               <% }
             } %>
           ">
-            <a href="/trecvid_ranker/">Trecvid</a>
-          </li>
-          <li class="menu-item
-            <% if (typeof currentPage != 'undefined') 
-            {
-              if (currentPage == "query_annotator") 
-              { %>
-                active
-              <% }
-            } %>
-          ">
+
             <a href="/query_annotator/">Query annotator</a>
           </li>
           <li class="menu-item
@@ -154,4 +144,83 @@
         } %>
 
       </div>
+  </div>
+
+  <div class="global-header-settings-bar">
+    <a onclick="togglekwscform()" class="button">KW & Scoring settings</a>
+    <form style="display: none;" id="kWsCdataTypeForm" class="kw-sc-data-type-form grid-x grid-padding-x" method="POST" action="/settings_ajax_set_kw_sc_data_type" >
+      <label class="cell large-6">Keywords data type
+        <select name="kwDataType">
+          <option value="0"
+          <% if (typeof keywordDataType != 'undefined') 
+          {
+            if (keywordDataType == 0) 
+            { %>
+              selected
+            <% }
+          } %>
+          >Viret V1</option>
+
+          <option value="100"
+          <% if (typeof keywordDataType != 'undefined') 
+          {
+            if (keywordDataType == 100) 
+            { %>
+              selected
+            <% }
+          } %>
+          >Google AI Vision</option>
+        </select>
+      </label>
+
+      <label class="cell large-6">Scoring data type
+        <select name="scoringDataType">
+          <option value="0"
+          <% if (typeof scoringDataType != 'undefined') 
+          {
+            if (scoringDataType == 0) 
+            { %>
+              selected
+            <% }
+          } %>
+          >NasNet</option>
+
+          <option value="100"
+          <% if (typeof scoringDataType != 'undefined') 
+          {
+            if (scoringDataType == 100) 
+            { %>
+              selected
+            <% }
+          } %>
+          >Google AI</option>
+        </select>
+      </label>
+
+      <input type="submit" value="Save">
+    </form>
+    <script>
+      $('#kWsCdataTypeForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url : $(this).attr('action') || window.location.pathname,
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (data) {
+                
+            },
+            error: function (jXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    });
+
+    function togglekwscform()
+    {
+      $("#kWsCdataTypeForm").toggle();
+    }
+    
+    </script>
+
+
   </div>

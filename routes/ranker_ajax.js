@@ -77,9 +77,13 @@ exports.submitImage = function(req, res)
         const queryPlain2 = sess.ranker.query2.join("&");
         queries.push(queryPlain2);
       }
-      
 
-      response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
+      const kwScDataType = new Object();
+      kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+      kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+
+      response.relevantImagesArray = global.imageRanker.GetRelevantImages(
+        kwScDataType,
         queryPlain, 
         0, 
         settingsForNative.aggregation, 
@@ -318,7 +322,12 @@ exports.processAction = function(req, res)
   
   if (sess.ranker.query.length > -1)
   {
-    response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
+    const kwScDataType = new Object();
+    kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+    kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+
+    response.relevantImagesArray = global.imageRanker.GetRelevantImages(
+      kwScDataType,
       queriesPlain, 
       1000, 
       settingsForNative.aggregation, 
@@ -367,7 +376,13 @@ exports.getImageKeywordsForInteractiveSearch = function(req, res)
 
   //global.logger.log('debug', "action = " + action + ", operand = " + operand);
 
-  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(Number(imageId), 30);
+  const kwScDataType = new Object();
+  kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+  kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+
+  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(Number(imageId), 30, kwScDataType, true);
+
+  
 
   global.logger.log('debug', "<= processAction()");
   res.jsonp(response);

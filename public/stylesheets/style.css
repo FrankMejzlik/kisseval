@@ -1160,6 +1160,13 @@ background-position: center center;
   z-index: 1;
   position: relative;
 }
+.global-header-settings-bar
+{
+  position: absolute;
+  width: 20%;
+  right: 0;
+  z-index: 2;
+}
 
 .menu .menu-text .title {
   font-size: 20px;

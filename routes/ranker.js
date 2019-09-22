@@ -5,10 +5,15 @@ var router = express.Router();
 const utils = require("../routes/utils/utils");
 const rankerUtils = require("../routes/utils/ranker_utils");
 
+
 function validStateCheckGeneral(req, viewData)
 {
   // Get session object reference
   const sess = req.session;
+
+  utils.checkGlobalSessionState(sess);  
+
+  utils.checkGlobalViewState(sess, viewData);
 
   // Resolve user level
   utils.resolveUserLevel(sess);

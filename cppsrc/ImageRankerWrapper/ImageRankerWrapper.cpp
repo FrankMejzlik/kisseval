@@ -143,19 +143,19 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
   std::cout << "\t imageScoringFileRefs =" << std::endl;
   for (auto&& [kwId, scId, filepath] : imageScoringFileRefs)
   {
-    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) << ", " << ")," << std::endl;
+    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) << ", " << filepath << ", " << ")," << std::endl;
   }
 
   std::cout << "\t imageSoftmaxScoringFileRefs =" << std::endl;
   for (auto&& [kwId, scId, filepath] : imageSoftmaxScoringFileRefs)
   {
-    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) << ", " << ")," << std::endl;
+    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) <<", " << filepath << ", " << ", " << ")," << std::endl;
   }
 
   std::cout << "\t deepFeaturesFileRefs =" << std::endl;
   for (auto&& [kwId, scId, filepath] : deepFeaturesFileRefs)
   {
-    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) << ", " << ")," << std::endl;
+    std::cout << "\t\t(" << ToString(kwId) << ", " << ToString(scId) <<", " << filepath << ", " << ", " << ")," << std::endl;
   }
 
   std::cout << "\t imageToIdMapFilepath = " << imageToIdMapFilepath << std::endl;
@@ -279,27 +279,40 @@ Napi::Value ImageRankerWrapper::SubmitUserQueriesWithResults(const Napi::Callbac
 
   // Process arguments
   int length = info.Length();
-  if (length != 4)
+  if (length != 5)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::SubmitUserQueriesWithResults)").ThrowAsJavaScriptException();
   }
 
   // Transfer JS args to C
-  Napi::String sessionId = info[0].As<Napi::String>();
-  Napi::Number imageId = info[1].As<Napi::Number>();
-  Napi::String stringQuery = info[2].As<Napi::String>();
-  Napi::Number queryType = info[3].As<Napi::Number>();
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+  Napi::String sessionId = info[1].As<Napi::String>();
+  Napi::Number imageId = info[2].As<Napi::Number>();
+  Napi::String stringQuery = info[3].As<Napi::String>();
+  Napi::Number queryType = info[4].As<Napi::Number>();
 
   // Initialize input structure
   std::vector<GameSessionInputQuery> methodInput;
   methodInput.push_back(GameSessionInputQuery(sessionId.Utf8Value(), imageId.Int64Value(), stringQuery.Utf8Value()));
   size_t queryOrigin = queryType.Int64Value();
 
+  
+
   // Call native method
   std::vector<GameSessionQueryResult> queryResults;
   try {
     // RETURN: std::tuple<size_t, std::string, std::vector<std::string>, std::vector<std::pair<std::string, float>>>
-    queryResults = this->actualClass_->SubmitUserQueriesWithResults(methodInput, static_cast<QueryOriginId>(queryOrigin));
+    queryResults = this->actualClass_->SubmitUserQueriesWithResults(kwScDataId, methodInput, static_cast<QueryOriginId>(queryOrigin));
   } 
   catch (const std::exception& e)
   {
@@ -1344,7 +1357,7 @@ Napi::Value ImageRankerWrapper::GetKeywordByVectorIndex(const Napi::CallbackInfo
 
   // Call native method
   
-  KeywordData keyword;
+  Keyword* keyword;
   try {
     // using KeywordData = std::tuple<size_t, std::string, std::string>;
     keyword = this->actualClass_->GetKeywordByVectorIndex(keywordVectorIndex.Uint32Value());
@@ -1356,7 +1369,7 @@ Napi::Value ImageRankerWrapper::GetKeywordByVectorIndex(const Napi::CallbackInfo
 
   // Construct NAPI return object 
   napi_value result;
-  napi_create_string_utf8(env, std::get<1>(keyword).data(), std::get<1>(keyword).size(), &result);
+  napi_create_string_utf8(env, keyword->m_word.data(), keyword->m_word.size(), &result);
 
 
   return Napi::String(env, result);
@@ -1734,25 +1747,24 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info)
   // Process arguments
   int length = info.Length();
 
-  if (length != 2) {
+  if (length != 3) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
   
-  Napi::String prefix = info[0].As<Napi::String>();
-  Napi::Boolean withExampleImages = info[1].As<Napi::Boolean>();
+  eKeywordsDataType kwDataType = static_cast<eKeywordsDataType>(info[0].As<Napi::Number>().Uint32Value());
+  Napi::String prefix = info[1].As<Napi::String>();
+  Napi::Boolean withExampleImages = info[2].As<Napi::Boolean>();
+  
 
   // Get suggested keywords
   std::vector<Keyword*> keywordData;
   try {
-     keywordData = this->actualClass_->GetNearKeywords(prefix.Utf8Value(), withExampleImages.Value());
+     keywordData = this->actualClass_->GetNearKeywords(kwDataType, prefix.Utf8Value(), withExampleImages.Value());
   }
   catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
-
-
-
 
   // Final return structure
   napi_value result;

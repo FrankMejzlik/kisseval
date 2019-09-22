@@ -7,6 +7,7 @@ var FileStore = require('session-file-store')(session);
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+let utils = require("./routes/utils/utils");
 
 // Load global config
 var config = require("./config/config");
@@ -24,6 +25,7 @@ var collectorDevRouter = require('./routes/collector_dev');
 var scoreboardRouter = require('./routes/scoreboard');
 var docsRouter = require('./routes/docs');
 
+const settingsAjaxRouter = require("./routes/settings_ajax");
 const annotatorRouter = require("./routes/annotator");
 const annotatorAjaxRouter = require("./routes/annotator_ajax");
 const rankerRouter = require("./routes/ranker");
@@ -99,106 +101,69 @@ app.use(session({ secret: 'matfyz', resave: false, saveUninitialized: true, }));
 const imageRanker = require(path.join(__dirname, 'build/Release/image_ranker.node'));
 
 // SELECT DATASET
-const inputData = 4;
+const inputImageSetIds = [ 0 ];
+const inputKeywordDataIds = [ 0, 1 ];
+const inputScoringDataIds = [ 0 ];
+
+const irConsParams = utils.generateImageRankerConstructorArgs(inputImageSetIds, inputKeywordDataIds, inputScoringDataIds);
 
 // Do you even TRECVID?
-const doTrecvid =  true;
+const doTrecvid =  false;
 const testTrecvid = false;
 
-// Vars for ImageRanker constructor args
-let a = path.join(global.rootDir, global.gConfig.pathToImages);
-let b;
-let c;
-let d;
-let e;
-let f;
-let g;
-let h = global.gConfig.appMode;
-
-let outputPath;
-let normalTasks;
-let progressTasks;
-
-// Dataset specific properties
-switch(inputData)
+if (doTrecvid)
 {
-  // NasNet, V3C1 20k dataset
-case 2:
-  
-  b = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.preSoftmaxFilename2);
-  c = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.keywordClassesFilename2);
-  d = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.softmaxFilename2);
-  e = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.deepFeaturesFilename2);
-  f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
-  g = global.gConfig.idOffset2;
+  global.logger.log('debug', ">>> TRECVID session <<<");
 
-  break;
+  let outputPath;
+  let normalTasks;
+  let progressTasks;
 
-  // GoogLeNet, V3C1 20k dataset
-case 3:
-  
-  b = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.preSoftmaxFilename3);
-  c = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.keywordClassesFilename3);
-  d = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.softmaxFilename3);
-  e = path.join(global.rootDir, global.gConfig.pathData3 + global.gConfig.deepFeaturesFilename3);
-  f = path.join(global.rootDir, global.gConfig.pathData2 + global.gConfig.imagesDirList2);
-  g = global.gConfig.idOffset3;
+  // Setup filepaths to task sources
+  outputPath = path.join(global.rootDir, global.gConfig.outputDir);
 
-  break;
-
-  // NasNet, V3C1 1M dataset
-  //  => TRECVID data
-case 4:
-  
-  b = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.preSoftmaxFilename4);
-  c = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.keywordClassesFilename4);
-  d = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.softmaxFilename4);
-  e = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.deepFeaturesFilename4);
-  f = path.join(global.rootDir, global.gConfig.pathData4 + global.gConfig.imagesDirList4);
-  g = global.gConfig.idOffset4;
-
-  if (doTrecvid)
+  // If just testing TRECVID 
+  if (testTrecvid)
   {
-    // Setup filepaths to task sources
-    outputPath = path.join(global.rootDir, "/output/");
+    global.logger.log('debug', ">>> TESTING session <<<");
 
-    // If just testing TRECVID 
-    if (testTrecvid)
-    {
-      normalTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/testing/tasks_normal.txt");
-      progressTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/testing/tasks_progress.txt");  
-    }
-    else 
-    {
-      normalTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/2019/tasks_normal.txt");
-      progressTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/2019/tasks_progress.txt");
-    }
-
-    global.gConfig.outputPath = outputPath;
-    global.gConfig.normalTasks = normalTasks;
-    global.gConfig.progressTasks = progressTasks;
-
-    // Log it out
-    global.logger.log('debug', "TRECVID SPECIFIC:");
+    normalTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/testing/tasks_normal.txt");
+    progressTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/testing/tasks_progress.txt");  
+  }
+  else 
+  {
+    normalTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/2019/tasks_normal.txt");
+    progressTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/2019/tasks_progress.txt");
   }
 
-  break;
+  global.gConfig.outputPath = outputPath;
+  global.gConfig.normalTasks = normalTasks;
+  global.gConfig.progressTasks = progressTasks;
+
+  
 }
 
-// Log 
-global.logger.log('debug', "ImageRanker constructor arguments:");
-global.logger.log('debug', a);
-global.logger.log('debug', b);
-global.logger.log('debug', c);
-global.logger.log('debug', d);
-global.logger.log('debug', e);
-global.logger.log('debug', f);
-global.logger.log('debug', g);
-global.logger.log('debug', h);
 
+// Log this call
+global.logger.log('debug', "NATIVE CALL: ImageRanker(");
+for (let i = 0; i < irConsParams.length; ++i)
+{
+  global.logger.log('debug', "\t" + i + ": " + irConsParams[i]);
+}
+global.logger.log('debug', ")");
 
 // Create global instance if ImageRanker
-global.imageRanker = new imageRanker.ImageRankerWrapper(a, b, c, d, e, f, g, h);
+global.imageRanker = new imageRanker.ImageRankerWrapper(
+  irConsParams[0],
+  irConsParams[1],
+  irConsParams[2],
+  irConsParams[3],
+  irConsParams[4],
+  irConsParams[5],
+  irConsParams[6],
+  irConsParams[7]
+);
+
 
 // Initialize ImageRanker instance
 global.imageRanker.Initialize();
@@ -223,6 +188,10 @@ app.use('/trecvid_ranker', trecvidRankerRouter);
 
 app.use('/statistics', statisticsRouter);
 
+
+
+// Settings AJAXes
+app.post('/settings_ajax_set_kw_sc_data_type', settingsAjaxRouter.SetKeywordScoringDataType);
 
 // Ranker AJAXes
 app.get('/ranker_ajax_submit_settings', rankerAjaxRouter.submitSettings);

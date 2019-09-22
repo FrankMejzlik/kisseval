@@ -14,6 +14,8 @@ function validStateCheckGeneral(req, viewData)
 
   // Resolve user level
   utils.resolveUserLevel(sess);
+  utils.checkGlobalSessionState(sess);
+  utils.checkGlobalViewState(sess, viewData);
 
   // Get current page slug
   viewData.currentPage = "index";

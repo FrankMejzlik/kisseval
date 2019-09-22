@@ -1,10 +1,10 @@
 
 const util = require('util')
 
-var RunModelTest = function (aggFn, modelType, dataSource, settingsArray, aggSettingsArray) 
+var RunModelTest = function (kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray) 
 {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
+  result = global.imageRanker.RunModelTest(kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
 
   return result;
 }
@@ -27,7 +27,7 @@ var GetGridProgressWrapper = function ()
 
 
 exports.RunModelTest = function(req, res) 
-{
+{ 
   // Construct response Object
   let  responseData = new Object();
   
@@ -113,17 +113,16 @@ exports.RunModelTest = function(req, res)
         throw "Unknown model type.";
     }
 
+    const kwScDataType = new Object();
+    kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+    kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+
     // Run model test
-    const chartData = RunModelTest(aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
+    const chartData = RunModelTest(kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
 
     // Insert this result data to array
     responseData.chartDataArray.push(chartData);
   }
-
-  
-
-
-  
 
   // Send response
   res.jsonp(responseData);

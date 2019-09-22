@@ -1,15 +1,17 @@
 
 const util = require('util')
 
-var foo = function (req, res, next) {
-  return global.imageRanker.GetNearKeywords(req);
+var foo = function (kwDataType, prefix, withExamples) {
+  return global.imageRanker.GetNearKeywords(kwDataType, prefix, withExamples);
 }
 
 exports.find = function(req, res) 
 {
-  var word = req.query.queryValue;
+  const prefix = req.query.queryValue;
+  const kwDataType = req.session.keywordsSettings.kwDataType;
+  const withExamples = req.session.keywordsSettings.withExamples;
 
-  var itemss = foo(word);
+  var itemss = foo(kwDataType, prefix, withExamples);
 
   // Send response
   res.jsonp(itemss);

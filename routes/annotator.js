@@ -3,18 +3,42 @@ var express = require('express');
 var path = require('path');
 var fs = require('fs');
 
+var utils = require("./utils/utils");
+
 var router = express.Router();
+
+
+function validStateCheckGeneral(req, viewData)
+{
+  // Get session object reference
+  const sess = req.session;
+
+  utils.checkGlobalSessionState(sess);  
+  utils.checkGlobalViewState(sess, viewData);
+
+  // Resolve user level
+  utils.resolveUserLevel(sess);
+
+  // Get current page slug
+  viewData.currentPage = "annotator";
+  viewData.userLevel = sess.userLevel;
+}
 
 // GET page
 router.get('/', function(req, res, next) 
 {
+  let sess = req.session;
+
+  let viewData = new Object();
+
+  validStateCheckGeneral(req, viewData);
+  
   // Get current page slug
   const currentPage = "query_annotator";
 
   let phonyQuery = "false";
 
-  // Get session object
-  const sess = req.session;
+
   const isDev = req.session.isDeveloperSession;
 
   // Get user level
@@ -23,6 +47,7 @@ router.get('/', function(req, res, next)
   {
     userLevel = 10;
   }
+
 
 
   // If this session has not initialized game yet
@@ -79,22 +104,17 @@ router.get('/', function(req, res, next)
     console.log("Serving image " + newImage);
   }
 
-
-  
   
   // Final data instance being send to front end
-  var data = { 
-    currentPage,
-    userLevel,
-    isDev,
-    phonyQuery,
-    newImage,
-    gameProgress
-  };
+  viewData.currentPage = currentPage;
+  viewData.userLevel = userLevel;
+  viewData.isDev = isDev;
+  viewData.phonyQuery = phonyQuery;
+  viewData.newImage = newImage;
+  viewData.gameProgress = gameProgress;
+    
 
-
-
-  res.render('annotator', data);
+  res.render('annotator', viewData);
   return;
 });
    
@@ -129,8 +149,11 @@ router.post('/', function(req, res, next)
     let queryType = 10;
 
     // Parameters: SessionID, ImageID, string query
+    const kwScDataType = new Object();
+    kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+    kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-    const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString, queryType);
+    const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(kwScDataType, sessionId, imageId, finalString, queryType);
     
     // Mark it into session
     sess.gameWalkthrough.push(userImageResult);

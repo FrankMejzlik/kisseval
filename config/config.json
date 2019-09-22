@@ -8,42 +8,74 @@
         "json_indentation": 4,
         "title": "KISSEval",
         "subtitle": "Keyword Interactive Search System Evaluator",
-        "appMode": 2,
+        "appMode": 0,
+        "outputDir": "/output/",
+        "cacheDir": "/cache/",
 
-        "pathToImages": "/public/images/",
-        "pathData": "/data/dataset1/",
+        "keywordsSettings": {
+            "kwDataType": 0,
+            "withExamples": true
+        },
+        "rankingSettings":
+        {
+            "scoringDataType": 0
+        },
 
-        "softmaxFilename": "VBS2019_classification_NasNetLarge_20000.softmax",
-        "deepFeaturesFilename": "VBS2019_classification_NasNetMobile_20000.deep-features",
-        "keywordClassesFilename": "keyword_classes.txt",
-        "imagesDirList": "files.txt",
-        "idOffset": 50,
-
-
-        "pathData2": "/data/dataset2/",
-        "softmaxFilename2": "Studenti_NasNetLarge.softmax",
-        "preSoftmaxFilename2": "Studenti_NasNetLarge.pre-softmax",
-        "deepFeaturesFilename2": "Studenti_NasNetLarge.deep-features",
-        "keywordClassesFilename2": "keyword_classes.txt",
-        "imagesDirList2": "files.txt",
-        "idOffset2": 1,
-
-        "pathData3": "/data/dataset3/",
-        "softmaxFilename3": "05_googlenet.softmax",
-        "preSoftmaxFilename3": "05_googlenet.pre-softmax",
-        "deepFeaturesFilename3": "05_googlenet.deep-features",
-        "keywordClassesFilename3": "keyword_classes.txt",
-        "imagesDirList3": "05_googlenet.mapping.txt",
-        "idOffset3": 1,
-
-        "pathData4": "/data/trecvid_data/",
-        "softmaxFilename4": "",
-        "preSoftmaxFilename4": "net_data/nasnet_large.pre-softmax",
-        "deepFeaturesFilename4": "",
-        "keywordClassesFilename4": "net_data/keyword_classes.txt",
-        "imagesDirList4": "keyframes/filelist.txt",
-        "idOffset4": 1,
-        
+        "imageSets": [
+            {
+                "dataDesc": "20k subset of V3C set",
+                "dataDir": "/data/imageset0/",
+                "imagesDir": "/public/images/",
+                "keywordDataTypes": [
+                    {
+                        "dataDesc": "Viret v1 keywors hierarchy by Tomas Soucek - 1234 synsets",
+                        "dataDir": "/viret_keywords/",
+                        "keywordType": 0,
+                        "keywordDataFilename": "keyword_classes.txt",
+                        "dataSets": [
+                            {
+                                "scoringDataType": 0,
+                                "dataDesc": "Viret retrained NasNet DCNN",
+                                "dataDir": "/dataset0/",
+                                "scoringDataFilename": "Studenti_NasNetLarge.pre-softmax",
+                                "softmaxScoringDataFilename": "Studenti_NasNetLarge.softmax",
+                                "deepFeaturesFilename": "Studenti_NasNetLarge.deep-features",
+                                "imageIdToFilename": "files.txt",
+                                "idOffset": 1
+                            },
+                            {
+                                "scoringDataType": 1,
+                                "dataDesc": "Viret retrained GoogLeNet DCNN",
+                                "dataDir": "/dataset1/",
+                                "scoringDataFilename": "05_googlenet.pre-softmax",
+                                "softmaxScoringDataFilename": "05_googlenet.softmax",
+                                "deepFeaturesFilename": "05_googlenet.deep-features",
+                                "imageIdToFilename": "05_googlenet.mapping.txt",
+                                "idOffset": 1
+                            }
+                        ]
+                    },
+                    {
+                        "dataDesc": "Google AI Vision keywords",
+                        "dataDir": "/google_keywords/",
+                        "keywordType": 100,
+                        "keywordDataFilename": "keyword_classes.google.txt",
+                        "dataSets": [
+                            {
+                                "scoringDataType": 100,
+                                "dataDesc": "Google AI Vision",
+                                "dataDir": "/dataset0/",
+                                "scoringDataFilename": "scoringData.google.bin",
+                                "softmaxScoringDataFilename": "",
+                                "deepFeaturesFilename": "",
+                                "imageIdToFilename": "files.google.txt",
+                                "idOffset": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
 
         "gameLength": 7,
         "tutorialLength": 0,

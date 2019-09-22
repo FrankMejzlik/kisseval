@@ -3,6 +3,9 @@ var express = require('express');
 var path = require('path');
 var fs = require('fs');
 
+var utils = require("./utils/utils");
+
+
 var router = express.Router();
 
 
@@ -47,6 +50,8 @@ router.get('/', function(req, res, next)
     isDev
   };
 
+  utils.checkGlobalViewState(sess, data);
+
   data.targetImageId = targetImageId;
 
   const selectedSettings = new Object();
@@ -70,6 +75,8 @@ router.get('/', function(req, res, next)
 router.post('/', function(req, res, next) 
 {
   var data = new Object();
+
+  utils.checkGlobalViewState(sess, data);
 
   // Get session object
   const sess = req.session;
@@ -216,9 +223,11 @@ router.post('/', function(req, res, next)
         cFuzzyLogic
       };  
     */
+   const kwScDataType = new Object();
+   kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+   kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-
-    const relData = global.imageRanker.GetRelevantImagesPlainQuery(finalString, numResults, aggregation, rankingModel, settingsArray, aggSettingsArray, targetImageId);
+    const relData = global.imageRanker.GetRelevantImages(kwScDataType, finalString, numResults, aggregation, rankingModel, settingsArray, aggSettingsArray, targetImageId);
     const relevantImagesArray = relData.images;
     const targetImageRank = relData.targetImageRank;
 

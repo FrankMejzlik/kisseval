@@ -40,8 +40,11 @@ exports.getRelevantImagesFromPlainQuery = function(req, res)
     }
   }
 
+  const kwScDataType = new Object();
+  kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+  kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-  const relData = global.imageRanker.GetRelevantImagesPlainQuery(finalString, numResults, aggregation, rankingModel, settings, 0);
+  const relData = global.imageRanker.GetRelevantImages(kwScDataType, finalString, numResults, aggregation, rankingModel, settings, 0);
   const relevantImagesArray = relData.images;
 
   // Send response

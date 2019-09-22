@@ -14,6 +14,8 @@ function validStateCheckGeneral(req, viewData)
   // Resolve user level
   utils.resolveUserLevel(sess);
 
+  utils.checkGlobalViewState(sess, viewData);
+
   // Get current page slug
   viewData.currentPage = "trecvid_ranker";
   viewData.ocRankerSettingsLeft_ranker = true;

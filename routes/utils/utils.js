@@ -1,6 +1,32 @@
 
 
+
+const path = require('path');
+
 const rankerUtils = require("./ranker_utils");
+
+
+
+exports.checkGlobalSessionState = function(sess)
+{
+  // Initialize settins
+  if (typeof sess.keywordsSettings === "undefined")
+  {
+    sess.keywordsSettings = global.gConfig.keywordsSettings;
+  }
+  if (typeof sess.rankingSettings === "undefined")
+  {
+    sess.rankingSettings = global.gConfig.rankingSettings;
+  }
+  
+}
+
+exports.checkGlobalViewState = function(sess, viewData)
+{
+  viewData.keywordDataType = sess.keywordsSettings.kwDataType;
+  viewData.scoringDataType = sess.rankingSettings.scoringDataType;
+}
+
 
 exports.parseModelSettingsFromForm = function(sess, formBbody)
 { 
@@ -218,4 +244,83 @@ exports.resolveUserLevel = function(sessionObject)
       sessionObject.userLevel = 1;
     }
   }
+}
+
+exports.generateImageRankerConstructorArgs = function(inputImageSetIds, inputKeywordDataIds, inputScoringDataIds)
+{
+  let params = new Array();
+
+  for (let isId = 0; isId < inputImageSetIds.length; ++isId)
+  {
+    let paramsAA = new Array();
+    let paramsA = new Array();
+    let paramsB = new Array();
+    let paramsC = new Array();
+
+    // Path to images
+    params.push(path.join(global.rootDir, global.gConfig.imageSets[isId].imagesDir));
+
+    // Get data dir path
+    const isDir = path.join(global.rootDir, global.gConfig.imageSets[isId].dataDir);
+  
+
+    for (let kwId = 0; kwId < inputKeywordDataIds.length; ++kwId)
+    {
+      const kwDir = path.join(isDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataDir);
+
+      paramsAA.push({
+        "keywordsDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+        "filepath": path.join(kwDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordDataFilename)
+      });
+      
+      for (let scId = 0; scId < inputScoringDataIds.length; ++scId)
+      {
+        const scDir = path.join(kwDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].dataDir);
+
+        paramsA.push({
+          "keywordsDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+          "scoringDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].scoringDataType,
+          "filepath": path.join(scDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].scoringDataFilename)
+        });
+
+        const b = global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].softmaxScoringDataFilename;
+        if (b != "")
+        {
+          paramsB.push({
+            "keywordsDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+            "scoringDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].scoringDataType,
+            "filepath": path.join(scDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].softmaxScoringDataFilename)
+          });
+        }
+        const c = global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].deepFeaturesFilename;
+        if (c != "")
+        {
+          paramsC.push({
+            "keywordsDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+            "scoringDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].scoringDataType,
+            "filepath": path.join(scDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].deepFeaturesFilename)
+          });
+        }
+        
+        paramsC.push();
+      }
+    }
+
+    const aaa = path.join(global.rootDir, global.gConfig.imageSets[isId].dataDir, global.gConfig.imageSets[isId].keywordDataTypes[0].dataDir, global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]].dataSets[inputKeywordDataIds[0]].dataDir);
+
+    params.push(paramsAA);
+    params.push(paramsA);
+    params.push(paramsB);
+    params.push(paramsC);
+    params.push(path.join(aaa, global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]].dataSets[inputKeywordDataIds[0]].imageIdToFilename));
+    params.push(Number(global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]].dataSets[inputKeywordDataIds[0]].idOffset));
+    params.push(Number(global.gConfig.appMode));
+
+    // TODO
+    break;
+  }
+
+  
+
+  return params;
 }

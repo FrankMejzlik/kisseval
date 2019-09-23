@@ -20,7 +20,7 @@ function validStateCheckGeneral(req, viewData)
   utils.resolveUserLevel(sess);
 
   // Get current page slug
-  viewData.currentPage = "annotator";
+  viewData.currentPage = "query_annotator";
   viewData.userLevel = sess.userLevel;
 }
 
@@ -89,7 +89,10 @@ router.get('/', function(req, res, next)
   // If still on same progress, show same image
   if (typeof sess.gameImage === 'undefined')
   {
-    sess.gameImage = global.imageRanker.GetRandomImage();
+    // xoxo: If we're coupling data
+    sess.gameImage = global.imageRanker.GetCouplingImage();
+
+    //sess.gameImage = global.imageRanker.GetRandomImage();
   } 
 
   const newImage = sess.gameImage;
@@ -146,7 +149,24 @@ router.post('/', function(req, res, next)
     let sessionId = sess.id;
     let imageId = sess.gameImage.imageId;
 
-    let queryType = 10;
+    const isDev = req.session.isDeveloperSession;
+    let queryType = 0;
+    if (isDev)
+    {
+      queryType = 1;
+    }
+
+    const wasWithExampleImages = false;
+    if (req.session.annotatorWithExamples)
+    {
+      wasWithExampleImages = true;
+    }
+
+    if (wasWithExampleImages)
+    {
+      querryType += 10;
+    }
+    
 
     // Parameters: SessionID, ImageID, string query
     const kwScDataType = new Object();

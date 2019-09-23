@@ -92,13 +92,12 @@
           <li class="menu-item
             <% if (typeof currentPage != 'undefined') 
             {
-              if (currentPage == "trecvid_ranker") 
+              if (currentPage == "query_annotator") 
               { %>
                 active
               <% }
             } %>
           ">
-
             <a href="/query_annotator/">Query annotator</a>
           </li>
           <li class="menu-item
@@ -147,14 +146,19 @@
   </div>
 
   <div class="global-header-settings-bar">
+
+    <div id="globalHeaderSettingsBarMessageBox" class="callout success">
+    
+    </div>
+
     <a onclick="togglekwscform()" class="button">KW & Scoring settings</a>
     <form style="display: none;" id="kWsCdataTypeForm" class="kw-sc-data-type-form grid-x grid-padding-x" method="POST" action="/settings_ajax_set_kw_sc_data_type" >
       <label class="cell large-6">Keywords data type
         <select name="kwDataType">
           <option value="0"
-          <% if (typeof keywordDataType != 'undefined') 
+          <% if (typeof keywordsSettings.kwDataType !== 'undefined') 
           {
-            if (keywordDataType == 0) 
+            if (keywordsSettings.kwDataType == 0) 
             { %>
               selected
             <% }
@@ -162,9 +166,9 @@
           >Viret V1</option>
 
           <option value="100"
-          <% if (typeof keywordDataType != 'undefined') 
+          <% if (typeof keywordsSettings.kwDataType !== 'undefined') 
           {
-            if (keywordDataType == 100) 
+            if (keywordsSettings.kwDataType == 100) 
             { %>
               selected
             <% }
@@ -176,9 +180,9 @@
       <label class="cell large-6">Scoring data type
         <select name="scoringDataType">
           <option value="0"
-          <% if (typeof scoringDataType != 'undefined') 
+          <% if (typeof rankingSettings.scoringDataType !== 'undefined') 
           {
-            if (scoringDataType == 0) 
+            if (rankingSettings.scoringDataType == 0) 
             { %>
               selected
             <% }
@@ -186,18 +190,27 @@
           >NasNet</option>
 
           <option value="100"
-          <% if (typeof scoringDataType != 'undefined') 
+          <% if (typeof rankingSettings.scoringDataType !== 'undefined') 
           {
-            if (scoringDataType == 100) 
+            if (rankingSettings.scoringDataType == 100) 
             { %>
               selected
             <% }
           } %>
           >Google AI</option>
         </select>
+
+        <% if (typeof currentPage !== 'undefined' && currentPage == "query_annotator") 
+        { %>
+            
+
+
+        <% } %>
+
+
       </label>
 
-      <input type="submit" value="Save">
+      <input type="submit" class="button" value="Save">
     </form>
     <script>
       $('#kWsCdataTypeForm').on('submit', function(e) {
@@ -207,7 +220,7 @@
             type: "POST",
             data: $(this).serialize(),
             success: function (data) {
-                
+              showGlobalHeaderSettingsBarMessageBoxMessage("Saved!", 5000);
             },
             error: function (jXHR, textStatus, errorThrown) {
                 alert(errorThrown);
@@ -219,7 +232,21 @@
     {
       $("#kWsCdataTypeForm").toggle();
     }
-    
+
+    function showGlobalHeaderSettingsBarMessageBoxMessage(message, duration)
+    {
+      const notBar = document.getElementById("globalHeaderSettingsBarMessageBox");
+
+      notBar.innerHTML = message;
+      notBar.style.display = "block";
+
+      setTimeout(function()
+      { 
+        notBar.innerHTML = "";
+        notBar.style.display = "none";
+      }, duration);
+    }
+
     </script>
 
 

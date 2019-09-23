@@ -93,6 +93,9 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
 
   //ImageRanker::std::string GetRandomImage() const;
   Napi::Value GetRandomImage(const Napi::CallbackInfo& info);
+
+  Napi::Value GetCouplingImage(const Napi::CallbackInfo& info);
+  
   Napi::Value GetRandomImageSequence(const Napi::CallbackInfo& info);
 
   //ImageRanker::std::string GetNearKeywords(const std::string& prefix);

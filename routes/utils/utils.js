@@ -9,7 +9,7 @@ const rankerUtils = require("./ranker_utils");
 
 exports.checkGlobalSessionState = function(sess)
 {
-  // Initialize settins
+  // Initialize settings
   if (typeof sess.keywordsSettings === "undefined")
   {
     sess.keywordsSettings = global.gConfig.keywordsSettings;
@@ -18,13 +18,27 @@ exports.checkGlobalSessionState = function(sess)
   {
     sess.rankingSettings = global.gConfig.rankingSettings;
   }
+
+  // Initialize Annotator config
+  if (typeof sess.annotatorSettings === "undefined")
+  {
+    sess.annotatorSettings = global.gConfig.annotatorSettings;
+  }
+
+  // Initialize Ranker config
+  if (typeof sess.rankerConfig === "undefined")
+  {
+    sess.rankerConfig = global.gConfig.rankerConfig;
+  }
+  
   
 }
 
 exports.checkGlobalViewState = function(sess, viewData)
 {
-  viewData.keywordDataType = sess.keywordsSettings.kwDataType;
-  viewData.scoringDataType = sess.rankingSettings.scoringDataType;
+  viewData.keywordsSettings = sess.keywordsSettings;
+  viewData.rankingSettings = sess.rankingSettings;
+
 }
 
 

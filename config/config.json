@@ -13,14 +13,18 @@
         "cacheDir": "/cache/",
 
         "keywordsSettings": {
-            "kwDataType": 0,
-            "withExamples": true
+            "kwDataType": 0
         },
         "rankingSettings":
         {
             "scoringDataType": 0
         },
-
+        "annotatorSettings": {
+            "autocompleteWithExamples": true
+        },
+        "rankerConfig": {
+            "previewSequenceLength": 2
+        },
         "imageSets": [
             {
                 "dataDesc": "20k subset of V3C set",
@@ -76,13 +80,8 @@
                 ]
             }
         ],
-
         "gameLength": 7,
-        "tutorialLength": 0,
-
-        "rankerConfig": {
-            "previewSequenceLength": 2
-        }
+        "tutorialLength": 0
     },
     "staging": {
         "config_id": "staging",

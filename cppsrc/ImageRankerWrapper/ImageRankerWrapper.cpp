@@ -17,6 +17,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("RunGridTest", &ImageRankerWrapper::RunGridTest),
     InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
     InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage),
+    InstanceMethod("GetCouplingImage", &ImageRankerWrapper::GetCouplingImage),
     InstanceMethod("GetRandomImageSequence", &ImageRankerWrapper::GetRandomImageSequence),
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
     InstanceMethod("GetRelevantImagesPlainQuery", &ImageRankerWrapper::GetRelevantImagesPlainQuery),
@@ -461,6 +462,55 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
   const Image* image;
   try {
     image =  this->actualClass_->GetRandomImage();
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // Set "imageId"
+  {
+    napi_value imageIdKey;
+    napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
+    napi_value imageId;
+    napi_create_uint32(env, image->m_imageId, &imageId);
+
+    napi_set_property(env, result, imageIdKey, imageId);
+  }
+
+  // Set "filename"
+  {
+    napi_value filenameKey;
+    napi_create_string_utf8(env, "filename", 8, &filenameKey);
+    napi_value filename;
+    napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
+
+    napi_set_property(env, result, filenameKey, filename);
+  }
+
+  return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::GetCouplingImage(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 0)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
+  }
+
+  // Call native method
+  const Image* image;
+  try {
+    image =  this->actualClass_->GetCouplingImage();
   } 
   catch (const std::exception& e)
   {
@@ -1747,19 +1797,20 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info)
   // Process arguments
   int length = info.Length();
 
-  if (length != 3) {
+  if (length != 4) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
   
   eKeywordsDataType kwDataType = static_cast<eKeywordsDataType>(info[0].As<Napi::Number>().Uint32Value());
-  Napi::String prefix = info[1].As<Napi::String>();
-  Napi::Boolean withExampleImages = info[2].As<Napi::Boolean>();
+  eImageScoringDataType scoringDataType = static_cast<eImageScoringDataType>(info[1].As<Napi::Number>().Uint32Value());
+  Napi::String prefix = info[2].As<Napi::String>();
+  Napi::Boolean withExampleImages = info[3].As<Napi::Boolean>();
   
-
+  std::tuple kwScDataType{ kwDataType, scoringDataType };
   // Get suggested keywords
   std::vector<Keyword*> keywordData;
   try {
-     keywordData = this->actualClass_->GetNearKeywords(kwDataType, prefix.Utf8Value(), withExampleImages.Value());
+     keywordData = this->actualClass_->GetNearKeywords(kwScDataType, prefix.Utf8Value(), withExampleImages.Value());
   }
   catch (const std::exception& e)
   {
@@ -1785,7 +1836,7 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info)
       napi_create_uint32(env, keyword->m_wordnetId, &wordnetId);
       napi_create_string_utf8(env, keyword->m_word.data(), NAPI_AUTO_LENGTH, &word);
 
-      std::string descriptionString{ this->actualClass_->GetKeywordDescriptionByWordnetId(keyword->m_wordnetId) };
+      std::string descriptionString{ this->actualClass_->GetKeywordDescriptionByWordnetId(kwScDataType, keyword->m_wordnetId) };
 
       napi_create_string_utf8(env, descriptionString.data(), NAPI_AUTO_LENGTH, &description);
 

@@ -9,7 +9,8 @@ exports.find = function(req, res)
 {
   const prefix = req.query.queryValue;
   const kwDataType = req.session.keywordsSettings.kwDataType;
-  const withExamples = req.session.keywordsSettings.withExamples;
+
+  const withExamples = req.session.annotatorSettings.autocompleteWithExamples;
 
   var itemss = foo(kwDataType, prefix, withExamples);
 

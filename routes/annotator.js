@@ -90,7 +90,16 @@ router.get('/', function(req, res, next)
   if (typeof sess.gameImage === 'undefined')
   {
     // xoxo: If we're coupling data
-    sess.gameImage = global.imageRanker.GetCouplingImage();
+    const couplingImageData = global.imageRanker.GetCouplingImage();
+
+    sess.gameImage = new Object();
+    sess.gameImage.imageId = couplingImageData.imageId;
+    sess.gameImage.filename = couplingImageData.filename;
+
+    // Set correctly if example images should be shown
+    utils.setAnnotatorShowExamples(sess, couplingImageData.withExamples);
+
+    sess.numNotCoupled = couplingImageData.numNotCoupled;
 
     //sess.gameImage = global.imageRanker.GetRandomImage();
   } 
@@ -156,8 +165,8 @@ router.post('/', function(req, res, next)
       queryType = 1;
     }
 
-    const wasWithExampleImages = false;
-    if (req.session.annotatorWithExamples)
+    let wasWithExampleImages = false;
+    if (req.session.annotatorSettings.autocompleteWithExamples)
     {
       wasWithExampleImages = true;
     }

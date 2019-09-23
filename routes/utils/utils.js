@@ -39,8 +39,17 @@ exports.checkGlobalViewState = function(sess, viewData)
   viewData.keywordsSettings = sess.keywordsSettings;
   viewData.rankingSettings = sess.rankingSettings;
 
+  if (typeof sess.numNotCoupled !== "undefined")
+  {
+    viewData.numNotCoupled = sess.numNotCoupled;
+  }
+
 }
 
+exports.setAnnotatorShowExamples = function(sess, newState)
+{
+  sess.annotatorSettings.autocompleteWithExamples = newState;
+}
 
 exports.parseModelSettingsFromForm = function(sess, formBbody)
 { 

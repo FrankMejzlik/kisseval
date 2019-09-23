@@ -13,11 +13,11 @@
         "cacheDir": "/cache/",
 
         "keywordsSettings": {
-            "kwDataType": 0
+            "kwDataType": 100
         },
         "rankingSettings":
         {
-            "scoringDataType": 0
+            "scoringDataType": 1000
         },
         "annotatorSettings": {
             "autocompleteWithExamples": true

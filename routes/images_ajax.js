@@ -10,7 +10,11 @@ var foo = function (req, res, next)
   {
     const keywordIndex = result.probabilityVector[i].index;
 
-    result.probabilityVector[i].keyword = global.imageRanker.GetKeywordByVectorIndex(keywordIndex);
+    const kwScDataType = new Object();
+    kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+    kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+
+    result.probabilityVector[i].keyword = global.imageRanker.GetKeywordByVectorIndex(kwScDataType, keywordIndex);
   }
 
   return result;

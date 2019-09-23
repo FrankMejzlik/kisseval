@@ -9,7 +9,7 @@ const routeSettings = {
   "slug": "ranker"
 }
 
-function ProcessReq(req, viewData)
+function PreProcessReq(req, viewData)
 {
   const sess = req.session;
 

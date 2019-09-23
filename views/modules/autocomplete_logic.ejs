@@ -2,7 +2,7 @@
 <script>
   function boldString(str, find)
   {
-    const re = new RegExp(find, 'g');
+    const re = new RegExp(find, 'gi');
     return str.replace(re, '<strong>' + find + '</strong>');
   }
 

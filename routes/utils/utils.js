@@ -39,9 +39,15 @@ exports.checkGlobalViewState = function(sess, viewData)
   viewData.keywordsSettings = sess.keywordsSettings;
   viewData.rankingSettings = sess.rankingSettings;
 
+  // Number of not coupled 
+  // \todo TEMP
   if (typeof sess.numNotCoupled !== "undefined")
   {
     viewData.numNotCoupled = sess.numNotCoupled;
+  }
+  else 
+  {
+    viewData.numNotCoupled = -1;
   }
 
 }

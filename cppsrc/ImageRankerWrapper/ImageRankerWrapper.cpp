@@ -1827,20 +1827,21 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info)
   // Process arguments
   int length = info.Length();
 
-  if (length != 4) {
+  if (length != 5) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
   
   eKeywordsDataType kwDataType = static_cast<eKeywordsDataType>(info[0].As<Napi::Number>().Uint32Value());
   eImageScoringDataType scoringDataType = static_cast<eImageScoringDataType>(info[1].As<Napi::Number>().Uint32Value());
   Napi::String prefix = info[2].As<Napi::String>();
-  Napi::Boolean withExampleImages = info[3].As<Napi::Boolean>();
+  size_t numResults = info[3].As<Napi::Number>().Uint32Value();
+  Napi::Boolean withExampleImages = info[4].As<Napi::Boolean>();
   
   std::tuple kwScDataType{ kwDataType, scoringDataType };
   // Get suggested keywords
   std::vector<Keyword*> keywordData;
   try {
-     keywordData = this->actualClass_->GetNearKeywords(kwScDataType, prefix.Utf8Value(), withExampleImages.Value());
+     keywordData = this->actualClass_->GetNearKeywords(kwScDataType, prefix.Utf8Value(), numResults, withExampleImages.Value());
   }
   catch (const std::exception& e)
   {

@@ -173,7 +173,7 @@ router.post('/', function(req, res, next)
 
     if (wasWithExampleImages)
     {
-      querryType += 10;
+      queryType += 10;
     }
     
 

@@ -17,10 +17,11 @@
         },
         "rankingSettings":
         {
-            "scoringDataType": 1000
+            "scoringDataType": 100
         },
         "annotatorSettings": {
-            "autocompleteWithExamples": true
+            "autocompleteWithExamples": true,
+            "numSuggestions": 20
         },
         "rankerConfig": {
             "previewSequenceLength": 2

@@ -1238,13 +1238,19 @@ background-position: center center;
   z-index: 1;
   position: relative;
 }
-.global-header-settings-bar
-{
+.global-header-settings-bar{
   text-align: right;
   position: absolute;
   width: 20%;
   right: 0;
   z-index: 2;
+  background-color: #0a0a0a66;
+}
+
+.global-header-settings-bar form{
+  text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu .menu-text .title {

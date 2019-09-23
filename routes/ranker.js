@@ -5,56 +5,58 @@ var router = express.Router();
 const utils = require("../routes/utils/utils");
 const rankerUtils = require("../routes/utils/ranker_utils");
 
-
-function validStateCheckGeneral(req, viewData)
-{
-  // Get session object reference
-  const sess = req.session;
-
-  utils.checkGlobalSessionState(sess);  
-
-  utils.checkGlobalViewState(sess, viewData);
-
-  // Resolve user level
-  utils.resolveUserLevel(sess);
-
-  // Get current page slug
-  viewData.currentPage = "ranker";
-  viewData.ocRankerSettingsLeft_ranker = true;
-  viewData.ocRankerSettingsLeft_ranker_formActionAddress = "/ranker_ajax_submit_settings";
-  viewData.userLevel = sess.userLevel;
+const routeSettings = {
+  "slug": "ranker"
 }
 
-function validStateCheckSpecific(req, viewData)
+function ProcessReq(req, viewData)
 {
-  // Get session object reference
   const sess = req.session;
+
+  // Do general request preprocess
+  utils.PreProcessReq(req, viewData, routeSettings);
 
   rankerUtils.checkOrInitSessionRankerObject(sess);
 
   // Make sure that settings stored in session are initialized
   rankerUtils.initOrResumeInteractiveSearchSession(sess, viewData);
 
+  // Get current page slug
+  viewData.currentPage = routeSettings.slug;
+  viewData.ocRankerSettingsLeft_ranker = true;
+  viewData.ocRankerSettingsLeft_ranker_formActionAddress = "/ranker_ajax_submit_settings";
 }
 
-// GET request
+function ProcessReq(req, viewData)
+{
+  let sess = req.session;
+
+}
+
+function PostProcessReq(req, viewData)
+{
+  let sess = req.session;
+
+  utils.PostProcessReq(req, viewData, routeSettings);
+
+}
+
+
+/*!
+ * GET "/" request
+ */
 router.get('/', function(req, res, next) 
 {
-  const sess = req.session;
-
-  // This structure will be send to view template
+  let sess = req.session;
   let viewData = new Object();
 
-  // Do valid state checks
-  validStateCheckGeneral(req, viewData);
-  validStateCheckSpecific(req, viewData);
+  PreProcessReq(req, viewData)
+  ProcessReq(req, viewData);
+  PostProcessReq(req, viewData);
   
-  global.logger.log('debug', "sess.ranker:" + JSON.stringify(sess.ranker, undefined, 4));
-
-  global.logger.log('debug', "viewData:" + JSON.stringify(viewData, undefined, 4));
 
   // Rener ranker view
-  res.render('ranker', viewData);
+  res.render(viewData.currentPage, viewData);
 });
 
 

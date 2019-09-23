@@ -3,30 +3,61 @@ var express = require('express');
 var path = require('path');
 var fs = require('fs');
 
+var utils = require("./utils/utils");
+
 var router = express.Router();
 
 
-// Process GET request
-router.get('/', function(req, res, next) 
-{
+const routeSettings = {
+  "slug": "scoreboard",
+  "redirect": "/annotator"
+}
+
+function PreProcessReq(req, viewData)
+{  
   const sess = req.session;
+  
+  // Do general request preprocess
+  utils.PreProcessReq(req, viewData, routeSettings);
+  
+  viewData.currentPage = routeSettings.slug;
+
+  
+  viewData.isDev = sess.isDeveloperSession;
+  viewData.gameWalkthrough = req.session.gameWalkthrough;
+}
+
+function ProcessReq(req, res, viewData)
+{
+  let sess = req.session;
 
   if (typeof sess.gameProgress === 'undefined') 
   {
-    res.redirect('/collector');
+    res.redirect(routeSettings.redirect);
   }
+}
 
-  const gameWalkthrough = sess.gameWalkthrough;
-  const isDev = req.session.isDeveloperSession;
-  
-  // Final data instance being send to front end
-  var data = { 
-    isDev,
-    gameWalkthrough
-  };
+function PostProcessReq(req, viewData)
+{
+  let sess = req.session;
 
-  res.render('scoreboard', data);
-  return;
+  utils.PostProcessReq(req, viewData, routeSettings);
+
+}
+
+/*!
+ * GET "/" request
+ */
+router.get('/', function(req, res, next) 
+{
+  let sess = req.session;
+  let viewData = new Object();
+
+  PreProcessReq(req, viewData)
+  ProcessReq(req, res, viewData);
+  PostProcessReq(req, viewData);
+
+  res.render(routeSettings.slug, viewData);
 });
 
 // Process POST request

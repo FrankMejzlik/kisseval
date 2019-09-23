@@ -6,46 +6,52 @@ var fs = require('fs');
 var router = express.Router();
 const utils = require("../routes/utils/utils");
 
+const routeSettings = {
+  "slug": "index"
+}
 
-function validStateCheckGeneral(req, viewData)
+function PreProcessReq(req, viewData)
 {
-  // Get session object reference
   const sess = req.session;
 
-  // Resolve user level
-  utils.resolveUserLevel(sess);
-  utils.checkGlobalSessionState(sess);
-  utils.checkGlobalViewState(sess, viewData);
+  // Do general request preprocess
+  utils.PreProcessReq(req, viewData, routeSettings);
 
   // Get current page slug
-  viewData.currentPage = "index";
-  viewData.userLevel = sess.userLevel;
+  viewData.currentPage = routeSettings.slug;
 }
 
-function validStateCheckSpecific(req, viewData)
+function ProcessReq(req, viewData)
 {
-  // Get session object reference
-  const sess = req.session;
+  let sess = req.session;
 
 }
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  const sess = req.session;
+function PostProcessReq(req, viewData)
+{
+  let sess = req.session;
 
-  // This structure will be send to view template
+  utils.PostProcessReq(req, viewData, routeSettings);
+
+}
+
+/*!
+ * GET "/" request
+ */
+router.get('/', function(req, res, next) 
+{
+  let sess = req.session;
   let viewData = new Object();
 
-  // Do valid state checks
-  validStateCheckGeneral(req, viewData);
-  validStateCheckSpecific(req, viewData);
+  PreProcessReq(req, viewData)
+  ProcessReq(req, viewData);
+  PostProcessReq(req, viewData);
 
-  res.render('index', viewData);
+  res.render(routeSettings.slug, viewData);
 });
-
-
-module.exports = router;
 
 router.post('/', function(req, res, next) {
 
 });
+
+module.exports = router;

@@ -37,7 +37,6 @@ const rankerAjaxNegateRouter = require("./routes/ranker_ajax_negate");
 const statisticsRouter = require("./routes/statistics");
 const statisticsAjaxRouter = require("./routes/statistics_ajax");
 
-var collectorAjax = require('./routes/collector_ajax');
 var testsAjax = require('./routes/tests_ajax');
 var imagesAjax = require('./routes/images_ajax');
 var api = require('./routes/api');
@@ -179,7 +178,7 @@ app.use('/scoreboard', scoreboardRouter);
 app.use('/docs', docsRouter);
 app.use('/collector', collectorRouter);
 
-app.use('/query_annotator', annotatorRouter);
+app.use('/annotator', annotatorRouter);
 
 app.use('/ranker', rankerRouter);
 app.use('/ranker_negate', rankerNegateRouter);
@@ -214,9 +213,7 @@ app.post('/trecvid_ranker_ajax_start_run_progress', trecvidAjaxRankerRouter.star
 app.post('/trecvid_ranker_ajax_submit_task', trecvidAjaxRankerRouter.submitTask);
 app.post('/trecvid_ranker_ajax_next_task', trecvidAjaxRankerRouter.nextTask);
 
-
-// Allow only GET requests to 'collector_ajax' router
-app.get('/collector_ajax', collectorAjax.find);
+app.get('/annotator_ajax', annotatorAjaxRouter.GetNearKeywords);
 
 // GETs
 app.get('/api_get_relevant_images', api.getRelevantImagesFromPlainQuery);

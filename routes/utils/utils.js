@@ -1,14 +1,27 @@
 
-
-
 const path = require('path');
 
 const rankerUtils = require("./ranker_utils");
 
-
-
-exports.checkGlobalSessionState = function(sess)
+exports.PreProcessReq = function(req, viewData, routeSettings)
 {
+  this.checkGlobalSessionState(req, viewData);
+  
+}
+
+exports.PostProcessReq = function(req, viewData, routeSettings)
+{
+  
+  this.checkGlobalViewState(req, viewData);
+}
+
+exports.checkGlobalSessionState = function(req, viewData)
+{
+  let sess = req.session;
+
+  // Resolve user level
+  this.resolveUserLevel(req, viewData);
+
   // Initialize settings
   if (typeof sess.keywordsSettings === "undefined")
   {
@@ -34,8 +47,10 @@ exports.checkGlobalSessionState = function(sess)
   
 }
 
-exports.checkGlobalViewState = function(sess, viewData)
+exports.checkGlobalViewState = function(req, viewData)
 {
+  let sess = req.session;
+
   viewData.keywordsSettings = sess.keywordsSettings;
   viewData.rankingSettings = sess.rankingSettings;
 
@@ -259,20 +274,24 @@ exports.setUserLevel =  function(sessionObject, level)
   sess.userLevel = level;
 }
 
-exports.resolveUserLevel = function(sessionObject)
+exports.resolveUserLevel = function(req, viewData)
 {
-  if (typeof sessionObject.userLevel === "undefined")
+  let sess = req.session;
+
+  if (typeof sess.userLevel === "undefined")
   {
     // If loged as developer
-    if (sessionObject.isDev)
+    if (sess.isDev)
     {
-      sessionObject.userLevel = 10;
+      sess.userLevel = 10;
     }
     else 
     {
-      sessionObject.userLevel = 1;
+      sess.userLevel = 1;
     }
   }
+
+  viewData.userLevel = sess.userLevel;
 }
 
 exports.generateImageRankerConstructorArgs = function(inputImageSetIds, inputKeywordDataIds, inputScoringDataIds)

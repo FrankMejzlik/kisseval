@@ -1,43 +1,50 @@
 var express = require('express');
+var router = express.Router();
 
 var path = require('path');
 var fs = require('fs');
 
 var utils = require("./utils/utils");
 
-var router = express.Router();
-
-
-function validStateCheckGeneral(req, viewData)
-{
-  // Get session object reference
-  const sess = req.session;
-
-  utils.checkGlobalSessionState(sess);  
-  utils.checkGlobalViewState(sess, viewData);
-
-  // Resolve user level
-  utils.resolveUserLevel(sess);
-
-  // Get current page slug
-  viewData.currentPage = "query_annotator";
-  viewData.userLevel = sess.userLevel;
+const routeSettings = {
+  "slug": "annotator"
 }
 
-// GET page
-router.get('/', function(req, res, next) 
+function PreProcessReq(req, viewData)
+{
+  const sess = req.session;
+
+  // Do general request preprocess
+  utils.PreProcessReq(req, viewData, routeSettings);
+
+  // Get current page slug
+  viewData.currentPage = routeSettings.slug;
+}
+
+function ProcessReq(req, viewData)
 {
   let sess = req.session;
 
+}
+
+function PostProcessReq(req, viewData)
+{
+  let sess = req.session;
+
+  utils.PostProcessReq(req, viewData, routeSettings);
+}
+
+/*!
+ * GET "/" request
+ */
+router.get('/', function(req, res, next) 
+{
+  let sess = req.session;
   let viewData = new Object();
 
-  validStateCheckGeneral(req, viewData);
+  PreProcessReq(req, viewData)
+  ProcessReq(req, viewData);
   
-  // Get current page slug
-  const currentPage = "query_annotator";
-
-  let phonyQuery = "false";
-
 
   const isDev = req.session.isDeveloperSession;
 
@@ -58,13 +65,12 @@ router.get('/', function(req, res, next)
     // Initialize array of this session's images
     sess.gameWalkthrough = new Array();
 
-    res.redirect('/query_annotator')
+    res.redirect('/annotator')
   } 
 
   const totalGameLength = global.gConfig.gameLength + global.gConfig.tutorialLength;
 
-  console.log("SessionId: " + sess.id + " PROGRESS : " + sess.gameProgress + "/" + totalGameLength)
-
+  global.logger.log('verbose', "SessionId: " + sess.id + " PROGRESS : " + sess.gameProgress + "/" + totalGameLength);
 
   
 
@@ -106,11 +112,6 @@ router.get('/', function(req, res, next)
 
   const newImage = sess.gameImage;
 
-  /* Get next image
-    {
-      "imageId": 123,
-      "filename": "aaaa"
-    }  */
   if (global.gConfig.log_all == true)
   {
     console.log("Serving image " + newImage);
@@ -118,15 +119,15 @@ router.get('/', function(req, res, next)
 
   
   // Final data instance being send to front end
-  viewData.currentPage = currentPage;
-  viewData.userLevel = userLevel;
   viewData.isDev = isDev;
-  viewData.phonyQuery = phonyQuery;
   viewData.newImage = newImage;
   viewData.gameProgress = gameProgress;
     
 
-  res.render('annotator', viewData);
+  // Finish this request
+  PostProcessReq(req, viewData);
+
+  res.render(routeSettings.slug, viewData);
   return;
 });
    
@@ -199,7 +200,7 @@ router.post('/', function(req, res, next)
 
   
   // Redirect user back to game page
-  res.redirect(301, "/query_annotator/");
+  res.redirect(301, "/annotator/");
 });
 
 

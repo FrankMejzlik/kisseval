@@ -1871,25 +1871,27 @@ Napi::Value ImageRankerWrapper::GetNearKeywords(const Napi::CallbackInfo& info)
 
       napi_create_string_utf8(env, descriptionString.data(), NAPI_AUTO_LENGTH, &description);
 
-
       // Create example images array
       napi_value exampleImagesArr;
       napi_create_array(env, &exampleImagesArr);
-
-      size_t ii{ 0ULL };
-      for (auto&& imageFilename : keyword->m_exampleImageFilenames)
+      if (withExampleImages)
       {
-        napi_value filenameNapi;
-        napi_create_string_utf8(env, imageFilename.data(), NAPI_AUTO_LENGTH, &filenameNapi);
-        napi_set_element(env, exampleImagesArr, ii, filenameNapi);
+        size_t ii{ 0ULL };
+        for (auto&& imageFilename : keyword->m_exampleImageFilenames)
+        {
+          napi_value filenameNapi;
+          napi_create_string_utf8(env, imageFilename.data(), NAPI_AUTO_LENGTH, &filenameNapi);
+          napi_set_element(env, exampleImagesArr, ii, filenameNapi);
 
-        ++ii;
+          ++ii;
+        }
       }
 
 
       napi_set_element(env, tempArray, 0, wordnetId);
       napi_set_element(env, tempArray, 1, word);
       napi_set_element(env, tempArray, 2, description);
+
       napi_set_element(env, tempArray, 3, exampleImagesArr);
 
       napi_set_element(env, result, i, tempArray);

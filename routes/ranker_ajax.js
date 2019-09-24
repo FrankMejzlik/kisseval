@@ -82,15 +82,16 @@ exports.submitImage = function(req, res)
       kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
       kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-      response.relevantImagesArray = global.imageRanker.GetRelevantImages(
+      response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
         kwScDataType,
-        queryPlain, 
+        queries, 
         0, 
         settingsForNative.aggregation, 
         settingsForNative.rankingModel, 
         settingsForNative.rankingModelSettings, 
         settingsForNative.aggregationSettings,
-        sess.ranker.searchSession.targetImages[0].imageId
+        sess.ranker.searchSession.targetImages[0].imageId,
+        false
       );
     }
   
@@ -322,11 +323,12 @@ exports.processAction = function(req, res)
   
   if (sess.ranker.query.length > -1)
   {
+    const withOccuranceValue = false;
     const kwScDataType = new Object();
     kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
     kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-    response.relevantImagesArray = global.imageRanker.GetRelevantImages(
+    response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
       kwScDataType,
       queriesPlain, 
       1000, 
@@ -334,7 +336,8 @@ exports.processAction = function(req, res)
       settingsForNative.rankingModel, 
       settingsForNative.rankingModelSettings, 
       settingsForNative.aggregationSettings,
-      sess.ranker.searchSession.targetImages[0].imageId
+      sess.ranker.searchSession.targetImages[0].imageId,
+      withOccuranceValue
     );
 
     rankerUtils.pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);

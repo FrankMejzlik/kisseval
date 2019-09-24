@@ -94,7 +94,9 @@
 
         <!-- Image preview canvas -->
         <ul class="image-preview small-12 cell" id="targetImagesCont">
-          <li><img id="targetImage" src="/images/<%= ranker.searchSession && ranker.searchSession.imageSrc ? ranker.searchSession.imageSrc : "generic/bg_neural.jpg" %>" /></li>
+          <li><img src="/images/<%= ranker.searchSession && ranker.searchSession.targetImages[0] ? ranker.searchSession.targetImages[0].filename : "generic/bg_neural.jpg" %>" /></li>
+          <li><img src="/images/<%= ranker.searchSession && ranker.searchSession.targetImages[1] ? ranker.searchSession.targetImages[1].filename : "generic/bg_neural.jpg" %>" /></li>
+          
         </ul>
 
       </div>

@@ -18,6 +18,7 @@ exports.SetKeywordScoringDataType = function(req, res)
   {
     global.logger.log('warn', "Incompatigle keyword and scoring data type: (" + a + ", " + b + ") \n Settings stay unchanged.");
     res.jsonp("Incompatigle keyword and scoring data type: (" + a + ", " + b + ")");
+    return;
   }
 
   sess.keywordsSettings.kwDataType = a;

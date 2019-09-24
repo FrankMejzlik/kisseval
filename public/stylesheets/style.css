@@ -1243,6 +1243,7 @@ background-position: center center;
   position: absolute;
   width: 20%;
   right: 0;
+  display: inline-block;
   z-index: 2;
   background-color: #0a0a0a66;
 }

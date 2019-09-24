@@ -37,7 +37,7 @@ exports.GetNearKeywords = function(req, res)
 
   var nearKeywords = global.imageRanker.GetNearKeywords(kwDataType, scoringDataType, prefix, sess.annotatorSettings.numSuggestions, withExamples);
 
-  prefixCache.push(prefix);
+  prefixCache.push("<" + String(sess.id) + ">:" +  prefix);
   if (prefixCache.length > 100)
   {
     writePrefixCache(kwDataType);
@@ -57,7 +57,7 @@ exports.GetNearKeywordsWithExamples = function(req, res)
 
   var nearKeywords = global.imageRanker.GetNearKeywords(kwDataType, scoringDataType, prefix, sess.annotatorSettings.numSuggestions, true);
 
-  prefixCache.push(prefix);
+  prefixCache.push("<" + String(sess.id) + ">:" +  prefix);
   if (prefixCache.length > 100)
   {
     writePrefixCache(kwDataType);

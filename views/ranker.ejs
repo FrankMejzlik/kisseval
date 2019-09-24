@@ -503,6 +503,9 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 
     $selectedKeywordsList = $("#selectedKeywordsList");
     $selectedKeywordsList.html("");
+
+    $selectedKeywordsList2 = $("#selectedKeywordsList2");
+    $selectedKeywordsList2.html("");
   }
 
   function clearTargetImage()
@@ -645,6 +648,7 @@ function putDocumentToPostStartState(viewData)
 {
   document.getElementById("rankerResultBoard").classList.remove("active");
   document.getElementById("queryInput").disabled = false;
+  document.getElementById("queryInput2").disabled = false;
 
   document.getElementById("currModelInfo").innerHTML = "Current model: " + viewData.modelName;
   
@@ -663,6 +667,7 @@ function putDocumentToPostSubmitState()
   clearImageGrid();
 
   document.getElementById("queryInput").disabled = true;
+  document.getElementById("queryInput2").disabled = true;
 
   document.getElementById("getRandomImageCont").innerHTML = '<a class="button" onclick="getRandomImageToPreview(this);">Random image</a>';
   document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);" title="Sets target image to provided ID">Show image</a>';  

@@ -10,13 +10,43 @@
   function autocomplete(inp, selectedContainer, queryNr) {
 
   var currentFocus;
+  let lastTimeoutHandle;
 
   // Execute a function when someone writes in the text field
   inp.addEventListener("input", function(e) {
-      var a, b, i;
+    clearTimeout(lastTimeoutHandle);
+    lastTimeoutHandle = setTimeout(getNearKeywords, 300);
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function getNearKeywords(e) {
+    var a, b, i;
 
       // Get current value in input
-      const val = this.value;
+      const val = inp.value;
 
       // Close any already open lists of autocompleted values
       closeAllLists();
@@ -44,7 +74,7 @@
           data = JSON.parse(data);
 
           // Append the DIV element as a child of the autocomplete container
-          this.parentNode.appendChild(a);
+          inp.parentNode.appendChild(a);
 
           // For each item in the returned array
           for (i = 0; i < data.length; i++) 
@@ -146,32 +176,8 @@
         .catch((err) => {
             // Do stuff on error...
         });
-  });
-  /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "autocomplete-list");
-      if (x) x = x.getElementsByTagName("div");
-      if (e.keyCode == 40) {
-        /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
-        currentFocus++;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 38) { //up
-        /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
-        currentFocus--;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        e.preventDefault();
-        if (currentFocus > -1) {
-          /*and simulate a click on the "active" item:*/
-          if (x) x[currentFocus].click();
-        }
-      }
-  });
+  
+  }
   function addActive(x) {
     /*a function to classify an item as "active":*/
     if (!x) return false;
@@ -211,12 +217,22 @@ autocomplete(document.getElementById("queryInput2"), document.getElementById("se
 
 function removeKeyword(e, t, queryNr) 
 {
-  const operand = $(t).parent().children("input[name='keyword']").val();
-  const operandWord = $(t).parent().children("input[name='keywordWord']").val();
+  let operand;
+  let operandWord;
+
+  // If query2 command
+  if (queryNr == 1)
+  {
+    operand = $(t).parent().children("input[name='keyword2']").val();
+    operandWord = $(t).parent().children("input[name='keywordWord2']").val();
+  }
+  else 
+  {
+    operand = $(t).parent().children("input[name='keyword']").val();
+    operandWord = $(t).parent().children("input[name='keywordWord']").val();
+  }
 
   $(t).parent().remove();
-
-
 
   // Call action
   processAction((10 * queryNr) + 0, operand, operandWord);

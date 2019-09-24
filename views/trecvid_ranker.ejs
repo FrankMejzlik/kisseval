@@ -366,6 +366,9 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 
     $selectedKeywordsList = $("#selectedKeywordsList");
     $selectedKeywordsList.html("");
+
+    $selectedKeywordsList = $("#selectedKeywordsList2");
+    $selectedKeywordsList.html("");
   }
 
   function clearTargetImage()
@@ -508,6 +511,7 @@ function putDocumentToPostStartState(viewData)
 {
   document.getElementById("rankerResultBoard").classList.remove("active");
   document.getElementById("queryInput").disabled = false;
+  document.getElementById("queryInput2").disabled = false;
 
   document.getElementById("currModelInfo").innerHTML = "Current model: " + viewData.modelName;
   

@@ -13,6 +13,7 @@ function PreProcessReq(req, viewData)
 {
   const sess = req.session;
 
+
   // Do general request preprocess
   utils.PreProcessReq(req, viewData, routeSettings);
 
@@ -38,7 +39,6 @@ function PostProcessReq(req, viewData)
   let sess = req.session;
 
   utils.PostProcessReq(req, viewData, routeSettings);
-
 }
 
 
@@ -53,6 +53,8 @@ router.get('/', function(req, res, next)
   PreProcessReq(req, viewData)
   ProcessReq(req, viewData);
   PostProcessReq(req, viewData);
+  
+  global.logger.log('debug', "sess.ranker.searchSession: " + JSON.stringify(sess.ranker.searchSession, undefined, 4));
   
 
   // Rener ranker view

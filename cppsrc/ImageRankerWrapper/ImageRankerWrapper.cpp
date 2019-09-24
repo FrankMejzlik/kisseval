@@ -1076,20 +1076,34 @@ Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::Callba
 
   // Process arguments
   int length = info.Length();
-  if (length != 12)
+  if (length != 13)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::SubmitInteractiveSearchSubmit)").ThrowAsJavaScriptException();
   }
 
-  size_t originType = info[0].As<Napi::Number>().Uint32Value();
-  size_t targetImageId = info[1].As<Napi::Number>().Uint32Value();
-  size_t modelId = info[2].As<Napi::Number>().Uint32Value();
-  size_t transformationId = info[3].As<Napi::Number>().Uint32Value();
+  //xoxo
+
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+
+  size_t originType = info[1].As<Napi::Number>().Uint32Value();
+  size_t targetImageId = info[2].As<Napi::Number>().Uint32Value();
+  size_t modelId = info[3].As<Napi::Number>().Uint32Value();
+  size_t transformationId = info[4].As<Napi::Number>().Uint32Value();
 
   // Get settings vector
   std::vector<std::string> modelSettings;
 
-  Napi::Array settingsArray = info[4].As<Napi::Array>();
+  Napi::Array settingsArray = info[5].As<Napi::Array>();
   for (size_t i = 0; i < settingsArray.Length(); i++)
   {
     Napi::Value v = settingsArray[i];
@@ -1103,7 +1117,7 @@ Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::Callba
   // Aggregation settings
   std::vector<std::string> transformationSettings;
 
-  Napi::Array aggSettingsArray = info[5].As<Napi::Array>();
+  Napi::Array aggSettingsArray = info[6].As<Napi::Array>();
   for (size_t k{ 0ULL }; k < aggSettingsArray.Length(); k++)
   {
     Napi::Value val = aggSettingsArray[k];
@@ -1114,15 +1128,15 @@ Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::Callba
     }
   }
 
-  std::string sessionId = info[6].As<Napi::String>().Utf8Value();
-  size_t searchSessionId = info[7].As<Napi::Number>().Uint32Value();
-  size_t endStatus = info[8].As<Napi::Number>().Uint32Value();
-  size_t sessionDuration = info[9].As<Napi::Number>().Uint32Value();
+  std::string sessionId = info[7].As<Napi::String>().Utf8Value();
+  size_t searchSessionId = info[8].As<Napi::Number>().Uint32Value();
+  size_t endStatus = info[9].As<Napi::Number>().Uint32Value();
+  size_t sessionDuration = info[10].As<Napi::Number>().Uint32Value();
 
   // Actions array
   std::vector<std::tuple<size_t, size_t, size_t>> actions;
 
-  Napi::Array actionsArray = info[10].As<Napi::Array>();
+  Napi::Array actionsArray = info[11].As<Napi::Array>();
   for (size_t k{ 0ULL }; k < actionsArray.Length(); k++)
   {
     // action:stri, operand:stri, score:num
@@ -1138,11 +1152,12 @@ Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::Callba
       actions.emplace_back(action, score, operand);
     }
   }
-  size_t userId = info[11].As<Napi::Number>().Uint32Value();
+  size_t userId = info[12].As<Napi::Number>().Uint32Value();
 
 #if LOG_CALLS
-
-  std::cout << "CALLING NATIVE 'SubmitInteractiveSearchSubmit' with args:" << std::endl;
+  std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv" << std::endl;
+  std::cout << "CALLING NATIVE: 'SubmitInteractiveSearchSubmit' with args:" << std::endl;
+  std::cout << "kwScDataId = (" << ToString(std::get<0>(kwScDataId)) << ", " << ToString(std::get<1>(kwScDataId)) << ")" << std::endl;
   std::cout << "originType = " << originType << std::endl;
   std::cout << "targetImageId = " << targetImageId << std::endl;
   std::cout << "modelId = " << modelId << std::endl;
@@ -1174,7 +1189,7 @@ Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::Callba
   std::cout << "modelSettings:" << std::endl;
   std::cout << "userId = " << userId << std::endl;
 
-  std::cout << "===================" << std::endl;
+  std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
 #endif
 
   // Call native method
@@ -1182,6 +1197,7 @@ Napi::Value ImageRankerWrapper::SubmitInteractiveSearchSubmit(const Napi::Callba
   
   try {
     this->actualClass_->SubmitInteractiveSearchSubmit(
+      kwScDataId,
       (InteractiveSearchOrigin)originType, targetImageId, 
       (RankingModelId)modelId, (InputDataTransformId)transformationId,
       modelSettings, transformationSettings,

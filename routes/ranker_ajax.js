@@ -66,7 +66,9 @@ exports.submitImage = function(req, res)
   const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
 
 
-
+  const kwScDataType = new Object();
+  kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
+  kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
   if (typeof sess.ranker.query !== "undefined")
   {
@@ -81,9 +83,7 @@ exports.submitImage = function(req, res)
         queries.push(queryPlain2);
       }
 
-      const kwScDataType = new Object();
-      kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
-      kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+      
 
       response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
         kwScDataType,
@@ -146,6 +146,7 @@ exports.submitImage = function(req, res)
   if (actionsArray.length > 0)
   {
     global.imageRanker.SubmitInteractiveSearchSubmit(
+      kwScDataType,
       originType, targetImageId, settingsForNative.rankingModel, settingsForNative.aggregation,
       settingsForNative.rankingModelSettings, settingsForNative.aggregationSettings,
       sessionId, searchSessionId, endStatus, sessionDuration,
@@ -237,6 +238,7 @@ exports.processAction = function(req, res)
   const action = req.query.action;
   const operand = req.query.operand;
   const operandWord = req.query.operandWord;
+
 
   global.logger.log('debug', "action = " + action + ", operand = " + operand);
 

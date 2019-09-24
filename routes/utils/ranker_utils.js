@@ -205,17 +205,6 @@ exports.getModelNameFromSession = function(sess)
 }
 
 
-exports.submitSearchSession = function(sess)
-{
-  global.logger.log('debug', "<= submitSearchSession()");
-
-
-  global.logger.log('debug', "Submitting search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
-
-
-  global.logger.log('debug', "<= submitSearchSession()");
-}
-
 exports.terminateSearchSession = function(sess)
 {
   global.logger.log('debug', "=> terminateSearchSession()");
@@ -237,7 +226,10 @@ exports.terminateSearchSession = function(sess)
   sess.ranker.query = undefined;
   sess.ranker.queryWords = undefined;
 
-  global.logger.log('debug', "Terminating search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");  
+  sess.ranker.query2 = undefined;
+  sess.ranker.queryWords2 = undefined;
+
+  
 
   //xoxo get duration
   var date = new Date();
@@ -246,10 +238,13 @@ exports.terminateSearchSession = function(sess)
   const microSecondsDiff = Math.abs(sess.ranker.searchSession.startTimestamp - timestamp);
   const sessionDurationInSeconds = Math.floor(microSecondsDiff/(1000));
 
+  
+
+  global.logger.log('debug', "<" + sess.id + ">: Interactive search (ID = " + sess.ranker.searchSession.id + ") terminated.");  
+  global.logger.log('debug', "<= terminateSearchSession()");
+
   // Reset it
   sess.ranker.searchSession = undefined;
-
-  global.logger.log('debug', "<= terminateSearchSession()");
 
   return sessionDurationInSeconds;
 }
@@ -271,24 +266,23 @@ exports.startSearchSession = function(sess, targetImages)
 
   sess.ranker.searchSession.targetImages = targetImages;
 
-  sess.ranker.searchSession.query = new Array();
   sess.ranker.searchSession.actionsArray = new Array();
 
   var date = new Date();
   var timestamp = date.getTime();
   sess.ranker.searchSession.startTimestamp = timestamp;
 
-  global.logger.log('debug', "Starting search session for session id " + sess.id + " with ID " + sess.ranker.searchSession.id + ".");
+  global.logger.log('debug', "<" + sess.id + ">: Starting search session with ID " + sess.ranker.searchSession.id);
 
   // Increment counter
   ++sess.ranker.searchSessionCounter;
 
-  global.logger.log('debug', "<= startSearchSession()");
+  global.logger.log('debug', "<" + sess.id + ">:<= startSearchSession()");
 }
 
 exports.pushAction = function(sess, action, operand, score)
 {
-  global.logger.log('debug', "=> pushAction()");
+  global.logger.log('debug', "<" + sess.id + ">: => pushAction()");
 
   // Create object for this action
   const newAction = new Object();
@@ -296,11 +290,11 @@ exports.pushAction = function(sess, action, operand, score)
   newAction.operand = Number(operand);
   newAction.score = Number(score);
 
-  global.logger.log('debug', "Pushing action, session ID = " + sess.id + ", search session ID =  " + sess.ranker.searchSession.id);
-  global.logger.log('debug', "newAction:"+ JSON.stringify(newAction, undefined, 4));
+  global.logger.log('debug', "<" + sess.id + ">: Pushing action, session ID = " + sess.id + ", search session ID =  " + sess.ranker.searchSession.id);
+  global.logger.log('debug', "<" + sess.id + ">: newAction:"+ JSON.stringify(newAction, undefined, 4));
 
   // Store it in session
   sess.ranker.searchSession.actionsArray.push(newAction);
 
-  global.logger.log('debug', "<= pushAction()");
+  global.logger.log('debug', "<" + sess.id + ">:<= pushAction()");
 }

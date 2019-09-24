@@ -49,13 +49,16 @@ exports.submitImage = function(req, res)
   // Is this correct image?
   response.correct = false;
   
-  // Check submited image against sequence of images
-  for (let i = 0; i < sess.ranker.searchSession.targetImages.length; ++i)
+  if (imageId >= 0)
   {
-    if (sess.ranker.searchSession.targetImages[i].imageId == imageId)
+    // Check submited image against sequence of images
+    for (let i = 0; i < sess.ranker.searchSession.targetImages.length; ++i)
     {
-      response.correct = true;
-      break;
+      if (sess.ranker.searchSession.targetImages[i].imageId == imageId)
+      {
+        response.correct = true;
+        break;
+      }
     }
   }
 
@@ -361,6 +364,11 @@ exports.processAction = function(req, res)
     pair.value = actionsArray[i].score;
 
     response.chartData.push(pair);
+  }
+
+  if (typeof sess.ranker.searchSession === "undefined")
+  {
+    throw "What happedn to sess.ranker.searchSession?";
   }
 
 

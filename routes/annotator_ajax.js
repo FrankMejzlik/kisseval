@@ -46,3 +46,23 @@ exports.GetNearKeywords = function(req, res)
   // Send response
   res.jsonp(nearKeywords);
 };
+
+exports.GetNearKeywordsWithExamples = function(req, res) 
+{
+  const sess = req.session;
+
+  const prefix = req.query.queryValue;
+  const kwDataType = req.session.keywordsSettings.kwDataType;
+  const scoringDataType = req.session.rankingSettings.scoringDataType;
+
+  var nearKeywords = global.imageRanker.GetNearKeywords(kwDataType, scoringDataType, prefix, sess.annotatorSettings.numSuggestions, true);
+
+  prefixCache.push(prefix);
+  if (prefixCache.length > 100)
+  {
+    writePrefixCache(kwDataType);
+  }
+
+  // Send response
+  res.jsonp(nearKeywords);
+};

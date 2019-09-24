@@ -37,7 +37,7 @@
       a.setAttribute("class", "autocomplete-items");
 
       // Create AJAX call to get appropriate data
-      get('/annotator_ajax?queryValue=' + val)
+      get('/annotator_ajax_get_near_keywords_with_examples?queryValue=' + val)
         // If response OK
         .then((data) => {
 

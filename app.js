@@ -214,6 +214,7 @@ app.post('/trecvid_ranker_ajax_submit_task', trecvidAjaxRankerRouter.submitTask)
 app.post('/trecvid_ranker_ajax_next_task', trecvidAjaxRankerRouter.nextTask);
 
 app.get('/annotator_ajax', annotatorAjaxRouter.GetNearKeywords);
+app.get('/annotator_ajax_get_near_keywords_with_examples', annotatorAjaxRouter.GetNearKeywordsWithExamples);
 
 // GETs
 app.get('/api_get_relevant_images', api.getRelevantImagesFromPlainQuery);

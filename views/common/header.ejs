@@ -220,7 +220,14 @@
             type: "POST",
             data: $(this).serialize(),
             success: function (data) {
-              showGlobalHeaderSettingsBarMessageBoxMessage("Saved!", 5000);
+              if (data === true)
+              {
+                showGlobalHeaderSettingsBarMessageBoxMessage("Saved!", 5000);
+              } 
+              else 
+              {
+                showGlobalHeaderSettingsBarMessageBoxMessage(data, 5000);
+              }
             },
             error: function (jXHR, textStatus, errorThrown) {
                 alert(errorThrown);

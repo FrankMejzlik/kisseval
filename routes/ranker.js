@@ -1,6 +1,9 @@
 
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+
+const clone = require('lodash.clone');
+const clonedeep = require('lodash.clonedeep');
 
 const utils = require("../routes/utils/utils");
 const rankerUtils = require("../routes/utils/ranker_utils");
@@ -12,6 +15,7 @@ const routeSettings = {
 function PreProcessReq(req, viewData)
 {
   const sess = req.session;
+
 
 
   // Do general request preprocess
@@ -48,7 +52,14 @@ function PostProcessReq(req, viewData)
 router.get('/', function(req, res, next) 
 {
   let sess = req.session;
-  let viewData = new Object();
+  let viewData = {
+    "ui": {
+      "ranker": {
+        "queryInputUnlocked": false,
+        "queryInput2Unlocked": false
+      }
+    }
+  };
 
   PreProcessReq(req, viewData)
   ProcessReq(req, viewData);

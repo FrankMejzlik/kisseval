@@ -136,12 +136,6 @@ exports.submitImage = function(req, res)
 
   // +++++++++++++++++++++++++++++++++++++++++++
   // +++++++++++++++++++++++++++++++++++++++++++
-  // void ImageRanker::SubmitInteractiveSearchSubmit(
-  // InteractiveSearchOrigin originType, size_t imageId, RankingModelId modelId, InputDataTransformId transformId,
-  // std::vector<std::string> modelSettings, std::vector<std::string> transformSettings,
-  // std::string sessionId, size_t searchSessionIndex, int endStatus, size_t sessionDuration,
-  // std::vector<InteractiveSearchAction> actions,
-  // size_t userId
   
   if (actionsArray.length > 0)
   {
@@ -382,21 +376,25 @@ exports.processAction = function(req, res)
 
 exports.getImageKeywordsForInteractiveSearch = function(req, res) 
 {
-  global.logger.log('debug', "=> getImageKeywordsForInteractiveSearch()");
   const sess = req.session;
+  global.logger.log('debug', "<" + sess.id + ">: => getImageKeywordsForInteractiveSearch()");
 
-  const imageId = req.query.imageId;
-
-  //global.logger.log('debug', "action = " + action + ", operand = " + operand);
-
+  const imageId = Number(req.query.imageId);
+  const numResults = 30;
+  const withExampleImages = true;
+  
   const kwScDataType = new Object();
   kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
   kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(Number(imageId), 30, kwScDataType, true);
+  global.logger.log('debug', "<" + sess.id + ">: Getting top keywords for the image...");
+  global.logger.log('debug', "<" + sess.id + ">: imageId = " + imageId);
+  global.logger.log('debug', "<" + sess.id + ">: numResults = " + numResults);
+  global.logger.log('debug', "<" + sess.id + ">: kwScDataType = " + JSON.stringify(kwScDataType, undefined, 4));
 
   
+  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(imageId, numResults, kwScDataType, true);
 
-  global.logger.log('debug', "<= processAction()");
+  global.logger.log('debug', "<" + sess.id + ">: <= getImageKeywordsForInteractiveSearch()");
   res.jsonp(response);
 }

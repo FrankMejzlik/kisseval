@@ -49,10 +49,6 @@ exports.initOrResumeTrecvidTaskSession = function(sess, viewData)
     // Fill dummy view data
     viewData.ranker = new Object();
     viewData.ranker.settings = sess.ranker.settings;
-    
-    viewData.ui = new Object();
-    viewData.ui.queryInputUnlocked = true; 
-
   }
   // Search session running
   else 
@@ -68,8 +64,8 @@ exports.initOrResumeTrecvidTaskSession = function(sess, viewData)
     viewData.trecvidSession = sess.trecvidSession;
     
     // Unlock input
-    viewData.ui = new Object();
-    viewData.ui.queryInputUnlocked = true;
+    viewData.ui.ranker.queryInputUnlocked = true;
+    viewData.ui.ranker.queryInput2Unlocked = true;
   }
 
   viewData.ranker.settings.aggregationModelSimple = rankerUtils.getModelNumberNameFromSession(sess);

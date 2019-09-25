@@ -110,7 +110,7 @@
         <!-- Query 1 -->
         <div class="autocomplete-input-cont small-12 cell">
           <!-- Autocomplete text input -->
-          <input <%= ui.queryInputUnlocked ? "" : "disabled" %> type="text" id="queryInput" tabindex="1" name="query">
+          <input <%= ui.ranker.queryInputUnlocked ? "" : "disabled" %> type="text" id="queryInput" tabindex="1" name="query">
           <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
           
           <ul class="selected-keywords-list" id="selectedKeywordsList">
@@ -149,7 +149,7 @@
         <div class="autocomplete-input-cont second small-12 cell">
 
           <!-- Autocomplete text input -->
-          <input <%= ui.queryInputUnlocked ? "" : "disabled" %> type="text" id="queryInput2" tabindex="1" name="query2">
+          <input <%= ui.ranker.queryInput2Unlocked ? "" : "disabled" %> type="text" id="queryInput2" tabindex="1" name="query2">
           <input type='hidden' id="selectedCounter2" name='selectedCounter2' value='0'>
           
           <ul class="selected-keywords-list" id="selectedKeywordsList2">

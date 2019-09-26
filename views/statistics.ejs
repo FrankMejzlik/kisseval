@@ -1,18 +1,232 @@
 <!-- Include header -->
 <%- include common/header.ejs %>
 
-
 <section class="page-title-section">
   <div class="grid-x grid-padding-x align-center grid-container">
     
     <div class="page-title small-12 cell text-center">
-      <h1>Statistics</h1>
+      <h1>Data exports</h1>
     </div>
 
   </div>
 </section>
 
-<!-- Best models show-off on real/simulated user -->
+<section class="exporter-section "></section>
+  <div class="grid-x grid-padding-x align-center grid-container">
+
+    <div class="section-header large-12 cell text-center">
+      <h2></h2>
+    </div>
+
+    <div class="large-12 cell text-center"></div>
+      <ul class="tabs" data-tabs id="example-tabs">
+        <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Google Vision</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">Viret</a></li>
+      </ul>
+      <div class="tabs-content " data-tabs-content="example-tabs">
+
+        <!-- Tab "Google Vision" -->
+        <div class="tabs-panel is-active" id="panel1">
+            <div class="section-header large-12 cell">
+              <h3>General stats</h3>
+              <p>Min # of labels used: <span>333</span></p>
+              <p>Max # of labels used: <span>333</span></p>
+              <p>Avg # of labels used: <span>333</span></p>
+              <p>Median of labels used: <span>333</span></p>
+            </div>
+          <hr />
+          <hr />
+          <ul class="exporter-file-list">
+            <li>
+                <h3 class="file-header">"Keyword classes" file</h3>
+                <p>Keywords describing file in Viret format</p>
+                <code class="code-block">
+FORMAT:
+  Radky zacinajici H lze ignorovat (jedna se o hypernyma)
+  Jedna se o csv soubor se sloupci oddelenymi tildou (~)
+  Sloupce jsou poporade:
+  1) index ve vektroru ktery je vystupem ze site
+  2) id ve wordnetu
+  3) nazev tridy (potazmo vice nazvu oddelene pomoci #)
+  4) wordnet id hyponyma (potazmo vice idcek hyponym oddelene pomoci #)
+  5) wordnet id hypernyma (potazmo vice idcek hypernym oddelene pomoci #)
+  6)textovy popis
+  hypernyma (radky zacinajici H) jsou vedena v souboru uplne stejne akorat nemaji index ve vektroru ktery je vystupem ze site.
+                </code>
+              <a <% if (!exportedFiles.id100.id100.eKeywordClasses) { %> style="display: none;" <% } %>
+                href="<%= exportedFiles.id100.id100.eKeywordClasses %>" target="_blank" class="button download-btn success">Download</a>
+            </li>
+            <hr />
+            <li>
+              <h3 class="file-header">"User annotator queries" file</h3>
+              <p>User annotated (image, query) pairs</p>
+              <code class="code-block">
+FORMAT:
+  image ID0, type0, kw0 ID, kw1 ID, ....
+  image ID1, type1, kw0 ID, kw1 ID, ....
+  ...
+  image IDN-1, typeN-1, kw0 ID, kw1 ID, ....
+
+  `type` column:
+    0 - dev session without example images
+    1 - public session without example images
+    10 - dev session with example images
+    11 - public session with example images
+
+    NOTE: All data ATM should be considered dev because there were no real "publc" users gathering data
+              </code>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 'eUserAnnotatorQueries', 100, 100)">Regenerate file</a>
+              <a <% if (!exportedFiles.id100.id100.eUserAnnotatorQueries) { %> style="display: none;" <% } %>
+                href="<%= exportedFiles.id100.id100.eUserAnnotatorQueries %>"  target="_blank" class="button download-btn success">Download</a>
+            </li>
+            <hr />
+            <li>
+              <h3 class="file-header">"Net normalized scores" file</h3>
+              <p>Normalized per image (keyword ID, scoring) pairs from neural network.</p>
+              <code class="code-block">
+FORMAT:
+  image ID0, keyword ID0, scoring 0, keyword ID1, scoring 1, ..., keyword IDK-1, scoring K-1
+  ...
+  image IDN-1, keyword ID0, scoring 0, keyword ID1, scoring 1, ..., keyword IDK-1, scoring K-1
+              </code>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 'eNetNormalizedScores', 100, 100)">Regenerate file</a>
+
+              <a <% if (!exportedFiles.id100.id100.eNetNormalizedScores) { %> style="display: none;" <% } %>
+                href="<%= exportedFiles.id100.id100.eNetNormalizedScores %>" target="_blank" class="button download-btn success">Download</a>
+
+            </li>
+            <hr />
+            <li>
+                <h3 class="file-header">"Per query # hits vs # labels used" file</h3>
+                <p>Per image, number of hits with number of labels used</p>
+                <code class="code-block">
+FORMAT:
+  image ID 0, number of hits 0, number of labels used 0
+  image ID 1, number of hits 1, number of labels used 1
+  ...
+  image ID N-1, number of hits N-1, number of labels used N-1
+                </code>
+                <a class="button regenerate-btn"  onclick="exportFile(this, 'eQueryNumHits', 100, 100)">Regenerate file</a>
+  
+                <a <% if (!exportedFiles.id100.id100.eQueryNumHits) { %> style="display: none;" <% } %>
+                  href="<%= exportedFiles.id100.id100.eQueryNumHits %>" target="_blank" class="button download-btn success">Download</a>
+  
+              </li>
+          </ul>
+
+        </div>
+
+        <!-- Tab "Viret" -->
+        <div class="tabs-panel" id="panel2">
+          <ul class="exporter-file-list">
+            <li>
+                <h3 class="file-header">"Keyword classes" file</h3>
+                <p>Keywords describing file in Viret format</p>
+                <code class="code-block">
+FORMAT:
+  Radky zacinajici H lze ignorovat (jedna se o hypernyma)
+  Jedna se o csv soubor se sloupci oddelenymi tildou (~)
+  Sloupce jsou poporade:
+  1) index ve vektroru ktery je vystupem ze site
+  2) id ve wordnetu
+  3) nazev tridy (potazmo vice nazvu oddelene pomoci #)
+  4) wordnet id hyponyma (potazmo vice idcek hyponym oddelene pomoci #)
+  5) wordnet id hypernyma (potazmo vice idcek hypernym oddelene pomoci #)
+  6)textovy popis
+  hypernyma (radky zacinajici H) jsou vedena v souboru uplne stejne akorat nemaji index ve vektroru ktery je vystupem ze site.
+                </code>
+
+                <a <% if (!exportedFiles.id0.id0.eKeywordClasses) { %> style="display: none;" <% } %>
+                  href="<%= exportedFiles.id0.id0.eKeywordClasses %>"  target="_blank" class="button download-btn success">Download</a>
+              
+            </li>
+            <hr />
+            <li>
+              <h3 class="file-header">"User annotator queries" file</h3>
+              <p>User annotated (image, query) pairs</p>
+              <code class="code-block">
+FORMAT:
+  image ID0, type0, kw0 ID, kw1 ID, ....
+  image ID1, type1, kw0 ID, kw1 ID, ....
+  ...
+  image IDN-1, typeN-1, kw0 ID, kw1 ID, ....
+
+  `type` column:
+    0 - dev session without example images
+    1 - public session without example images
+    10 - dev session with example images
+    11 - public session with example images
+
+    NOTE: All data ATM should be considered dev because there were no real "publc" users gathering data
+              </code>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 'eUserAnnotatorQueries', 0, 0)">Regenerate file</a>
+
+              <a <% if (!exportedFiles.id0.id0.eUserAnnotatorQueries) { %> style="display: none;" <% } %>
+                href="<%= exportedFiles.id0.id0.eUserAnnotatorQueries %>" target="_blank" class="button download-btn success">Download</a>
+            </li>
+            <hr />
+            <li>
+              <h3 class="file-header">"Net normalized scores" file</h3>
+              <p>Normalized per image (keyword ID, scoring) pairs from neural network.</p>
+              <code class="code-block">
+FORMAT:
+  image ID0, keyword ID0, scoring 0, keyword ID1, scoring 1, ..., keyword IDK-1, scoring K-1
+  ...
+  image IDN-1, keyword ID0, scoring 0, keyword ID1, scoring 1, ..., keyword IDK-1, scoring K-1
+              </code>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 'eNetNormalizedScores', 0, 0)">Regenerate file</a>
+
+              <a <% if (!exportedFiles.id0.id0.eNetNormalizedScores) { %> style="display: none;" <% } %>
+                href="<%= exportedFiles.id0.id0.eNetNormalizedScores %>"  target="_blank"class="button download-btn success">Download</a>
+              
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function exportFile(btn, fileType, kwTypeId, scTypeId)
+  {
+    // Create AJAX call to get appropriate data
+    post('/exporter_ajax_export_file', JSON.stringify({kwTypeId, scTypeId, fileType}))
+      // If response recieved
+      .then((data) => 
+      {
+        data = JSON.parse(data);
+
+        if (data.result) 
+        {
+          const $this = $(this);
+          const $downloadBtn = $this.parent().children(".download-btn")[0];
+
+          $downloadBtn.attr("href", data.filepath);
+        }
+        else 
+        {
+          console.log("trecvid_ranker_ajax_next_task AJAX call failed!");
+          alert("trecvid_ranker_ajax_next_task AJAX call failed!");
+        }
+        
+
+      })
+      // If error occured
+      .catch((err) => 
+      {
+        console.log("trecvid_ranker_ajax_next_task AJAX call failed!");
+        alert("trecvid_ranker_ajax_next_task AJAX call failed!");
+      });
+  }
+
+</script>
+
+
+<% if (false) { %>
+
 <section class="statistics-models-showoff-section ">
   <div class="grid-x grid-padding-x align-center grid-container">
 
@@ -92,7 +306,7 @@
     </div>
 
   </div>
-</section>
+</section> 
 
 <script src="/javascripts/Chart.bundle.js"></script>
 <script>
@@ -238,6 +452,8 @@ function drawInteractiveSearchChart(chartData, canvasId)
   chart.update();
 }
 </script>
+
+<% } %>
 
 </body>
 

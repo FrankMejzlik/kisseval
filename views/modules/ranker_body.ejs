@@ -179,7 +179,13 @@ function SwitchModalImageHtmlContents(id)
       // Switch HTML
       $modal.html(html);
     }
-  );
+  )
+          // If error occured
+          .catch((err) => 
+          {
+            console.log("/images_ajax AJAX call failed!");
+            alert("/images_ajax AJAX call failed!");
+          });
 }
 
 </script>

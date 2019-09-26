@@ -11,6 +11,7 @@
         "appMode": 0,
         "outputDir": "/output/",
         "cacheDir": "/cache/",
+        "exportDir": "/export/",
 
         "keywordsSettings": {
             "kwDataType": 100

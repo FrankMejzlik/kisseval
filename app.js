@@ -36,6 +36,7 @@ const rankerAjaxRouter = require("./routes/ranker_ajax");
 const rankerAjaxNegateRouter = require("./routes/ranker_ajax_negate");
 const statisticsRouter = require("./routes/statistics");
 const statisticsAjaxRouter = require("./routes/statistics_ajax");
+const exporterAjaxRouter = require("./routes/exporter_ajax");
 
 var testsAjax = require('./routes/tests_ajax');
 var imagesAjax = require('./routes/images_ajax');
@@ -191,6 +192,8 @@ app.use('/statistics', statisticsRouter);
 
 // Settings AJAXes
 app.post('/settings_ajax_set_kw_sc_data_type', settingsAjaxRouter.SetKeywordScoringDataType);
+
+app.post('/exporter_ajax_export_file', exporterAjaxRouter.ExportFile);
 
 // Ranker AJAXes
 app.get('/ranker_ajax_submit_settings', rankerAjaxRouter.submitSettings);

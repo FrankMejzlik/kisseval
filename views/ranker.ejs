@@ -965,7 +965,13 @@ function switchModalImageHtmlContents(id)
       // Push HTML inside
       pureHyerpnymsContainer.innerHTML = html;
     }
-  );
+  )
+          // If error occured
+          .catch((err) => 
+          {
+            console.log("/ranker_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
+            alert("/ranker_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
+          });
 }
 
 </script>

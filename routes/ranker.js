@@ -16,8 +16,6 @@ function PreProcessReq(req, viewData)
 {
   const sess = req.session;
 
-
-
   // Do general request preprocess
   utils.PreProcessReq(req, viewData, routeSettings);
 

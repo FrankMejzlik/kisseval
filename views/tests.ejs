@@ -347,6 +347,13 @@
 
             $form.removeClass("running-test");
             $form.addClass("result-ok");
+          })
+          // If error occured
+          .catch((err) => 
+          {
+            console.log(url + " AJAX call failed!");
+            alert(url + "trecvid_ranker_ajax_next_task AJAX call failed! Incorrect test config maybe.");
+            $form.removeClass("running-test");
           });
         }
 

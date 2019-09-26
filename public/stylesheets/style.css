@@ -432,6 +432,19 @@ max-width: 1920px;
   z-index: 4;
 }
 
+.code-block {
+    border: 1px solid #cacaca;
+    background-color: #e6e6e6;
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-weight: normal;
+    color: #0a0a0a;
+    display: block;
+    overflow: auto;
+    white-space: pre;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+}
+
 .button {
   background-color: #4c6f83c4;
 }
@@ -806,6 +819,11 @@ h3 {
   font-size: 22px;
 }
 
+.file-header {
+  color: #cc4b37;
+  font-size: 30px;
+}
+
 .remove-keyword.button {
   border-radius: 50%;
   padding: 2px 1px;
@@ -1088,6 +1106,11 @@ font-size: 17px
 
 #devAccordion {
   max-height: 95vh;
+}
+
+.exporter-file-list
+{
+  list-style: none;
 }
 
 ul {

@@ -111,6 +111,18 @@
           ">
             <a href="/ranker">Ranker</a>
           </li>
+
+          <li class="menu-item
+          <% if (typeof currentPage != 'undefined') 
+            {
+              if (currentPage == "statistics") 
+              { %>
+                active
+              <% }
+            } %>
+          ">
+            <a href="/statistics">Statistics</a>
+          </li>
         </ul>
       </div>
 

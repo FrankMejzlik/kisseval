@@ -712,7 +712,13 @@ function switchModalImageHtmlContents(id)
       // Switch HTML
       $modal.html(html);
     }
-  );
+  )
+          // If error occured
+          .catch((err) => 
+          {
+            console.log("/ranker_negate_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
+            alert("/ranker_negate_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
+          });
 }
 
 </script>

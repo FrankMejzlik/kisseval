@@ -78,6 +78,9 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
    */
    Napi::Value GetGridTestProgress(const Napi::CallbackInfo& info);
    
+   Napi::Value ExportDataFile(const Napi::CallbackInfo& info);
+   Napi::Value GetGeneralStatistics(const Napi::CallbackInfo& info);
+   
 
    
 

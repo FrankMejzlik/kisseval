@@ -27,12 +27,14 @@
 
         <!-- Tab "Google Vision" -->
         <div class="tabs-panel is-active" id="panel1">
-            <div class="section-header large-12 cell">
+            <div class="general-stats-panel large-12 cell">
               <h3>General stats</h3>
-              <p>Min # of labels used: <span>333</span></p>
-              <p>Max # of labels used: <span>333</span></p>
-              <p>Avg # of labels used: <span>333</span></p>
-              <p>Median of labels used: <span>333</span></p>
+              <p>Num of distinct keywords: <span><%= statistics.statObjGoogle.keywordsStats.numDistinctKeywords %></span></p>
+              <p>Min # of labels used: <span><%= statistics.statObjGoogle.annotatorDataStats.minKeywords %></span></p>
+              <p>Max # of labels used: <span><%= statistics.statObjGoogle.annotatorDataStats.maxKeywords %></span></p>
+              <p>Avg # of labels used: <span><%= statistics.statObjGoogle.annotatorDataStats.avgKeywords %></span></p>
+              <p>Median of labels used: <span><%= statistics.statObjGoogle.annotatorDataStats.medianKeywords %></span></p>
+              <p>Probability of label hit: <span><%= statistics.statObjGoogle.annotatorDataStats.labelHitProb %></span></p>
             </div>
           <hr />
           <hr />
@@ -75,7 +77,7 @@ FORMAT:
 
     NOTE: All data ATM should be considered dev because there were no real "publc" users gathering data
               </code>
-              <a class="button regenerate-btn"  onclick="exportFile(this, 'eUserAnnotatorQueries', 100, 100)">Regenerate file</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 0, 100, 100)">Regenerate file</a>
               <a <% if (!exportedFiles.id100.id100.eUserAnnotatorQueries) { %> style="display: none;" <% } %>
                 href="<%= exportedFiles.id100.id100.eUserAnnotatorQueries %>"  target="_blank" class="button download-btn success">Download</a>
             </li>
@@ -89,7 +91,7 @@ FORMAT:
   ...
   image IDN-1, keyword ID0, scoring 0, keyword ID1, scoring 1, ..., keyword IDK-1, scoring K-1
               </code>
-              <a class="button regenerate-btn"  onclick="exportFile(this, 'eNetNormalizedScores', 100, 100)">Regenerate file</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 1, 100, 100)">Regenerate file</a>
 
               <a <% if (!exportedFiles.id100.id100.eNetNormalizedScores) { %> style="display: none;" <% } %>
                 href="<%= exportedFiles.id100.id100.eNetNormalizedScores %>" target="_blank" class="button download-btn success">Download</a>
@@ -98,15 +100,15 @@ FORMAT:
             <hr />
             <li>
                 <h3 class="file-header">"Per query # hits vs # labels used" file</h3>
-                <p>Per image, number of hits with number of labels used</p>
+                <p>Per query, number of hits with number of labels used</p>
                 <code class="code-block">
 FORMAT:
-  image ID 0, number of hits 0, number of labels used 0
-  image ID 1, number of hits 1, number of labels used 1
+  query ID 0, image ID 0, number of hits 0, number of labels used 0
+  query ID 1, image ID 1, number of hits 1, number of labels used 1
   ...
-  image ID N-1, number of hits N-1, number of labels used N-1
+  query ID N-1, image ID N-1, number of hits N-1, number of labels used N-1
                 </code>
-                <a class="button regenerate-btn"  onclick="exportFile(this, 'eQueryNumHits', 100, 100)">Regenerate file</a>
+                <a class="button regenerate-btn"  onclick="exportFile(this, 2, 100, 100)">Regenerate file</a>
   
                 <a <% if (!exportedFiles.id100.id100.eQueryNumHits) { %> style="display: none;" <% } %>
                   href="<%= exportedFiles.id100.id100.eQueryNumHits %>" target="_blank" class="button download-btn success">Download</a>
@@ -118,6 +120,17 @@ FORMAT:
 
         <!-- Tab "Viret" -->
         <div class="tabs-panel" id="panel2">
+            <div class="general-stats-panel large-12 cell">
+                <h3>General stats</h3>
+                <p>Num of distinct keywords: <span><%= statistics.statObjViret.keywordsStats.numDistinctKeywords %></span></p>
+                <p>Min # of labels used: <span><%= statistics.statObjViret.annotatorDataStats.minKeywords %></span></p>
+                <p>Max # of labels used: <span><%= statistics.statObjViret.annotatorDataStats.maxKeywords %></span></p>
+                <p>Avg # of labels used: <span><%= statistics.statObjViret.annotatorDataStats.avgKeywords %></span></p>
+                <p>Median of labels used: <span><%= statistics.statObjViret.annotatorDataStats.medianKeywords %></span></p>
+                <p>Probability of label hit: <span><%= statistics.statObjViret.annotatorDataStats.labelHitProb %></span></p>
+              </div>
+            <hr />
+            <hr />
           <ul class="exporter-file-list">
             <li>
                 <h3 class="file-header">"Keyword classes" file</h3>
@@ -159,7 +172,7 @@ FORMAT:
 
     NOTE: All data ATM should be considered dev because there were no real "publc" users gathering data
               </code>
-              <a class="button regenerate-btn"  onclick="exportFile(this, 'eUserAnnotatorQueries', 0, 0)">Regenerate file</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 0, 0, 0)">Regenerate file</a>
 
               <a <% if (!exportedFiles.id0.id0.eUserAnnotatorQueries) { %> style="display: none;" <% } %>
                 href="<%= exportedFiles.id0.id0.eUserAnnotatorQueries %>" target="_blank" class="button download-btn success">Download</a>
@@ -174,7 +187,7 @@ FORMAT:
   ...
   image IDN-1, keyword ID0, scoring 0, keyword ID1, scoring 1, ..., keyword IDK-1, scoring K-1
               </code>
-              <a class="button regenerate-btn"  onclick="exportFile(this, 'eNetNormalizedScores', 0, 0)">Regenerate file</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 1, 0, 0)">Regenerate file</a>
 
               <a <% if (!exportedFiles.id0.id0.eNetNormalizedScores) { %> style="display: none;" <% } %>
                 href="<%= exportedFiles.id0.id0.eNetNormalizedScores %>"  target="_blank"class="button download-btn success">Download</a>
@@ -192,8 +205,14 @@ FORMAT:
 <script>
   function exportFile(btn, fileType, kwTypeId, scTypeId)
   {
+    const $this = $(btn);
+    const $downloadBtn = $this.parent().children(".download-btn");
+    
+    $downloadBtn.hide();
+    $this.html("Generating...");
+
     // Create AJAX call to get appropriate data
-    post('/exporter_ajax_export_file', JSON.stringify({kwTypeId, scTypeId, fileType}))
+    post('/exporter_ajax_export_file', JSON.stringify({kwTypeId:kwTypeId , scTypeId: scTypeId, fileType: fileType}))
       // If response recieved
       .then((data) => 
       {
@@ -201,15 +220,23 @@ FORMAT:
 
         if (data.result) 
         {
-          const $this = $(this);
-          const $downloadBtn = $this.parent().children(".download-btn")[0];
+          const $this = $(btn);
+          const $downloadBtn = $this.parent().children(".download-btn");
 
-          $downloadBtn.attr("href", data.filepath);
+          $downloadBtn.attr("href", data.filename);
+          $downloadBtn.show();
+          $this.html("Regenerate");
         }
         else 
         {
-          console.log("trecvid_ranker_ajax_next_task AJAX call failed!");
-          alert("trecvid_ranker_ajax_next_task AJAX call failed!");
+          const $this = $(btn);
+          const $downloadBtn = $this.parent().children(".download-btn");
+
+          $this.html("Regenerate");
+          $downloadBtn.html(":(");
+
+          console.log("exporter_ajax_export_file AJAX call failed!");
+          alert("exporter_ajax_export_file AJAX call failed!");
         }
         
 
@@ -217,8 +244,14 @@ FORMAT:
       // If error occured
       .catch((err) => 
       {
-        console.log("trecvid_ranker_ajax_next_task AJAX call failed!");
-        alert("trecvid_ranker_ajax_next_task AJAX call failed!");
+        const $this = $(btn);
+        const $downloadBtn = $this.parent().children(".download-btn");
+
+        $this.html("Regenerate");
+        $downloadBtn.html(":(");
+
+        console.log("exporter_ajax_export_file AJAX call failed!");
+        alert("exporter_ajax_export_file AJAX call failed!");
       });
   }
 

@@ -50,6 +50,27 @@ function ProcessReq(req, viewData)
 {
   let sess = req.session;
 
+  const kwScDataType1 = {
+    keywordsDataType: 0,
+    scoringDataType: 0
+  }
+
+  const kwScDataType2 = {
+    keywordsDataType: 100,
+    scoringDataType: 100
+  }
+
+
+
+
+  // Get general statistigs
+  statObjViret = global.imageRanker.GetGeneralStatistics(kwScDataType1, 999);
+  statObjGoogle = global.imageRanker.GetGeneralStatistics(kwScDataType2, 999);
+
+  viewData.statistics = {
+    statObjViret: statObjViret,
+    statObjGoogle: statObjGoogle
+  }
 }
 
 function PostProcessReq(req, viewData)

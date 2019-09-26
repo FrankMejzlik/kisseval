@@ -194,6 +194,12 @@
 
             $outputElem.html(complete + '\\' + total);
 
+          })
+          // If error occured
+          .catch((err) => 
+          {
+            console.log("/tests_ajax_GetGridTestProgress AJAX call failed!");
+            alert("/tests_ajax_GetGridTestProgress AJAX call failed!");
           });
 
             setTimeout(arguments.callee, 2000);
@@ -504,6 +510,12 @@
 
             $form.removeClass("running-test");
             $form.addClass("result-ok");
+          })
+          // If error occured
+          .catch((err) => 
+          {
+            console.log(url + " AJAX call failed!");
+            alert(url + " AJAX call failed!");
           });
         }
 

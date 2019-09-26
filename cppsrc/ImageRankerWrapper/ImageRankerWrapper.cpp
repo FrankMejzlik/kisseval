@@ -13,7 +13,9 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = DefineClass(env, "ImageRankerWrapper", {
     
     InstanceMethod("Initialize", &ImageRankerWrapper::Initialize),
-    InstanceMethod("GetGridTestProgress", &ImageRankerWrapper::GetGridTestProgress),
+    InstanceMethod("GetGeneralStatistics", &ImageRankerWrapper::GetGeneralStatistics),
+    InstanceMethod("ExportDataFile", &ImageRankerWrapper::ExportDataFile),
+    InstanceMethod("RunGridTest", &ImageRankerWrapper::RunGridTest),
     InstanceMethod("RunGridTest", &ImageRankerWrapper::RunGridTest),
     InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
     InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage),
@@ -43,7 +45,8 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
-ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::ObjectWrap<ImageRankerWrapper>(info)  
+ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : 
+  Napi::ObjectWrap<ImageRankerWrapper>(info)  
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -185,6 +188,242 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::O
   }
 }
 
+Napi::Value ImageRankerWrapper::ExportDataFile(const Napi::CallbackInfo& info)
+{
+  // Parameters: SessionID, ImageID, string query
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 3)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::SubmitUserQueriesWithResults)").ThrowAsJavaScriptException();
+  }
+
+  // Transfer JS args to C
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+  size_t exportFileTypeId = info[1].As<Napi::Number>().Uint32Value();
+  std::string exportDir = info[2].As<Napi::String>().Utf8Value();
+  
+  
+  std::string resultFilepath;
+  try 
+  {
+    resultFilepath = this->actualClass_->ExportDataFile(kwScDataId, (eExportFileTypeId)exportFileTypeId, exportDir);
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
+  // Construct NAPI return object 
+  napi_value resultObject;
+  napi_create_object(env, &resultObject);
+
+  // Set "exportedFilepath"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "exportedFilepath", NAPI_AUTO_LENGTH, &key);
+    napi_value value;
+    napi_create_string_utf8(env, resultFilepath.data(), NAPI_AUTO_LENGTH, &value);
+
+    napi_set_property(env, resultObject, key, value);
+  }
+
+  return Napi::Object(env, resultObject);
+}
+
+Napi::Value ImageRankerWrapper::GetGeneralStatistics(const Napi::CallbackInfo& info)
+{
+  // Parameters: SessionID, ImageID, string query
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 2)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::SubmitUserQueriesWithResults)").ThrowAsJavaScriptException();
+  }
+
+  // Transfer JS args to C
+  std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+  // all/public/dev
+  DataSourceTypeId dataSourceType = static_cast<DataSourceTypeId>(info[1].As<Napi::Number>().Uint32Value());
+  //std::string exportDir = info[2].As<Napi::String>().Utf8Value();
+  
+  
+  // (num of distincts keywords)
+  KeywordsGeneralStatsTuple keywordsStatsTuple;
+  ScoringsGeneralStatsTuple scoringsStatsTuple;
+  // (min number of labels, max # labels, avg labels, median labels)
+  AnnotatorDataGeneralStatsTuple annotatorDataStatsTuple;
+  RankerDataGeneralStatsTuple rankerDataStatsTuple;
+
+  try 
+  {
+    std::tie(keywordsStatsTuple, scoringsStatsTuple, annotatorDataStatsTuple, rankerDataStatsTuple) = this->actualClass_->GetGeneralStatistics(kwScDataId, dataSourceType);
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
+  // Construct NAPI return object 
+  napi_value resultObject;
+  napi_create_object(env, &resultObject);
+
+  // Set "keywordsStats"
+  {
+    napi_value key1;
+    napi_create_string_utf8(env, "keywordsStats", NAPI_AUTO_LENGTH, &key1);
+    napi_value value1;
+    napi_create_object(env, &value1);
+
+    // Set "keywordsStats.numDistinctKeywords"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "numDistinctKeywords", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_uint32(env, std::get<0>(keywordsStatsTuple), &value);
+
+      napi_set_property(env, value1, key, value);
+    }
+    
+
+    napi_set_property(env, resultObject, key1, value1);
+  }
+
+  // Set "scoringsStats"
+  // {
+  //   napi_value key1;
+  //   napi_create_string_utf8(env, "keywordsStats", NAPI_AUTO_LENGTH, &key1);
+  //   napi_value value1;
+  //   napi_create_object(env, &value1);
+
+  //   // Set "scoringsStats.numDistinctKeywords"
+  //   // {
+  //   //   napi_value key;
+  //   //   napi_create_string_utf8(env, "numDistinctKeywords", NAPI_AUTO_LENGTH, &key);
+  //   //   napi_value value;
+  //   //   napi_create_uint32(env, std::get<0>(keywordsStatsTuple), &value);
+
+  //   //   napi_set_property(env, value1, key, value);
+  //   // }
+    
+
+  //   napi_set_property(env, resultObject, key1, value1);
+  // }
+
+  // Set "annotatorDataStats"
+  {
+    napi_value key1;
+    napi_create_string_utf8(env, "annotatorDataStats", NAPI_AUTO_LENGTH, &key1);
+    napi_value value1;
+    napi_create_object(env, &value1);
+
+    // Set "annotatorDataStats.minKeywords"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "minKeywords", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_uint32(env, std::get<0>(annotatorDataStatsTuple), &value);
+
+      napi_set_property(env, value1, key, value);
+    }
+
+    // Set "annotatorDataStats.maxKeywords"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "maxKeywords", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_uint32(env, std::get<1>(annotatorDataStatsTuple), &value);
+
+      napi_set_property(env, value1, key, value);
+    }
+
+    // Set "annotatorDataStats.avgKeywords"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "avgKeywords", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_double(env, std::get<2>(annotatorDataStatsTuple), &value);
+
+      napi_set_property(env, value1, key, value);
+    }
+
+    // Set "annotatorDataStats.medianKeywords"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "medianKeywords", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_double(env, std::get<3>(annotatorDataStatsTuple), &value);
+
+      napi_set_property(env, value1, key, value);
+    }
+
+    // Set "annotatorDataStats.labelHitProb"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "labelHitProb", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_double(env, std::get<4>(annotatorDataStatsTuple), &value);
+
+      napi_set_property(env, value1, key, value);
+    }
+    
+
+    napi_set_property(env, resultObject, key1, value1);
+  }
+
+  // Set "rankerDataStats"
+  // {
+  //   napi_value key1;
+  //   napi_create_string_utf8(env, "rankerDataStats", NAPI_AUTO_LENGTH, &key1);
+  //   napi_value value1;
+  //   napi_create_object(env, &value1);
+
+  //   // Set "rankerDataStats.numDistinctKeywords"
+  //   // {
+  //   //   napi_value key;
+  //   //   napi_create_string_utf8(env, "numDistinctKeywords", NAPI_AUTO_LENGTH, &key);
+  //   //   napi_value value;
+  //   //   napi_create_uint32(env, std::get<0>(rankerDataStatsTuple), &value);
+
+  //   //   napi_set_property(env, value1, key, value);
+  //   // }
+    
+
+  //   napi_set_property(env, resultObject, key1, value1);
+  // }
+
+  return Napi::Object(env, resultObject);
+}
+
+
 Napi::Value ImageRankerWrapper::Initialize(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -313,7 +552,7 @@ Napi::Value ImageRankerWrapper::SubmitUserQueriesWithResults(const Napi::Callbac
   std::vector<GameSessionQueryResult> queryResults;
   try {
     // RETURN: std::tuple<size_t, std::string, std::vector<std::string>, std::vector<std::pair<std::string, float>>>
-    queryResults = this->actualClass_->SubmitUserQueriesWithResults(kwScDataId, methodInput, static_cast<QueryOriginId>(queryOrigin));
+    queryResults = this->actualClass_->SubmitUserQueriesWithResults(kwScDataId, methodInput, static_cast<DataSourceTypeId>(queryOrigin));
   } 
   catch (const std::exception& e)
   {
@@ -445,6 +684,9 @@ Napi::Value ImageRankerWrapper::SubmitUserQueriesWithResults(const Napi::Callbac
   */
   return Napi::Object(env, resultArray);
 }
+
+
+
 
 Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
 {
@@ -647,7 +889,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
   Napi::Array gridTestSettingsArray = info[0].As<Napi::Array>();
   for (size_t i = 0; i < gridTestSettingsArray.Length(); i++)
   {
-    std::tuple<InputDataTransformId, RankingModelId, QueryOriginId, std::vector<std::string>, std::vector<std::string>> metaResult;
+    std::tuple<InputDataTransformId, RankingModelId, DataSourceTypeId, std::vector<std::string>, std::vector<std::string>> metaResult;
 
     Napi::Value v = gridTestSettingsArray[i];
 
@@ -680,7 +922,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
       {
         if (v.IsNumber())
         {
-          QueryOriginId queryOrigin = static_cast<QueryOriginId>((uint32_t)v.As<Napi::Number>().Uint32Value());
+          DataSourceTypeId queryOrigin = static_cast<DataSourceTypeId>((uint32_t)v.As<Napi::Number>().Uint32Value());
 
           std::get<2>(metaResult) = queryOrigin;
         }
@@ -742,7 +984,7 @@ Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)
       std::cout << i << ": " << std::endl;
       std::cout << "InputDataTransformId = " << (size_t)std::get<0>(settings) << std::endl;
       std::cout << "RankingModelId = " << (size_t)std::get<1>(settings) << std::endl;
-      std::cout << "QueryOriginId = " << (size_t)std::get<2>(settings) << std::endl;
+      std::cout << "DataSourceTypeId = " << (size_t)std::get<2>(settings) << std::endl;
 
       std::cout << "\t settings =" << std::endl;
       for (auto&& modelOpt : std::get<3>(settings))
@@ -1023,7 +1265,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
       kwScDataId,
       (InputDataTransformId)aggFn.Uint32Value(),
       (RankingModelId)modelType.Uint32Value(), 
-      (QueryOriginId)dataSource.Uint32Value(),
+      (DataSourceTypeId)dataSource.Uint32Value(),
       simulatedUserSettings, settings, aggSettings
     );
   } 
@@ -1241,7 +1483,7 @@ Napi::Value ImageRankerWrapper::GetStatisticsUserKeywordAccuracy(const Napi::Cal
   std::tuple<UserAccuracyChartData, UserAccuracyChartData> chartDataPairs;
   try 
   {
-    chartDataPairs = this->actualClass_->GetStatisticsUserKeywordAccuracy((QueryOriginId)querySource);
+    chartDataPairs = this->actualClass_->GetStatisticsUserKeywordAccuracy((DataSourceTypeId)querySource);
   }
   catch (const std::exception& e)
   {

@@ -8,3 +8,6 @@ data2/
 output/
 public/_images/images.zip
 public/_images/
+public/export/
+*.tmp
+*.log

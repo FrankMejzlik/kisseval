@@ -12,6 +12,7 @@
         "outputDir": "/output/",
         "cacheDir": "/cache/",
         "exportDir": "/export/",
+        "dbIndex": 0,
 
         "keywordsSettings": {
             "kwDataType": 100

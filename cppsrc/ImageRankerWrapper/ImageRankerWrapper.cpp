@@ -25,6 +25,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("GetRelevantImagesPlainQuery", &ImageRankerWrapper::GetRelevantImagesPlainQuery),
     InstanceMethod("TrecvidGetRelevantShots", &ImageRankerWrapper::TrecvidGetRelevantShots),
     InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
+    InstanceMethod("GetKeywordDataById", &ImageRankerWrapper::GetKeywordDataById),
     InstanceMethod("GetImageKeywordsForInteractiveSearch", &ImageRankerWrapper::GetImageKeywordsForInteractiveSearch),
     InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex),
     InstanceMethod("RunModelTest", &ImageRankerWrapper::RunModelTest),
@@ -1727,6 +1728,114 @@ Napi::Value ImageRankerWrapper::GetImageDataById(const Napi::CallbackInfo& info)
   }
 
   Napi::Number imageId = info[0].As<Napi::Number>();
+
+  // Call native method
+  const Image* image;
+  try {
+    image = this->actualClass_->GetImageDataById(imageId.Uint32Value());
+  } 
+  catch (const std::exception& e)
+  {
+    image = nullptr;
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // Set "imageId"
+  {
+    napi_value imageIdKey;
+    napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
+    napi_value imageId;
+    napi_create_uint32(env, image->m_imageId, &imageId);
+
+    napi_set_property(env, result, imageIdKey, imageId);
+  }
+
+  // Set "filename"
+  {
+    napi_value filenameKey;
+    napi_create_string_utf8(env, "filename", 8, &filenameKey);
+    napi_value filename;
+    napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
+
+    napi_set_property(env, result, filenameKey, filename);
+  }
+
+  // Set "probabilityVector"
+  {
+    std::string probVecKeyString{ "probabilityVector" };
+    napi_value probVecKey;
+    napi_create_string_utf8(env, probVecKeyString.data(), probVecKeyString.size(), &probVecKey);
+
+    // Create array
+    napi_value probVecArr;
+    napi_create_array(env, &probVecArr);
+    {
+      size_t i{ 0ULL };
+      // for (auto&& probPair : image->m_rawNetRankingSorted)
+      // {
+      //   napi_value pair;
+      //   napi_create_object(env, &pair);
+
+      //   // Set "index"
+      //   {
+      //     napi_value key;
+      //     napi_create_string_utf8(env, "index", 5, &key);
+      //     napi_value value;
+      //     napi_create_uint32(env, probPair.first, &value);
+
+      //     napi_set_property(env, pair, key, value);
+      //   }
+
+      //   // Set "prob"
+      //   {
+      //     napi_value key;
+      //     napi_create_string_utf8(env, "prob", 4, &key);
+      //     napi_value value;
+      //     napi_create_double(env, probPair.second, &value);
+
+      //     napi_set_property(env, pair, key, value);
+      //   }
+
+      //   napi_set_element(env, probVecArr, i, pair);
+
+      //   ++i;
+      // }
+      
+    }
+    napi_set_property(env, result, probVecKey, probVecArr);
+  }
+
+  return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::GetKeywordDataById(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 2)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
+  }
+std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
+  Napi::Value kwScDataIdObject = info[0];
+  if (kwScDataIdObject.IsObject())
+  {
+    Napi::Object o = kwScDataIdObject.As<Napi::Object>();
+
+    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
+
+    kwScDataId = std::tuple(kwDataType, scoringDataType);
+  }
+  Napi::Number imageId = info[1].As<Napi::Number>();
 
   // Call native method
   const Image* image;

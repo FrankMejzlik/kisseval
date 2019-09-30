@@ -1,0 +1,274 @@
+<!-- Include header -->
+<%- include common/header.ejs %>
+
+<section class="exporter-section ">
+  <div class="grid-x grid-padding-x align-center grid-container">
+
+    <div class="section-header large-12 cell text-center">
+      <h2>Data browser</h2>
+    </div>
+
+    <div class="large-12 cell text-center"></div>
+      <ul class="tabs" data-tabs id="example-tabs">
+        <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Annotator data</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">Ranker data</a></li>
+      </ul>
+      <div class="tabs-content " data-tabs-content="example-tabs">
+
+        <!-- Tab "Annotator data" -->
+        <div class="annotator-data-tab tabs-panel is-active" id="panel1">
+          <div class="is-active grid-x grid-padding-x grid-container">
+            
+            <!-- Filters -->
+            <div class="filters-panel large-12 cell ">
+
+              <form id="annotatorDataFilterForm" class="grid-x grid-padding-x grid-container" action="/" method="GET">
+                <div class="small-3 cell">
+                  <fieldset class="large-12 cell">
+                    <legend>Manually validated</legend>
+                    <input checked type="checkbox" name="manualy_validated" id="annotatorFilters_manualy_validated_true" value="true" required><label for="annotatorFilters_manualy_validated_true">True</label>
+                    <input checked type="checkbox" name="manualy_validated" id="annotatorFilters_manualy_validated_false" value="false" ><label for="annotatorFilters_manualy_validated_false">False</label>
+                  </fieldset>
+                </div>
+                <div class="small-3 cell">
+                  <fieldset class="large-12 cell">
+                    <legend>Keyword data type</legend>
+                    <input checked type="checkbox" name="keyword_data_type" id="annotatorFilters_keyword_data_type_0" value="0" required><label for="annotatorFilters_keyword_data_type_0">Viret v1</label>
+                    <input checked type="checkbox" name="keyword_data_type" id="annotatorFilters_keyword_data_type_100" value="100" ><label for="annotatorFilters_keyword_data_type_100">Google Vision</label>
+                  </fieldset>
+                </div>
+
+                <div class="small-3 cell">
+                  <fieldset class="large-12 cell">
+                    <legend>Scoring data types</legend>
+                    <input checked type="checkbox" name="scoring_data_type" id="annotatorFilters_scoring_data_type_0" value="0" required><label for="annotatorFilters_scoring_data_type_0">NasNet</label>
+                    <input checked type="checkbox" name="scoring_data_type" id="annotatorFilters_scoring_data_type_100" value="100" ><label for="annotatorFilters_scoring_data_type_100">Google Vision</label>
+                  </fieldset>
+                </div>
+
+                <div class="small-3 cell">
+                  <fieldset class="large-12 cell">
+                    <legend>Type</legend>
+                    <input type="checkbox" checked name="annotatorFilters_type" id="annotatorFilters_type_0" value="0" required><label for="annotatorFilters_type_0">Dev without pics</label>
+                    <br />
+                    <input type="checkbox" checked name="annotatorFilters_type" id="annotatorFilters_type_1" value="1" ><label for="annotatorFilters_type_1">Dev with pics</label>
+                    <br />
+                    <input type="checkbox" checked name="annotatorFilters_type" id="annotatorFilters_type_10" value="10" ><label for="annotatorFilters_type_10">Public without pics</label>
+                    <br />
+                    <input type="checkbox" checked name="annotatorFilters_type" id="annotatorFilters_type_11" value="11" ><label for="annotatorFilters_type_11">Public with pics</label>
+                  </fieldset>
+                </div>
+
+                <input type="submit" class="button" value="Filter">
+              </form>                  
+            </div>
+            <!--Left panel -->
+            <div class="left-panel  large-4 cell">
+              <ul class="user-data-list">
+
+                <% for (let i = 0; i < annotatorRecords.length; ++i) 
+                { %>
+                  
+                  <li class="<% if (annotatorRecords[i].selected) {%> active <%} %>"
+                  ><a onclick="showAnnotatorDataRecord(this, <%= annotatorRecords[i].id %>)">
+                    <span><%= annotatorRecords[i].id %></span>          
+                  </a></li>
+
+                <% } %>
+
+              </ul>
+            </div>
+
+            <!--Visualizer -->
+            <div class="data-visualizer large-8 cell">
+                
+              <div class="visualizer-navigation large-12 cell">
+                <a class="button" onclick='showPrevAnnotatorRecord'><<--</a>
+                <a class="button" onclick='showNextAnnotatorRecord'>-->></a>
+              </div>
+                
+              <form id="annotatorVisualizerForm" class="large-12 cell" action="/" method="POST">
+                <div class="grid-x grid-padding-x">
+                  <figure class="small-12 cell">
+                    <img src="/images/generic/bg_neural.jpg" />
+                  </figure>
+
+                  <!-- Query -->
+                  <ul id="annotatorVisualizerForm_query" class="query-list small-12 cell">
+
+                  </ul>
+
+                  <!-- Validated -->
+                  <div class="small-4 cell">
+                    <fieldset class="large-12 cell">
+                      <legend>Is manually validated?</legend>
+                      <input type="radio" name="manualy_validated" id="annotatorVisualizerForm_manualy_validated_true" value="true" required><label for="manualy_validated_true">True</label>
+                      <input type="radio" name="manualy_validated" id="annotatorVisualizerForm_manualy_validated_false" value="false" ><label for="manualy_validated_false">False</label>
+                    </fieldset>
+                  </div>
+
+                  <div class="small-8 cell">
+                    ACTIONS:
+                    <a class="button green" onclick="validateRecord(this, 1)">Validate record</a>
+                    <a class="button alert" onclick="validateRecord(this, 0)">Delete record</a>
+                  </div>
+
+
+
+                  <!-- ID -->
+                  <div class="small-4 cell">
+                    <div class="small-3 cell">
+                      <label for="id" class="text-right middle">ID</label>
+                    </div>
+                    <div class="small-9 cell">
+                      <input id="annotatorVisualizerForm_id" type="number" name="id" placeholder="123">
+                    </div>
+                  </div>
+
+                  <!--Image ID -->
+                  <div class="small-4 cell">
+                    <div class="small-3 cell">
+                      <label for="image_id" class="text-right middle">Image ID</label>
+                    </div>
+                    <div class="small-9 cell">
+                      <input id="annotatorVisualizerForm_image_id" type="number" name="image_id" placeholder="123">
+                    </div>
+                  </div>
+
+                  <!--Type -->
+                  <div class="small-4 cell">
+                    <div class="small-3 cell">
+                      <label for="type" class="text-right middle">Type</label>
+                    </div>
+                    <div class="small-9 cell">
+                      <select id="annotatorVisualizerForm_type" type="select" name="type">
+                          <option value="0">Dev without pics</option>
+                          <option value="10">Dev with pics</option>
+                          <option value="1">Public without pics</option>
+                          <option value="11">Public with pics</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="small-4 cell">
+                    <div class="small-3 cell">
+                      <label for="keyword_data_type" class="text-right middle">Keyword data</label>
+                    </div>
+                    <div class="small-9 cell">
+                      <select id="annotatorVisualizerForm_keyword_data_type" type="select" name="keyword_data_type">
+                          <option value="0">Viret v1</option>
+                          <option value="100">Google Vision</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="small-4 cell">
+                    <div class="small-3 cell">
+                      <label for="scoring_data_type" class="text-right middle">Scoring data</label>
+                    </div>
+                    <div class="small-9 cell">
+                      <select id="annotatorVisualizerForm_scoring_data_type" type="select" name="scoring_data_type">
+                          <option value="0">NasNet Viret</option>
+                          <option value="100">Google Vision</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Created -->
+                  <div class="small-4 cell">
+                    <div class="small-3 cell">
+                      <label for="created" class="text-right middle">Created</label>
+                    </div>
+                    <div class="small-9 cell">
+                        <input id="annotatorVisualizerForm_created" type="number" name="created" placeholder="12.3.2012">
+                    </div>
+                  </div>
+
+                </div>
+              </form>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab "Ranker data" -->
+        <div class="tabs-panel grid-x grid-padding-x grid-container" id="panel2">
+            
+         
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<script>
+
+  function clearAnnotatorVisualizer()
+  {
+
+  }
+
+  function fillInAnnotatorVizualizer(recordData)
+  {
+    // Clear previous record from vizualizer
+    clearAnnotatorVisualizer();
+
+    let $form = $("#annotatorVisualizerForm");
+
+    let queryList = $form.children("#annotatorVisualizerForm_query");
+
+    if (recordData.manuallyValidated)
+    {
+      $form.children("#annotatorVisualizerForm_manualy_validated_true").prop("checked", true);
+    } else {
+      $form.children("#annotatorVisualizerForm_manualy_validated_faslse").prop("checked", true);
+    }
+
+    let id = $("#annotatorVisualizerForm_id");
+    id.val(recordData.id);
+    let imageId = $form.children("#annotatorVisualizerForm_id");
+    let type = $form.children("#annotatorVisualizerForm_type");
+
+    let kwDataType = $form.children("#annotatorVisualizerForm_keyword_data_type");
+    let scDataType = $form.children("#annotatorVisualizerForm_scoring_data_type");
+    let created = $form.children("#annotatorVisualizerForm_created");
+  }
+
+  function showAnnotatorDataRecord(btn, recordId)
+  {
+    inputData = {
+      recordId: recordId
+    };
+
+    // Create AJAX call to get appropriate data
+    post('/data_center_ajax_get_annotator_user_data', JSON.stringify(inputData))
+      .then((data) => 
+      {
+        data = JSON.parse(data);
+
+        fillInAnnotatorVizualizer(data);        
+
+      })
+      // If error occured
+      .catch((err) => 
+      {
+
+
+        console.log("data_center_ajax_get_annotator_user_data AJAX call failed!");
+        alert("data_center_ajax_get_annotator_user_data AJAX call failed!");
+      });
+  }
+
+
+
+</script>
+
+
+</body>
+
+<!-- Include footer -->
+<%- include common/footer.ejs %>

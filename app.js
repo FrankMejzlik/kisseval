@@ -9,6 +9,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 let utils = require("./routes/utils/utils");
 
+const mysql = require('mysql');
+
 // Load global config
 var config = require("./config/config");
 
@@ -24,6 +26,7 @@ var collectorRouter = require('./routes/collector');
 var collectorDevRouter = require('./routes/collector_dev');
 var scoreboardRouter = require('./routes/scoreboard');
 var docsRouter = require('./routes/docs');
+var dataCenterRouter = require('./routes/data_center');
 
 const settingsAjaxRouter = require("./routes/settings_ajax");
 const annotatorRouter = require("./routes/annotator");
@@ -37,11 +40,19 @@ const rankerAjaxNegateRouter = require("./routes/ranker_ajax_negate");
 const statisticsRouter = require("./routes/statistics");
 const statisticsAjaxRouter = require("./routes/statistics_ajax");
 const exporterAjaxRouter = require("./routes/exporter_ajax");
+const dataCenterAjaxRouter = require("./routes/data_center_ajax");
 
 var testsAjax = require('./routes/tests_ajax');
 var imagesAjax = require('./routes/images_ajax');
 var api = require('./routes/api');
 
+global.dbConnectionsPool = mysql.createPool({
+  host: global.gConfig.db.host,
+  port: global.gConfig.db.port,
+  user: global.gConfig.db.user,
+  password: global.gConfig.db.password,
+  database: global.gConfig.db.dbName
+});
 
 const winston = require('winston');
 global.logger = winston.createLogger({
@@ -187,11 +198,14 @@ app.use('/trecvid_ranker', trecvidRankerRouter);
 
 
 app.use('/statistics', statisticsRouter);
+app.use('/data_center', dataCenterRouter);
 
 
 
 // Settings AJAXes
 app.post('/settings_ajax_set_kw_sc_data_type', settingsAjaxRouter.SetKeywordScoringDataType);
+app.post('/data_center_ajax_get_annotator_user_data', dataCenterAjaxRouter.GetAnnotatorUserData);
+app.post('/data_center_ajax_validate_user_data_record', dataCenterAjaxRouter.ValidateUserDataRecord);
 
 app.post('/exporter_ajax_export_file', exporterAjaxRouter.ExportFile);
 

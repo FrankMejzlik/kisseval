@@ -25,6 +25,11 @@ let finalConfig = moduleLodaSh.merge(defaultConfig, environmentConfig);
 finalConfig.ranker = new Object();
 finalConfig.ranker = require('./settings_ranker.json');
 
+const cred = require('./credentials.json');
+
+// Load correct DB credentials
+finalConfig.db = cred.db[finalConfig.dbIndex]; 
+
 
 // Store final config in globals
 global.gConfig = finalConfig;

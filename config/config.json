@@ -39,6 +39,7 @@
                         "dataDir": "/viret_keywords/",
                         "keywordType": 0,
                         "keywordDataFilename": "keyword_classes.txt",
+                        "wordToVecFilename": "LSC2018-NASNet.all_must_match.word2vec.label",
                         "dataSets": [
                             {
                                 "scoringDataType": 0,
@@ -67,6 +68,7 @@
                         "dataDir": "/google_keywords/",
                         "keywordType": 100,
                         "keywordDataFilename": "keyword_classes.google.txt",
+                        "wordToVecFilename": "keyword_classes.100.100.joined_words.word2vec.txt",
                         "dataSets": [
                             {
                                 "scoringDataType": 100,

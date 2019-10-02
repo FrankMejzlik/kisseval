@@ -172,7 +172,8 @@ global.imageRanker = new imageRanker.ImageRankerWrapper(
   irConsParams[4],
   irConsParams[5],
   irConsParams[6],
-  irConsParams[7]
+  irConsParams[7],
+  irConsParams[8]
 );
 
 

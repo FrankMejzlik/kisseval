@@ -7,8 +7,8 @@
 <div class="aggregation small-12 medium-3 cell">
   <label>Transformation function
     <select name="${nextPropertyIndex}][aggregation]">
-      <option value="100" selected title="Softmax probabability vector from nerual network.">Softmax</option>
-      <option value="200">Linear</option>
+      <option value="100"  title="Softmax probabability vector from nerual network.">Softmax</option>
+      <option selected value="200">Linear</option>
       <option value="900">No transform</option>
     </select>
   </label>
@@ -31,6 +31,18 @@
       <option value="3-3" title="Logical ANDs are summed, ORs take maximum.">Sum/Max</option>
     </select>
   </label>
+
+  <label>Query Expansion // 1-> all substrings, 2 -> substring matching whole word, 3 -> w2v, 23 -> 2&3
+    <select name="${nextPropertyIndex}][expansionSettigns]">
+        <option value="0" title="" selected>NoExpansion</option>
+        <option value="1" title="" selected>AnySubstring</option>
+        <option value="2" title="" selected>WholeSubstring</option>
+        <option value="3" title="" selected>WordToVec</option>
+        <option value="23" title="" selected>WholeSubstring + WordToVec</option>
+
+    </select>
+  </label>
+
 </div>
 <div class="rankingModel small-12 medium-3 cell">
   <label>Ranking model
@@ -56,7 +68,7 @@
     <select name="${nextPropertyIndex}][dataSource]">
         <option value="0" title="Queries that has been gathered from people developing this app." selected>Developers</option>
         <!--<option value="1" title="Queries gathered from wild public on the internet.">Public</option>-->
-        <option value="999" title="Queries gathered from wild public on the internet.">All</option>
+        <option selected value="999" title="Queries gathered from wild public on the internet.">All</option>
   
         <!--<option value="10000" title="Queries that has been gathered from people developing this app.">Developers - simulated</option>
         <option value="10001" title="Queries gathered from wild public on the internet.">Public - simulated</option>

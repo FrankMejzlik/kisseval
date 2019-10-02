@@ -1,10 +1,10 @@
 
 const util = require('util')
 
-var RunModelTest = function (kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray) 
+var RunModelTest = function (kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray, expansionSettigns) 
 {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
+  result = global.imageRanker.RunModelTest(kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray, expansionSettigns);
 
   return result;
 }
@@ -43,6 +43,8 @@ exports.RunModelTest = function(req, res)
     const modelType = Number(formDataArray[i].modelType);
     const dataSource = Number(formDataArray[i].dataSource);
     const aggregationParam = String(formDataArray[i].aggregationParam);
+
+    const expansionSettigns = Number(formDataArray[i].expansionSettigns);
 
     const aggSettingsArray = new Array();
     aggSettingsArray.push(aggregationParam);
@@ -116,6 +118,9 @@ exports.RunModelTest = function(req, res)
     const kwScDataType = new Object();
     kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
     kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+
+
+   
 
     // Run model test
     const chartData = RunModelTest(kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray);

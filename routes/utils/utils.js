@@ -79,9 +79,17 @@ exports.parseModelSettingsFromForm = function(sess, formBbody)
   // Get reference to current values
   const settings = sess.ranker.settings;
   
+
+  // Number of results
+  if (typeof formBbody.expansionSettigns !== "undefined")
+  {
+    settings.expansionSettigns = Number(formBbody.expansionSettigns);
+  } 
+
   //
   // If some are set, just overwrite them
   //
+  
 
   // Number of results
   if (typeof formBbody.numResults !== "undefined")
@@ -166,6 +174,7 @@ exports.convertSettingsObjectToNativeFormat = function(settings)
   result.keywordFrequency = Number(settings.keywordFrequency);
 
   result.dataSource = Number(settings.modelTests.dataSource);
+  result.expansionSettigns = Number(settings.expansionSettigns);
 
 
   // =========================================
@@ -301,6 +310,7 @@ exports.generateImageRankerConstructorArgs = function(inputImageSetIds, inputKey
   for (let isId = 0; isId < inputImageSetIds.length; ++isId)
   {
     let paramsAA = new Array();
+    let paramsAAw2v = new Array();
     let paramsA = new Array();
     let paramsB = new Array();
     let paramsC = new Array();
@@ -320,6 +330,19 @@ exports.generateImageRankerConstructorArgs = function(inputImageSetIds, inputKey
         "keywordsDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
         "filepath": path.join(kwDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordDataFilename)
       });
+
+      if (global.gConfig.imageSets[isId].keywordDataTypes[kwId].wordToVecFilename != "")
+      {
+        paramsAAw2v.push({
+          "keywordsDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+          "filepath": path.join(kwDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].wordToVecFilename)
+        });
+      } else {
+        paramsAAw2v.push({
+          "keywordsDataType": global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+          "filepath": ""
+        });
+      }
       
       for (let scId = 0; scId < inputScoringDataIds.length; ++scId)
       {
@@ -363,6 +386,7 @@ exports.generateImageRankerConstructorArgs = function(inputImageSetIds, inputKey
     params.push(path.join(aaa, global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]].dataSets[inputKeywordDataIds[0]].imageIdToFilename));
     params.push(Number(global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]].dataSets[inputKeywordDataIds[0]].idOffset));
     params.push(Number(global.gConfig.appMode));
+    params.push(paramsAAw2v);
 
     // TODO
     break;

@@ -55,7 +55,7 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) :
   // Process arguments
   int length = info.Length();
   
-  if (length != 8) {
+  if (length != 9) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
 
@@ -133,6 +133,25 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) :
   size_t idOffset = info[6].As<Napi::Number>().Uint32Value();
   ImageRanker::eMode mode = static_cast<ImageRanker::eMode>(info[7].As<Napi::Number>().Uint32Value());
 
+  std::vector<std::tuple<eKeywordsDataType, std::string>> word2Vecs;
+  {
+  
+    Napi::Array napiArray = info[8].As<Napi::Array>();
+    for(size_t i = 0; i < napiArray.Length(); i++)
+    {
+      Napi::Value v = napiArray[i];
+      if (v.IsObject())
+      {
+        Napi::Object o = v.As<Napi::Object>();
+
+        eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+        std::string filepath = static_cast<std::string>(o.Get("filepath").As<Napi::String>());
+
+      word2Vecs.emplace_back(kwDataType, filepath);
+      }
+    }
+  }
+
 #if LOG_CALLS
 
   std::cout << "===================================" << std::endl;
@@ -180,7 +199,8 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) :
       deepFeaturesFileRefs,
       imageToIdMapFilepath,
       idOffset,
-      mode
+      mode,
+      word2Vecs
     );
   } 
   catch (const std::exception& e)
@@ -1166,7 +1186,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
 
   // Process arguments
   int length = info.Length();
-  if (length != 7)
+  if (length != 8)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::RunModelTest)").ThrowAsJavaScriptException();
   }
@@ -1235,6 +1255,8 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   }
 
 
+  Napi::Number expansionSettings = info[7].As<Napi::Number>();
+
 
   #if LOG_CALLS
 
@@ -1253,6 +1275,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
   {
     std::cout << s << std::endl;
   }
+  std::cout << "expansionSettings = " << expansionSettings.Uint32Value() << std::endl;
 
   std::cout << "===================" << std::endl;
 
@@ -1267,7 +1290,7 @@ Napi::Value ImageRankerWrapper::RunModelTest(const Napi::CallbackInfo& info)
       (InputDataTransformId)aggFn.Uint32Value(),
       (RankingModelId)modelType.Uint32Value(), 
       (DataSourceTypeId)dataSource.Uint32Value(),
-      simulatedUserSettings, settings, aggSettings
+      simulatedUserSettings, settings, aggSettings, expansionSettings.Uint32Value()
     );
   } 
   catch (const std::exception& e)
@@ -1824,13 +1847,16 @@ Napi::Value ImageRankerWrapper::GetKeywordDataById(const Napi::CallbackInfo& inf
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
   }
+
+  eKeywordsDataType kwDataType;
+
 std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
   Napi::Value kwScDataIdObject = info[0];
   if (kwScDataIdObject.IsObject())
   {
     Napi::Object o = kwScDataIdObject.As<Napi::Object>();
 
-    eKeywordsDataType kwDataType{ static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value()) };
+    kwDataType = static_cast<eKeywordsDataType>(o.Get("keywordsDataType").As<Napi::Number>().Uint32Value());
     eImageScoringDataType scoringDataType{ static_cast<eImageScoringDataType>(o.Get("scoringDataType").As<Napi::Number>().Uint32Value()) };
 
     kwScDataId = std::tuple(kwDataType, scoringDataType);
@@ -1838,85 +1864,85 @@ std::tuple<eKeywordsDataType, eImageScoringDataType> kwScDataId;
   Napi::Number imageId = info[1].As<Napi::Number>();
 
   // Call native method
-  const Image* image;
+  const Keyword* kw;
   try {
-    image = this->actualClass_->GetImageDataById(imageId.Uint32Value());
+    kw = this->actualClass_->GetKeywordConstPtr(kwDataType, imageId.Uint32Value());
   } 
   catch (const std::exception& e)
   {
-    image = nullptr;
+    kw = nullptr;
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
 
 
-  // Construct NAPI return object 
-  napi_value result;
-  napi_create_object(env, &result);
+  // // Construct NAPI return object 
+   napi_value result;
+   napi_create_object(env, &result);
 
-  // Set "imageId"
-  {
-    napi_value imageIdKey;
-    napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
-    napi_value imageId;
-    napi_create_uint32(env, image->m_imageId, &imageId);
+  // // Set "imageId"
+  // {
+  //   napi_value imageIdKey;
+  //   napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
+  //   napi_value imageId;
+  //   napi_create_uint32(env, image->m_imageId, &imageId);
 
-    napi_set_property(env, result, imageIdKey, imageId);
-  }
+  //   napi_set_property(env, result, imageIdKey, imageId);
+  // }
 
-  // Set "filename"
-  {
-    napi_value filenameKey;
-    napi_create_string_utf8(env, "filename", 8, &filenameKey);
-    napi_value filename;
-    napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
+  // // Set "filename"
+  // {
+  //   napi_value filenameKey;
+  //   napi_create_string_utf8(env, "filename", 8, &filenameKey);
+  //   napi_value filename;
+  //   napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
 
-    napi_set_property(env, result, filenameKey, filename);
-  }
+  //   napi_set_property(env, result, filenameKey, filename);
+  // }
 
-  // Set "probabilityVector"
-  {
-    std::string probVecKeyString{ "probabilityVector" };
-    napi_value probVecKey;
-    napi_create_string_utf8(env, probVecKeyString.data(), probVecKeyString.size(), &probVecKey);
+  // // Set "probabilityVector"
+  // {
+  //   std::string probVecKeyString{ "probabilityVector" };
+  //   napi_value probVecKey;
+  //   napi_create_string_utf8(env, probVecKeyString.data(), probVecKeyString.size(), &probVecKey);
 
-    // Create array
-    napi_value probVecArr;
-    napi_create_array(env, &probVecArr);
-    {
-      size_t i{ 0ULL };
-      // for (auto&& probPair : image->m_rawNetRankingSorted)
-      // {
-      //   napi_value pair;
-      //   napi_create_object(env, &pair);
+  //   // Create array
+  //   napi_value probVecArr;
+  //   napi_create_array(env, &probVecArr);
+  //   {
+  //     size_t i{ 0ULL };
+  //     // for (auto&& probPair : image->m_rawNetRankingSorted)
+  //     // {
+  //     //   napi_value pair;
+  //     //   napi_create_object(env, &pair);
 
-      //   // Set "index"
-      //   {
-      //     napi_value key;
-      //     napi_create_string_utf8(env, "index", 5, &key);
-      //     napi_value value;
-      //     napi_create_uint32(env, probPair.first, &value);
+  //     //   // Set "index"
+  //     //   {
+  //     //     napi_value key;
+  //     //     napi_create_string_utf8(env, "index", 5, &key);
+  //     //     napi_value value;
+  //     //     napi_create_uint32(env, probPair.first, &value);
 
-      //     napi_set_property(env, pair, key, value);
-      //   }
+  //     //     napi_set_property(env, pair, key, value);
+  //     //   }
 
-      //   // Set "prob"
-      //   {
-      //     napi_value key;
-      //     napi_create_string_utf8(env, "prob", 4, &key);
-      //     napi_value value;
-      //     napi_create_double(env, probPair.second, &value);
+  //     //   // Set "prob"
+  //     //   {
+  //     //     napi_value key;
+  //     //     napi_create_string_utf8(env, "prob", 4, &key);
+  //     //     napi_value value;
+  //     //     napi_create_double(env, probPair.second, &value);
 
-      //     napi_set_property(env, pair, key, value);
-      //   }
+  //     //     napi_set_property(env, pair, key, value);
+  //     //   }
 
-      //   napi_set_element(env, probVecArr, i, pair);
+  //     //   napi_set_element(env, probVecArr, i, pair);
 
-      //   ++i;
-      // }
+  //     //   ++i;
+  //     // }
       
-    }
-    napi_set_property(env, result, probVecKey, probVecArr);
-  }
+  //   }
+  //   napi_set_property(env, result, probVecKey, probVecArr);
+  // }
 
   return Napi::Object(env, result);
 }

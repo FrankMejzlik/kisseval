@@ -2,10 +2,10 @@
 const util = require('util');
 const utils = require("../routes/utils/utils");
 
-var RunModelTest = function (kwScDataType, aggFn, modelType, dataSource, simulatedUserSettings, settingsArray, aggSettingsArray) 
+var RunModelTest = function (kwScDataType, aggFn, modelType, dataSource, simulatedUserSettings, settingsArray, aggSettingsArray, expansionSettigns) 
 {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(kwScDataType, aggFn, modelType, dataSource, simulatedUserSettings, settingsArray, aggSettingsArray);
+  result = global.imageRanker.RunModelTest(kwScDataType, aggFn, modelType, dataSource, simulatedUserSettings, settingsArray, aggSettingsArray, expansionSettigns);
 
   return result;
 }
@@ -41,6 +41,8 @@ exports.RunModelTest = function(req, res)
   responseData.formId = formId;
 
 
+  
+
   const kwScDataType = new Object();
   kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
   kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
@@ -57,7 +59,8 @@ exports.RunModelTest = function(req, res)
       nativeModelSettings.dataSource, 
       nativeModelSettings.simulatedUserSettings, 
       nativeModelSettings.rankingModelSettings, 
-      nativeModelSettings.aggregationSettings
+      nativeModelSettings.aggregationSettings,
+      nativeModelSettings.expansionSettigns
       );
 
     // Insert this result data to array

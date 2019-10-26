@@ -74,7 +74,7 @@ router.post('/', function(req, res, next)
   var query = req.body.query;
 
   // If at least one keyword provided
-  if (typeof query !== 'undefined' && sess !== "") 
+  if (typeof query !== 'undefined' && query !== "") 
   {
     // Submit this query
     global.imageRanker.SubmitUserDataNativeQueries( 

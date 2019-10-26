@@ -20,8 +20,10 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports) {
     InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
     InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage),
     InstanceMethod("GetCouplingImage", &ImageRankerWrapper::GetCouplingImage),
+    InstanceMethod("GetCouplingImageNative", &ImageRankerWrapper::GetCouplingImageNative),    
     InstanceMethod("GetRandomImageSequence", &ImageRankerWrapper::GetRandomImageSequence),
     InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
+    InstanceMethod("SubmitUserDataNativeQueries", &ImageRankerWrapper::SubmitUserDataNativeQueries),
     InstanceMethod("GetRelevantImagesPlainQuery", &ImageRankerWrapper::GetRelevantImagesPlainQuery),
     InstanceMethod("TrecvidGetRelevantShots", &ImageRankerWrapper::TrecvidGetRelevantShots),
     InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
@@ -706,6 +708,40 @@ Napi::Value ImageRankerWrapper::SubmitUserQueriesWithResults(const Napi::Callbac
   return Napi::Object(env, resultArray);
 }
 
+Napi::Value ImageRankerWrapper::SubmitUserDataNativeQueries(const Napi::CallbackInfo& info)
+{
+  // Parameters: SessionID, ImageID, string query
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 3)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::SubmitUserQueriesWithResults)").ThrowAsJavaScriptException();
+  }
+
+  // Transfer JS args to C
+  size_t imageId{ info[0].As<Napi::Number>().Uint32Value() };
+  std::string query{ info[1].As<Napi::String>().Utf8Value() };
+  std::string sessionId{ info[2].As<Napi::String>().Utf8Value() };
+
+  std::vector<std::tuple<size_t, std::string, std::string>> v;
+  v.emplace_back(imageId, query, sessionId);
+
+  // Call native method
+  std::vector<GameSessionQueryResult> queryResults;
+  try {
+    this->actualClass_->SubmitUserDataNativeQueries(v);
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  return Napi::Object();
+}
+
 
 
 
@@ -753,6 +789,77 @@ Napi::Value ImageRankerWrapper::GetRandomImage(const Napi::CallbackInfo& info)
     napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
 
     napi_set_property(env, result, filenameKey, filename);
+  }
+
+  return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::GetCouplingImageNative(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 0)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
+  }
+
+  // Call native method
+  const Image* image;
+  bool withExamples;
+  size_t numNotCoupled;
+  try {
+    std::tie(image, withExamples, numNotCoupled) = this->actualClass_->GetCoupledImagesNative();
+  } 
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // Set "imageId"
+  {
+    napi_value imageIdKey;
+    napi_create_string_utf8(env, "imageId", NAPI_AUTO_LENGTH, &imageIdKey);
+    napi_value imageId;
+    napi_create_uint32(env, image->m_imageId, &imageId);
+
+    napi_set_property(env, result, imageIdKey, imageId);
+  }
+
+  // Set "filename"
+  {
+    napi_value filenameKey;
+    napi_create_string_utf8(env, "filename", NAPI_AUTO_LENGTH, &filenameKey);
+    napi_value filename;
+    napi_create_string_utf8(env, image->m_filename.data(), NAPI_AUTO_LENGTH, &filename);
+
+    napi_set_property(env, result, filenameKey, filename);
+  }
+
+  // Set "withExamples"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "withExamples", NAPI_AUTO_LENGTH, &key);
+    napi_value value;
+    napi_get_boolean(env, withExamples, &value);
+
+    napi_set_property(env, result, key, value);
+  }
+
+  // Set "numNotCoupled"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "numNotCoupled", NAPI_AUTO_LENGTH, &key);
+    napi_value value;
+    napi_create_uint32(env, numNotCoupled, &value);
+
+    napi_set_property(env, result, key, value);
   }
 
   return Napi::Object(env, result);

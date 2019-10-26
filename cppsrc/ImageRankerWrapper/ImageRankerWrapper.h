@@ -90,6 +90,7 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
 
   // std::vector<GameSessionQueryResult> SubmitUserQueriesWithResults(std::vector<GameSessionInputQuery> inputQueries, QueryOrigin origin = QueryOrigin::cPublic);
   Napi::Value SubmitUserQueriesWithResults(const Napi::CallbackInfo& info);
+  Napi::Value SubmitUserDataNativeQueries(const Napi::CallbackInfo& info);
 
 
   Napi::Value GetRelevantImagesWithSuggestedPlainQuery(const Napi::CallbackInfo& info);
@@ -98,6 +99,7 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   Napi::Value GetRandomImage(const Napi::CallbackInfo& info);
 
   Napi::Value GetCouplingImage(const Napi::CallbackInfo& info);
+  Napi::Value GetCouplingImageNative(const Napi::CallbackInfo& info);
   
   Napi::Value GetRandomImageSequence(const Napi::CallbackInfo& info);
 

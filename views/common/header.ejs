@@ -115,6 +115,18 @@
           <li class="menu-item
           <% if (typeof currentPage != 'undefined') 
             {
+              if (currentPage == "native_annotator") 
+              { %>
+                active
+              <% }
+            } %>
+          ">
+            <a href="/native_annotator">Native annotator</a>
+          </li>
+
+          <li class="menu-item
+          <% if (typeof currentPage != 'undefined') 
+            {
               if (currentPage == "statistics") 
               { %>
                 active
@@ -123,17 +135,7 @@
           ">
             <a href="/statistics">Statistics</a>
           </li>
-          <li class="menu-item
-          <% if (typeof currentPage != 'undefined') 
-            {
-              if (currentPage == "data_center") 
-              { %>
-                active
-              <% }
-            } %>
-          ">
-            <a href="/data_center">Data center</a>
-          </li>
+          
         </ul>
       </div>
 

@@ -30,6 +30,7 @@ var dataCenterRouter = require('./routes/data_center');
 
 const settingsAjaxRouter = require("./routes/settings_ajax");
 const annotatorRouter = require("./routes/annotator");
+const nativeAnnotatorRouter = require("./routes/native_annotator");
 const annotatorAjaxRouter = require("./routes/annotator_ajax");
 const rankerRouter = require("./routes/ranker");
 const trecvidRankerRouter = require("./routes/trecvid_ranker");
@@ -200,6 +201,7 @@ app.use('/trecvid_ranker', trecvidRankerRouter);
 
 app.use('/statistics', statisticsRouter);
 app.use('/data_center', dataCenterRouter);
+app.use('/native_annotator', nativeAnnotatorRouter);
 
 
 

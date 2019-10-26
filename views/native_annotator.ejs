@@ -1,0 +1,40 @@
+<!-- Include header -->
+<%- include common/header.ejs %>
+
+<section class="main-image-query grid-container">
+  <div class="grid-x grid-padding-x align-center">
+    <div class="progerss-bar small-12 cell">
+      <span id="notCoupledNum">Number of unpaired data: <span class="emp"><%= nativeImage.numNotCoupled %></span></span>
+    </div>
+    <div class="main-image small-12 cell">
+      <img src="<%= "../images/"  %><%= nativeImage.filename %>" />
+    </div>
+
+    <div class="progerss-bar small-12 cell">
+      <h3>Describe the image the best you can using just one english sentence.</h3>
+      <p>Examples:</p>
+      <ul>
+        <li>A tall man wearing a black jacket walking in snow in the middle of a dense forest.</li>
+        <li>A view with a huge foresty hill on the left, distant land view on the right and clear blue sky at the top.</li>
+      </ul>
+    </div>
+
+    <div class="autocomplete-keywords-container small-12 cell">
+    
+      <form autocomplete="off" class="autocomplete-form" action="/native_annotator" method="POST">
+
+        <div class="main-query-input-wrapper control-wrapper">
+    
+            <input type="text" id="queryInput" tabindex="1" name="query">
+    
+        </div>
+        <input type="submit" class="button success" id="sendQuery" value="Send query">
+      </form>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Include footer -->
+<%- include common/footer.ejs %>

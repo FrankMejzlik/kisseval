@@ -219,7 +219,7 @@ Napi::Value ImageRankerWrapper::ExportDataFile(const Napi::CallbackInfo& info)
 
   // Process arguments
   int length = info.Length();
-  if (length != 3)
+  if (length != 4)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::SubmitUserQueriesWithResults)").ThrowAsJavaScriptException();
   }
@@ -238,12 +238,13 @@ Napi::Value ImageRankerWrapper::ExportDataFile(const Napi::CallbackInfo& info)
   }
   size_t exportFileTypeId = info[1].As<Napi::Number>().Uint32Value();
   std::string exportDir = info[2].As<Napi::String>().Utf8Value();
+  bool native = info[3].As<Napi::Boolean>().Value();
   
   
   std::string resultFilepath;
   try 
   {
-    resultFilepath = this->actualClass_->ExportDataFile(kwScDataId, (eExportFileTypeId)exportFileTypeId, exportDir);
+    resultFilepath = this->actualClass_->ExportDataFile(kwScDataId, (eExportFileTypeId)exportFileTypeId, exportDir, native);
   } 
   catch (const std::exception& e)
   {

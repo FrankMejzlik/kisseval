@@ -18,6 +18,13 @@
       <h2></h2>
     </div>
 
+    <div class="large-12 cell text-center">
+      <h4>Native language queries:</h4>
+      <a class="button regenerate-btn"  onclick="exportFile(this, 3, 0, 0, true)">Regenerate file</a>
+      <a <% if (!exportedFiles.id0.id0.eNativeQueries) { %> style="display: none;" <% } %>
+        href="<%= exportedFiles.id0.id0.eNativeQueries %>"  target="_blank" class="button download-btn success">Download</a>
+    </div>
+
     <div class="large-12 cell text-center"></div>
       <ul class="tabs" data-tabs id="example-tabs">
         <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Google Vision</a></li>
@@ -77,7 +84,8 @@ FORMAT:
 
     NOTE: All data ATM should be considered dev because there were no real "publc" users gathering data
               </code>
-              <a class="button regenerate-btn"  onclick="exportFile(this, 0, 100, 100)">Regenerate file</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 0, 100, 100, true)">Regenerate file - native</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 0, 100, 100, false)">Regenerate file - IDs</a>
               <a <% if (!exportedFiles.id100.id100.eUserAnnotatorQueries) { %> style="display: none;" <% } %>
                 href="<%= exportedFiles.id100.id100.eUserAnnotatorQueries %>"  target="_blank" class="button download-btn success">Download</a>
             </li>
@@ -91,7 +99,7 @@ FORMAT:
   ...
   image IDN-1, keyword ID0, scoring 0, keyword ID1, scoring 1, ..., keyword IDK-1, scoring K-1
               </code>
-              <a class="button regenerate-btn"  onclick="exportFile(this, 1, 100, 100)">Regenerate file</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 1, 100, 100, false)">Regenerate file</a>
 
               <a <% if (!exportedFiles.id100.id100.eNetNormalizedScores) { %> style="display: none;" <% } %>
                 href="<%= exportedFiles.id100.id100.eNetNormalizedScores %>" target="_blank" class="button download-btn success">Download</a>
@@ -114,7 +122,7 @@ FORMAT:
     10 - dev session with example images
     11 - public session with example images
                 </code>
-                <a class="button regenerate-btn"  onclick="exportFile(this, 2, 100, 100)">Regenerate file</a>
+                <a class="button regenerate-btn"  onclick="exportFile(this, 2, 100, 100, false)">Regenerate file</a>
   
                 <a <% if (!exportedFiles.id100.id100.eQueryNumHits) { %> style="display: none;" <% } %>
                   href="<%= exportedFiles.id100.id100.eQueryNumHits %>" target="_blank" class="button download-btn success">Download</a>
@@ -178,7 +186,8 @@ FORMAT:
 
     NOTE: All data ATM should be considered dev because there were no real "publc" users gathering data
               </code>
-              <a class="button regenerate-btn"  onclick="exportFile(this, 0, 0, 0)">Regenerate file</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 0, 0, 0, true)">Regenerate file - native</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 0, 0, 0, false)">Regenerate file - IDs</a>
 
               <a <% if (!exportedFiles.id0.id0.eUserAnnotatorQueries) { %> style="display: none;" <% } %>
                 href="<%= exportedFiles.id0.id0.eUserAnnotatorQueries %>" target="_blank" class="button download-btn success">Download</a>
@@ -193,7 +202,7 @@ FORMAT:
   ...
   image IDN-1, keyword ID0, scoring 0, keyword ID1, scoring 1, ..., keyword IDK-1, scoring K-1
               </code>
-              <a class="button regenerate-btn"  onclick="exportFile(this, 1, 0, 0)">Regenerate file</a>
+              <a class="button regenerate-btn"  onclick="exportFile(this, 1, 0, 0, false)">Regenerate file</a>
 
               <a <% if (!exportedFiles.id0.id0.eNetNormalizedScores) { %> style="display: none;" <% } %>
                 href="<%= exportedFiles.id0.id0.eNetNormalizedScores %>"  target="_blank"class="button download-btn success">Download</a>
@@ -209,7 +218,7 @@ FORMAT:
 </div>
 
 <script>
-  function exportFile(btn, fileType, kwTypeId, scTypeId)
+  function exportFile(btn, fileType, kwTypeId, scTypeId, nat)
   {
     const $this = $(btn);
     const $downloadBtn = $this.parent().children(".download-btn");
@@ -218,7 +227,7 @@ FORMAT:
     $this.html("Generating...");
 
     // Create AJAX call to get appropriate data
-    post('/exporter_ajax_export_file', JSON.stringify({kwTypeId:kwTypeId , scTypeId: scTypeId, fileType: fileType}))
+    post('/exporter_ajax_export_file', JSON.stringify({kwTypeId:kwTypeId , scTypeId: scTypeId, fileType: fileType, native: nat}))
       // If response recieved
       .then((data) => 
       {

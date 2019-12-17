@@ -31,7 +31,7 @@
         "imageSets": [
             {
                 "dataDesc": "20k subset of V3C set",
-                "dataDir": "/data/imageset0/",
+                "dataDir": "../../../data/imageset0_V3C1_20k/",
                 "imagesDir": "/public/images/",
                 "keywordDataTypes": [
                     {

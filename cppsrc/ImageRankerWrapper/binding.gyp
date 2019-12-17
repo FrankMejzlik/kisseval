@@ -19,7 +19,8 @@
             "ImageRanker/ImageRanker/src/",
             "ImageRanker/ImageRanker/src/transformations/",
             "ImageRanker/ImageRanker/src/ranking_models/",
-            "ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/include/"
+            "ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/include/",
+            "ImageRanker/ImageRanker/external/json"
         ],
         'libraries': [],
         'dependencies': [

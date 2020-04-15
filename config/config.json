@@ -3,88 +3,24 @@
         "config_id": "development",
         "log_all": true,
         "app_name": "KISSEval",
-        "app_desc": "Keyword Image Ranking Evaluator.",
+        "app_subname": "Keyword Interactive Search System Evaluator",
+        "app_desc": "Keyword Interactive Search System Evaluator",
         "node_port": 8080,
-        "json_indentation": 4,
-        "title": "KISSEval",
-        "subtitle": "Keyword Interactive Search System Evaluator",
-        "appMode": 0,
         "outputDir": "/output/",
         "cacheDir": "/cache/",
         "exportDir": "/export/",
-        "dbIndex": 0,
+        "database": "local_dev",
 
-        "keywordsSettings": {
-            "kwDataType": 100
-        },
-        "rankingSettings":
-        {
-            "scoringDataType": 100
-        },
+        "dataInfoFpth" : "c:\\Users\\devwe\\data\\data_info.json",
+        "dataDir" : "data/",
+
         "annotatorSettings": {
             "autocompleteWithExamples": true,
             "numSuggestions": 20
         },
-        "rankerConfig": {
-            "previewSequenceLength": 2
-        },
-        "imageSets": [
-            {
-                "dataDesc": "20k subset of V3C set",
-                "dataDir": "../../../data/imageset0_V3C1_20k/",
-                "imagesDir": "/public/images/",
-                "keywordDataTypes": [
-                    {
-                        "dataDesc": "Viret v1 keywors hierarchy by Tomas Soucek - 1234 synsets",
-                        "dataDir": "/viret_keywords/",
-                        "keywordType": 0,
-                        "keywordDataFilename": "keyword_classes.txt",
-                        "wordToVecFilename": "LSC2018-NASNet.all_must_match.word2vec.label",
-                        "dataSets": [
-                            {
-                                "scoringDataType": 0,
-                                "dataDesc": "Viret retrained NasNet DCNN",
-                                "dataDir": "/dataset0/",
-                                "scoringDataFilename": "Studenti_NasNetLarge.pre-softmax",
-                                "softmaxScoringDataFilename": "Studenti_NasNetLarge.softmax",
-                                "deepFeaturesFilename": "Studenti_NasNetLarge.deep-features",
-                                "imageIdToFilename": "files.txt",
-                                "idOffset": 1
-                            },
-                            {
-                                "scoringDataType": 1,
-                                "dataDesc": "Viret retrained GoogLeNet DCNN",
-                                "dataDir": "/dataset1/",
-                                "scoringDataFilename": "05_googlenet.pre-softmax",
-                                "softmaxScoringDataFilename": "05_googlenet.softmax",
-                                "deepFeaturesFilename": "05_googlenet.deep-features",
-                                "imageIdToFilename": "05_googlenet.mapping.txt",
-                                "idOffset": 1
-                            }
-                        ]
-                    },
-                    {
-                        "dataDesc": "Google AI Vision keywords",
-                        "dataDir": "/google_keywords/",
-                        "keywordType": 100,
-                        "keywordDataFilename": "keyword_classes.google.txt",
-                        "wordToVecFilename": "keyword_classes.100.100.joined_words.word2vec.txt",
-                        "dataSets": [
-                            {
-                                "scoringDataType": 100,
-                                "dataDesc": "Google AI Vision",
-                                "dataDir": "/dataset0/",
-                                "scoringDataFilename": "scoringData.google.bin",
-                                "softmaxScoringDataFilename": "",
-                                "deepFeaturesFilename": "",
-                                "imageIdToFilename": "files.google.txt",
-                                "idOffset": 1
-                            }
-                        ]
-                    }
-                ]
-            }
-        ],
+        "rankerSettings": {},
+        "dataCentreSettings": {},
+        "json_indentation": 4,
         "gameLength": 5,
         "tutorialLength": 0
     },

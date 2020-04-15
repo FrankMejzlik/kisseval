@@ -6,8 +6,8 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title><%= global.gConfig.title %> | <%= global.gConfig.title %></title>
-  
+  <title><%= global.gConfig.app_name %> | <%= global.gConfig.app_subname %></title>
+
   <!-- Foundation styles -->
   <link rel="stylesheet" href="/stylesheets/foundation.css">
 
@@ -31,9 +31,9 @@
     <% // If OC Ranker Settins should be filled in
     if (typeof ocRankerSettingsLeft_ranker != "undefined") 
     { %>
-      
-     <%- include ../modules/oc_ranker_settings_left.ejs %>
-     
+
+    <%- include ../modules/oc_ranker_settings_left.ejs %>
+
     <% } 
     // If Annotator settins should be displayed
     else if (typeof ocRankerSettingsLeft_annotator != "undefined") 
@@ -50,28 +50,28 @@
       <span aria-hidden="true">&times;</span>
     </button>
 
-    
+
 
   </div>
 
-  <div class="dev-login-modal reveal text-center" id="exampleModal2" data-reveal >
+  <div class="dev-login-modal reveal text-center" id="exampleModal2" data-reveal>
     <h1>Are you developer?</h1>
 
     <form class="dev-login-form" action="/users" method="POST">
-        <div class="grid-container">
-            <div class="grid-x grid-padding-x">
-                <div class="medium-12 cell">
-                    <label>
-                        <input name="pass" type="password" autofocus>
-                    </label>
-                </div>
+      <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+          <div class="medium-12 cell">
+            <label>
+              <input name="pass" type="password" autofocus>
+            </label>
+          </div>
 
-                <div class="small-12 cell">
-                    <input type="submit" class="button success" value="Send">
-                </div>
-            </div>
-            
+          <div class="small-12 cell">
+            <input type="submit" class="button success" value="Send">
+          </div>
         </div>
+
+      </div>
     </form>
   </div>
 
@@ -81,14 +81,14 @@
     <button type="button" class="button" data-toggle="offCanvasLeftSplit1">Open Left</button>
     <button type="button" class="button" data-toggle="offCanvasRightSplit2">Open Right</button>
     -->
-    
+
     <div class="top-bar header main">
       <div class="top-bar-left">
         <ul class="dropdown menu" data-dropdown-menu>
           <li class="menu-text"><a href="/">
-            <span class="title"><%= global.gConfig.title %></span>  
-            <span class="subtitle"><%= global.gConfig.subtitle %></span>  
-          </a></li>
+              <span class="title"><%= global.gConfig.title %></span>
+              <span class="subtitle"><%= global.gConfig.subtitle %></span>
+            </a></li>
           <li class="menu-item
             <% if (typeof currentPage != 'undefined') 
             {
@@ -113,13 +113,9 @@
           </li>
 
           <li class="menu-item
-          <% if (typeof currentPage != 'undefined') 
-            {
-              if (currentPage == "native_annotator") 
-              { %>
+          <% if (typeof currentPage != 'undefined') { if (currentPage == "native_annotator") { %>
                 active
-              <% }
-            } %>
+          <% }} %>
           ">
             <a href="/native_annotator">Native annotator</a>
           </li>
@@ -135,7 +131,7 @@
           ">
             <a href="/statistics">Statistics</a>
           </li>
-          
+
         </ul>
       </div>
 
@@ -144,131 +140,49 @@
 
         <ul class="dropdown menu" data-dropdown-menu>
           <li class="menu-item">
-            <button class="button login-dev" data-open="exampleModal2"><img src="../images/generic/icon_login.svg" /></button>
+            <button class="button login-dev" data-open="exampleModal2"><img
+                src="../images/generic/icon_login.svg" /></button>
           </li>
         </ul>
 
-        <% if (typeof userLevel != 'undefined') 
-        {
-          if (userLevel >= 10) 
-          { %>
-            <div class="dev-sign"><p>DEVELOPER SESSION</p></div>
-          <% }
-        } %>
-
-      </div>
-  </div>
-
-  <div class="global-header-settings-bar">
-
-    <div id="globalHeaderSettingsBarMessageBox" class="callout success">
-    
-    </div>
-
-    <a onclick="togglekwscform()" class="button">KW & Scoring settings</a>
-    <form style="display: none;" id="kWsCdataTypeForm" class="kw-sc-data-type-form grid-x grid-padding-x" method="POST" action="/settings_ajax_set_kw_sc_data_type" >
-      <label class="cell large-6">Keywords data type
-        <select name="kwDataType">
-          <option value="0"
-          <% if (typeof keywordsSettings.kwDataType !== 'undefined') 
-          {
-            if (keywordsSettings.kwDataType == 0) 
-            { %>
-              selected
-            <% }
-          } %>
-          >Viret V1</option>
-
-          <option value="100"
-          <% if (typeof keywordsSettings.kwDataType !== 'undefined') 
-          {
-            if (keywordsSettings.kwDataType == 100) 
-            { %>
-              selected
-            <% }
-          } %>
-          >Google AI Vision</option>
-        </select>
-      </label>
-
-      <label class="cell large-6">Scoring data type
-        <select name="scoringDataType">
-          <option value="0"
-          <% if (typeof rankingSettings.scoringDataType !== 'undefined') 
-          {
-            if (rankingSettings.scoringDataType == 0) 
-            { %>
-              selected
-            <% }
-          } %>
-          >NasNet</option>
-
-          <option value="100"
-          <% if (typeof rankingSettings.scoringDataType !== 'undefined') 
-          {
-            if (rankingSettings.scoringDataType == 100) 
-            { %>
-              selected
-            <% }
-          } %>
-          >Google AI</option>
-        </select>
-
-        <% if (typeof currentPage !== 'undefined' && currentPage == "annotator") 
-        { %>
-            
-
-
+        <% if (state.userLevel >= 10) { %>
+        <div class="dev-sign">
+          <p>DEVELOPER SESSION</p>
+        </div>
         <% } %>
 
+      </div>
+    </div>
 
-      </label>
+    <div class="global-header-settings-bar">
 
-      <input type="submit" class="button" value="Save">
-    </form>
-    <script>
-      $('#kWsCdataTypeForm').on('submit', function(e) {
-        e.preventDefault();
-        $.ajax({
-            url : $(this).attr('action') || window.location.pathname,
-            type: "POST",
-            data: $(this).serialize(),
-            success: function (data) {
-              if (data === true)
-              {
-                showGlobalHeaderSettingsBarMessageBoxMessage("Saved!", 5000);
-              } 
-              else 
-              {
-                showGlobalHeaderSettingsBarMessageBoxMessage(data, 5000);
-              }
-            },
-            error: function (jXHR, textStatus, errorThrown) {
-                alert(errorThrown);
-            }
-        });
-    });
+      <div id="globalHeaderSettingsBarMessageBox" class="callout success">
 
-    function togglekwscform()
-    {
-      $("#kWsCdataTypeForm").toggle();
-    }
+      </div>
 
-    function showGlobalHeaderSettingsBarMessageBoxMessage(message, duration)
-    {
-      const notBar = document.getElementById("globalHeaderSettingsBarMessageBox");
+      <a onclick="togglekwscform()" class="button">Active data pack</a>
+      <div class="change-active-data-pack-cont" id="kWsCdataTypeForm" style="display: none;" >
+        <%- include ../forms/change_active_data_pack_form.ejs %>
+      </div>
 
-      notBar.innerHTML = message;
-      notBar.style.display = "block";
+      <script>
+        function togglekwscform() {
+          $("#kWsCdataTypeForm").toggle();
+        }
 
-      setTimeout(function()
-      { 
-        notBar.innerHTML = "";
-        notBar.style.display = "none";
-      }, duration);
-    }
+        function showGlobalHeaderSettingsBarMessageBoxMessage(message, duration) {
+          const notBar = document.getElementById("globalHeaderSettingsBarMessageBox");
 
-    </script>
+          notBar.innerHTML = message;
+          notBar.style.display = "block";
+
+          setTimeout(function () {
+            notBar.innerHTML = "";
+            notBar.style.display = "none";
+          }, duration);
+        }
+
+      </script>
 
 
-  </div>
+    </div>

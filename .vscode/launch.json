@@ -9,7 +9,9 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/bin/www",
-            "outputCapture": "std"
+            "outputCapture": "std",
+            //"runtimeArgs": ["run-script", "debug"],
+            "env": { "NODE_ENV": "development"}
         },
         {
             "type": "cppvsdbg",

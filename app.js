@@ -28,6 +28,8 @@ var scoreboardRouter = require('./routes/scoreboard');
 var docsRouter = require('./routes/docs');
 var dataCenterRouter = require('./routes/data_center');
 
+const endpoints = require("./routes/endpoints/endpoints")
+
 const settingsAjaxRouter = require("./routes/settings_ajax");
 const annotatorRouter = require("./routes/annotator");
 const nativeAnnotatorRouter = require("./routes/native_annotator");
@@ -112,74 +114,18 @@ app.use(session({ secret: 'matfyz', resave: false, saveUninitialized: true, }));
 // Get ImageRanker C++ library
 const imageRanker = require(path.join(__dirname, 'build/Release/image_ranker.node'));
 
-// SELECT DATASET
-const inputImageSetIds = [ 0 ];
-const inputKeywordDataIds = [ 0, 1 ];
-const inputScoringDataIds = [ 0 ];
+const dataInfoFpth = global.gConfig.dataInfoFpth;
+const dataDir = global.gConfig.dataDir;
 
-const irConsParams = utils.generateImageRankerConstructorArgs(inputImageSetIds, inputKeywordDataIds, inputScoringDataIds);
+global.logger.log('debug', "process.env = '" + process.env["NODE_ENV"] + "'");
 
-// Do you even TRECVID?
-const doTrecvid =  false;
-const testTrecvid = false;
-
-if (doTrecvid)
-{
-  global.logger.log('debug', ">>> TRECVID session <<<");
-
-  let outputPath;
-  let normalTasks;
-  let progressTasks;
-
-  // Setup filepaths to task sources
-  outputPath = path.join(global.rootDir, global.gConfig.outputDir);
-
-  // If just testing TRECVID 
-  if (testTrecvid)
-  {
-    global.logger.log('debug', ">>> TESTING session <<<");
-
-    normalTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/testing/tasks_normal.txt");
-    progressTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/testing/tasks_progress.txt");  
-  }
-  else 
-  {
-    normalTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/2019/tasks_normal.txt");
-    progressTasks = path.join(global.rootDir, global.gConfig.pathData4 + "/tasks/2019/tasks_progress.txt");
-  }
-
-  global.gConfig.outputPath = outputPath;
-  global.gConfig.normalTasks = normalTasks;
-  global.gConfig.progressTasks = progressTasks;
-
-  
-}
-
-
-// Log this call
-global.logger.log('debug', "NATIVE CALL: ImageRanker(");
-for (let i = 0; i < irConsParams.length; ++i)
-{
-  global.logger.log('debug', "\t" + i + ": " + irConsParams[i]);
-}
-global.logger.log('debug', ")");
+global.logger.log('debug', "NATIVE CALL: ImageRanker()");
+global.logger.log('debug', "\tdataInfoFpth = " + dataInfoFpth);
+global.logger.log('debug', "\tdataDir = " + dataDir);
 
 // Create global instance if ImageRanker
-global.imageRanker = new imageRanker.ImageRankerWrapper(
-  irConsParams[0],
-  irConsParams[1],
-  irConsParams[2],
-  irConsParams[3],
-  irConsParams[4],
-  irConsParams[5],
-  irConsParams[6],
-  irConsParams[7],
-  irConsParams[8]
-);
-
-
-// Initialize ImageRanker instance
-global.imageRanker.Initialize();
+global.imageRanker = new imageRanker.ImageRankerWrapper(dataInfoFpth, dataDir);
+global.logger.log('debug', "ImageRanker instantiated...");
 
 // Push all routers into express middleware stack
 app.use('/', indexRouter);
@@ -198,21 +144,18 @@ app.use('/ranker', rankerRouter);
 app.use('/ranker_negate', rankerNegateRouter);
 app.use('/trecvid_ranker', trecvidRankerRouter);
 
-
 app.use('/statistics', statisticsRouter);
 app.use('/data_center', dataCenterRouter);
 app.use('/native_annotator', nativeAnnotatorRouter);
 
+// Request endpoints
+app.post('/set_active_data_pack', endpoints.setActiveDataPack);
 
-
-// Settings AJAXes
 app.post('/settings_ajax_set_kw_sc_data_type', settingsAjaxRouter.SetKeywordScoringDataType);
 app.post('/data_center_ajax_get_annotator_user_data', dataCenterAjaxRouter.GetAnnotatorUserData);
 app.post('/data_center_ajax_validate_user_data_record', dataCenterAjaxRouter.ValidateUserDataRecord);
 
 app.post('/exporter_ajax_export_file', exporterAjaxRouter.ExportFile);
-
-// Ranker AJAXes
 app.get('/ranker_ajax_submit_settings', rankerAjaxRouter.submitSettings);
 app.get('/ranker_ajax_submit_image', rankerAjaxRouter.submitImage);
 app.get('/ranker_ajax_get_random_image_and_start_search_session', rankerAjaxRouter.getRandomImageAndStartSearchSession);
@@ -227,7 +170,6 @@ app.get('/ranker_negate_ajax_get_selected_image_and_start_search_session', ranke
 app.get('/ranker_negate_ajax_process_action', rankerAjaxNegateRouter.processAction);
 app.get('/ranker_negate_ajax_get_image_keywords_for_interactive_search', rankerAjaxNegateRouter.getImageKeywordsForInteractiveSearch);
 
-// Trecvid ranker AJAXes
 app.post('/trecvid_ranker_ajax_start_run_normal', trecvidAjaxRankerRouter.startRunNormal);
 app.post('/trecvid_ranker_ajax_start_run_progress', trecvidAjaxRankerRouter.startRunProgress);
 app.post('/trecvid_ranker_ajax_submit_task', trecvidAjaxRankerRouter.submitTask);
@@ -236,10 +178,8 @@ app.post('/trecvid_ranker_ajax_next_task', trecvidAjaxRankerRouter.nextTask);
 app.get('/annotator_ajax', annotatorAjaxRouter.GetNearKeywords);
 app.get('/annotator_ajax_get_near_keywords_with_examples', annotatorAjaxRouter.GetNearKeywordsWithExamples);
 
-// GETs
 app.get('/api_get_relevant_images', api.getRelevantImagesFromPlainQuery);
 
-// AJAXes
 app.get('/images_ajax', imagesAjax.find);
 app.get('/tests_ajax_RunModelTest', testsAjax.RunModelTest);
 app.get('/tests_ajax_RunGridTest', testsAjax.RunGridTest);

@@ -1,57 +1,57 @@
-var express = require('express');
+"use strict";
 
-var path = require('path');
-var fs = require('fs');
+var express = require("express");
+
+var path = require("path");
+var fs = require("fs");
 
 var router = express.Router();
-const utils = require("../routes/utils/utils");
 
+const stateCheck = require("./common/state_checkers");
+
+/** Specific route settings. */
 const routeSettings = {
-  "slug": "index"
-}
+  slug: "index",
+};
 
-function PreProcessReq(req, viewData)
-{
+function PreProcessReq(req, viewData) {
+  stateCheck.genericPreProcessReq(req, viewData, routeSettings);
   const sess = req.session;
 
-  // Do general request preprocess
-  utils.PreProcessReq(req, viewData, routeSettings);
-
-  // Get current page slug
-  viewData.currentPage = routeSettings.slug;
 }
 
-function ProcessReq(req, viewData)
-{
+function ProcessReq(req, viewData) {
+  stateCheck.genericProcessReq(req, viewData, routeSettings);
   let sess = req.session;
-
 }
 
-function PostProcessReq(req, viewData)
-{
+function PostProcessReq(req, viewData) {
+  stateCheck.genericPostProcessReq(req, viewData, routeSettings);
   let sess = req.session;
-
-  utils.PostProcessReq(req, viewData, routeSettings);
-
 }
 
-/*!
- * GET "/" request
+/**
+ * GET request handler
  */
-router.get('/', function(req, res, next) 
-{
-  let sess = req.session;
+router.get("/", function (req, res, next) {
+  // \todo remove
+  req.session.state = null;
+
+  // Every request gets it's own view data
   let viewData = new Object();
 
-  PreProcessReq(req, viewData)
+  global.logger.log('debug', "Route: " + routeSettings.slug);
+
+  // Main request cycle
+  PreProcessReq(req, viewData);
   ProcessReq(req, viewData);
   PostProcessReq(req, viewData);
 
+  console.log("")
+  console.log(JSON.stringify(viewData))
+
+  // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);
-});
-
-router.post('/', function(req, res, next) {
-
 });
 
 module.exports = router;

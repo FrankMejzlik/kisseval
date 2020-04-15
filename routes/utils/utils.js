@@ -1,71 +1,5 @@
 
-const path = require('path');
 
-const rankerUtils = require("./ranker_utils");
-
-exports.PreProcessReq = function(req, viewData, routeSettings)
-{
-  this.checkGlobalSessionState(req, viewData);
-  
-}
-
-exports.PostProcessReq = function(req, viewData, routeSettings)
-{
-  
-  this.checkGlobalViewState(req, viewData);
-}
-
-exports.checkGlobalSessionState = function(req, viewData)
-{
-  let sess = req.session;
-
-  // Resolve user level
-  this.resolveUserLevel(req, viewData);
-
-  // Initialize settings
-  if (typeof sess.keywordsSettings === "undefined")
-  {
-    sess.keywordsSettings = global.gConfig.keywordsSettings;
-  }
-  if (typeof sess.rankingSettings === "undefined")
-  {
-    sess.rankingSettings = global.gConfig.rankingSettings;
-  }
-
-  // Initialize Annotator config
-  if (typeof sess.annotatorSettings === "undefined")
-  {
-    sess.annotatorSettings = global.gConfig.annotatorSettings;
-  }
-
-  // Initialize Ranker config
-  if (typeof sess.rankerConfig === "undefined")
-  {
-    sess.rankerConfig = global.gConfig.rankerConfig;
-  }
-  
-  
-}
-
-exports.checkGlobalViewState = function(req, viewData)
-{
-  let sess = req.session;
-
-  viewData.keywordsSettings = sess.keywordsSettings;
-  viewData.rankingSettings = sess.rankingSettings;
-
-  // Number of not coupled 
-  // \todo TEMP
-  if (typeof sess.numNotCoupled !== "undefined")
-  {
-    viewData.numNotCoupled = sess.numNotCoupled;
-  }
-  else 
-  {
-    viewData.numNotCoupled = -1;
-  }
-
-}
 
 exports.setAnnotatorShowExamples = function(sess, newState)
 {
@@ -301,6 +235,7 @@ exports.resolveUserLevel = function(req, viewData)
   }
 
   viewData.userLevel = sess.userLevel;
+  return 
 }
 
 exports.generateImageRankerConstructorArgs = function(inputImageSetIds, inputKeywordDataIds, inputScoringDataIds)

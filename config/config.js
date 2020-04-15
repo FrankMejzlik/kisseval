@@ -19,23 +19,10 @@ const environmentConfig = config[environment];
 
 // Merge to final config
 let finalConfig = moduleLodaSh.merge(defaultConfig, environmentConfig);
-
-
-// Add ranker config to it
-finalConfig.ranker = new Object();
-finalConfig.ranker = require('./settings_ranker.json');
-
 const cred = require('./credentials.json');
 
 // Load correct DB credentials
-finalConfig.db = cred.db[finalConfig.dbIndex]; 
-
+finalConfig.db = cred.db[finalConfig.database]; 
 
 // Store final config in globals
 global.gConfig = finalConfig;
-
-// Output current config
-if (global.gConfig.log_all == true)
-{
-    console.log(`global.gConfig: ${JSON.stringify(global.gConfig, undefined, global.gConfig.json_indentation)}`);
-}

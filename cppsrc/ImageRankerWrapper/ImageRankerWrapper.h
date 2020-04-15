@@ -18,7 +18,7 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   static Napi::FunctionReference constructor;
   ImageRanker* actualClass_;
 
-   Napi::Value Initialize(const Napi::CallbackInfo& info);
+   Napi::Value get_loaded_data_packs_info(const Napi::CallbackInfo& info);
 
    // std::vector<std::pair<TestSettings, ChartData>> RunGridTest(const std::vector<TestSettings>& testSettings);
    /*

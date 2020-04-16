@@ -70,7 +70,7 @@
       a.setAttribute("class", "autocomplete-items");
 
       // Create AJAX call to get appropriate data
-      get('/annotator_ajax?queryValue=' + val)
+      get('/get_autocomplete_results?queryValue=' + val)
         // If response OK
         .then((data) => {
 
@@ -85,13 +85,13 @@
             // Create a DIV element for each element
             b = document.createElement("div");
 
-            const wordTitle = boldString(data[i][1], val);
-            const wordDesc = boldString(data[i][2], val);
-            const exampleImagesFilenamesArr = data[i][3];
+            const wordTitle = boldString(data[i].wordString, val);
+            const wordDesc = boldString(data[i].description, val);
+            const exampleImagesFilenamesArr = data[i].exampleFrames;
 
             b.innerHTML += "\
               <span class=\"keyword-title\">" + wordTitle + "</span><small>" + wordDesc + "</small>\
-              <small class='wordnet-id'>" + data[i][0] + "</small>";
+              <small class='wordnet-id'>" + data[i].ID + "</small>";
 
 
             let str = "<ul class=\"example-images-list\">";
@@ -106,8 +106,8 @@
             b.innerHTML += str;
 
             // Insert a input field that will hold the current array item's value
-            b.innerHTML += "<input type='hidden' name='keyword' value='" + data[i][1] + "'>";
-            b.innerHTML += "<input type='hidden' name='wordnetId' value='" + data[i][0] + "'>";
+            b.innerHTML += "<input type='hidden' name='keyword' value='" + data[i].wordString + "'>";
+            b.innerHTML += "<input type='hidden' name='wordnetId' value='" + data[i].ID + "'>";
 
             // Execute a function when someone clicks on the item value (DIV element)
             b.addEventListener("click", function(e) 

@@ -3,106 +3,115 @@
 
 <section class="main-image-query grid-container">
   <div class="grid-x grid-padding-x align-center">
+
+    <!-- Status bar -->
     <div class="progerss-bar small-12 cell">
-      <span id="notCoupledNum">Number of unpaired data: <span class="emp"><%= numNotCoupled %></span></span>
       <hr />
-      <span class="curr"><%= gameProgress.curr %></span>
-      <span class="separator">/</span>
-      <span class="total"><%= gameProgress.total %></span>
-    </div>
-    <div class="main-image small-12 cell">
-      <img src="<%= "../images/"  %><%= newImage.filename %>" />
     </div>
 
+    <!-- Presented sequence -->
+    <ul class="main-image small-12 cell">
+
+      <% const framesSequence = state.annotator.framesSequence; 
+      for (let i = 0; i < framesSequence.length; ++i) { %>
+      <li
+        class="frame-item frame-nr-<%= i %>"
+        data-frameId="<%= framesSequence[i].frameId %>"
+      >
+        <img src="<%= "../images/" %><%= framesSequence[i].filename %>" />
+      </li>
+      <% } %>
+      
+    </ul>
+
+    <!-- Input query -->
     <div class="autocomplete-keywords-container small-12 cell">
-    
-      <!-- Include autocomplete module -->
-      <%- include modules/annotator_annotate_form.ejs %>
+
+      <% if (state.annotator.fullyNative) { %>
+        <%- include modules/annotator_native.ejs %>
+      <%  } else { %>
+        <%- include modules/annotator_guided.ejs %>
+      <%  } %>
 
     </div>
-
   </div>
 </section>
 
-<% if (typeof userLevel != 'undefined') 
-{
-  if (userLevel >= 5) 
-  { %>
-    <div class="developer-bottom-analysis-bar grid-container">
-
-      <ul class="accordion" id="devAccordion" data-slide-speed="0" data-accordion data-allow-all-closed="true">
-        <div id="dragbar"><span class="icon"><img src="../images/generic/icon_gripping_hand.svg" /></span></div>
-        <li class="accordion-item" data-accordion-item>
-          <!-- Accordion tab title -->
-          <a href="#" class="accordion-title">Analysis</a>
-
-          <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
-          <div class="accordion-content flexible-developer-only-window" data-tab-content>
-            
-            <%- include tests.ejs %>
-
-          </div>
-        </li>
-      </ul>
-
+<% if (typeof userLevel != 'undefined') { if (userLevel >= 5) { %>
+<div class="developer-bottom-analysis-bar grid-container">
+  <ul
+    class="accordion"
+    id="devAccordion"
+    data-slide-speed="0"
+    data-accordion
+    data-allow-all-closed="true"
+  >
+    <div id="dragbar">
+      <span class="icon"
+        ><img src="../images/generic/icon_gripping_hand.svg"
+      /></span>
     </div>
+    <li class="accordion-item" data-accordion-item>
+      <!-- Accordion tab title -->
+      <a href="#" class="accordion-title">Analysis</a>
 
-    <script>
+      <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
+      <div
+        class="accordion-content flexible-developer-only-window"
+        data-tab-content
+      >
+        <%- include tests.ejs %>
+      </div>
+    </li>
+  </ul>
+</div>
 
-      $(document).ready(function() {
-        $('#devAccordion')
-          .on("down.zf.accordion", function(e, $panel) 
-          {
-            $("#dragbar").show();
-          })
-          .on("up.zf.accordion", function(e, $panel) 
-          {
-
-            $("#dragbar").hide();
-            $('#devAccordion').css("height", "auto");
-            
-          });
+<script>
+  $(document).ready(function () {
+    $("#devAccordion")
+      .on("down.zf.accordion", function (e, $panel) {
+        $("#dragbar").show();
+      })
+      .on("up.zf.accordion", function (e, $panel) {
+        $("#dragbar").hide();
+        $("#devAccordion").css("height", "auto");
       });
+  });
 
+  var i = 0;
+  var dragging = false;
+  $("#dragbar").mousedown(function (e) {
+    e.preventDefault();
 
+    dragging = true;
+    var main = $("#devAccordion");
+    var ghostbar = $("<div>", {
+      id: "ghostbar",
+      css: {
+        height: "5px",
+        width: "100%",
+        top: main.offset().top,
+        left: main.offset().left,
+      },
+    }).appendTo("body");
 
-      var i = 0;
-      var dragging = false;
-      $('#dragbar').mousedown(function(e){
-          e.preventDefault();
-          
-          dragging = true;
-          var main = $('#devAccordion');
-          var ghostbar = $('<div>',
-                            {id:'ghostbar',
-                            css: {
-                                    height: "5px",
-                                    width: "100%",
-                                    top: main.offset().top,
-                                    left: main.offset().left
-                                  }
-                            }).appendTo('body');
-          
-            $(document).mousemove(function(e){
-              ghostbar.css("top",e.pageY+2);
-          });
-          
-        });
+    $(document).mousemove(function (e) {
+      ghostbar.css("top", e.pageY + 2);
+    });
+  });
 
-      $(document).mouseup(function(e){
-        if (dragging) 
-        {
-            var percentage = 100 -(e.pageY / window.innerHeight) * 100;
-            
-            $('#devAccordion').css("height", percentage + "vh");
-            $('#ghostbar').remove();
-            $(document).unbind('mousemove');
-            dragging = false;
-        }
-      });
-    </script>
-  <% }
-} %>
+  $(document).mouseup(function (e) {
+    if (dragging) {
+      var percentage = 100 - (e.pageY / window.innerHeight) * 100;
+
+      $("#devAccordion").css("height", percentage + "vh");
+      $("#ghostbar").remove();
+      $(document).unbind("mousemove");
+      dragging = false;
+    }
+  });
+</script>
+<% } } %>
 
 <!-- Include footer -->
 <%- include common/footer.ejs %>

@@ -1,13 +1,11 @@
-
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
 const utils = require("../routes/utils/utils");
 
 const rankerUtils = require("../routes/utils/ranker_utils");
 
-function validStateCheckGeneral(req, viewData)
-{
+function validStateCheckGeneral(req, viewData) {
   // Get session object reference
   const sess = req.session;
 
@@ -17,12 +15,12 @@ function validStateCheckGeneral(req, viewData)
   // Get current page slug
   viewData.currentPage = "ranker_negate";
   viewData.ocRankerSettingsLeft_ranker = true;
-  viewData.ocRankerSettingsLeft_ranker_formActionAddress = "/ranker_negate_ajax_submit_settings";
+  viewData.ocRankerSettingsLeft_ranker_formActionAddress =
+    "/ranker_negate_ajax_submit_settings";
   viewData.userLevel = sess.userLevel;
 }
 
-function validStateCheckSpecific(req, viewData)
-{
+function validStateCheckSpecific(req, viewData) {
   // Get session object reference
   const sess = req.session;
 
@@ -30,8 +28,7 @@ function validStateCheckSpecific(req, viewData)
   utils.initializeModelSettings(sess);
 
   // Initialize session counter if needed
-  if (typeof sess.ranker.searchSessionCounter == "undefined")
-  {
+  if (typeof sess.ranker.searchSessionCounter == "undefined") {
     sess.ranker.searchSessionCounter = 0;
   }
 
@@ -40,8 +37,7 @@ function validStateCheckSpecific(req, viewData)
 }
 
 // GET request
-router.get('/', function(req, res, next) 
-{
+router.get("/", function (req, res, next) {
   const sess = req.session;
 
   // This structure will be send to view template
@@ -50,15 +46,16 @@ router.get('/', function(req, res, next)
   // Do valid state checks
   validStateCheckGeneral(req, viewData);
   validStateCheckSpecific(req, viewData);
-  
+
   rankerUtils.terminateSearchSession(sess);
 
-
-  global.logger.log('debug', "sess.ranker:"+ JSON.stringify(sess.ranker, undefined, 4));
+  global.logger.log(
+    "debug",
+    "sess.ranker:" + JSON.stringify(sess.ranker, undefined, 4)
+  );
 
   // Rener ranker view
-  res.render('ranker_negate', viewData);
+  res.render("ranker_negate", viewData);
 });
-
 
 module.exports = router;

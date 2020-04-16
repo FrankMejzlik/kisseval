@@ -1,44 +1,53 @@
+const util = require("util");
 
-const util = require('util')
-
-var RunModelTest = function (kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray, expansionSettigns) 
-{
+var RunModelTest = function (
+  kwScDataType,
+  aggFn,
+  modelType,
+  dataSource,
+  settingsArray,
+  aggSettingsArray,
+  expansionSettigns
+) {
   // Run test in native code
-  result = global.imageRanker.RunModelTest(kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray, expansionSettigns);
+  result = global.imageRanker.RunModelTest(
+    kwScDataType,
+    aggFn,
+    modelType,
+    dataSource,
+    settingsArray,
+    aggSettingsArray,
+    expansionSettigns
+  );
 
   return result;
-}
+};
 
-var RunGridTestWrapper = function (testSettings) 
-{
+var RunGridTestWrapper = function (testSettings) {
   // Run grid test in native library
   result = global.imageRanker.RunGridTest(testSettings);
 
   return result;
-}
+};
 
-var GetGridProgressWrapper = function () 
-{
+var GetGridProgressWrapper = function () {
   // Run grid test in native library
   result = global.imageRanker.GetGridTestProgress();
 
   return result;
-}
+};
 
-
-exports.RunModelTest = function(req, res) 
-{ 
+exports.RunModelTest = function (req, res) {
   // Construct response Object
-  let  responseData = new Object();
-  
-  responseData.chartDataArray = new Array();  
+  let responseData = new Object();
+
+  responseData.chartDataArray = new Array();
 
   const formDataArray = req.query.submitData.formData;
   const formId = req.query.submitData.formId;
   responseData.formId = formId;
 
-  for (var i = 0; i <formDataArray.length; ++i)
-  {
+  for (var i = 0; i < formDataArray.length; ++i) {
     const aggFn = Number(formDataArray[i].aggregation);
     const modelType = Number(formDataArray[i].modelType);
     const dataSource = Number(formDataArray[i].dataSource);
@@ -53,63 +62,60 @@ exports.RunModelTest = function(req, res)
     const settingsArray = new Array();
 
     // Construct settings array based on model
-    switch (modelType)
-    {
+    switch (modelType) {
       /*!
-      * FORMAT:
-      *  0: Boolean:
-      *  1: BooleanBucket:
-      *    0 => trueTreshold
-      *    1 => inBucketSorting
-      *  2: BooleanExtended:
-      *  3: ViretBase:
-      *    0 => ignoreTreshold
-      *    1 => rankCalcMethod
-      *      0: Multiply & (Add |)
-      *      1: Add only
-      *  4: FuzzyLogic:
-      */
+       * FORMAT:
+       *  0: Boolean:
+       *  1: BooleanBucket:
+       *    0 => trueTreshold
+       *    1 => inBucketSorting
+       *  2: BooleanExtended:
+       *  3: ViretBase:
+       *    0 => ignoreTreshold
+       *    1 => rankCalcMethod
+       *      0: Multiply & (Add |)
+       *      1: Add only
+       *  4: FuzzyLogic:
+       */
 
       // Boolean
       case 0:
-      // Nothing just yet
-      break;
+        // Nothing just yet
+        break;
 
       // BooleanBucket
       case 1:
-      {
-        // 0 => 
-        const probTreshold = formDataArray[i].trueTreshold;
-        settingsArray.push(probTreshold);
+        {
+          // 0 =>
+          const probTreshold = formDataArray[i].trueTreshold;
+          settingsArray.push(probTreshold);
 
-        // 1 =>
-        const inBucketRanking = formDataArray[i].inBucketRanking;
-        settingsArray.push(inBucketRanking);
-      }
-      break;
+          // 1 =>
+          const inBucketRanking = formDataArray[i].inBucketRanking;
+          settingsArray.push(inBucketRanking);
+        }
+        break;
 
       // BooleanExtended
       case 2:
-
-      break;
+        break;
 
       // ViretBase
       case 3:
-      {
-        // 0 =>
-        const probTreshold4 = formDataArray[i].trueTreshold4;
-        settingsArray.push(probTreshold4);
+        {
+          // 0 =>
+          const probTreshold4 = formDataArray[i].trueTreshold4;
+          settingsArray.push(probTreshold4);
 
-        // 1 =>
-        const queryOperations = formDataArray[i].queryOperations;
-        settingsArray.push(queryOperations);
-      }
-      break;
+          // 1 =>
+          const queryOperations = formDataArray[i].queryOperations;
+          settingsArray.push(queryOperations);
+        }
+        break;
 
       // FuzzyLogic
       case 4:
-
-      break;
+        break;
 
       default:
         throw "Unknown model type.";
@@ -119,11 +125,15 @@ exports.RunModelTest = function(req, res)
     kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
     kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-
-   
-
     // Run model test
-    const chartData = RunModelTest(kwScDataType, aggFn, modelType, dataSource, settingsArray, aggSettingsArray);
+    const chartData = RunModelTest(
+      kwScDataType,
+      aggFn,
+      modelType,
+      dataSource,
+      settingsArray,
+      aggSettingsArray
+    );
 
     // Insert this result data to array
     responseData.chartDataArray.push(chartData);
@@ -133,34 +143,28 @@ exports.RunModelTest = function(req, res)
   res.jsonp(responseData);
 };
 
-
-
-exports.GetGridTestProgress = function(req, res) 
-{
-
+exports.GetGridTestProgress = function (req, res) {
   const gridTestResults = GetGridProgressWrapper();
 
   // Send response
   res.jsonp(gridTestResults);
-}
+};
 
-exports.RunGridTest = function(req, res) 
-{
+exports.RunGridTest = function (req, res) {
   // Construct response Object
-  let  responseData = new Object();
+  let responseData = new Object();
 
   const formDataArray = req.query.submitData.formData;
 
   const formId = req.query.submitData.formId;
   responseData.formId = formId;
-  
+
   responseData.gridTestResults = new Array();
 
-  let  testSettingsArray = new Array();
+  let testSettingsArray = new Array();
 
-  if (typeof formDataArray !== 'undefined' ) {
-    for (var i = 0; i < formDataArray.length; ++i)
-    {
+  if (typeof formDataArray !== "undefined") {
+    for (var i = 0; i < formDataArray.length; ++i) {
       const oneTestArray = new Array();
 
       const aggFn = Number(formDataArray[i].aggregation);
@@ -176,70 +180,66 @@ exports.RunGridTest = function(req, res)
       const settingsArray = new Array();
 
       // Construct settings array based on model
-      switch (modelType)
-      {
+      switch (modelType) {
         /*!
-        * FORMAT:
-        *  0: Boolean:
-        *  1: BooleanBucket:
-        *    0 => trueTreshold
-        *    1 => inBucketSorting
-        *  2: BooleanExtended:
-        *  3: ViretBase:
-        *    0 => ignoreTreshold
-        *    1 => rankCalcMethod
-        *      0: Multiply & (Add |)
-        *      1: Add only
-        *  4: FuzzyLogic:
-        */
+         * FORMAT:
+         *  0: Boolean:
+         *  1: BooleanBucket:
+         *    0 => trueTreshold
+         *    1 => inBucketSorting
+         *  2: BooleanExtended:
+         *  3: ViretBase:
+         *    0 => ignoreTreshold
+         *    1 => rankCalcMethod
+         *      0: Multiply & (Add |)
+         *      1: Add only
+         *  4: FuzzyLogic:
+         */
 
         // Boolean
         case 0:
-        // Nothing just yet
-        break;
+          // Nothing just yet
+          break;
 
         // BooleanBucket
         case 1:
-        {
-          // 0 => 
-          const probTreshold = formDataArray[i].trueTreshold;
-          settingsArray.push(probTreshold);
+          {
+            // 0 =>
+            const probTreshold = formDataArray[i].trueTreshold;
+            settingsArray.push(probTreshold);
 
-          // 1 =>
-          const inBucketRanking = formDataArray[i].inBucketRanking;
-          settingsArray.push(inBucketRanking);
-        }
-        break;
+            // 1 =>
+            const inBucketRanking = formDataArray[i].inBucketRanking;
+            settingsArray.push(inBucketRanking);
+          }
+          break;
 
         // BooleanExtended
         case 2:
-
-        break;
+          break;
 
         // ViretBase
         case 3:
-        {
-          // 0 =>
-          const probTreshold4 = formDataArray[i].trueTreshold4;
-          settingsArray.push(probTreshold4);
+          {
+            // 0 =>
+            const probTreshold4 = formDataArray[i].trueTreshold4;
+            settingsArray.push(probTreshold4);
 
-          // 1 =>
-          const queryOperations = formDataArray[i].queryOperations;
-          settingsArray.push(queryOperations);
-        }
-        break;
+            // 1 =>
+            const queryOperations = formDataArray[i].queryOperations;
+            settingsArray.push(queryOperations);
+          }
+          break;
 
         // FuzzyLogic
         case 4:
-
-        break;
+          break;
 
         default:
           throw "Unknown model type.";
       }
 
       oneTestArray.push(settingsArray);
-
 
       // Variable with all settings
       const aggSettingsArray = new Array();
@@ -249,19 +249,14 @@ exports.RunGridTest = function(req, res)
 
       testSettingsArray.push(oneTestArray);
     }
-  } 
-  else 
-  {
-    
+  } else {
   }
-  
-    // Run model test
-    const gridTestResults = RunGridTestWrapper(testSettingsArray);
 
-    // Insert this result data to array
-    responseData.gridTestResults = gridTestResults;
+  // Run model test
+  const gridTestResults = RunGridTestWrapper(testSettingsArray);
 
-  
+  // Insert this result data to array
+  responseData.gridTestResults = gridTestResults;
 
   // Send response
   res.jsonp(responseData);

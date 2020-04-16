@@ -19,7 +19,6 @@ global.rootDir = __dirname;
 
 // Require routers
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var testsRouter = require('./routes/tests');
 var imageFinderRouter = require('./routes/image_finder');
 var collectorRouter = require('./routes/collector');
@@ -33,7 +32,6 @@ const endpoints = require("./routes/endpoints/endpoints")
 const settingsAjaxRouter = require("./routes/settings_ajax");
 const annotatorRouter = require("./routes/annotator");
 const nativeAnnotatorRouter = require("./routes/native_annotator");
-const annotatorAjaxRouter = require("./routes/annotator_ajax");
 const rankerRouter = require("./routes/ranker");
 const trecvidRankerRouter = require("./routes/trecvid_ranker");
 const trecvidAjaxRankerRouter = require("./routes/trecvid_ranker_ajax");
@@ -129,7 +127,6 @@ global.logger.log('debug', "ImageRanker instantiated...");
 
 // Push all routers into express middleware stack
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/image_finder', imageFinderRouter);
 
 app.use('/tests', testsRouter);
@@ -150,6 +147,11 @@ app.use('/native_annotator', nativeAnnotatorRouter);
 
 // Request endpoints
 app.post('/set_active_data_pack', endpoints.setActiveDataPack);
+app.post('/try_to_switch_to_dev_mode', endpoints.tryToSwitchToDevMode);
+app.post('/annotator_submit_query', endpoints.submitAnnotatorQuery);
+
+app.get('/get_autocomplete_results', endpoints.getAutocompleteResults);
+
 
 app.post('/settings_ajax_set_kw_sc_data_type', settingsAjaxRouter.SetKeywordScoringDataType);
 app.post('/data_center_ajax_get_annotator_user_data', dataCenterAjaxRouter.GetAnnotatorUserData);
@@ -174,9 +176,6 @@ app.post('/trecvid_ranker_ajax_start_run_normal', trecvidAjaxRankerRouter.startR
 app.post('/trecvid_ranker_ajax_start_run_progress', trecvidAjaxRankerRouter.startRunProgress);
 app.post('/trecvid_ranker_ajax_submit_task', trecvidAjaxRankerRouter.submitTask);
 app.post('/trecvid_ranker_ajax_next_task', trecvidAjaxRankerRouter.nextTask);
-
-app.get('/annotator_ajax', annotatorAjaxRouter.GetNearKeywords);
-app.get('/annotator_ajax_get_near_keywords_with_examples', annotatorAjaxRouter.GetNearKeywordsWithExamples);
 
 app.get('/api_get_relevant_images', api.getRelevantImagesFromPlainQuery);
 

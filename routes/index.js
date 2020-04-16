@@ -1,11 +1,10 @@
 "use strict";
 
 var express = require("express");
+var router = express.Router();
 
 var path = require("path");
 var fs = require("fs");
-
-var router = express.Router();
 
 const stateCheck = require("./common/state_checkers");
 
@@ -17,7 +16,6 @@ const routeSettings = {
 function PreProcessReq(req, viewData) {
   stateCheck.genericPreProcessReq(req, viewData, routeSettings);
   const sess = req.session;
-
 }
 
 function ProcessReq(req, viewData) {
@@ -34,21 +32,17 @@ function PostProcessReq(req, viewData) {
  * GET request handler
  */
 router.get("/", function (req, res, next) {
-  // \todo remove
-  req.session.state = null;
+  let viewData = stateCheck.initRequest(req);
 
-  // Every request gets it's own view data
-  let viewData = new Object();
-
-  global.logger.log('debug', "Route: " + routeSettings.slug);
+  global.logger.log("debug", "Route: " + routeSettings.slug);
 
   // Main request cycle
   PreProcessReq(req, viewData);
   ProcessReq(req, viewData);
   PostProcessReq(req, viewData);
 
-  console.log("")
-  console.log(JSON.stringify(viewData))
+  console.log("");
+  console.log(JSON.stringify(viewData));
 
   // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);

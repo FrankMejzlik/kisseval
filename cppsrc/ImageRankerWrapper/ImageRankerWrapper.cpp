@@ -14,6 +14,10 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports)
   Napi::Function func = DefineClass(env, "ImageRankerWrapper", {
 
     InstanceMethod("getLoadedDataPacksInfo", &ImageRankerWrapper::get_loaded_data_packs_info),
+    InstanceMethod("getAutocompleteResults", &ImageRankerWrapper::get_autocomplete_results),
+    InstanceMethod("getRandomFrameSequence", &ImageRankerWrapper::get_random_frame_sequence),
+    
+    
 
     // InstanceMethod("Initialize", &ImageRankerWrapper::Initialize),
     // InstanceMethod("GetGeneralStatistics", &ImageRankerWrapper::GetGeneralStatistics),
@@ -142,8 +146,6 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) :
 #endif
 }
 
-
-
 Napi::Value ImageRankerWrapper::get_loaded_data_packs_info(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
@@ -228,6 +230,170 @@ Napi::Value ImageRankerWrapper::get_loaded_data_packs_info(const Napi::CallbackI
     ++i;
   }
   return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+
+  if (length != 4) {
+    Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
+  }
+
+  std::string data_pack_ID = info[0].As<Napi::String>().Utf8Value();
+  std::string prefix = info[1].As<Napi::String>().Utf8Value();
+  size_t numResults = info[2].As<Napi::Number>().Uint32Value();
+  bool withExampleImages = info[3].As<Napi::Boolean>().Value();
+
+  
+  // Get suggested keywords
+  AutocompleteInputResult keywordData;
+  try {
+    keywordData = this->actualClass_->get_autocomplete_results(data_pack_ID, prefix, numResults, withExampleImages);
+  }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  // Final return structure
+  napi_value result_arr;
+  napi_create_array(env, &result_arr);
+
+  size_t i = 0ULL;
+  // Iterate through all results
+  for (auto&& keyword : keywordData.top_keywords)
+  {
+    // Temp array structure
+    napi_value single_result_dict;
+    napi_create_object(env, &single_result_dict);
+
+    // ID
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "id", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_uint32(env, keyword->ID, &value);
+
+      napi_set_property(env, single_result_dict, key, value);
+    }
+
+    // wordString
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "wordString", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_string_utf8(env, keyword->m_word.data(), NAPI_AUTO_LENGTH, &value);
+
+      napi_set_property(env, single_result_dict, key, value);
+    }
+
+    // description
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "description", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_string_utf8(env, keyword->description.data(), NAPI_AUTO_LENGTH, &value);
+
+      napi_set_property(env, single_result_dict, key, value);
+    }
+
+    // exampleFrames
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "exampleFrames", NAPI_AUTO_LENGTH, &key);
+      napi_value value;
+      napi_create_array(env, &value);
+
+      if (withExampleImages)
+      {
+        size_t ii{ 0 };
+        for (auto&& nat_filename : keyword->m_exampleImageFilenames)
+        {
+          napi_value filename;
+          napi_create_string_utf8(env, nat_filename .data(), NAPI_AUTO_LENGTH, &filename);
+
+          napi_set_element(env, value, ii, filename);
+          ++ii;
+        }
+      }
+
+      napi_set_property(env, single_result_dict, key, value);
+    }
+
+    napi_set_element(env, result_arr, i, single_result_dict);
+
+    ++i;
+  }
+
+  return Napi::Object(env, result_arr);
+}
+
+Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 2)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
+  }
+
+  std::string imageset_ID = info[0].As<Napi::String>().Utf8Value();
+  size_t seqLength = info[1].As<Napi::Number>().Uint32Value();
+
+  // Call native method
+  std::vector<const SelFrame*> frames_sequence;
+  try {
+    frames_sequence = this->actualClass_->get_random_frame_sequence(imageset_ID, seqLength);
+  }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  // Construct NAPI return object 
+  napi_value totalResult;
+  napi_create_array(env, &totalResult);
+
+  size_t i{ 0ULL };
+  for (auto&& image : frames_sequence)
+  {
+    napi_value result;
+    napi_create_object(env, &result);
+    // Set "frameId"
+    {
+      napi_value key;
+      napi_create_string_utf8(env, "frameId", 7, &key);
+      napi_value val;
+      napi_create_uint32(env, image->m_ID, &val);
+
+      napi_set_property(env, result, key, val);
+    }
+
+    // Set "filename"
+    {
+      napi_value filenameKey;
+      napi_create_string_utf8(env, "filename", 8, &filenameKey);
+      napi_value filename;
+      napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
+
+      napi_set_property(env, result, filenameKey, filename);
+    }
+
+    // Set this value to result array
+    napi_set_element(env, totalResult, i, result);
+
+    ++i;
+  }
+
+  return Napi::Object(env, totalResult);
 }
 
 #if 0
@@ -959,67 +1125,7 @@ Napi::Value ImageRankerWrapper::GetCouplingImage(const Napi::CallbackInfo& info)
   return Napi::Object(env, result);
 }
 
-Napi::Value ImageRankerWrapper::GetRandomImageSequence(const Napi::CallbackInfo& info)
-{
-  Napi::Env env = info.Env();
-  Napi::HandleScope scope(env);
 
-  // Process arguments
-  int length = info.Length();
-  if (length != 1)
-  {
-    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
-  }
-
-  size_t seqLength = info[0].As<Napi::Number>().Uint32Value();
-
-  // Call native method
-  std::vector<const Image*> images;
-  try {
-    images = this->actualClass_->GetRandomImageSequence(seqLength);
-  }
-  catch (const std::exception& e)
-  {
-    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
-  }
-
-  // Construct NAPI return object 
-  napi_value totalResult;
-  napi_create_array(env, &totalResult);
-
-  size_t i{ 0ULL };
-  for (auto&& image : images)
-  {
-    napi_value result;
-    napi_create_object(env, &result);
-    // Set "imageId"
-    {
-      napi_value imageIdKey;
-      napi_create_string_utf8(env, "imageId", 7, &imageIdKey);
-      napi_value imageId;
-      napi_create_uint32(env, image->m_imageId, &imageId);
-
-      napi_set_property(env, result, imageIdKey, imageId);
-    }
-
-    // Set "filename"
-    {
-      napi_value filenameKey;
-      napi_create_string_utf8(env, "filename", 8, &filenameKey);
-      napi_value filename;
-      napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
-
-      napi_set_property(env, result, filenameKey, filename);
-    }
-
-    // Set this value to result array
-    napi_set_element(env, totalResult, i, result);
-
-    ++i;
-  }
-
-  return Napi::Object(env, totalResult);
-}
 
 
 Napi::Value ImageRankerWrapper::RunGridTest(const Napi::CallbackInfo& info)

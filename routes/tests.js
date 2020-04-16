@@ -1,14 +1,12 @@
-var express = require('express');
+var express = require("express");
 
-var path = require('path');
-var fs = require('fs');
+var path = require("path");
+var fs = require("fs");
 
 var router = express.Router();
 
-
 // GET request on '/'
-router.get('/', function(req, res, next) 
-{
+router.get("/", function (req, res, next) {
   // Initialize data Object
   var data = new Object();
 
@@ -17,13 +15,11 @@ router.get('/', function(req, res, next)
   const isDev = sess.isDev;
   data.isDev = isDev;
 
-
-  res.render('tests', data);
+  res.render("tests", data);
 });
-   
+
 // Process POST from autocomplete form
-router.post('/', function(req, res, next) 
-{
+router.post("/", function (req, res, next) {
   // Initialize data Object
   var data = new Object();
 
@@ -34,13 +30,11 @@ router.post('/', function(req, res, next)
 
   // Get keywords user provided
   var keywords = req.body.keyword;
-  
+
   // Initialize final string
   let finalString = "";
 
-
-  res.render('image_finder', data);
+  res.render("image_finder", data);
 });
-
 
 module.exports = router;

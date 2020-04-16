@@ -1,42 +1,47 @@
-var express = require('express');
+var express = require("express");
 
-var path = require('path');
-var fs = require('fs');
+var path = require("path");
+var fs = require("fs");
 
 var router = express.Router();
 
-
 // GET request on '/'
-router.get('/', function(req, res, next) 
-{
+router.get("/", function (req, res, next) {
   let phonyQuery = "false";
 
   // Get session object
   const sess = req.session;
 
   // If this session has not initialized game yet
-  if (typeof sess.gameProgress === 'undefined' || req.query.startGame == "true") 
-  {
+  if (
+    typeof sess.gameProgress === "undefined" ||
+    req.query.startGame == "true"
+  ) {
     sess.gameProgress = 1;
-    
+
     // Initialize array of this session's images
     sess.gameWalkthrough = new Array();
 
-    res.redirect('/collector')
-  } 
+    res.redirect("/collector");
+  }
 
+  const totalGameLength =
+    global.gConfig.gameLength + global.gConfig.tutorialLength;
 
-  const totalGameLength = global.gConfig.gameLength + global.gConfig.tutorialLength;
-
-  console.log("SessionId: " + sess.id + " PROGRESS : " + sess.gameProgress + "/" + totalGameLength)
-
+  console.log(
+    "SessionId: " +
+      sess.id +
+      " PROGRESS : " +
+      sess.gameProgress +
+      "/" +
+      totalGameLength
+  );
 
   const isDev = req.session.isDeveloperSession;
 
   // If dev, skip tutorial
-  if (isDev == true && sess.gameProgress < 3 && sess.gameProgress >= 1) 
-  {
-    sess.gameProgress= 3;
+  if (isDev == true && sess.gameProgress < 3 && sess.gameProgress >= 1) {
+    sess.gameProgress = 3;
   }
 
   const gameProgress = new Object();
@@ -44,50 +49,43 @@ router.get('/', function(req, res, next)
   gameProgress.total = totalGameLength;
 
   // If in tutorial
-  if (sess.gameProgress <= global.gConfig.tutorialLength) 
-  {
+  if (sess.gameProgress <= global.gConfig.tutorialLength) {
     // Send example data to views
     let exampleItems;
     if (sess.gameProgress == 1) {
-      exampleItems ='<li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="boat" checked="">                <span>boat</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="ocean" checked="">                <span>ocean</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="pier" checked="">                <span>pier</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="forest" checked="">                <span>forest</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="coast" checked="">                <span>coast</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li>';
-    } 
-    else if (sess.gameProgress == 2) {
-      exampleItems ='<li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="sky" checked="">                <span>sky</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="dirt" checked="">                <span>dirt</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="ground" checked="">                <span>ground</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li>';
+      exampleItems =
+        '<li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="boat" checked="">                <span>boat</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="ocean" checked="">                <span>ocean</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="pier" checked="">                <span>pier</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="forest" checked="">                <span>forest</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="coast" checked="">                <span>coast</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li>';
+    } else if (sess.gameProgress == 2) {
+      exampleItems =
+        '<li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="sky" checked="">                <span>sky</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="dirt" checked="">                <span>dirt</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li><li class="slected-keyword-checkbox"><input type="checkbox" name="keyword" value="ground" checked="">                <span>ground</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this);">&#10006</a></li>';
     }
 
-    
-    
     // Final data instance being send to front end
-    var data = { 
+    var data = {
       isDev,
       exampleItems,
-      gameProgress
+      gameProgress,
     };
 
-    res.render('tutorials/example_pic' + sess.gameProgress, data);
+    res.render("tutorials/example_pic" + sess.gameProgress, data);
     return;
   }
 
   // If finished game
-  if (sess.gameProgress > totalGameLength) 
-  {
-
+  if (sess.gameProgress > totalGameLength) {
     // var gameWalkthrough = sess.gameWalkthrough;
-    // var data = { 
+    // var data = {
     //   gameWalkthrough
     // };
-
 
     res.redirect(301, "/scoreboard/");
     return;
   }
 
-
   // If still on same progress, show same image
-  if (typeof sess.gameImage === 'undefined')
-  {
+  if (typeof sess.gameImage === "undefined") {
     sess.gameImage = global.imageRanker.GetRandomImage();
-  } 
+  }
 
   const newImage = sess.gameImage;
 
@@ -96,67 +94,61 @@ router.get('/', function(req, res, next)
       "imageId": 123,
       "filename": "aaaa"
     }  */
-  if (global.gConfig.log_all == true)
-  {
+  if (global.gConfig.log_all == true) {
     console.log("Serving image " + newImage);
   }
 
-  
   // Final data instance being send to front end
-  var data = { 
+  var data = {
     isDev,
     phonyQuery,
     newImage,
-    gameProgress
+    gameProgress,
   };
 
-
-
-  res.render('collector', data);
+  res.render("collector", data);
   return;
 });
-   
+
 // Process POST from autocomplete form
-router.post('/', function(req, res, next) 
-{
+router.post("/", function (req, res, next) {
   // Get keywords user provided
   var keywords = req.body.keyword;
 
-  // Get this session 
+  // Get this session
   const sess = req.session;
-  
+
   // Initialize final string
   let finalString = "";
 
   // If at least one keyword provided
-  if (typeof keywords !== 'undefined' && keywords.length > 0) 
-  {
+  if (typeof keywords !== "undefined" && keywords.length > 0) {
     // If more than one
-    if (keywords instanceof Array) 
-    {
+    if (keywords instanceof Array) {
       // Concatenate them
-      finalString = keywords.join('&');
-    }
-    else {
+      finalString = keywords.join("&");
+    } else {
       finalString = keywords;
     }
 
     // If player out of tutorial
-    if (sess.gameProgress > 2)
-    {
-
+    if (sess.gameProgress > 2) {
       let sessionId = sess.id;
       let imageId = sess.gameImage.imageId;
 
       let queryType = 1;
-      if (sess.isDeveloperSession == true) 
-      {
+      if (sess.isDeveloperSession == true) {
         // Set to developer query
         queryType = 0;
       }
 
       // Parameters: SessionID, ImageID, string query
-      const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(sessionId, imageId, finalString, queryType);
+      const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(
+        sessionId,
+        imageId,
+        finalString,
+        queryType
+      );
       /* RETURN OBJECT:
         [
           {
@@ -176,24 +168,26 @@ router.post('/', function(req, res, next)
         ]
       */
 
-
       // Mark it into session
       sess.gameWalkthrough.push(userImageResult);
     }
 
     // Increment game progress counter
     ++sess.gameProgress;
-    
+
     // Reset image
     sess.gameImage = undefined;
 
-    console.log("Incrementing game progress for session " + sess.id + " to " + sess.gameProgress );    
+    console.log(
+      "Incrementing game progress for session " +
+        sess.id +
+        " to " +
+        sess.gameProgress
+    );
   }
 
-  
   // Redirect user back to game page
   res.redirect(301, "/collector/");
 });
-
 
 module.exports = router;

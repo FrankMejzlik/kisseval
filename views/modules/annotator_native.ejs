@@ -1,10 +1,7 @@
-<!-- Include header -->
-<%- include common/header.ejs %>
-
 <section class="main-image-query grid-container">
   <div class="grid-x grid-padding-x align-center">
     <div class="progerss-bar small-12 cell">
-      <span id="notCoupledNum">Number of unpaired data: <span class="emp"><%= nativeImage.numNotCoupled %></span></span>
+    
     </div>
     
     <div class="progerss-bar small-12 cell"style="text-align: left;">
@@ -24,7 +21,7 @@
 
     <div class="autocomplete-keywords-container small-12 cell">
     
-      <form autocomplete="off" class="autocomplete-form" action="/native_annotator" method="POST">
+      <form autocomplete="off" class="autocomplete-form" action="/annotator_submit_query" method="POST">
 
         <div class="main-query-input-wrapper control-wrapper">
     
@@ -38,6 +35,3 @@
 
   </div>
 </section>
-
-<!-- Include footer -->
-<%- include common/footer.ejs %>

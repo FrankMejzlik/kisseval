@@ -1,61 +1,52 @@
-
-
-const util = require('util')
+const util = require("util");
 
 const utils = require("../routes/utils/utils");
 const rankerUtils = require("../routes/utils/ranker_utils");
 
-
-exports.submitSettings = function(req, res) 
-{
-  global.logger.log('debug', "=> submitSettings()");
+exports.submitSettings = function (req, res) {
+  global.logger.log("debug", "=> submitSettings()");
   const sess = req.session;
 
   // Save new settings into session
-  if (typeof sess.ranker === "undefined")
-  {
+  if (typeof sess.ranker === "undefined") {
     sess.ranker = new Object();
   }
 
   // Parse provided settings from submitted form
   utils.parseModelSettingsFromForm(sess, req.query[0]);
 
-  global.logger.log('debug', "Setting ranker settings to: sess.ranker.settings" + JSON.stringify(sess.ranker.settings, undefined, 4));
-  global.logger.log('debug', "<= submitSettings()");
-  res.redirect('/ranker');
+  global.logger.log(
+    "debug",
+    "Setting ranker settings to: sess.ranker.settings" +
+      JSON.stringify(sess.ranker.settings, undefined, 4)
+  );
+  global.logger.log("debug", "<= submitSettings()");
+  res.redirect("/ranker");
 };
 
-exports.submitImage = function(req, res)
-{
-  global.logger.log('debug', "=> submitImage()");
+exports.submitImage = function (req, res) {
+  global.logger.log("debug", "=> submitImage()");
   const sess = req.session;
 
   const imageId = req.query.imageId;
-  global.logger.log('debug', "imageId = " + imageId);
-
+  global.logger.log("debug", "imageId = " + imageId);
 
   let response = new Object();
 
   // If give up submit
-  if (imageId < 0)
-  {
+  if (imageId < 0) {
     response.giveUp = true;
-  } 
-  else 
-  {
+  } else {
     response.giveUp = false;
   }
 
   // Is this correct image?
   response.correct = false;
-  
-  if (imageId >= 0)
-  {
+
+  if (imageId >= 0) {
     // Check submited image against sequence of images
-    for (let i = 0; i < sess.ranker.searchSession.targetImages.length; ++i)
-    {
-      if (sess.ranker.searchSession.targetImages[i].imageId == imageId)
-      {
+    for (let i = 0; i < sess.ranker.searchSession.targetImages.length; ++i) {
+      if (sess.ranker.searchSession.targetImages[i].imageId == imageId) {
         response.correct = true;
         break;
       }
@@ -63,56 +54,51 @@ exports.submitImage = function(req, res)
   }
 
   // Get all needed things for calling native method
-  const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
-
+  const settingsForNative = utils.convertSettingsObjectToNativeFormat(
+    sess.ranker.settings
+  );
 
   const kwScDataType = new Object();
   kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
   kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-  if (typeof sess.ranker.query !== "undefined")
-  {
-    if (sess.ranker.query.length > 0)
-    {
+  if (typeof sess.ranker.query !== "undefined") {
+    if (sess.ranker.query.length > 0) {
       let queries = new Array();
       const queryPlain = sess.ranker.query.join("&");
       queries.push(queryPlain);
-      if (typeof sess.ranker.query2 !== "undefined" && sess.ranker.query2.length > 0) 
-      {
+      if (
+        typeof sess.ranker.query2 !== "undefined" &&
+        sess.ranker.query2.length > 0
+      ) {
         const queryPlain2 = sess.ranker.query2.join("&");
         queries.push(queryPlain2);
       }
 
-      
-
       response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
         kwScDataType,
-        queries, 
-        0, 
-        settingsForNative.aggregation, 
-        settingsForNative.rankingModel, 
-        settingsForNative.rankingModelSettings, 
+        queries,
+        0,
+        settingsForNative.aggregation,
+        settingsForNative.rankingModel,
+        settingsForNative.rankingModelSettings,
         settingsForNative.aggregationSettings,
         sess.ranker.searchSession.targetImages[0].imageId,
         false
       );
     }
-  
-    
-    const actionsArray = sess.ranker.searchSession.actionsArray;
 
+    const actionsArray = sess.ranker.searchSession.actionsArray;
 
     response.chartData = new Array();
     // Construct chart data
-    for (let i = 0; i < actionsArray.length; ++i)
-    {
+    for (let i = 0; i < actionsArray.length; ++i) {
       const pair = new Object();
       pair.index = i;
       pair.value = actionsArray[i].score;
 
       response.chartData.push(pair);
     }
-  
   }
 
   const actionsArray = sess.ranker.searchSession.actionsArray;
@@ -124,44 +110,48 @@ exports.submitImage = function(req, res)
   const targetImageId = sess.ranker.searchSession.targetImages[0].imageId;
   const endStatus = response.giveUp ? 0 : 1;
 
-
   let sessionDuration = 0;
   // If this session should be terminated
-  if (response.correct || response.giveUp)
-  {
+  if (response.correct || response.giveUp) {
     sessionDuration = rankerUtils.terminateSearchSession(sess);
     response.sessionDuration = sessionDuration;
   }
-  
 
   // +++++++++++++++++++++++++++++++++++++++++++
   // +++++++++++++++++++++++++++++++++++++++++++
-  
-  if (actionsArray.length > 0)
-  {
+
+  if (actionsArray.length > 0) {
     global.imageRanker.SubmitInteractiveSearchSubmit(
       kwScDataType,
-      originType, targetImageId, settingsForNative.rankingModel, settingsForNative.aggregation,
-      settingsForNative.rankingModelSettings, settingsForNative.aggregationSettings,
-      sessionId, searchSessionId, endStatus, sessionDuration,
+      originType,
+      targetImageId,
+      settingsForNative.rankingModel,
+      settingsForNative.aggregation,
+      settingsForNative.rankingModelSettings,
+      settingsForNative.aggregationSettings,
+      sessionId,
+      searchSessionId,
+      endStatus,
+      sessionDuration,
       actionsArray,
       userId
     );
   }
-  
+
   // +++++++++++++++++++++++++++++++++++++++++++
   // +++++++++++++++++++++++++++++++++++++++++++
 
-  global.logger.log('debug', "response: " + JSON.stringify(response, undefined, 4));
+  global.logger.log(
+    "debug",
+    "response: " + JSON.stringify(response, undefined, 4)
+  );
 
-
-  global.logger.log('debug', "<= submitImage()");
+  global.logger.log("debug", "<= submitImage()");
   res.jsonp(response);
-}
+};
 
-exports.getRandomImageAndStartSearchSession = function(req, res) 
-{
-  global.logger.log('debug', "=> getRandomImageAndStartSearchSession()");
+exports.getRandomImageAndStartSearchSession = function (req, res) {
+  global.logger.log("debug", "=> getRandomImageAndStartSearchSession()");
 
   const sess = req.session;
 
@@ -172,15 +162,16 @@ exports.getRandomImageAndStartSearchSession = function(req, res)
   //const image = global.imageRanker.GetRandomImage();
 
   // Get sequence of images from single video
-  const images = global.imageRanker.GetRandomImageSequence(global.gConfig.rankerConfig.previewSequenceLength);
+  const images = global.imageRanker.GetRandomImageSequence(
+    global.gConfig.rankerConfig.previewSequenceLength
+  );
 
   // Start new session with this image
   rankerUtils.startSearchSession(sess, images);
 
   let responseArray = new Array();
 
-  for (let i = 0; i < images.length; ++i)
-  {
+  for (let i = 0; i < images.length; ++i) {
     let response = new Object();
     response.imageId = images[i].imageId;
     response.imageFilename = images[i].filename;
@@ -188,70 +179,68 @@ exports.getRandomImageAndStartSearchSession = function(req, res)
     responseArray.push(response);
   }
 
-  global.logger.log('debug', "response: " + JSON.stringify(responseArray, undefined, 4));  
+  global.logger.log(
+    "debug",
+    "response: " + JSON.stringify(responseArray, undefined, 4)
+  );
 
-  global.logger.log('debug', "<= getRandomImageAndStartSearchSession()");
+  global.logger.log("debug", "<= getRandomImageAndStartSearchSession()");
   res.jsonp(responseArray);
-}
+};
 
-exports.getSelectedImageAndStartSearchSession = function(req, res) 
-{
+exports.getSelectedImageAndStartSearchSession = function (req, res) {
   // \todo Implement with image sequences
-  global.logger.log('debug', "=> getSelectedImageAndStartSearchSession()");
+  global.logger.log("debug", "=> getSelectedImageAndStartSearchSession()");
   const sess = req.session;
 
-   // Terminate old session if any
-   rankerUtils.terminateSearchSession(sess);
+  // Terminate old session if any
+  rankerUtils.terminateSearchSession(sess);
 
-   // Get random image
-   const image = global.imageRanker.GetImageDataById(Number(req.query.imageId));
- 
-   // Start new session with this image
-   rankerUtils.startSearchSession(sess, image.imageId, image.filename);
- 
-   let response = new Object();
-   response.imageId = image.imageId;
-   response.imageFilename = image.filename;
-   response.modelName = sess.ranker.settings.modelName;
- 
-   if (global.gConfig.log_all) 
-   { 
-     console.log("response = " + JSON.stringify(response)); 
-   }
+  // Get random image
+  const image = global.imageRanker.GetImageDataById(Number(req.query.imageId));
 
-  global.logger.log('debug', "<= getSelectedImageAndStartSearchSession()");
+  // Start new session with this image
+  rankerUtils.startSearchSession(sess, image.imageId, image.filename);
+
+  let response = new Object();
+  response.imageId = image.imageId;
+  response.imageFilename = image.filename;
+  response.modelName = sess.ranker.settings.modelName;
+
+  if (global.gConfig.log_all) {
+    console.log("response = " + JSON.stringify(response));
+  }
+
+  global.logger.log("debug", "<= getSelectedImageAndStartSearchSession()");
   res.jsonp(response);
-}
+};
 
-
-exports.processAction = function(req, res) 
-{
-  global.logger.log('debug', "=> processAction()");
+exports.processAction = function (req, res) {
+  global.logger.log("debug", "=> processAction()");
   const sess = req.session;
 
   const action = req.query.action;
   const operand = req.query.operand;
   const operandWord = req.query.operandWord;
 
-
-  global.logger.log('debug', "action = " + action + ", operand = " + operand);
+  global.logger.log("debug", "action = " + action + ", operand = " + operand);
 
   // Get all needed things for calling native method
-  const settingsForNative = utils.convertSettingsObjectToNativeFormat(sess.ranker.settings); 
+  const settingsForNative = utils.convertSettingsObjectToNativeFormat(
+    sess.ranker.settings
+  );
 
   //
   // Query 1
   //
 
-  if (typeof sess.ranker.query === "undefined")
-  {
+  if (typeof sess.ranker.query === "undefined") {
     sess.ranker.query = new Array();
     sess.ranker.queryWords = new Array();
   }
 
   // Remove keyword
-  if (action == 0)
-  {
+  if (action == 0) {
     const index = sess.ranker.query.indexOf(operand);
 
     // Cut out this kw
@@ -259,15 +248,13 @@ exports.processAction = function(req, res)
     sess.ranker.queryWords.splice(index, 1);
   }
   // Add keyword from autocomplete
-  else if (action == 1)
-  {
+  else if (action == 1) {
     // Add keyword
     sess.ranker.query.push(operand);
     sess.ranker.queryWords.push(operandWord);
   }
   // Add keyword from detail
-  else if (action == 2)
-  {
+  else if (action == 2) {
     // Add keyword
     sess.ranker.query.push(operand);
     sess.ranker.queryWords.push(operandWord);
@@ -276,15 +263,13 @@ exports.processAction = function(req, res)
   //
   // Query 2
   //
-  if (typeof sess.ranker.query2 === "undefined")
-  {
+  if (typeof sess.ranker.query2 === "undefined") {
     sess.ranker.query2 = new Array();
     sess.ranker.queryWords2 = new Array();
   }
 
   // Remove keyword
-  if (action == 10)
-  {
+  if (action == 10) {
     const index = sess.ranker.query2.indexOf(operand);
 
     // Cut out this kw
@@ -292,15 +277,13 @@ exports.processAction = function(req, res)
     sess.ranker.queryWords2.splice(index, 1);
   }
   // Add keyword from autocomplete
-  else if (action == 11)
-  {
+  else if (action == 11) {
     // Add keyword
     sess.ranker.query2.push(operand);
     sess.ranker.queryWords2.push(operandWord);
   }
   // Add keyword from detail
-  else if (action == 12)
-  {
+  else if (action == 12) {
     // Add keyword
     sess.ranker.query2.push(operand);
     sess.ranker.queryWords2.push(operandWord);
@@ -311,17 +294,15 @@ exports.processAction = function(req, res)
   const queryPlain2 = sess.ranker.query2.join("&");
 
   let queriesPlain = new Array();
-  
+
   queriesPlain.push(queryPlain);
-  if (queryPlain2 != "")
-  {
+  if (queryPlain2 != "") {
     queriesPlain.push(queryPlain2);
   }
 
   let response = new Object();
-  
-  if (sess.ranker.query.length > -1)
-  {
+
+  if (sess.ranker.query.length > -1) {
     const withOccuranceValue = false;
     const kwScDataType = new Object();
     kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
@@ -329,32 +310,34 @@ exports.processAction = function(req, res)
 
     response.relevantImagesArray = global.imageRanker.GetRelevantImagesPlainQuery(
       kwScDataType,
-      queriesPlain, 
-      1000, 
-      settingsForNative.aggregation, 
-      settingsForNative.rankingModel, 
-      settingsForNative.rankingModelSettings, 
+      queriesPlain,
+      1000,
+      settingsForNative.aggregation,
+      settingsForNative.rankingModel,
+      settingsForNative.rankingModelSettings,
       settingsForNative.aggregationSettings,
       sess.ranker.searchSession.targetImages[0].imageId,
       withOccuranceValue
     );
 
-    rankerUtils.pushAction(sess, action, operand, response.relevantImagesArray.targetImageRank);
+    rankerUtils.pushAction(
+      sess,
+      action,
+      operand,
+      response.relevantImagesArray.targetImageRank
+    );
   }
 
-
   // If not dev, hide target image position
-  if (sess.userLevel < 10)
-  {
+  if (sess.userLevel < 10) {
     response.relevantImagesArray.targetImageRank = undefined;
   }
 
   const actionsArray = sess.ranker.searchSession.actionsArray;
   response.chartData = new Array();
-  
+
   // Construct chart data
-  for (let i = 0; i < actionsArray.length; ++i)
-  {
+  for (let i = 0; i < actionsArray.length; ++i) {
     const pair = new Object();
     pair.index = i;
     pair.value = actionsArray[i].score;
@@ -362,39 +345,53 @@ exports.processAction = function(req, res)
     response.chartData.push(pair);
   }
 
-  if (typeof sess.ranker.searchSession === "undefined")
-  {
+  if (typeof sess.ranker.searchSession === "undefined") {
     throw "What happedn to sess.ranker.searchSession?";
   }
 
-
-  global.logger.log('debug', "<= processAction()");
+  global.logger.log("debug", "<= processAction()");
   res.jsonp(response);
-}
+};
 
-
-
-exports.getImageKeywordsForInteractiveSearch = function(req, res) 
-{
+exports.getImageKeywordsForInteractiveSearch = function (req, res) {
   const sess = req.session;
-  global.logger.log('debug', "<" + sess.id + ">: => getImageKeywordsForInteractiveSearch()");
+  global.logger.log(
+    "debug",
+    "<" + sess.id + ">: => getImageKeywordsForInteractiveSearch()"
+  );
 
   const imageId = Number(req.query.imageId);
   const numResults = 30;
   const withExampleImages = true;
-  
+
   const kwScDataType = new Object();
   kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
   kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
 
-  global.logger.log('debug', "<" + sess.id + ">: Getting top keywords for the image...");
-  global.logger.log('debug', "<" + sess.id + ">: imageId = " + imageId);
-  global.logger.log('debug', "<" + sess.id + ">: numResults = " + numResults);
-  global.logger.log('debug', "<" + sess.id + ">: kwScDataType = " + JSON.stringify(kwScDataType, undefined, 4));
+  global.logger.log(
+    "debug",
+    "<" + sess.id + ">: Getting top keywords for the image..."
+  );
+  global.logger.log("debug", "<" + sess.id + ">: imageId = " + imageId);
+  global.logger.log("debug", "<" + sess.id + ">: numResults = " + numResults);
+  global.logger.log(
+    "debug",
+    "<" +
+      sess.id +
+      ">: kwScDataType = " +
+      JSON.stringify(kwScDataType, undefined, 4)
+  );
 
-  
-  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(imageId, numResults, kwScDataType, true);
+  const response = global.imageRanker.GetImageKeywordsForInteractiveSearch(
+    imageId,
+    numResults,
+    kwScDataType,
+    true
+  );
 
-  global.logger.log('debug', "<" + sess.id + ">: <= getImageKeywordsForInteractiveSearch()");
+  global.logger.log(
+    "debug",
+    "<" + sess.id + ">: <= getImageKeywordsForInteractiveSearch()"
+  );
   res.jsonp(response);
-}
+};

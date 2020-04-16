@@ -19,6 +19,8 @@ class ImageRankerWrapper : public Napi::ObjectWrap<ImageRankerWrapper>
   ImageRanker* actualClass_;
 
    Napi::Value get_loaded_data_packs_info(const Napi::CallbackInfo& info);
+   Napi::Value get_autocomplete_results(const Napi::CallbackInfo& info);
+   Napi::Value get_random_frame_sequence(const Napi::CallbackInfo& info);
 
    // std::vector<std::pair<TestSettings, ChartData>> RunGridTest(const std::vector<TestSettings>& testSettings);
    /*

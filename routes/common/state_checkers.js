@@ -2,8 +2,13 @@ const path = require("path");
 
 const sessState = require("../modules/SessionState");
 
+exports.initRequest = function (req, viewData, routeSettings) {
+  req.session.state = null;
+
+  return {};
+};
+
 exports.genericPreProcessReq = function (req, viewData, routeSettings) {
-    
   this.checkGlobalSessionState(req, viewData);
 
   // Get current page slug
@@ -26,7 +31,11 @@ exports.checkGlobalSessionState = function (req, viewData) {
     }
 
     // By default, the first data pack is used
-    sess.state = sessState.construct(global.loadedDataPacksInfo[0].id, 10);
+    sess.state = sessState.construct(
+      global.loadedDataPacksInfo[0].id,
+      global.loadedDataPacksInfo[0].target_imageset_ID,
+      10
+    );
   }
   // At this point sess.state should be always populated with correct values
 };
@@ -35,9 +44,12 @@ exports.checkGlobalViewState = function (req, viewData) {
   let sess = req.session;
 
   viewData.state = {
-      userLevel: sess.state.userLevel,
-      loadedDataPacks: global.loadedDataPacksInfo,
-      activeDataPackId: sess.state.dataPack
-  }
-
+    userLevel: sess.state.userLevel,
+    loadedDataPacks: global.loadedDataPacksInfo,
+    activeDataPackId: sess.state.dataPack,
+    annotator: {
+      fullyNative: sessState.getAnnotFullyNative(sess.state),
+      framesSequence: sessState.getAnnotImageSquence(sess.state),
+    },
+  };
 };

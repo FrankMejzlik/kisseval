@@ -33,6 +33,7 @@ exports.checkGlobalSessionState = function (req, viewData) {
     // By default, the first data pack is used
     sess.state = sessState.construct(
       global.loadedDataPacksInfo[0].id,
+      global.loadedDataPacksInfo[0].model_options,
       global.loadedDataPacksInfo[0].target_imageset_ID,
       10
     );
@@ -46,7 +47,7 @@ exports.checkGlobalViewState = function (req, viewData) {
   viewData.state = {
     userLevel: sess.state.userLevel,
     loadedDataPacks: global.loadedDataPacksInfo,
-    activeDataPackId: sess.state.dataPack,
+    activeDataPackId: sessState.getActiveDataPackId(sess.state),
     annotator: {
       fullyNative: sessState.getAnnotFullyNative(sess.state),
       framesSequence: sessState.getAnnotImageSquence(sess.state),

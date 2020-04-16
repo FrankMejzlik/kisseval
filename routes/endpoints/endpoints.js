@@ -43,14 +43,37 @@ exports.setActiveDataPack = function (req, res) {
 
   const newDataPackId = req.body.dataPackId;
 
-  // Set new state
-  sessState.setActieDataPack(sess.state, newDataPackId);
+  // Find this pack and check if it's loaded
+  for (const pack of global.loadedDataPacksInfo) {
+    if (pack.id == newDataPackId) {
+      // Set new state
+      sessState.setActieDataPack(sess.state, pack.id, pack.model_options);
+
+      global.logger.log(
+        "debug",
+        "<" +
+          req.session.id +
+          "> \n" +
+          "Active data pack changed to  '" +
+          newDataPackId +
+          "'"
+      );
+      res.jsonp(true);
+      return;
+    }
+  }
 
   global.logger.log(
-    "info",
-    "Active data pack changed to  '" + newDataPackId + "'"
+    "debug",
+    "<" +
+      req.session.id +
+      "> \n" +
+      "Active data pack change failed. Pack '" +
+      newDataPackId +
+      "' not found."
   );
-  res.jsonp(true);
+
+  res.jsonp(false);
 };
 
 exports.getAutocompleteResults = function (req, res) {
@@ -59,7 +82,7 @@ exports.getAutocompleteResults = function (req, res) {
   const prefix = req.query.queryValue;
 
   // Get active settings from the current session
-  const activeDataPackId = sessState.getActiveDataPack(sess.state);
+  const activeDataPackId = sessState.getActiveDataPackId(sess.state);
   const withExImgs = sessState.getAnnotWithExampleImages(sess.state);
   const numResults = sessState.getAnnotNumResults(sess.state);
 
@@ -120,40 +143,72 @@ exports.tryToSwitchToDevMode = function (req, res) {
 };
 
 exports.submitAnnotatorQuery = function (req, res) {
-  // Get keywords user provided
-  var keywords = req.body.keyword;
-
-  // Get this session
   const sess = req.session;
 
-  // Initialize final string
-  let finalString = "";
+  const sessionId = sess.id;
+  const frameSequence = sessState.getAnnotImageSquence(sess.state);
+  const activeDataPackId = sessState.getActiveDataPackId(sess.state);
+  const activeModelOptions = sessState.getActiveDataPackModelOptions(sess.state);
 
-  let sessionId = sess.id;
-  let imageId = sess.gameImage.imageId;
-
-  let wasWithExampleImages = false;
-  if (req.session.annotatorSettings.autocompleteWithExamples) {
-    wasWithExampleImages = true;
+  let keywordIds = req.body.keyword;
+  // Make sure it's an array
+  if (!Array.isArray(keywordIds)){
+    keywordIds = [keywordIds];
   }
 
-  if (wasWithExampleImages) {
-    queryType += 10;
+  let queryStrings = req.body.keywordWord;
+
+  // Make sure it's an array
+  if (!Array.isArray(queryStrings)){
+    queryStrings = [queryStrings];
   }
 
-  // Parameters: SessionID, ImageID, string query
-  // const kwScDataType = new Object();
-  // kwScDataType.keywordsDataType = req.session.keywordsSettings.kwDataType;
-  // kwScDataType.scoringDataType = req.session.rankingSettings.scoringDataType;
+  const fullyNative = sessState.getAnnotFullyNative(sess.state);
+  const withExampleImages = sessState.getAnnotWithExampleImages(sess.state);
 
-  // const userImageResult = global.imageRanker.SubmitUserQueriesWithResults(
-  //     kwScDataType,
-  //     sessionId,
-  //     imageId,
-  //     finalString,
-  //     queryType
-  // );
+  // \todo User level is to be dynamic if made public
+  const userLevel = 10;
 
-  // Redirect user back to game page
+  // Encode queries propperly (only for non-fully native queries)
+  let encodedQuery = "";
+  let readableQuery = "";
+  if (!fullyNative) {
+    // Query with IDs
+    encodedQuery += "&";
+    for (const kw_ID of keywordIds) {
+      encodedQuery += "-";
+      encodedQuery += kw_ID;
+      encodedQuery += "+";
+    }
+
+    // Readable query
+    let i = 0;
+    for (const word of queryStrings) {
+      readableQuery += word;
+      if (i < queryStrings.length - 1)
+        readableQuery += " && ";
+      ++i;
+    }
+  }
+
+  const userQueries = [
+    {
+      sessionId: sessionId,
+      userQueryEncoded: [encodedQuery],
+      userQueryReadable: [readableQuery],
+      targetSequenceIds: frameSequence,
+    },
+  ];
+
+  // \todo We ignore them for now
+  const gameResults = global.imageRanker.submitAnnotatorUserQueries(
+    activeDataPackId,
+    activeModelOptions,
+    userLevel,
+    withExampleImages,
+    userQueries
+  );
+
+  // \todo Make dynamic
   res.redirect(301, "/annotator/");
 };

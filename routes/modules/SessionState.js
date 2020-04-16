@@ -1,7 +1,8 @@
-exports.construct = function (dataPack, imagesetId, userLevel = 10) {
+exports.construct = function (dataPack, modelOptions, imagesetId, userLevel = 10) {
   return {
     _userLevel: userLevel,
     _active_data_pack_ID: dataPack,
+    _active_model_options: modelOptions,
     _imageset_ID: imagesetId,
     _annotator: {
       // If true then input will accept any string, otherwise just the one
@@ -15,11 +16,22 @@ exports.construct = function (dataPack, imagesetId, userLevel = 10) {
   };
 };
 
-exports.setActieDataPack = function (obj, newValue) {
-  obj._active_data_pack_ID = newValue;
+exports.setActieDataPack = function (obj, data_pack_ID, model_opts) {
+  obj._active_data_pack_ID = data_pack_ID;
+  obj._active_model_options =  model_opts;
 };
-exports.getActiveDataPack = function (obj) {
+exports.getActiveDataPackId = function (obj) {
   return obj._active_data_pack_ID;
+};
+exports.getActiveDataPackModelOptions = function (obj) {
+  return obj._active_model_options;
+};
+
+exports.setActieModelOptions = function (obj, newValue) {
+  obj._active_model_options = newValue;
+};
+exports.getActieModelOptions = function (obj) {
+  return obj._active_model_options;
 };
 
 exports.setActieImageset = function (obj, newValue) {

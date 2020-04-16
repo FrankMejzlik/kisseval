@@ -3,11 +3,11 @@
 
     <label class="cell small-12">
         Data packs:
-        <select name="dataPackId">
+        <select id="dataPackId" name="dataPackId">
 
         <% const dps = state.loadedDataPacks;
         for (let i = 0; i < dps.length;  ++i){ %>
-            <option value="<%= dps[i].id %>" <%  if (dps[i].id == state.activeDataPackId) { %> selected <% }%>><%= dps[i].id %> (vocab: <%= dps[i].vocabulary_ID %>)</option>
+            <option value="<%= dps[i].id %>" <%  if (dps[i].id == state.activeDataPackId) { %> selected="selected" <% }%>><%= dps[i].id %> (vocab: <%= dps[i].vocabulary_ID %>)</option>
         <% } %>
 
         </select>
@@ -17,6 +17,11 @@
 </form>
 
 <script>
+    (function() {
+        // Firefox ignores default value so we enforce it!
+        document.getElementById('dataPackId').value="<%= state.activeDataPackId %>";
+    })();
+
     $('#formChangeActiveDataPack').on('submit', function (e) {
         e.preventDefault();
 

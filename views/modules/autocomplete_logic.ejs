@@ -91,7 +91,7 @@
 
             b.innerHTML += "\
               <span class=\"keyword-title\">" + wordTitle + "</span><small>" + wordDesc + "</small>\
-              <small class='wordnet-id'>" + data[i].ID + "</small>";
+              <small class='wordnet-id'>" + data[i].id + "</small>";
 
 
             let str = "<ul class=\"example-images-list\">";
@@ -107,7 +107,7 @@
 
             // Insert a input field that will hold the current array item's value
             b.innerHTML += "<input type='hidden' name='keyword' value='" + data[i].wordString + "'>";
-            b.innerHTML += "<input type='hidden' name='wordnetId' value='" + data[i].ID + "'>";
+            b.innerHTML += "<input type='hidden' name='wordnetId' value='" + data[i].id + "'>";
 
             // Execute a function when someone clicks on the item value (DIV element)
             b.addEventListener("click", function(e) 

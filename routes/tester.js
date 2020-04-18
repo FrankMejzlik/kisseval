@@ -9,7 +9,7 @@ const stateCheck = require("./common/state_checkers");
 
 /** Specific route settings. */
 const routeSettings = {
-  slug: "model_tester",
+  slug: "tester",
 };
 
 function preProcessReq(req, viewData) {
@@ -33,12 +33,10 @@ router.get("/", function (req, res, next) {
   global.logger.log("debug", "Route: " + routeSettings.slug);
 
   // Main request cycle
-  preProcessReq(req, res, viewData);
+  preProcessReq(req, viewData);
 
-  // If logged in
   if (SessionState.getUserLevel(req.session.state) < 10) {
-    res.redirect(301, "/404");
-    return;
+    res.redirect(307, "/404");
   }
 
   processReq(req, viewData);

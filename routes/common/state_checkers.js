@@ -4,7 +4,7 @@ const sessState = require("../classes/SessionState");
 
 exports.initRequest = function (req, viewData, routeSettings) {
   // \todo Remove this, it's just for the dev. xoxo
-  // req.session.state = null;
+  //req.session.state = null;
 
   return {};
 };

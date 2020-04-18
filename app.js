@@ -23,10 +23,11 @@ const routerIndex = require("./routes/index");
 const routerRanker = require("./routes/ranker");
 const routerAnnotator = require("./routes/annotator");
 
-const routerModelTester = require("./routes/model_tester");
+const routerTester = require("./routes/tester");
 const routerDataCentre = require("./routes/data_centre");
 const routerStatistics = require("./routes/statistics");
 const routerExporter = require("./routes/exporter");
+const routerNotFound = require("./routes/404");
 
 const endpoints = require("./routes/endpoints/endpoints");
 
@@ -84,7 +85,7 @@ app.use((req, res, next) => {
   }
 
   // Access denied...
-  res.set("WWW-Authenticate", 'Basic realm="401"'); // change this
+  res.set("WWW-Authenticate", "Basic realm='401'"); // change this
   res.status(401).send("Authentication required."); // custom message
 
   // -----------------------------------------------------------------------
@@ -116,7 +117,7 @@ app.use("/", routerIndex);
 app.use("/annotator", routerAnnotator);
 app.use("/ranker", routerRanker);
 
-app.use("/model_tester", routerModelTester);
+app.use("/tester", routerTester);
 app.use("/statistics", routerStatistics);
 app.use("/data_centre", routerDataCentre);
 app.use("/exporter", routerExporter);
@@ -128,6 +129,8 @@ app.post("/set_active_data_pack", endpoints.setActiveDataPack);
 app.post("/switch_to_eval_mode", endpoints.switchToEvaluatorMode);
 app.post("/switch_to_public_mode", endpoints.switchToPublicMode);
 app.post("/annotator_submit_query", endpoints.submitAnnotatorQuery);
+
+app.use("/404", routerNotFound);
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {

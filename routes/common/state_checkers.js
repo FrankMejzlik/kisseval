@@ -1,9 +1,10 @@
 const path = require("path");
 
-const sessState = require("../modules/SessionState");
+const sessState = require("../classes/SessionState");
 
 exports.initRequest = function (req, viewData, routeSettings) {
-  req.session.state = null;
+  // \todo Remove this, it's just for the dev 
+  //req.session.state = null;
 
   return {};
 };

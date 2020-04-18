@@ -6,7 +6,7 @@ var router = express.Router();
 var path = require("path");
 var fs = require("fs");
 
-const sessState = require("./modules/SessionState");
+const SessionState = require("./classes/SessionState");
 const stateCheck = require("./common/state_checkers");
 
 /** Specific route settings. */
@@ -24,16 +24,16 @@ function ProcessReq(req, viewData) {
   let sess = req.session;
 
   // Get presented frame sequence
-  const framesSequence = sessState.getAnnotImageSquence(sess.state);
+  const framesSequence = SessionState.getAnnotImageSquence(sess.state);
   if (framesSequence == null) {
-    const activeImgSet = sessState.getActieImageset(sess.state);
-    const len = sessState.getRandFrameSeqLength(sess.state);
+    const activeImgSet = SessionState.getActieImageset(sess.state);
+    const len = SessionState.getRandFrameSeqLength(sess.state);
 
     const framesSequence = global.imageRanker.getRandomFrameSequence(
       activeImgSet,
       len
     );
-    sessState.setAnnotImageSquence(sess.state, framesSequence);
+    SessionState.setAnnotImageSquence(sess.state, framesSequence);
 
     global.logger.log(
       "debug",

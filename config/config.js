@@ -24,5 +24,9 @@ const cred = require('./credentials.json');
 // Load correct DB credentials
 finalConfig.db = cred.db[finalConfig.database]; 
 
+// Login & auth credentials
+finalConfig.authUsername = cred.authUsername; 
+finalConfig.authPass = cred.authPass; 
+
 // Store final config in globals
 global.gConfig = finalConfig;

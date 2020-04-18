@@ -2,7 +2,7 @@ const util = require("util");
 const fs = require("fs");
 var path = require("path");
 
-const sessState = require("../modules/SessionState");
+const SessionState = require("../classes/SessionState");
 
 let prefixCache = new Array();
 
@@ -47,7 +47,7 @@ exports.setActiveDataPack = function (req, res) {
   for (const pack of global.loadedDataPacksInfo) {
     if (pack.id == newDataPackId) {
       // Set new state
-      sessState.setActieDataPack(sess.state, pack.id, pack.model_options);
+      SessionState.setActieDataPack(sess.state, pack.id, pack.model_options);
 
       global.logger.log(
         "debug",
@@ -82,9 +82,9 @@ exports.getAutocompleteResults = function (req, res) {
   const prefix = req.query.queryValue;
 
   // Get active settings from the current session
-  const activeDataPackId = sessState.getActiveDataPackId(sess.state);
-  const withExImgs = sessState.getAnnotWithExampleImages(sess.state);
-  const numResults = sessState.getAnnotNumResults(sess.state);
+  const activeDataPackId = SessionState.getActiveDataPackId(sess.state);
+  const withExImgs = SessionState.getAnnotWithExampleImages(sess.state);
+  const numResults = SessionState.getAnnotNumResults(sess.state);
 
   global.logger.log(
     "debug",
@@ -136,7 +136,7 @@ exports.tryToSwitchToDevMode = function (req, res) {
   // Verify if correct pass
   if (pass == global.gConfig.devPass) {
     // Switch to dev session
-    sessState.setUserLevel(req.session.state, 10);
+    SessionState.setUserLevel(req.session.state, 10);
   }
 
   res.redirect(301, "/");
@@ -146,9 +146,9 @@ exports.submitAnnotatorQuery = function (req, res) {
   const sess = req.session;
 
   const sessionId = sess.id;
-  const frameSequence = sessState.getAnnotImageSquence(sess.state);
-  const activeDataPackId = sessState.getActiveDataPackId(sess.state);
-  const activeModelOptions = sessState.getActiveDataPackModelOptions(sess.state);
+  const frameSequence = SessionState.getAnnotImageSquence(sess.state);
+  const activeDataPackId = SessionState.getActiveDataPackId(sess.state);
+  const activeModelOptions = SessionState.getActiveDataPackModelOptions(sess.state);
 
   let keywordIds = req.body.keyword;
   // Make sure it's an array
@@ -163,8 +163,8 @@ exports.submitAnnotatorQuery = function (req, res) {
     queryStrings = [queryStrings];
   }
 
-  const fullyNative = sessState.getAnnotFullyNative(sess.state);
-  const withExampleImages = sessState.getAnnotWithExampleImages(sess.state);
+  const fullyNative = SessionState.getAnnotFullyNative(sess.state);
+  const withExampleImages = SessionState.getAnnotWithExampleImages(sess.state);
 
   // \todo User level is to be dynamic if made public
   const userLevel = 10;
@@ -208,6 +208,9 @@ exports.submitAnnotatorQuery = function (req, res) {
     withExampleImages,
     userQueries
   );
+
+  // Reset the presented target frame sequence
+  SessionState.setAnnotImageSquence(sess.state, null);
 
   // \todo Make dynamic
   res.redirect(301, "/annotator/");

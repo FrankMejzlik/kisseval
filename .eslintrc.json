@@ -1,18 +1,22 @@
 {
-    "extends": ["plugin:react/recommended"],
     "env": {
-        "browser": true,
+        "commonjs": true,
+        "es6": true,
         "node": true
     },
+    "extends": [
+        "google"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
     "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": true,
-            "modules": true
-        }
+        "ecmaVersion": 2018
     },
     "rules": {
-        "semi": "error"
+        "max-len": ["error", { "code": 120 }],
+        "quotes": [2, "double", { "avoidEscape": false }],
+        "require-jsdoc" : 0
     }
 }

@@ -1,29 +1,29 @@
-const path = require("path");
+"use strict";
 
 const sessState = require("../classes/SessionState");
 
-exports.initRequest = function (req, viewData, routeSettings) {
-  // \todo Remove this, it's just for the dev 
-  //req.session.state = null;
+exports.initRequest = function(req, viewData, routeSettings) {
+  // \todo Remove this, it's just for the dev
+  // req.session.state = null;
 
   return {};
 };
 
-exports.genericPreProcessReq = function (req, viewData, routeSettings) {
+exports.genericPreProcessReq = function(req, viewData, routeSettings) {
   this.checkGlobalSessionState(req, viewData);
 
   // Get current page slug
   viewData.currentPage = routeSettings.slug;
 };
 
-exports.genericProcessReq = function (req, viewData, routeSettings) {};
+exports.genericProcessReq = function(req, viewData, routeSettings) {};
 
-exports.genericPostProcessReq = function (req, viewData, routeSettings) {
+exports.genericPostProcessReq = function(req, viewData, routeSettings) {
   this.checkGlobalViewState(req, viewData);
 };
 
-exports.checkGlobalSessionState = function (req, viewData) {
-  let sess = req.session;
+exports.checkGlobalSessionState = function(req, viewData) {
+  const sess = req.session;
 
   if (typeof sess.state === "undefined" || sess.state == null) {
     // Get what data packs are available
@@ -33,17 +33,17 @@ exports.checkGlobalSessionState = function (req, viewData) {
 
     // By default, the first data pack is used
     sess.state = sessState.construct(
-      global.loadedDataPacksInfo[0].id,
-      global.loadedDataPacksInfo[0].model_options,
-      global.loadedDataPacksInfo[0].target_imageset_ID,
-      10
+        global.loadedDataPacksInfo[0].id,
+        global.loadedDataPacksInfo[0].model_options,
+        global.loadedDataPacksInfo[0].target_imageset_ID,
+        10,
     );
   }
   // At this point sess.state should be always populated with correct values
 };
 
-exports.checkGlobalViewState = function (req, viewData) {
-  let sess = req.session;
+exports.checkGlobalViewState = function(req, viewData) {
+  const sess = req.session;
 
   viewData.state = {
     userLevel: sess.state.userLevel,

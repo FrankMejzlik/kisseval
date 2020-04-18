@@ -1,8 +1,8 @@
-exports.setAnnotatorShowExamples = function (sess, newState) {
+exports.setAnnotatorShowExamples = function(sess, newState) {
   sess.annotatorSettings.autocompleteWithExamples = newState;
 };
 
-exports.parseModelSettingsFromForm = function (sess, formBbody) {
+exports.parseModelSettingsFromForm = function(sess, formBbody) {
   rankerUtils.checkOrInitSessionRankerObject(sess);
 
   // Get reference to current values
@@ -35,7 +35,7 @@ exports.parseModelSettingsFromForm = function (sess, formBbody) {
     // Transformation parameter
     if (typeof formBbody.aggregationParameter !== "undefined") {
       settings.transformation.parameter = Number(
-        formBbody.aggregationParameter
+          formBbody.aggregationParameter,
       );
     }
   }
@@ -50,24 +50,24 @@ exports.parseModelSettingsFromForm = function (sess, formBbody) {
     // Boolean specific
     if (typeof formBbody.boolean_trueTreshold !== "undefined") {
       settings.aggregationModel.boolean.trueTreshold = Number(
-        formBbody.boolean_trueTreshold
+          formBbody.boolean_trueTreshold,
       );
     }
     if (typeof formBbody.boolean_inBucketRanking !== "undefined") {
       settings.aggregationModel.boolean.inBucketRanking = Number(
-        formBbody.boolean_inBucketRanking
+          formBbody.boolean_inBucketRanking,
       );
     }
 
     // Viret specific
     if (typeof formBbody.viret_trueTreshold !== "undefined") {
       settings.aggregationModel.viret.trueTreshold = Number(
-        formBbody.viret_trueTreshold
+          formBbody.viret_trueTreshold,
       );
     }
     if (typeof formBbody.viret_queryOperations !== "undefined") {
       settings.aggregationModel.viret.queryOperations = Number(
-        formBbody.viret_queryOperations
+          formBbody.viret_queryOperations,
       );
     }
   }
@@ -83,7 +83,7 @@ exports.parseModelSettingsFromForm = function (sess, formBbody) {
   {
     if (typeof formBbody.simulatedUser_exponent !== "undefined") {
       settings.simulatedUser.exponent = Number(
-        formBbody.simulatedUser_exponent
+          formBbody.simulatedUser_exponent,
       );
     }
   }
@@ -91,8 +91,8 @@ exports.parseModelSettingsFromForm = function (sess, formBbody) {
   return settings;
 };
 
-exports.convertSettingsObjectToNativeFormat = function (settings) {
-  let result = new Object();
+exports.convertSettingsObjectToNativeFormat = function(settings) {
+  const result = {};
 
   result.numResults = Number(settings.numResults);
   result.keywordFrequency = Number(settings.keywordFrequency);
@@ -103,16 +103,16 @@ exports.convertSettingsObjectToNativeFormat = function (settings) {
   // =========================================
   // Simulated user settings
 
-  result.simulatedUserSettings = new Array();
+  result.simulatedUserSettings = [];
 
   // 0 => Simulated user exponent
   result.simulatedUserSettings.push(String(settings.simulatedUser.exponent));
 
-  //===========================================
+  // ===========================================
   // Ranking model settings
 
   result.rankingModel = Number(settings.aggregationModel.id);
-  result.rankingModelSettings = new Array();
+  result.rankingModelSettings = [];
   {
     switch (result.rankingModel) {
       // Boolean
@@ -123,12 +123,12 @@ exports.convertSettingsObjectToNativeFormat = function (settings) {
 
           // 1 ->
           result.rankingModelSettings.push(
-            String(settings.aggregationModel.boolean.trueTreshold)
+              String(settings.aggregationModel.boolean.trueTreshold),
           );
 
           // 2 =>
           result.rankingModelSettings.push(
-            String(settings.aggregationModel.boolean.inBucketRanking)
+              String(settings.aggregationModel.boolean.inBucketRanking),
           );
         }
         break;
@@ -140,18 +140,18 @@ exports.convertSettingsObjectToNativeFormat = function (settings) {
 
           // 0 =>
           result.rankingModelSettings.push(
-            String(settings.aggregationModel.viret.trueTreshold)
+              String(settings.aggregationModel.viret.trueTreshold),
           );
 
           // 1 =>
           result.rankingModelSettings.push(
-            String(settings.aggregationModel.viret.queryOperations)
+              String(settings.aggregationModel.viret.queryOperations),
           );
         }
         break;
 
       default:
-        throw "Unknown model type.";
+        throw Error("Unknown model type.");
     }
   }
 
@@ -178,7 +178,7 @@ exports.convertSettingsObjectToNativeFormat = function (settings) {
   result.rankingModelSettings.push(String("2"));
 
   result.aggregation = Number(settings.transformation.id);
-  result.aggregationSettings = new Array();
+  result.aggregationSettings = [];
   {
     // Variable with all settings
     result.aggregationSettings.push(String(settings.transformation.parameter));
@@ -198,12 +198,12 @@ exports.convertSettingsObjectToNativeFormat = function (settings) {
   return result;
 };
 
-exports.setUserLevel = function (sessionObject, level) {
+exports.setUserLevel = function(sessionObject, level) {
   sess.userLevel = level;
 };
 
-exports.resolveUserLevel = function (req, viewData) {
-  let sess = req.session;
+exports.resolveUserLevel = function(req, viewData) {
+  const sess = req.session;
 
   if (typeof sess.userLevel === "undefined") {
     // If loged as developer
@@ -218,58 +218,58 @@ exports.resolveUserLevel = function (req, viewData) {
   return;
 };
 
-exports.generateImageRankerConstructorArgs = function (
-  inputImageSetIds,
-  inputKeywordDataIds,
-  inputScoringDataIds
+exports.generateImageRankerConstructorArgs = function(
+    inputImageSetIds,
+    inputKeywordDataIds,
+    inputScoringDataIds,
 ) {
-  let params = new Array();
+  const params = [];
 
   for (let isId = 0; isId < inputImageSetIds.length; ++isId) {
-    let paramsAA = new Array();
-    let paramsAAw2v = new Array();
-    let paramsA = new Array();
-    let paramsB = new Array();
-    let paramsC = new Array();
+    const paramsAA = [];
+    const paramsAAw2v = [];
+    const paramsA = [];
+    const paramsB = [];
+    const paramsC = [];
 
     // Path to images
     params.push(
-      path.join(global.rootDir, global.gConfig.imageSets[isId].imagesDir)
+        path.join(global.rootDir, global.gConfig.imageSets[isId].imagesDir),
     );
 
     // Get data dir path
     const isDir = path.join(
-      global.rootDir,
-      global.gConfig.imageSets[isId].dataDir
+        global.rootDir,
+        global.gConfig.imageSets[isId].dataDir,
     );
 
     for (let kwId = 0; kwId < inputKeywordDataIds.length; ++kwId) {
       const kwDir = path.join(
-        isDir,
-        global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataDir
+          isDir,
+          global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataDir,
       );
 
       paramsAA.push({
         keywordsDataType:
           global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
         filepath: path.join(
-          kwDir,
-          global.gConfig.imageSets[isId].keywordDataTypes[kwId]
-            .keywordDataFilename
+            kwDir,
+            global.gConfig.imageSets[isId].keywordDataTypes[kwId]
+                .keywordDataFilename,
         ),
       });
 
       if (
         global.gConfig.imageSets[isId].keywordDataTypes[kwId]
-          .wordToVecFilename != ""
+            .wordToVecFilename != ""
       ) {
         paramsAAw2v.push({
           keywordsDataType:
             global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
           filepath: path.join(
-            kwDir,
-            global.gConfig.imageSets[isId].keywordDataTypes[kwId]
-              .wordToVecFilename
+              kwDir,
+              global.gConfig.imageSets[isId].keywordDataTypes[kwId]
+                  .wordToVecFilename,
           ),
         });
       } else {
@@ -282,9 +282,9 @@ exports.generateImageRankerConstructorArgs = function (
 
       for (let scId = 0; scId < inputScoringDataIds.length; ++scId) {
         const scDir = path.join(
-          kwDir,
-          global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-            .dataDir
+            kwDir,
+            global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
+                .dataDir,
         );
 
         paramsA.push({
@@ -292,49 +292,49 @@ exports.generateImageRankerConstructorArgs = function (
             global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
           scoringDataType:
             global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-              .scoringDataType,
+                .scoringDataType,
           filepath: path.join(
-            scDir,
-            global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-              .scoringDataFilename
+              scDir,
+              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
+                  .scoringDataFilename,
           ),
         });
 
         const b =
           global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-            .softmaxScoringDataFilename;
+              .softmaxScoringDataFilename;
         if (b != "") {
           paramsB.push({
             keywordsDataType:
               global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
             scoringDataType:
               global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
-                scId
+                  scId
               ].scoringDataType,
             filepath: path.join(
-              scDir,
-              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
-                scId
-              ].softmaxScoringDataFilename
+                scDir,
+                global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
+                    scId
+                ].softmaxScoringDataFilename,
             ),
           });
         }
         const c =
           global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-            .deepFeaturesFilename;
+              .deepFeaturesFilename;
         if (c != "") {
           paramsC.push({
             keywordsDataType:
               global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
             scoringDataType:
               global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
-                scId
+                  scId
               ].scoringDataType,
             filepath: path.join(
-              scDir,
-              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
-                scId
-              ].deepFeaturesFilename
+                scDir,
+                global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
+                    scId
+                ].deepFeaturesFilename,
             ),
           });
         }
@@ -344,11 +344,11 @@ exports.generateImageRankerConstructorArgs = function (
     }
 
     const aaa = path.join(
-      global.rootDir,
-      global.gConfig.imageSets[isId].dataDir,
-      global.gConfig.imageSets[isId].keywordDataTypes[0].dataDir,
-      global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
-        .dataSets[inputKeywordDataIds[0]].dataDir
+        global.rootDir,
+        global.gConfig.imageSets[isId].dataDir,
+        global.gConfig.imageSets[isId].keywordDataTypes[0].dataDir,
+        global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
+            .dataSets[inputKeywordDataIds[0]].dataDir,
     );
 
     params.push(paramsAA);
@@ -356,17 +356,17 @@ exports.generateImageRankerConstructorArgs = function (
     params.push(paramsB);
     params.push(paramsC);
     params.push(
-      path.join(
-        aaa,
-        global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
-          .dataSets[inputKeywordDataIds[0]].imageIdToFilename
-      )
+        path.join(
+            aaa,
+            global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
+                .dataSets[inputKeywordDataIds[0]].imageIdToFilename,
+        ),
     );
     params.push(
-      Number(
-        global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
-          .dataSets[inputKeywordDataIds[0]].idOffset
-      )
+        Number(
+            global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
+                .dataSets[inputKeywordDataIds[0]].idOffset,
+        ),
     );
     params.push(Number(global.gConfig.appMode));
     params.push(paramsAAw2v);

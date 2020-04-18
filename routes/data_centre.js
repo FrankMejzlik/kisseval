@@ -8,7 +8,7 @@ const stateCheck = require("./common/state_checkers");
 
 /** Specific route settings. */
 const routeSettings = {
-  slug: "ranker",
+  slug: "data_centre",
 };
 
 function preProcessReq(req, viewData) {

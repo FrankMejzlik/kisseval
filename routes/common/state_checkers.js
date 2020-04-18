@@ -35,6 +35,7 @@ exports.checkGlobalSessionState = function (req, viewData) {
     sess.state = sessState.construct(
       global.loadedDataPacksInfo[0].id,
       global.loadedDataPacksInfo[0].model_options,
+      global.loadedDataPacksInfo[0].description,
       global.loadedDataPacksInfo[0].target_imageset_ID,
       1
     );
@@ -49,6 +50,7 @@ exports.checkGlobalViewState = function (req, viewData) {
     userLevel: sessState.getUserLevel(sess.state),
     loadedDataPacks: global.loadedDataPacksInfo,
     activeDataPackId: sessState.getActiveDataPackId(sess.state),
+    activeDataPackType: sessState.getActiveDataPackType(sess.state),
     annotator: {
       fullyNative: sessState.getAnnotFullyNative(sess.state),
       framesSequence: sessState.getAnnotImageSquence(sess.state),

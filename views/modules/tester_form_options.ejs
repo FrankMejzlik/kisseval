@@ -1,0 +1,58 @@
+<!-- ${nextPropertyIndex}
+
+activeDataPackType -->
+
+<% 
+function generateOptionHtml(optionsDict) {
+  let html = "";
+
+  switch(optionsDict.input_type)
+  {
+    case "enum":
+    html += `
+      <label id=${optionsDict.key} for="${optionsDict.key}">
+      ${optionsDict.name}
+      <select id=${optionsDict.key} name=${optionsDict.key}>`;
+
+        const vals  = optionsDict.values;
+        for (let i = 0; i < vals.length; ++i){
+          html += `<option value="${vals[i].ID}">${vals[i].name}</option> `;
+        }
+
+
+    html += `</select>`;
+
+    for (let i = 0; i < vals.length; ++i){
+      if (vals[i].options.length > 0) {
+
+
+         for (let j = 0; j < vals[i].options.length; ++j){
+           const opt = vals[i].options[j];
+           html += generateOptionHtml(opt);
+         }
+
+      }
+      
+    }
+
+    html += `</label>`;
+    break;
+
+    case "float":
+      return `<label>${optionsDict.key}<input name="" id="${optionsDict.key}" type="number"></label>`;
+    break;
+
+    case "int":
+
+    break;
+  }
+  
+
+  return html;
+}
+
+for (let i = 0; i < modelOptions.length; ++i) { %>
+
+  <%- generateOptionHtml(modelOptions[i]) %>
+
+<% } %>

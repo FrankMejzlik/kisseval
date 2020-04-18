@@ -89,6 +89,10 @@ body {
   /* overflow: hidden; */
 }
 
+.generated-opts-cont label {
+  padding-left: 1rem;
+}
+
 #rankerResultBoardChartCanvas {
   min-width: 300px;
   min-height: 200px;

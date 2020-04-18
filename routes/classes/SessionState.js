@@ -4,12 +4,14 @@
 exports.construct = function (
   dataPack,
   modelOptions,
+  dataPackType,
   imagesetId,
   userLevel = 1
 ) {
   return {
     _userLevel: userLevel,
     _active_data_pack_ID: dataPack,
+    _active_data_pack_type: dataPackType,
     _active_model_options: modelOptions,
     _imageset_ID: imagesetId,
     // This is PH for the `RankerState` instance
@@ -26,8 +28,9 @@ exports.construct = function (
   };
 };
 
-exports.setActieDataPack = function (obj, dataPackId, modelOpts) {
+exports.setActieDataPack = function (obj, dataPackId, modelOpts, packType) {
   obj._active_data_pack_ID = dataPackId;
+  obj._active_data_pack_type = packType;
   obj._active_model_options = modelOpts;
 };
 exports.getActiveDataPackId = function (obj) {
@@ -35,6 +38,9 @@ exports.getActiveDataPackId = function (obj) {
 };
 exports.getActiveDataPackModelOptions = function (obj) {
   return obj._active_model_options;
+};
+exports.getActiveDataPackType = function (obj) {
+  return obj._active_data_pack_type;
 };
 
 exports.setActieModelOptions = function (obj, newValue) {

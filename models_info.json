@@ -1,0 +1,344 @@
+{
+    "VIRET_based": {
+        "options": [
+            {
+                "key": "model",
+                "name": "Model",
+                "description": "",
+                "input_type": "enum",
+                "values": [
+                    {
+                        "active": true,
+                        "ID": "boolean",
+                        "name": "Boolean",
+                        "description": "",
+                        "options": [
+                            {
+                                "active": true,
+                                "key": "true_threshold",
+                                "name": "True threshold",
+                                "input_type": "enum",
+                                "values": [
+                                    {
+                                        "active": true,
+                                        "ID": "constant",
+                                        "name": "constant",
+                                        "description": "",
+                                        "options": [
+                                            {
+                                                "active": true,
+                                                "key": "value",
+                                                "input_type": "float",
+                                                "from": 0,
+                                                "to": 1,
+                                                "step": 0.01
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "active": true,
+                        "ID": "vector_space",
+                        "name": "Vector space",
+                        "description": "",
+                        "options": [
+                            {
+                                "active": true,
+                                "key": "outter_op",
+                                "name": "Outter operation",
+                                "input_type": "enum",
+                                "values": [
+                                    {
+                                        "active": true,
+                                        "ID": "sum",
+                                        "name": "sum",
+                                        "description": "",
+                                        "options": []
+                                    },
+                                    {
+                                        "active": true,
+                                        "ID": "mult",
+                                        "name": "mult",
+                                        "description": "",
+                                        "options": []
+                                    }
+                                ]
+                            },
+                            {   
+                                "active": true,
+                                "key": "inner_op",
+                                "name": "Inner operation",
+                                "input_type": "enum",
+                                "values": [
+                                    {
+                                        "active": true,
+                                        "ID": "sum",
+                                        "name": "sum",
+                                        "description": "",
+                                        "options": []
+                                    },
+                                    {
+                                        "active": true,
+                                        "ID": "max",
+                                        "name": "max",
+                                        "description": "",
+                                        "options": []
+                                    }
+                                ]
+                            },
+                            {
+                                "active": true,
+                                "key": "ignore_treshold",
+                                "name": "Ignore threshold",
+                                "input_type": "float",
+                                "from": 0,
+                                "to": 1,
+                                "step": 0.01
+                            }
+                        ]
+                    },
+                    {
+                        "active": true,
+                        "ID": "mult-sum-max",
+                        "name": "MULT/SUM/MAX",
+                        "description": "",
+                        "options": [
+                            {
+                                "active": true,
+                                "key": "operations",
+                                "key": "Scoring operations",
+                                "input_type": "enum",
+                                "values": [
+                                    {
+                                        "active": true,
+                                        "ID": "mult-sum",
+                                        "name": "mult-sum",
+                                        "description": "",
+                                        "options": []
+                                    },
+                                    {
+                                        "active": true,
+                                        "ID": "mult-max",
+                                        "name": "mult-max",
+                                        "description": "",
+                                        "options": []
+                                    },
+                                    {
+                                        "active": true,
+                                        "ID": "sum-sum",
+                                        "name": "sum-sum",
+                                        "description": "",
+                                        "options": []
+                                    },{
+                                        "active": true,
+                                        "ID": "sum-max",
+                                        "name": "sum-max",
+                                        "description": "",
+                                        "options": []
+                                    },
+                                    {
+                                        "active": true,
+                                        "ID": "max-max",
+                                        "name": "max-max",
+                                        "description": "",
+                                        "options": []
+                                    }
+                                ]
+                            },
+                            {
+                                "active": true,
+                                "key": "outter_op",
+                                "input_type": "enum",
+                                "values": [
+                                    {
+                                        "active": true,
+                                        "ID": "sum",
+                                        "name": "sum",
+                                        "description": "",
+                                        "options": []
+                                    },
+                                    {
+                                        "active": true,
+                                        "ID": "mult",
+                                        "name": "mult",
+                                        "description": "",
+                                        "options": []
+                                    }
+                                ]
+                            },
+                            {   
+                                "active": true,
+                                "key": "inner_op",
+                                "input_type": "enum",
+                                "values": [
+                                    {
+                                        "active": true,
+                                        "ID": "sum",
+                                        "name": "sum",
+                                        "description": "",
+                                        "options": []
+                                    },
+                                    {
+                                        "active": true,
+                                        "ID": "max",
+                                        "name": "max",
+                                        "description": "",
+                                        "options": []
+                                    },
+                                    {
+                                        "active": true,
+                                        "ID": "mult",
+                                        "name": "mult",
+                                        "description": "",
+                                        "options": []
+                                    }
+                                ]
+                            },
+                            {
+                                "active": true,
+                                "key": "ignore_treshold",
+                                "input_type": "float",
+                                "from": 0,
+                                "to": 1,
+                                "step": 0.01
+                            }
+                        ]
+                    }
+
+                ]
+            },
+            {
+                "key": "transform",
+                "name": "transform",
+                "description": "",
+                "input_type": "enum",
+                "values": [
+                    {
+                        "ID": "no_transform",
+                        "name": "No transform",
+                        "description": "",
+                        "options": []
+                    },
+                    {
+                        "ID": "softmax",
+                        "name": "Softmax",
+                        "description": "",
+                        "options": []
+                    },
+                    {
+                        "ID": "linear_01",
+                        "name": "Linear scale to [0, 1]",
+                        "description": "",
+                        "options": []
+                    }
+                ]
+            },
+            {
+                "key": "sim_user",
+                "name": "sim_user",
+                "description": "",
+                "input_type": "enum",
+                "values": [
+                    {
+                        "active": true,
+                        "ID": "no_sim_user",
+                        "name": "No simulated user",
+                        "description": "",
+                        "options": []
+                    },
+                    {
+                        "active": true,
+                        "ID": "sim_single_queries",
+                        "name": "Simulate single queries",
+                        "description": "",
+                        "options": []
+                    },
+                    {
+                        "active": true,
+                        "ID": "sim_temp_queries",
+                        "name": "Simulate temporal queries",
+                        "description": "",
+                        "options": []
+                    },
+                    {
+                        "active": true,
+                        "ID": "augment_real_with_temp_queries",
+                        "name": "Augment real with simulated temporal",
+                        "description": "",
+                        "options": []
+                    }
+                ]
+            }
+        ]
+    },
+    "Google_based": {
+        "options": [
+            {
+                "key": "model",
+                "name": "Model",
+                "description": "",
+                "input_type": "enum",
+                "options": [
+                    {
+                        "active": true,
+                        "ID": "boolean",
+                        "name": "Boolean",
+                        "description": "",
+                        "options": []
+                    }
+                ]
+            },
+            {
+                "key": "transform",
+                "name": "transform",
+                "description": "",
+                "input_type": "enum",
+                "options": [
+                    {
+                        "active": true,
+                        "ID": "no_transform",
+                        "name": "No transform",
+                        "description": "",
+                        "options": []
+                    },
+                    {
+                        "active": true,
+                        "ID": "softmax",
+                        "name": "Softmax",
+                        "description": "",
+                        "options": []
+                    },
+                    {
+                        "active": true,
+                        "ID": "linear_01",
+                        "name": "Linear scale to [0, 1]",
+                        "description": "",
+                        "options": []
+                    }
+                ]
+            }
+        ]
+    },
+    "W2VV_based": {
+        "options": [
+            {
+                "key": "model",
+                "name": "Model",
+                "description": "",
+                "input_type": "enum",
+                "options": [
+                    {
+                        "active": true,
+                        "ID": "bow_vbs2020",
+                        "name": "BoW VBS2020",
+                        "description": "We embedd text query into the space and find the nearest frames.",
+                        "options": []
+                    }
+                ]
+            }
+        ]
+    }    
+}

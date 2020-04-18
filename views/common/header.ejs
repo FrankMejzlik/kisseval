@@ -55,9 +55,9 @@
   </div>
 
   <div class="dev-login-modal reveal text-center" id="exampleModal2" data-reveal>
-    <h1>Are you developer?</h1>
+    <h1>Evaluator password</h1>
 
-    <form class="dev-login-form" action="/users" method="POST">
+    <form class="dev-login-form" action="/switch_to_eval_mode" method="POST">
       <div class="grid-container">
         <div class="grid-x grid-padding-x">
           <div class="medium-12 cell">
@@ -85,52 +85,29 @@
     <div class="top-bar header main">
       <div class="top-bar-left">
         <ul class="dropdown menu" data-dropdown-menu>
-          <li class="menu-text"><a href="/">
-              <span class="title"><%= global.gConfig.title %></span>
-              <span class="subtitle"><%= global.gConfig.subtitle %></span>
-            </a></li>
-          <li class="menu-item
-            <% if (typeof currentPage != 'undefined') 
-            {
-              if (currentPage == "annotator") 
-              { %>
-                active
-              <% }
-            } %>
-          ">
+          <li class="menu-text">
+            <a href="/">
+              <span class="title"><%= global.gConfig.app_name %></span>
+              <span class="subtitle"><%= global.gConfig.app_subname %></span>
+            </a>
+          </li>
+            <li class="menu-item <% if (currentPage == "annotator") { %> active <% } %>">
             <a href="/annotator/">Query annotator</a>
           </li>
-          <li class="menu-item
-          <% if (typeof currentPage != 'undefined') 
-            {
-              if (currentPage == "ranker") 
-              { %>
-                active
-              <% }
-            } %>
-          ">
+          <li class="menu-item <% if (currentPage == "ranker") { %> active <% } %>">
             <a href="/ranker">Ranker</a>
           </li>
 
-          <li class="menu-item
-          <% if (typeof currentPage != 'undefined') { if (currentPage == "native_annotator") { %>
-                active
-          <% }} %>
-          ">
-            <a href="/native_annotator">Native annotator</a>
+          <li class="menu-item ">
+            <a href="">More</a>
+            <ul class="menu vertical">
+              <li><a href="/model_tester">Model tester</a></li>
+              <li><a href="/data_centre">Data centre</a></li>
+              <li><a href="/exporter">Exporter</a></li>
+              <li><a href="/statistics">Statistics</a></li>
+            </ul>
           </li>
 
-          <li class="menu-item
-          <% if (typeof currentPage != 'undefined') 
-            {
-              if (currentPage == "statistics") 
-              { %>
-                active
-              <% }
-            } %>
-          ">
-            <a href="/statistics">Statistics</a>
-          </li>
 
         </ul>
       </div>
@@ -139,15 +116,22 @@
       <div class="top-bar-right">
 
         <ul class="dropdown menu" data-dropdown-menu>
+          <% if (state.userLevel < 10) { %>
           <li class="menu-item">
-            <button class="button login-dev" data-open="exampleModal2"><img
-                src="../images/generic/icon_login.svg" /></button>
+            <button class="button login-dev" data-open="exampleModal2">Switch to evaluator mode</button>
           </li>
+          <% } else { %>
+          <li class="menu-item">
+            <form class="dev-login-form" action="/switch_to_public_mode" method="POST">
+              <input type="submit" class="button success" value="Switch to public mode">
+            </form>
+          </li>
+          <% }  %>
         </ul>
 
         <% if (state.userLevel >= 10) { %>
         <div class="dev-sign">
-          <p>DEVELOPER SESSION</p>
+          <p>EVALUATOR SESSION</p>
         </div>
         <% } %>
 
@@ -161,7 +145,7 @@
       </div>
 
       <a onclick="togglekwscform()" class="button">Active data pack</a>
-      <div class="change-active-data-pack-cont" id="kWsCdataTypeForm" style="display: none;" >
+      <div class="change-active-data-pack-cont" id="kWsCdataTypeForm" style="display: none;">
         <%- include ../forms/change_active_data_pack_form.ejs %>
       </div>
 

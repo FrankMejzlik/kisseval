@@ -42,10 +42,10 @@ const winston = require("winston");
 global.logger = winston.createLogger({
   level: "debug",
   format: winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.printf((info) => {
-        return `${info.timestamp} ${info.level}: ${info.message}`;
-      }),
+    winston.format.timestamp(),
+    winston.format.printf((info) => {
+      return `${info.timestamp} ${info.level}: ${info.message}`;
+    })
   ),
   transports: [new winston.transports.Console()],
 });
@@ -60,7 +60,7 @@ app.set("view engine", "ejs");
 
 // app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -84,18 +84,18 @@ app.use((req, res, next) => {
   }
 
   // Access denied...
-  res.set("WWW-Authenticate", "Basic realm=\"401\""); // change this
+  res.set("WWW-Authenticate", 'Basic realm="401"'); // change this
   res.status(401).send("Authentication required."); // custom message
 
   // -----------------------------------------------------------------------
 });
 
-app.use(session({secret: "matfyz", resave: false, saveUninitialized: true}));
+app.use(session({ secret: "matfyz", resave: false, saveUninitialized: true }));
 
 // Get ImageRanker C++ library
 const imageRanker = require(path.join(
-    __dirname,
-    "build/Release/image_ranker.node",
+  __dirname,
+  "build/Release/image_ranker.node"
 ));
 
 const dataInfoFpth = global.gConfig.dataInfoFpth;
@@ -125,16 +125,17 @@ app.use("/exporter", routerExporter);
 app.get("/get_autocomplete_results", endpoints.getAutocompleteResults);
 
 app.post("/set_active_data_pack", endpoints.setActiveDataPack);
-app.post("/try_to_switch_to_dev_mode", endpoints.tryToSwitchToDevMode);
+app.post("/switch_to_eval_mode", endpoints.switchToEvaluatorMode);
+app.post("/switch_to_public_mode", endpoints.switchToPublicMode);
 app.post("/annotator_submit_query", endpoints.submitAnnotatorQuery);
 
 // Catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

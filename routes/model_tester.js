@@ -4,6 +4,7 @@ const express = require("express");
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
+const SessionState = require("./classes/SessionState");
 const stateCheck = require("./common/state_checkers");
 
 /** Specific route settings. */
@@ -13,26 +14,33 @@ const routeSettings = {
 
 function preProcessReq(req, viewData) {
   stateCheck.genericPreProcessReq(req, viewData, routeSettings);
-};
+}
 
 function processReq(req, viewData) {
   stateCheck.genericProcessReq(req, viewData, routeSettings);
-};
+}
 
 function postProcessReq(req, viewData) {
   stateCheck.genericPostProcessReq(req, viewData, routeSettings);
-};
+}
 
 /**
  * GET request handler
  */
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
   const viewData = stateCheck.initRequest(req);
 
   global.logger.log("debug", "Route: " + routeSettings.slug);
 
   // Main request cycle
-  preProcessReq(req, viewData);
+  preProcessReq(req, res, viewData);
+
+  // If logged in
+  if (SessionState.getUserLevel(req.session.state) < 10) {
+    res.redirect(301, "/404");
+    return;
+  }
+
   processReq(req, viewData);
   postProcessReq(req, viewData);
 

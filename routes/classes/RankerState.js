@@ -1,4 +1,4 @@
-exports.construct = function() {
+exports.construct = function () {
   return {
     _searchSession: null,
   };
@@ -11,7 +11,6 @@ exports.construct = function() {
 // exports.getActiveDataPackId = function (obj) {
 //   return obj._active_data_pack_ID;
 // };
-
 
 // ==============================================
 // vv Not refactored vv

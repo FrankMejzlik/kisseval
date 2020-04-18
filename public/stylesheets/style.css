@@ -393,7 +393,7 @@ max-width: 1920px;
 }
 
 .menu-item  {
-  width: 17%;
+  /*! width: 17%; */
   text-align: center;
 }
 
@@ -1007,8 +1007,8 @@ font-size: 17px
 }
 
 .login-dev {
-  padding: 0px 0px !important;
-  width: 37px;
+  padding: 0px 1rem !important;
+  /*! width: 37px; */
   height: 39px;
 }
 
@@ -1028,7 +1028,7 @@ font-size: 17px
 .menu-item a {
   /* color: #313524; */
   padding: 12px 28px !important;
-  font-size: 28px;
+  font-size: 21px;
 }
 
 .absolute {
@@ -1285,8 +1285,24 @@ background-position: center center;
 
 
 .top-bar ul {
-  background-color: transparent;
+  /*! background-color: transparent; */
 }
+
+.top-bar ul.submenu {
+  background-color: #97d6d5;
+}
+
+.top-bar ul.submenu a {
+  color: #000; 
+}
+.top-bar ul.submenu a:focus,
+.top-bar ul.submenu a:hover{
+  color: #aaa; 
+}
+.top-bar, .top-bar ul {
+    background-color: transparent;
+}
+
 .top-bar {
   background-color: #97D6D5;
   box-shadow: 2px -2px 18px #000000a1;

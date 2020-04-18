@@ -27,18 +27,18 @@ function processReq(req, viewData) {
     const len = SessionState.getRandFrameSeqLength(sess.state);
 
     const framesSequence = global.imageRanker.getRandomFrameSequence(
-        activeImgSet,
-        len,
+      activeImgSet,
+      len
     );
     SessionState.setAnnotImageSquence(sess.state, framesSequence);
 
     global.logger.log(
-        "debug",
-        "<" +
+      "debug",
+      "<" +
         req.session.id +
         "> \n" +
         "Serving image sequence: " +
-        JSON.stringify(framesSequence),
+        JSON.stringify(framesSequence)
     );
   }
 }
@@ -50,7 +50,7 @@ function postProcessReq(req, viewData) {
 /**
  * GET request handler
  */
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
   const viewData = stateCheck.initRequest(req);
 
   global.logger.log("debug", "Route: " + routeSettings.slug);

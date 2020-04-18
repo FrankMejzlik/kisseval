@@ -24,6 +24,7 @@ exports.initConfig = function() {
   finalConfig.db = cred.db[finalConfig.database];
 
   // Login & auth credentials
+  finalConfig.devPass = cred.devPass;
   finalConfig.authUsername = cred.authUsername;
   finalConfig.authPass = cred.authPass;
 

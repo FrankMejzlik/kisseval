@@ -13,20 +13,20 @@ const routeSettings = {
 
 function preProcessReq(req, viewData) {
   stateCheck.genericPreProcessReq(req, viewData, routeSettings);
-};
+}
 
 function processReq(req, viewData) {
   stateCheck.genericProcessReq(req, viewData, routeSettings);
-};
+}
 
 function postProcessReq(req, viewData) {
   stateCheck.genericPostProcessReq(req, viewData, routeSettings);
-};
+}
 
 /**
  * GET request handler
  */
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
   const viewData = stateCheck.initRequest(req);
 
   global.logger.log("debug", "Route: " + routeSettings.slug);

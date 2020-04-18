@@ -20,26 +20,26 @@ function writePrefixCache(kwDataType) {
     String(today.getFullYear());
 
   const filepath = path.join(
-      global.rootDir,
-      global.gConfig.outputDir +
+    global.rootDir,
+    global.gConfig.outputDir +
       "/autocomplete/" +
       todayString +
       "." +
       kwDataType +
-      ".log",
+      ".log"
   );
 
-  const file = fs.createWriteStream(filepath, {flags: "a"});
-  file.on("error", function(err) {
+  const file = fs.createWriteStream(filepath, { flags: "a" });
+  file.on("error", function (err) {
     return;
   });
-  origArr.forEach(function(v) {
+  origArr.forEach(function (v) {
     file.write(v + "\n");
   });
   file.end();
 }
 
-exports.setActiveDataPack = function(req, res) {
+exports.setActiveDataPack = function (req, res) {
   const sess = req.session;
 
   const newDataPackId = req.body.dataPackId;
@@ -51,13 +51,13 @@ exports.setActiveDataPack = function(req, res) {
       SessionState.setActieDataPack(sess.state, pack.id, pack.model_options);
 
       global.logger.log(
-          "debug",
-          "<" +
+        "debug",
+        "<" +
           req.session.id +
           "> \n" +
           "Active data pack changed to  '" +
           newDataPackId +
-          "'",
+          "'"
       );
       res.jsonp(true);
       return;
@@ -65,19 +65,19 @@ exports.setActiveDataPack = function(req, res) {
   }
 
   global.logger.log(
-      "debug",
-      "<" +
+    "debug",
+    "<" +
       req.session.id +
       "> \n" +
       "Active data pack change failed. Pack '" +
       newDataPackId +
-      "' not found.",
+      "' not found."
   );
 
   res.jsonp(false);
 };
 
-exports.getAutocompleteResults = function(req, res) {
+exports.getAutocompleteResults = function (req, res) {
   const sess = req.session;
 
   const prefix = req.query.queryValue;
@@ -88,8 +88,8 @@ exports.getAutocompleteResults = function(req, res) {
   const numResults = SessionState.getAnnotNumResults(sess.state);
 
   global.logger.log(
-      "debug",
-      "<" +
+    "debug",
+    "<" +
       req.session.id +
       "> \n" +
       "=>(N) getAutocompleteResults() " +
@@ -100,26 +100,26 @@ exports.getAutocompleteResults = function(req, res) {
       "\n\t numResults = " +
       numResults +
       "\n\t withExImgs = " +
-      withExImgs,
+      withExImgs
   );
 
   const nearKeywords = global.imageRanker.getAutocompleteResults(
-      activeDataPackId,
-      prefix,
-      numResults,
-      withExImgs,
+    activeDataPackId,
+    prefix,
+    numResults,
+    withExImgs
   );
 
   global.logger.log(
-      "debug",
-      "<" +
+    "debug",
+    "<" +
       req.session.id +
       "> \n" +
       "<=(N) getAutocompleteResults() " +
       "\n\t nearKeywords.length = " +
       nearKeywords.length +
       "\n\t nearKeywords[0] = " +
-      (nearKeywords.length > 0 ? JSON.stringify(nearKeywords[0]) : null),
+      (nearKeywords.length > 0 ? JSON.stringify(nearKeywords[0]) : null)
   );
 
   prefixCache.push("<" + String(sess.id) + ">:" + prefix);
@@ -131,25 +131,34 @@ exports.getAutocompleteResults = function(req, res) {
   res.jsonp(nearKeywords);
 };
 
-exports.tryToSwitchToDevMode = function(req, res) {
+exports.switchToEvaluatorMode = function (req, res) {
   const pass = req.body.pass;
 
   // Verify if correct pass
   if (pass == global.gConfig.devPass) {
-    // Switch to dev session
     SessionState.setUserLevel(req.session.state, 10);
   }
 
   res.redirect(301, "/");
 };
 
-exports.submitAnnotatorQuery = function(req, res) {
+exports.switchToPublicMode = function (req, res) {
+  const pass = req.body.pass;
+
+  SessionState.setUserLevel(req.session.state, 1);
+
+  res.redirect(301, "/");
+};
+
+exports.submitAnnotatorQuery = function (req, res) {
   const sess = req.session;
 
   const sessionId = sess.id;
   const frameSequence = SessionState.getAnnotImageSquence(sess.state);
   const activeDataPackId = SessionState.getActiveDataPackId(sess.state);
-  const activeModelOptions = SessionState.getActiveDataPackModelOptions(sess.state);
+  const activeModelOptions = SessionState.getActiveDataPackModelOptions(
+    sess.state
+  );
 
   let keywordIds = req.body.keyword;
   // Make sure it's an array
@@ -205,11 +214,11 @@ exports.submitAnnotatorQuery = function(req, res) {
   // \todo We ignore them for now
   // eslint-disable-next-line no-unused-vars
   const gameResults = global.imageRanker.submitAnnotatorUserQueries(
-      activeDataPackId,
-      activeModelOptions,
-      userLevel,
-      withExampleImages,
-      userQueries,
+    activeDataPackId,
+    activeModelOptions,
+    userLevel,
+    withExampleImages,
+    userQueries
   );
 
   // Reset the presented target frame sequence
@@ -219,18 +228,17 @@ exports.submitAnnotatorQuery = function(req, res) {
   res.redirect(301, "/annotator/");
 };
 
-
 // ==============================================
 // vv Not refactored vv
 // ==============================================
 
-exports.ExportFile = function(req, res) {
+exports.ExportFile = function (req, res) {
   const sess = req.session;
   global.logger.log("debug", "<" + sess.id + ">: => ExportFile()");
 
   global.logger.log(
-      "debug",
-      "newAction: " + JSON.stringify(req.query, undefined, 4),
+    "debug",
+    "newAction: " + JSON.stringify(req.query, undefined, 4)
   );
 
   const native = req.body.native;
@@ -274,63 +282,63 @@ exports.ExportFile = function(req, res) {
     };
 
     global.dbConnectionsPool.query(
-        "SELECT image_id, manually_validated, query FROM `image-ranker-collector-data2`.user_data_native_queries;",
-        function(error, results, fields) {
-          if (error) throw error;
-          console.log("The solution is: ", results[0].solution);
+      "SELECT image_id, manually_validated, query FROM `image-ranker-collector-data2`.user_data_native_queries;",
+      function (error, results, fields) {
+        if (error) throw error;
+        console.log("The solution is: ", results[0].solution);
 
-          filename =
+        filename =
           filename +
           "." +
           String(kwScDataType.keywordsDataType) +
           "." +
           String(kwScDataType.scoringDataType) +
           ".txt";
-          global.logger.log("debug", "<" + sess.id + ">: => b");
-          const outputFilepath = path.join(
-              global.rootDir,
-              "/public/",
-              global.gConfig.exportDir,
-              filename,
-          );
+        global.logger.log("debug", "<" + sess.id + ">: => b");
+        const outputFilepath = path.join(
+          global.rootDir,
+          "/public/",
+          global.gConfig.exportDir,
+          filename
+        );
 
-          let strToWrite = "";
-          for (let i = 0; i < results.length; ++i) {
-            strToWrite +=
+        let strToWrite = "";
+        for (let i = 0; i < results.length; ++i) {
+          strToWrite +=
             results[i].image_id +
             "," +
             results[i].manually_validated +
-            ",\"" +
+            ',"' +
             results[i].query +
-            "\"\n";
+            '"\n';
+        }
+
+        fs.writeFile(outputFilepath, strToWrite, function (err) {
+          if (err) {
+            return console.log(err);
           }
+        });
 
-          fs.writeFile(outputFilepath, strToWrite, function(err) {
-            if (err) {
-              return console.log(err);
-            }
-          });
+        responseData.result = true;
+        responseData.filename = global.gConfig.exportDir + filename;
 
-          responseData.result = true;
-          responseData.filename = global.gConfig.exportDir + filename;
+        const iii = String(req.body.kwTypeId);
+        const jjj = String(req.body.scTypeId);
 
-          const iii = String(req.body.kwTypeId);
-          const jjj = String(req.body.scTypeId);
+        global.logger.log("debug", "<" + sess.id + ">: => c");
 
-          global.logger.log("debug", "<" + sess.id + ">: => c");
-
-          // Save to app context
-          global.exportedFiles["id" + iii]["id" + jjj][kkk] =
+        // Save to app context
+        global.exportedFiles["id" + iii]["id" + jjj][kkk] =
           global.gConfig.exportDir + filename;
 
-          global.logger.log(
-              "debug",
-              "<" + sess.id + ">: Exported file '" + outputFilepath + "'",
-          );
+        global.logger.log(
+          "debug",
+          "<" + sess.id + ">: Exported file '" + outputFilepath + "'"
+        );
 
-          global.logger.log("debug", "<" + sess.id + ">: <= ExportFile()");
-          res.jsonp(responseData);
-        },
+        global.logger.log("debug", "<" + sess.id + ">: <= ExportFile()");
+        res.jsonp(responseData);
+      }
     );
   } else {
     filename =
@@ -342,27 +350,27 @@ exports.ExportFile = function(req, res) {
       ".txt";
     global.logger.log("debug", "<" + sess.id + ">: => b");
     const outputFilepath = path.join(
-        global.rootDir,
-        "/public/",
-        global.gConfig.exportDir,
-        filename,
+      global.rootDir,
+      "/public/",
+      global.gConfig.exportDir,
+      filename
     );
 
     global.logger.log("debug", "<" + sess.id + ">: Exporting file...");
     global.logger.log(
-        "debug",
-        "<" +
+      "debug",
+      "<" +
         sess.id +
         ">: kwScDataType = " +
-        JSON.stringify(kwScDataType, undefined, 4),
+        JSON.stringify(kwScDataType, undefined, 4)
     );
     global.logger.log(
-        "debug",
-        "<" + sess.id + ">: fileTypeId = " + String(fileTypeId),
+      "debug",
+      "<" + sess.id + ">: fileTypeId = " + String(fileTypeId)
     );
     global.logger.log(
-        "debug",
-        "<" + sess.id + ">: outputFilepath = " + String(outputFilepath),
+      "debug",
+      "<" + sess.id + ">: outputFilepath = " + String(outputFilepath)
     );
 
     const responseData = {
@@ -374,19 +382,19 @@ exports.ExportFile = function(req, res) {
       // ======================================================
       // ======================================================
       global.imageRanker.exportDataFile(
-          kwScDataType,
-          fileTypeId,
-          outputFilepath,
-          native,
+        kwScDataType,
+        fileTypeId,
+        outputFilepath,
+        native
       );
       // ======================================================
       // ======================================================
     } catch (err) {
       global.logger.log(
-          "error",
-          "<" +
+        "error",
+        "<" +
           sess.id +
-          ">: Exporting data file failed! (imageRanker.exportDataFile())",
+          ">: Exporting data file failed! (imageRanker.exportDataFile())"
       );
 
       res.jsonp(responseData);
@@ -406,8 +414,8 @@ exports.ExportFile = function(req, res) {
       global.gConfig.exportDir + filename;
 
     global.logger.log(
-        "debug",
-        "<" + sess.id + ">: Exported file '" + outputFilepath + "'",
+      "debug",
+      "<" + sess.id + ">: Exported file '" + outputFilepath + "'"
     );
 
     global.logger.log("debug", "<" + sess.id + ">: <= ExportFile()");

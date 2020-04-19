@@ -3,43 +3,49 @@
 activeDataPackType -->
 
 <% 
-function generateOptionHtml(optionsDict) {
+function generateOptionHtml(optionsDict, prefix = "") {
   let html = "";
 
   switch(optionsDict.input_type)
   {
     case "enum":
     html += `
-      <label id=${optionsDict.key} for="${optionsDict.key}">
-      ${optionsDict.name}
-      <select id=${optionsDict.key} name=${optionsDict.key}>`;
+      <div id="cont__${nextPropertyIndex}_${optionsDict.key}" class="option-cont cell small-12">
+        <label for="${optionsDict.key}">${optionsDict.name}
+          <select id="${nextPropertyIndex}_${prefix}${optionsDict.key}" name="${optionsDict.key}" class="cond-opts-trigger">`;
 
-        const vals  = optionsDict.values;
-        for (let i = 0; i < vals.length; ++i){
-          html += `<option value="${vals[i].ID}">${vals[i].name}</option> `;
-        }
+          const vals  = optionsDict.values;
+          for (let i = 0; i < vals.length; ++i){
+            html += `<option value="${vals[i].ID}">${vals[i].name}</option> `;
+          }
 
-
-    html += `</select>`;
+          html += `</select>
+        </label>`;
 
     for (let i = 0; i < vals.length; ++i){
       if (vals[i].options.length > 0) {
-
+        html += `<div id="${nextPropertyIndex}_${optionsDict.key}__${vals[i].ID}" class="sub-opts">`;
 
          for (let j = 0; j < vals[i].options.length; ++j){
            const opt = vals[i].options[j];
-           html += generateOptionHtml(opt);
+           html += generateOptionHtml(opt, prefix + optionsDict.key + "_");
          }
 
+         html += `</div>`;
       }
       
     }
 
-    html += `</label>`;
+    html += `</div>`;
     break;
 
     case "float":
-      return `<label>${optionsDict.key}<input name="" id="${optionsDict.key}" type="number"></label>`;
+      return `
+      <div class="option-cont cell small-12">
+        <label for="${optionsDict.key}">${optionsDict.name}
+          <input name="" id="${optionsDict.key}" type="number" min="${optionsDict.min}" max="${optionsDict.max}" step="${optionsDict.step}">
+        </label>
+      </div>`;
     break;
 
     case "int":
@@ -56,3 +62,4 @@ for (let i = 0; i < modelOptions.length; ++i) { %>
   <%- generateOptionHtml(modelOptions[i]) %>
 
 <% } %>
+

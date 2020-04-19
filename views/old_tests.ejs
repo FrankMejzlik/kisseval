@@ -1,0 +1,603 @@
+<section class="model-tests-section grid-container">
+  <div class="grid-x grid-padding-x align-center">
+
+    <ul class="model-test-forms-list" id="tests_0">
+      <li>
+        <form data-index="0" class="model-test-form">
+          <input type="text" name="text" value="text0" />
+          <input type="number" name="number"  value="num0"/>
+        </form>
+      </li>
+
+      <li>
+        <form data-index="1" class="model-test-form" action="/run_model_tests">
+          <input type="text" name="text" value="text1"/>
+          <input type="number" name="number" value="num1"/>
+        </form>
+      </li>
+    </ul>
+
+  </div>
+</section>
+
+<section class="tests-section grid-container">
+  <div class="grid-x grid-padding-x align-center">
+
+    <div class="top-settings small-6 cell">
+      <a class="add-new-chart-button button alert" onclick="CreateNewChartPanel()" >Add chart window</a>
+    </div>
+    <div class="layout-switch-cont small-6 cell">
+      <a class="add-new-chart-button button alert" onclick="switchTestWindowLayout(0)" >50/50</a>
+      <a class="add-new-chart-button button alert" onclick="switchTestWindowLayout(1)" >100</a>
+    </div>
+
+    <ul id="topSetList" class="top-settings-list">
+
+    </ul>
+  </div>
+
+  <ul id="testListSection" class="grid-x grid-padding-x align-center small-12 cell fifty-fifty">
+
+    
+    
+      <!-- Model properties panel toggling -->
+      <script>
+        function switchTestWindowLayout(mode)
+        {
+          $list = $("#testListSection");
+          $blocks = $(".test-block");
+
+          $blocks.each(function()
+          {
+            // 50/50
+            if (mode == 0)
+            {
+              $list.removeClass("hundred");
+              $list.addClass("fifty-fifty");
+            }
+            // 100
+            else if (mode == 1)
+            {
+              $list.removeClass("fifty-fifty");
+              $list.addClass("hundred");
+            }
+            
+          });          
+        }
+
+
+        $( document ).ready(function() {
+          setupModelPropertiesEventListener();
+        });
+ 
+        function setupModelPropertiesEventListener() 
+        {
+          $(".ranking-model-select").change(function() 
+          {
+            const $this = $(this);
+        
+            $this.parent().parent().parent().children(".model-properties").hide();
+            $this.parent().parent().parent().children(".model-type-" + $this.val()).show();
+        
+          });
+
+          $(".ranking-model-simple-select").change();
+          $(".ranking-model-select").change();
+
+          
+
+          
+          for (let elem of document.querySelectorAll(".cond-opts-trigger")) {
+              elem.addEventListener("change", (event) => {
+                  const elem = event.target;
+                  let value = elem.options[elem.selectedIndex].value;
+                  const key = elem.id;
+
+                  const ids = key + "__" + value;
+                  
+
+                  // Disable all
+                  $("#cont__" + key + " .sub-opts * ").attr('disabled', true);
+                  $("#cont__" + key + " .sub-opts").addClass("hidden");
+
+                  // Enable selected
+                  $("#" + ids + " * ").attr('disabled', false);
+                  $("#" + ids).removeClass("hidden");
+
+              })
+          }  
+          
+        }
+      </script>
+
+      <!-- Model properties generation -->
+      <script>
+        
+        let nextPropertyIndex = 0;
+        let nextBlockIndex = 0;
+
+
+
+        function addProperty(element) 
+        {
+          let propertyTemplate = `<%- include modules/tests_model_properties.ejs %>`;
+          const targetList = $(element).parent();
+          
+          //targetList.html(targetList.html() + propertyTemplate);
+          targetList.append(propertyTemplate);
+
+          // Setup listeners
+          setupModelPropertiesEventListener();
+
+          // Increment property counter
+          ++nextPropertyIndex;
+        }
+
+        function removeProperty(element) 
+        {
+          $(element).parent().remove();
+        }
+
+      </script>
+
+      <!-- Chart plotting -->
+      
+      <script>
+        // 64 distinct colours
+        const numDistinctColours = 64;
+        const distinctColours = [
+          "#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941", "#006FA6", "#A30059",
+          "#FFDBE5", "#7A4900", "#0000A6", "#63FFAC", "#B79762", "#004D43", "#8FB0FF", "#997D87",
+          "#5A0007", "#809693", "#FEFFE6", "#1B4400", "#4FC601", "#3B5DFF", "#4A3B53", "#FF2F80",
+          "#61615A", "#BA0900", "#6B7900", "#00C2A0", "#FFAA92", "#FF90C9", "#B903AA", "#D16100",
+          "#DDEFFF", "#000035", "#7B4F4B", "#A1C299", "#300018", "#0AA6D8", "#013349", "#00846F",
+          "#372101", "#FFB500", "#C2FFED", "#A079BF", "#CC0744", "#C0B9B2", "#C2FF99", "#001E09",
+          "#00489C", "#6F0062", "#0CBD66", "#EEC3FF", "#456D75", "#B77B68", "#7A87A1", "#788D66",
+          "#885578", "#FAD09F", "#FF8A9A", "#D157A0", "#BEC459", "#456648", "#0086ED", "#886F4C"
+        ];
+
+        const chartSettings = {
+          // The type of chart we want to create
+          type: 'line',
+          animation: {
+              duration: 0
+          },
+          // The data for our dataset
+          data: {},
+
+          // Configuration options go here
+          options: {
+          responsive: true,
+          title: {
+            display: false,
+            text: 'Test 1'
+          },
+          tooltips: {
+            mode: 'index',
+            intersect: false,
+          },
+          hover: {
+            mode: 'nearest',
+            intersect: true
+          },
+          scales: {
+            xAxes: [{
+              //type: 'logarithmic',
+               display: true,
+              ticks: {
+                beginAtZero: true,
+                min: 0,
+                // \todo make dynamic
+                //max: 20000,
+                callback: function(value, index, values) {
+                    return value;
+                }
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Rank'
+              }
+            }],
+            yAxes: [{
+              
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Number of images'
+              }
+            }]
+          }
+        }
+      }
+
+      function startFetchingGridTestProgress($form) 
+      {
+        var $outputElem = $("#gridTestProgress");
+
+        const url = "/tests_ajax_GetGridTestProgress";
+
+        const submitData = new Object();
+
+        (function(){
+            
+            
+          // Send GET request
+          var posting = $.get( 
+            url, 
+            {
+              submitData
+            }
+          );
+
+          // Process response
+          posting.done(function( response ) 
+          { 
+
+            const complete = response.numCompletedTests;
+            const total = response.numTests;
+
+            $outputElem.html(complete + '\\' + total);
+
+          })
+          // If error occured
+          .catch((err) => 
+          {
+            console.log("/tests_ajax_GetGridTestProgress AJAX call failed!");
+            alert("/tests_ajax_GetGridTestProgress AJAX call failed!");
+          });
+
+            setTimeout(arguments.callee, 2000);
+        })();
+
+        
+
+
+      }
+
+      function getFormData($form){
+          var unindexed_array = $form.serializeArray();
+          var indexed_array = {};
+
+          $.map(unindexed_array, function(n, i){
+              indexed_array[n['name']] = n['value'];
+          });
+
+          return indexed_array;
+      }
+
+        function removeData(chart) {
+            chart.data.labels.pop();
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.pop();
+            });
+            chart.update();
+        }
+
+        function submitTestForm(event, element) {
+        /* get the action attribute from the <form action=""> element */
+          var $form = $( element ),
+              url = $form.attr( 'action' );
+
+          /* stop form from submitting normally */
+          event.preventDefault();
+          
+          $form.removeClass("result-ok");
+          $form.addClass("running-test");
+
+          const formData = getFormData($form);
+
+          const id = $form.data("id");
+
+          
+
+          const submitData = new Object();
+          submitData.formData = formData;
+          submitData.formId = id;
+
+          /* Send the data using post with element id name and name2*/
+          var posting = $.get( 
+            url, 
+            {
+              submitData
+            }
+            
+          );
+
+          /* Alerts the results */
+          posting.done(function( response ) 
+          { 
+            const formId = response.formId;
+
+            const returnedDataArray = response.chartDataArray;
+
+            let datasets = new Array();
+
+            const num = returnedDataArray.length;
+            const divPerChanel = (num / 3) + 1;
+
+            let labels = new Array();
+
+            for (var i = 0; i < returnedDataArray.length; ++i) 
+            {
+              const returnedData = returnedDataArray[i];
+
+              const colourIndex = i % numDistinctColours;
+              const borderColor = distinctColours[colourIndex];
+          
+              let data = new Array();
+
+              // Create labels from indices
+              for (var j = 0; j < returnedData.length; ++j)
+              {
+                if (i == 0) {
+                  labels.push(returnedData[j].index);
+                }
+                
+                data.push(returnedData[j].value);
+              }
+
+              const label = String(i);
+
+              const chartData = {
+                borderColor,
+                backgroundColor: "rgba(255, 0, 0, 0)",
+                label,
+                pointRadius: 0.5,
+                pointHoverRadius: 0.5,
+                borderWidth: 1.0,
+                data,
+              }
+
+              datasets.push(chartData);
+            }
+
+
+            var chartData = {
+              labels,
+              datasets
+            }
+
+            const chartCanvas = document.getElementById("chart" + formId);
+            const form = document.getElementById("testForm" + formId);
+            const $form = $(form);                        
+
+            // =========================================
+            // Print chart data into <pre> element
+
+            const chartParent = chartCanvas.parentElement;
+            var chartDataPre = document.createElement("pre");
+            
+
+            let dataString = "";
+            for (var ii = 0; ii < chartData.labels.length; ++ii)
+            {
+              dataString += chartData.labels[ii] + ",";
+
+              for (var jj = 0; jj < chartData.datasets.length; ++jj)
+              {
+
+                dataString += chartData.datasets[jj].data[ii] + ",";
+
+              }
+              dataString += '\n';
+            }
+            chartDataPre.innerHTML = dataString;
+            chartParent.appendChild(chartDataPre);
+
+            // ============================================
+
+            // Create chart
+            var ctx = chartCanvas.getContext('2d');
+            var chart = new Chart(ctx, chartSettings);
+
+            // Update data
+            chart.data = chartData;
+            // Update chart
+            chart.update();
+
+            $form.removeClass("running-test");
+            $form.addClass("result-ok");
+          })
+          // If error occured
+          .catch((err) => 
+          {
+            console.log(url + " AJAX call failed!");
+            alert(url + "trecvid_ranker_ajax_next_task AJAX call failed! Incorrect test config maybe.");
+            $form.removeClass("running-test");
+          });
+        }
+
+        function submitGridTest(event, element) 
+        {
+          // Get form that has been submited
+          const $form = $(element).closest("form");
+          
+          // Define AJAX request URL
+          const url = "/tests_ajax_RunGridTest";
+
+          // Stop usual submit
+          event.preventDefault();
+          
+          $form.removeClass("result-ok");
+          $form.addClass("running-test");
+
+          const formData = getFormData($form);
+
+          const id = $form.data("id");
+
+          const submitData = new Object();
+          submitData.formData = formData;
+          submitData.formId = id;
+
+          startFetchingGridTestProgress($form);
+
+          // Send GET request
+          var posting = $.get( 
+            url, 
+            {
+              submitData
+            }
+          );
+
+          // Process response
+          posting.done(function( response ) 
+          { 
+            // Form that has been submitted
+            const formId = response.formId;
+
+            // Array of the best models and their settings
+            const returnedDataArray = response.gridTestResults;
+
+            let datasets = new Array();
+
+            const num = returnedDataArray.length;
+            const divPerChanel = (num / 3) + 1;
+
+            let labels = new Array();
+
+            // Iterate over returned array of best results
+            /*
+            [
+              { "testSettings":
+                  {
+                    "aggregation": 1,
+                    "rankingModel" 2,
+                    "queryOrigin": 3,
+                    "modelOptions" :[ "opt1", "opt2", ...]
+                  },
+                "chartData": [
+                  { index: 0, value: 10.6 },
+                  { index: 1, value: 11.3 },
+                  ...
+                ]
+              },
+            ... ]
+            */
+            for (var i = 0; i < returnedDataArray.length; ++i) 
+            {
+              // Settings of this test result
+              // xoxo
+              const returnedTestSettings = returnedDataArray[i].testSettings;
+              
+
+              var html = "<li>";
+                html += '<p class="index">' + i + '</p>';
+                html += "<p class=\"agg\">aggregation = " + returnedTestSettings.aggregation + "</p>";
+                html += "<p class=\"rm\">rankingModel = " + returnedTestSettings.rankingModel + "</p>";
+                html += "<p class=\"or\">queryOrigin = " + returnedTestSettings.queryOrigin + "</p>";
+                html += "<strong>Model settings:</strong>";
+                for (var j = 0; j < returnedTestSettings.modelOptions.length; ++j)
+                {
+                  html += "<small>" + returnedTestSettings.modelOptions[j] + "</small>";
+                }
+
+              html += "</li>"
+
+              $('#topSetList').append(html);
+
+              // Chart data
+              const returnedChartData = returnedDataArray[i].chartData;
+
+              // Calculate coefs for colour
+              const r = (i % 3 == 0 ? 1 : 0) * 255;
+              const g = (i % 3 == 1 ? 1 : 0) * 255;
+              const b = (i % 3 == 2 ? 1 : 0) * 255;
+
+
+              const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
+          
+              let data = new Array();
+
+              // Create labels from indices
+              for (var j = 0; j < returnedChartData.length; ++j)
+              {
+                if (i == 0) {
+                  labels.push(returnedChartData[j].index);
+                }
+                
+                data.push(returnedChartData[j].value);
+              }
+
+              const label = String(i);
+
+              const chartData = {
+                borderColor,
+                backgroundColor: "rgba(255, 0, 0, 0)",
+                label,
+                pointRadius: 0.5,
+                pointHoverRadius: 0.5,
+                borderWidth: 1.0,
+                data,
+              }
+
+              datasets.push(chartData);
+            }
+
+
+            var chartData = {
+              labels,
+              datasets
+            }
+
+            const chartCanvas = document.getElementById("chart" + formId);
+            const form = document.getElementById("testForm" + formId);
+            const $form = $(form);                        
+
+            // Create chart
+            var ctx = chartCanvas.getContext('2d');
+            var chart = new Chart(ctx, chartSettings);
+
+            // Update data
+            chart.data = chartData;
+            // Update chart
+            chart.update();
+
+            $form.removeClass("running-test");
+            $form.addClass("result-ok");
+          })
+          // If error occured
+          .catch((err) => 
+          {
+            console.log(url + " AJAX call failed!");
+            alert(url + " AJAX call failed!");
+          });
+        }
+
+        function CreateNewChartPanel()
+        {
+          const targetChartContainer = document.getElementById("testListSection");
+
+          let propertyTemplate = `<%- include modules/tests_chart_block.ejs %>`;
+
+          targetChartContainer.innerHTML += propertyTemplate;
+
+          // Setup listeners
+          //setupModelPropertiesEventListener()
+
+          $(".tests-settings-form").submit(function(event) {
+
+            submitTestForm(event, this);
+
+          })
+
+          $(".tests-settings-form .run-grid-test").click(function(event) 
+          {
+
+            submitGridTest(event, this);
+
+          })
+
+          // Increment property counter
+          ++nextBlockIndex;
+        }
+
+
+        
+      </script>
+
+  </div>
+</section>
+
+</body>
+
+<%- include modules/form_part_model_settings_template_post_scripts.ejs %>

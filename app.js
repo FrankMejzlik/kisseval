@@ -129,6 +129,7 @@ app.post("/set_active_data_pack", endpoints.setActiveDataPack);
 app.post("/switch_to_eval_mode", endpoints.switchToEvaluatorMode);
 app.post("/switch_to_public_mode", endpoints.switchToPublicMode);
 app.post("/annotator_submit_query", endpoints.submitAnnotatorQuery);
+app.post("/run_model_tests", endpoints.runModelTests);
 
 app.use("/404", routerNotFound);
 

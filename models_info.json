@@ -17,25 +17,10 @@
                                 "active": true,
                                 "key": "true_threshold",
                                 "name": "True threshold",
-                                "input_type": "enum",
-                                "values": [
-                                    {
-                                        "active": true,
-                                        "ID": "constant",
-                                        "name": "constant",
-                                        "description": "",
-                                        "options": [
-                                            {
-                                                "active": true,
-                                                "key": "value",
-                                                "input_type": "float",
-                                                "from": 0,
-                                                "to": 1,
-                                                "step": 0.01
-                                            }
-                                        ]
-                                    }
-                                ]
+                                "input_type": "float",
+                                "min": 0,
+                                "max": 1,
+                                "step": 0.01
                             }
                         ]
                     },
@@ -44,61 +29,7 @@
                         "ID": "vector_space",
                         "name": "Vector space",
                         "description": "",
-                        "options": [
-                            {
-                                "active": true,
-                                "key": "outter_op",
-                                "name": "Outter operation",
-                                "input_type": "enum",
-                                "values": [
-                                    {
-                                        "active": true,
-                                        "ID": "sum",
-                                        "name": "sum",
-                                        "description": "",
-                                        "options": []
-                                    },
-                                    {
-                                        "active": true,
-                                        "ID": "mult",
-                                        "name": "mult",
-                                        "description": "",
-                                        "options": []
-                                    }
-                                ]
-                            },
-                            {   
-                                "active": true,
-                                "key": "inner_op",
-                                "name": "Inner operation",
-                                "input_type": "enum",
-                                "values": [
-                                    {
-                                        "active": true,
-                                        "ID": "sum",
-                                        "name": "sum",
-                                        "description": "",
-                                        "options": []
-                                    },
-                                    {
-                                        "active": true,
-                                        "ID": "max",
-                                        "name": "max",
-                                        "description": "",
-                                        "options": []
-                                    }
-                                ]
-                            },
-                            {
-                                "active": true,
-                                "key": "ignore_treshold",
-                                "name": "Ignore threshold",
-                                "input_type": "float",
-                                "from": 0,
-                                "to": 1,
-                                "step": 0.01
-                            }
-                        ]
+                        "options": []
                     },
                     {
                         "active": true,
@@ -109,7 +40,7 @@
                             {
                                 "active": true,
                                 "key": "operations",
-                                "key": "Scoring operations",
+                                "name": "Scoring operations",
                                 "input_type": "enum",
                                 "values": [
                                     {
@@ -151,6 +82,7 @@
                             {
                                 "active": true,
                                 "key": "outter_op",
+                                "name": "Outter temp operation",
                                 "input_type": "enum",
                                 "values": [
                                     {
@@ -172,6 +104,7 @@
                             {   
                                 "active": true,
                                 "key": "inner_op",
+                                "name": "Inner temp operation",
                                 "input_type": "enum",
                                 "values": [
                                     {
@@ -200,9 +133,10 @@
                             {
                                 "active": true,
                                 "key": "ignore_treshold",
+                                "name": "Ignore threshold",
                                 "input_type": "float",
-                                "from": 0,
-                                "to": 1,
+                                "min": 0,
+                                "max": 1,
                                 "step": 0.01
                             }
                         ]

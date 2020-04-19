@@ -228,6 +228,25 @@ exports.submitAnnotatorQuery = function (req, res) {
   res.redirect(301, "/annotator/");
 };
 
+exports.runModelTests = function(req, res) {
+  const body = req.body;
+
+  console.log(JSON.stringify(body, null, 4));
+
+  let testResultData = {
+    0: {
+      x: [0,1,2,3],
+      y: [0,10,20,30]
+    },
+    1: {
+      x: [0,1,2,3],
+      y: [0,10,100,1000]
+    }
+  }
+
+  res.jsonp(testResultData);
+}
+
 // ==============================================
 // vv Not refactored vv
 // ==============================================

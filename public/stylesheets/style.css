@@ -89,13 +89,16 @@ body {
   /* overflow: hidden; */
 }
 
-.generated-opts-cont label {
-  padding-left: 1rem;
+.hidden {
+  display: none ;
 }
-
 #rankerResultBoardChartCanvas {
   min-width: 300px;
   min-height: 200px;
+}
+
+.option-cont {
+  padding-left: 2rem;
 }
 
 .page-title-section {
@@ -1598,7 +1601,7 @@ input[type=submit] {
 }
 
 .callout.success {
-  background-color: #fff3d9;
+  background-color: #7fff51;
 }
 
 .button.success
@@ -2052,5 +2055,21 @@ list-style: none;
 }
 
 .tests-settings-form {
+  position: relative;
+}
+
+
+.test-forms-list > li {
+  margin-bottom: 2rem;
+}
+
+.test-block.working .working-label {
+  display: block !important;
+}
+.visible {
+  display: block !important;
+}
+
+.test-block {
   position: relative;
 }

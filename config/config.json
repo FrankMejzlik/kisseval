@@ -11,7 +11,8 @@
         "exportDir": "/export/",
         "database": "local_dev",
 
-        "dataInfoFpth" : "c:\\Users\\devwe\\data\\data_info.json",
+        "dataInfoFpth" : "c:\\Users\\devwe\\source\\repos\\ImageRanker\\data_info.json",
+        "modelOptsInfoFpth" : "c:\\Users\\devwe\\source\\repos\\ImageRanker\\models_info.json",
         "dataDir" : "data/",
 
         "annotatorSettings": {

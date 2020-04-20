@@ -6,7 +6,7 @@ const router = express.Router();
 
 const SessionState = require("./classes/SessionState");
 const stateCheck = require("./common/state_checkers");
-const modelOptions = require("../models_info");
+const modelOptions = require(global.gConfig.modelOptsInfoFpth);
 
 /** Specific route settings. */
 const routeSettings = {

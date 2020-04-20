@@ -1,6 +1,8 @@
 <% function generateOptionHtml(optionsDict, idx, prefix = "") { let html = `
-<form data-id="${idx}" class="test-form">
-  `; switch(optionsDict.input_type) { case "enum": html += `
+<form data-id="${idx}" class="test-form">`; 
+  
+  switch(optionsDict.input_type) { 
+    case "enum": html += `
   <div class="cont__${optionsDict.key} option-cont cell small-12">
     <label for="${optionsDict.key}"
       >${optionsDict.name}
@@ -12,7 +14,8 @@
         ++i){ html += `<option value="${vals[i].ID}">${vals[i].name}</option>
         `; } html += `</select
       > </label
-    >`; for (let i = 0; i < vals.length; ++i){ if (vals[i].options.length > 0) {
+    >`; 
+    for (let i = 0; i < vals.length; ++i){ if (vals[i].options.length > 0) {
     html += `
     <div class="${optionsDict.key}__${vals[i].ID} sub-opts">
       `; for (let j = 0; j < vals[i].options.length; ++j){ const opt =
@@ -21,66 +24,75 @@
     </div>
     `; } } html += `
   </div>
-  `; break; case "float": return `
-  <div class="option-cont cell small-12">
-    <label for="${optionsDict.key}"
-      >${optionsDict.name}
-      <input
-        name=""
-        class="${optionsDict.key}"
-        data-id="${prefix}${optionsDict.key}"
-        type="number"
-        min="${optionsDict.min}"
-        max="${optionsDict.max}"
-        step="${optionsDict.step}"
-      />
-    </label>
-  </div>
-  `; break; case "int": break; } html += `
-</form>
-`; return html; } %>
+  `; 
+  break; 
+  
+  case "float": 
+    return `
+      <div class="option-cont cell small-12">
+        <label for="${optionsDict.key}">${optionsDict.name}
+          <input
+            name="${optionsDict.key}"
+            class=""
+            data-id="${prefix}${optionsDict.key}"
+            type="number"
+            min="${optionsDict.min}"
+            max="${optionsDict.max}"
+            step="${optionsDict.step}"
+            value="${optionsDict.default}"
+          />
+        </label>
+      </div>`; 
+  break; 
 
-<a class="button" onclick="generateTestFormWrapper()">doooo</a>
+  case "int": 
+    return `
+      <div class="option-cont cell small-12">
+        <label for="${optionsDict.key}">${optionsDict.name}
+          <input
+            name="${optionsDict.key}"
+            class=""
+            data-id="${prefix}${optionsDict.key}"
+            type="number"
+            min="${optionsDict.min}"
+            max="${optionsDict.max}"
+            step="${optionsDict.step}"
+            value="${optionsDict.default}"
+          />
+        </label>
+      </div>`; 
+  break; 
+
+  } 
+    html += `
+    </form>
+    `; 
+  return html; 
+} %>
 
 <section class="model-tests-section grid-container">
   <div class="model-tests-state">
     <input type="hidden" name="_nextTestBlockIndex" value="1" />
     <input
-          type="hidden"
-          id="_nextFormIndex"
-          name="_nextFormIndex"
-          data-nextformindex="0"
-        />
+      type="hidden"
+      id="_nextFormIndex"
+      name="_nextFormIndex"
+      data-nextformindex="0"
+    />
   </div>
   <ul class="grid-x grid-padding-x align-center">
     <li id="testBlock_0" class="test-block cell small-6" data-id="0">
-
       <div class="msg-box callout primary hidden"></div>
       <div class="msg-box callout alert hidden"></div>
       <div class="msg-box callout success hidden"></div>
       <div class="msg-box callout warning working-label hidden">Working...</div>
 
       <h2>Test block 0</h2>
+      <a class="button" onclick="generateTestFormWrapper()">Add test form</a>
       <div class="chart-cont">
         <canvas class="chart-canvas"></canvas>
       </div>
-      <ul class="test-forms-list cell small-12" id="testForms">
-        <!-- <li>
-          <h3>Test form 0</h3>
-          <form data-id="0" class="test-form">
-            <input type="text" name="text" value="text0" />
-            <input type="number" name="number"  value="012"/>
-          </form>
-        </li>
-
-        <li>
-          <h3>Test form 1</h3>
-          <form data-id="1" class="test-form">
-            <input type="text" name="text" value="text1"/>
-            <input type="number" name="number" value="123"/>
-          </form>
-        </li> -->
-      </ul>
+      <ul class="test-forms-list cell small-12" id="testForms"></ul>
 
       <div class="submit-cont small-12">
         <a class="button submit" onclick="runTests(this)">Run</a>
@@ -114,7 +126,9 @@
     console.log("testBlockId = " + testBlockId);
 
     // Get all test forms
-    const testForms = document.querySelectorAll("#" + parElem.id + " .test-form");
+    const testForms = document.querySelectorAll(
+      "#" + parElem.id + " .test-form"
+    );
 
     // Data we'll send into the request
     reqData = {};
@@ -122,11 +136,10 @@
       const fId = form.dataset.id;
       let fData = new FormData(form);
 
-      if (typeof reqData[fId] === "undefined")
-      {
-        reqData[fId] = {} 
+      if (typeof reqData[fId] === "undefined") {
+        reqData[fId] = {};
       }
-      
+
       for (var [key, value] of fData.entries()) {
         reqData[fId][key] = value;
       }
@@ -248,33 +261,35 @@
     parent.insertAdjacentHTML("beforeend", html);
 
     const formId = "formId_" + index;
-    const triggers = document.querySelectorAll("#" + formId + " .cond-opts-trigger");
+    const triggers = document.querySelectorAll(
+      "#" + formId + " .cond-opts-trigger"
+    );
 
     for (let elem of triggers) {
       elem.addEventListener("change", (event) => {
-          const elem = event.target;
-          let value = elem.options[elem.selectedIndex].value;
-          const key = elem.dataset.id;
+        const elem = event.target;
+        let value = elem.options[elem.selectedIndex].value;
+        const key = elem.dataset.id;
 
-          const ids = key + "__" + value;
-          
+        const ids = key + "__" + value;
 
-          // Disable all
-          const aa = "#" + formId + " .cont__" + key + " .sub-opts * ";
-          const aa2 = "#" + formId + " .cont__" + key + " .sub-opts";
-          $(aa).attr('disabled', true);
-          $(aa2).addClass("hidden");
+        // Disable all
+        const aa = "#" + formId + " .cont__" + key + " .sub-opts * ";
+        const aa2 = "#" + formId + " .cont__" + key + " .sub-opts";
+        $(aa).attr("disabled", true);
+        $(aa2).addClass("hidden");
 
-          const aa3 = "#" + formId + " ." + ids + " * ";
-          const aa4 = "#" + formId + " ." + ids;
-          // Enable selected
-          $(aa3).attr('disabled', false);
-          $(aa4).removeClass("hidden");
-
-      })
-    }  
+        const aa3 = "#" + formId + " ." + ids + " * ";
+        const aa4 = "#" + formId + " ." + ids;
+        // Enable selected
+        $(aa3).attr("disabled", false);
+        $(aa4).removeClass("hidden");
+      });
+    }
 
     // Trigger change manually
-    triggers.forEach( (elem) => {elem.dispatchEvent(new Event("change"));} );
+    triggers.forEach((elem) => {
+      elem.dispatchEvent(new Event("change"));
+    });
   }
 </script>

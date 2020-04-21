@@ -4,12 +4,12 @@
   switch(optionsDict.input_type) { 
     case "enum": html += `
   <div class="cont__${optionsDict.key} option-cont cell small-12">
-    <label for="${optionsDict.key}"
+    <label for="${prefix}${optionsDict.key}"
       >${optionsDict.name}
       <select
         class="cond-opts-trigger"
         data-id="${prefix}${optionsDict.key}"
-        name="${optionsDict.key}"
+        name="${prefix}${optionsDict.key}"
         >`; const vals = optionsDict.values; for (let i = 0; i < vals.length;
         ++i){ html += `<option value="${vals[i].ID}">${vals[i].name}</option>
         `; } html += `</select
@@ -32,7 +32,7 @@
       <div class="option-cont cell small-12">
         <label for="${optionsDict.key}">${optionsDict.name}
           <input
-            name="${optionsDict.key}"
+            name="${prefix}${optionsDict.key}"
             class=""
             data-id="${prefix}${optionsDict.key}"
             type="number"
@@ -50,7 +50,7 @@
       <div class="option-cont cell small-12">
         <label for="${optionsDict.key}">${optionsDict.name}
           <input
-            name="${optionsDict.key}"
+            name="${prefix}${optionsDict.key}"
             class=""
             data-id="${prefix}${optionsDict.key}"
             type="number"

@@ -17,6 +17,8 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports)
     InstanceMethod("getAutocompleteResults", &ImageRankerWrapper::get_autocomplete_results),
     InstanceMethod("getRandomFrameSequence", &ImageRankerWrapper::get_random_frame_sequence),
     InstanceMethod("submitAnnotatorUserQueries", &ImageRankerWrapper::submit_annotator_user_queries),
+    InstanceMethod("rankFrames", &ImageRankerWrapper::rank_frames),
+    InstanceMethod("runModelTest", &ImageRankerWrapper::run_model_test),
 
 
 
@@ -87,7 +89,7 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) :
   std::vector<DatasetDataPackRef> datasets{
       {is1["ID"].get<std::string>(), is1["description"].get<std::string>(), is1["ID"].get<std::string>(),
        data_dir + is1["frames_dir"].get<std::string>(), data_dir + is1["ID_to_frame_fpth"].get<std::string>()} };
-  
+
   std::vector<ViretDataPackRef> VIRET_data_packs{
     // NasNet
     {dp1["ID"].get<std::string>(), dp1["description"].get<std::string>(), dp1["model_options"].get<std::string>(),
@@ -408,7 +410,6 @@ Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackIn
   return Napi::Object(env, totalResult);
 }
 
-
 Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::CallbackInfo& info)
 {
   // Parameters: SessionID, ImageID, string query
@@ -546,6 +547,169 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
 
   return Napi::Object(env, res_arr);
 }
+
+Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+
+  if (length != 5) {
+    Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
+  }
+
+
+  std::vector<std::string> user_queries;
+  {
+    Napi::Array arr = info[0].As<Napi::Array>();
+    for (size_t i{ 0 }; i < arr.Length(); ++i)
+    {
+      Napi::Value val = arr[i];
+      std::string single_query = val.As<Napi::String>();
+      user_queries.emplace_back(std::move(single_query));
+    }
+  }
+  std::string data_pack_ID = info[1].As<Napi::String>().Utf8Value();
+  std::string model_options = info[2].As<Napi::String>().Utf8Value();
+  size_t resulst_size = size_t(info[3].As<Napi::Number>().Uint32Value());
+  FrameId target_frame_ID = FrameId(info[4].As<Napi::Number>().Uint32Value());
+
+
+  // Get suggested keywords
+  RankingResult rankingResult;
+  try {
+    rankingResult = this->actualClass_->rank_frames(user_queries, data_pack_ID, model_options, resulst_size, target_frame_ID);
+  }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+  // Final return structure
+  napi_value result_dict;
+  napi_create_object(env, &result_dict);
+
+  // Target ID
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "target_ID", NAPI_AUTO_LENGTH, &key);
+
+    napi_value value;
+    napi_create_uint32(env, uint32_t(rankingResult.target), &value);
+
+    napi_set_property(env, result_dict, key, value);
+  }
+
+  // Target position
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "target_position", NAPI_AUTO_LENGTH, &key);
+
+    napi_value value;
+    napi_create_uint32(env, uint32_t(rankingResult.target_pos), &value);
+
+    napi_set_property(env, result_dict, key, value);
+  }
+
+  {
+    napi_value result_arr;
+    napi_create_array(env, &result_arr);
+
+    // Iterate through all results
+    size_t i = 0ULL;
+    for (auto&& frame_ID : rankingResult.m_frames)
+    {
+      // Temp array structure
+      napi_value single_result_dict;
+      napi_create_object(env, &single_result_dict);
+
+      // Frame ID
+      {
+        napi_value key;
+        napi_create_string_utf8(env, "frame_ID", NAPI_AUTO_LENGTH, &key);
+        napi_value value;
+        napi_create_uint32(env, uint32_t(frame_ID), &value);
+
+        napi_set_property(env, single_result_dict, key, value);
+      }
+
+      napi_set_element(env, result_arr, i, single_result_dict);
+
+      ++i;
+    }
+    napi_value key;
+    napi_create_string_utf8(env, "frames", NAPI_AUTO_LENGTH, &key);
+    napi_set_property(env, result_dict, key, result_arr);
+  }
+  return Napi::Object(env, result_dict);
+}
+
+Napi::Value ImageRankerWrapper::run_model_test(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+
+  if (length != 4) {
+    Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
+  }
+
+  eUserQueryOrigin query_origin = eUserQueryOrigin(info[0].As<Napi::Number>().Uint32Value());
+  std::string data_pack_ID = info[1].As<Napi::String>().Utf8Value();
+  std::string model_options = info[2].As<Napi::String>().Utf8Value();
+  size_t num_points = size_t(info[3].As<Napi::Number>().Uint32Value());
+
+
+  ModelTestResult test_results;
+  try {
+    test_results = this->actualClass_->run_model_test(query_origin, data_pack_ID, model_options, num_points);
+  }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
+  napi_value result_dict;
+  napi_create_object(env, &result_dict);
+
+  {
+    napi_value arr_x;
+    napi_create_array(env, &arr_x);
+
+    napi_value arr_fx;
+    napi_create_array(env, &arr_fx);
+
+    size_t i{0};
+    for (auto&& [x, fx] : test_results)
+    {
+      napi_value napi_x;
+      napi_value napi_fx;
+
+      napi_create_uint32(env, x, &napi_x);
+      napi_create_uint32(env, fx, &napi_fx);
+
+      napi_set_element(env, arr_x, i, napi_x);
+      napi_set_element(env, arr_fx, i, napi_fx);
+
+      ++i;
+    }
+    napi_value key_x;
+    napi_create_string_utf8(env, "x", NAPI_AUTO_LENGTH, &key_x);
+    napi_set_property(env, result_dict, key_x, arr_x);
+
+    napi_value key_fx;
+    napi_create_string_utf8(env, "fx", NAPI_AUTO_LENGTH, &key_fx);
+    napi_set_property(env, result_dict, key_fx, arr_fx);
+  }
+
+  return Napi::Object(env, result_dict);
+}
+
 
 #if 0
 

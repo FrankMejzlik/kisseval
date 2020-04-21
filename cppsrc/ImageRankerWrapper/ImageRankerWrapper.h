@@ -22,5 +22,7 @@ private:
   Napi::Value get_autocomplete_results(const Napi::CallbackInfo& info);
   Napi::Value get_random_frame_sequence(const Napi::CallbackInfo& info);
   Napi::Value submit_annotator_user_queries(const Napi::CallbackInfo& info);
+  Napi::Value rank_frames(const Napi::CallbackInfo& info);
+  Napi::Value run_model_test(const Napi::CallbackInfo& info);
 
 };

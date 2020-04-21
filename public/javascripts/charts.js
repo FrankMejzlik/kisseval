@@ -95,7 +95,7 @@ function plotTestChart(chartElem, returnedDataArray)
           labels.push(returnedData.x[j]);
         }
         
-        data.push(returnedData.y[j]);
+        data.push(returnedData.fx[j]);
       }
 
       const label = String(i);

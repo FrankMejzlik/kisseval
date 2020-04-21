@@ -233,18 +233,35 @@ exports.runModelTests = function(req, res) {
 
   console.log(JSON.stringify(body, null, 4));
 
-  
+  const dataPackId = SessionState.getActiveDataPackId(req.session.state);
 
-  let testResultData = {
-    0: {
-      x: [0,1,2,3],
-      y: [0,10,20,30]
-    },
-    1: {
-      x: [0,1,2,3],
-      y: [0,10,100,1000]
+  let testResultData = {}
+  for (const [formId, options] of Object.entries(body))
+  {
+    // Stringify options
+    let optionsStr = "";
+    for (const [opt_key, opt_val] of Object.entries(options))
+    {
+      optionsStr += `${String(opt_key)}=${String(opt_val)};`;
     }
+
+    
+    // Run test
+    const result = global.imageRanker.runModelTest(10, dataPackId, optionsStr, 100);
+
+    testResultData[formId] = result;
   }
+
+  // let testResultData = {
+  //   0: {
+  //     x: [0,1,2,3],
+  //     y: [0,10,20,30]
+  //   },
+  //   1: {
+  //     x: [0,1,2,3],
+  //     y: [0,10,100,1000]
+  //   }
+  // }
 
   res.jsonp(testResultData);
 }

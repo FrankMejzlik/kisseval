@@ -91,6 +91,7 @@
       <a class="button" onclick="generateTestFormWrapper()">Add test form</a>
       <div class="chart-cont">
         <canvas class="chart-canvas"></canvas>
+        <div class="test-result-bar"></div>
       </div>
       <ul class="test-forms-list cell small-12" id="testForms"></ul>
 
@@ -235,6 +236,35 @@
   function handleTestSuccess(parElem, chartData) {
     // Remove working
     unsetTestBlockWorking(parElem);
+
+    const exportFilepaths = chartData.files;
+    chartData = chartData.data;
+
+    // Add exported file buttons
+    {
+      // xoxo
+      const btnBarElem = document.querySelectorAll(
+        "#" + parElem.id + " .test-result-bar"
+      )[0];
+
+      var li = document.createElement("li");
+      {
+        var btn1 = document.createElement("a");
+        btn1.setAttribute("href", exportFilepaths.info);
+        btn1.innerHTML = "Info JSON";
+        btn1.classList.add("button");
+
+        var btn2 = document.createElement("a");
+        btn2.setAttribute("href", exportFilepaths.data);
+        btn2.innerHTML = "Data CSV";
+        btn2.classList.add("button");
+        
+        li.appendChild(btn1);
+        li.appendChild(btn2);
+      }
+
+      btnBarElem.appendChild(li);
+    }
 
     // Draw chart
     const chartElem = document.querySelectorAll(

@@ -48,7 +48,12 @@ exports.setActiveDataPack = function (req, res) {
   for (const pack of global.loadedDataPacksInfo) {
     if (pack.id == newDataPackId) {
       // Set new state
-      SessionState.setActieDataPack(sess.state, pack.id, pack.model_options);
+      SessionState.setActieDataPack(
+        sess.state,
+        pack.id,
+        pack.model_options,
+        pack.description
+      );
 
       global.logger.log(
         "debug",
@@ -228,43 +233,111 @@ exports.submitAnnotatorQuery = function (req, res) {
   res.redirect(301, "/annotator/");
 };
 
-exports.runModelTests = function(req, res) {
+exports.runModelTests = function (req, res) {
   const body = req.body;
 
   console.log(JSON.stringify(body, null, 4));
 
   const dataPackId = SessionState.getActiveDataPackId(req.session.state);
 
-  let testResultData = {}
-  for (const [formId, options] of Object.entries(body))
-  {
+  let numPoints = 100;
+
+  let testResultData = {};
+  let testOptions = {};
+  for (const [formId, options] of Object.entries(body)) {
     // Stringify options
     let optionsStr = "";
-    for (const [opt_key, opt_val] of Object.entries(options))
-    {
+    for (const [opt_key, opt_val] of Object.entries(options)) {
       optionsStr += `${String(opt_key)}=${String(opt_val)};`;
     }
 
-    
+    // Add info
+    testOptions[formId] = optionsStr;
+
     // Run test
-    const result = global.imageRanker.runModelTest(10, dataPackId, optionsStr, 100);
+    const result = global.imageRanker.runModelTest(
+      10,
+      dataPackId,
+      optionsStr,
+      numPoints
+    );
 
     testResultData[formId] = result;
   }
 
-  // let testResultData = {
-  //   0: {
-  //     x: [0,1,2,3],
-  //     y: [0,10,20,30]
-  //   },
-  //   1: {
-  //     x: [0,1,2,3],
-  //     y: [0,10,100,1000]
-  //   }
-  // }
+  const now = new Date();
+  const utcTs = now.toString();
+  const unixTs = Date.now();
 
-  res.jsonp(testResultData);
-}
+  const testInfo = {
+    timestamp: unixTs,
+    utc: utcTs,
+    testOptions: testOptions,
+  };
+
+  let csvString = "";
+
+  let xVals = [];
+  for (const [formId, testResults] of Object.entries(testResultData)) {
+    xVals = testResults.x;
+    break;
+  }
+
+  // Header
+  csvString += "x";
+  for (const [formId, testResults] of Object.entries(testResultData)) {
+    csvString += "," + formId;
+  }
+  csvString += "\n";
+
+  // Data
+  {
+    let i = 0;
+    for (let x of xVals) {
+      csvString += Number(x);
+      for (const [formId, testResults] of Object.entries(testResultData)) {
+        csvString += "," + testResults.fx[i];
+      }
+      csvString += "\n";
+      ++i;
+    }
+  }
+
+  // Create two files:
+  //  - <UNIX_TS>_<data_pack_ID>_test_info.json
+  //  - <UNIX_TS>_<data_pack_ID>_test_result.csv
+
+  const dataPackName = SessionState.getActiveDataPackId(req.session.state);
+
+  const dir = path.join(
+    global.rootDir,
+    "/public/",
+    global.gConfig.exportDir,
+    "/"
+  );
+  const hrefDir = global.gConfig.exportDir + "/";
+  const filename1 = unixTs + "_" + dataPackName + "_test_info.json";
+  const filename2 = unixTs + "_" + dataPackName + "_test_result.csv";
+
+  fs.writeFile(dir + filename1, JSON.stringify(testInfo, 4), function (err) {
+    if (err) {
+      throw Error(err);
+    }
+  });
+  fs.writeFile(dir + filename2, csvString, function (err) {
+    if (err) {
+      throw Error(err);
+    }
+  });
+
+  res.jsonp({
+    data: testResultData,
+    files: {
+      info: hrefDir + filename1,
+      data: hrefDir + filename2,
+    },
+  });
+};
 
 // ==============================================
 // vv Not refactored vv

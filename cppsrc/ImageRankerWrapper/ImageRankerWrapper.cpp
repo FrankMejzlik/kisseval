@@ -85,6 +85,9 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) :
   auto dp1 = json_data["data_packs"]["VIRET_based"][0];
   auto dp2 = json_data["data_packs"]["VIRET_based"][1];
 
+  // Google Vision AI
+  auto dp3 = json_data["data_packs"]["Google_based"][0];
+
   // V3C1 20k subset
   std::vector<DatasetDataPackRef> datasets{
       {is1["ID"].get<std::string>(), is1["description"].get<std::string>(), is1["ID"].get<std::string>(),
@@ -113,8 +116,18 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) :
       data_dir + dp2["data"]["deep_features_fpth"].get<std::string>()},
   };
 
+  std::vector<GoogleDataPackRef> Google_data_packs{
+      // Google Vision AI
+      {dp3["ID"].get<std::string>(), dp3["description"].get<std::string>(), dp3["model_options"].get<std::string>(),
+       dp3["data"]["target_dataset"].get<std::string>(),
+
+       dp3["vocabulary"]["ID"].get<std::string>(), dp3["vocabulary"]["description"].get<std::string>(),
+       data_dir + dp3["vocabulary"]["keyword_synsets_fpth"].get<std::string>(),
+
+       data_dir + dp3["data"]["presoftmax_scorings_fpth"].get<std::string>()}};
+
   ImageRanker::Config cfg{ ImageRanker::eMode::cFullAnalytical, datasets, VIRET_data_packs,
-                          std::vector<GoogleDataPackRef>(), std::vector<BowDataPackRef>() };
+                          Google_data_packs, std::vector<BowDataPackRef>() };
 
 #if LOG_CALLS
 

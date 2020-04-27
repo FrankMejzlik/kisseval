@@ -11,6 +11,7 @@
             "ImageRanker/ImageRanker/src/FileParser.cpp",
             "ImageRanker/ImageRanker/src/SimUser.cpp",
             "ImageRanker/ImageRanker/src/data_packs/VIRET_based/ViretDataPack.cpp",
+            "ImageRanker/ImageRanker/src/data_packs/Google_based/GoogleVisionDataPack.cpp",
             "ImageRanker/ImageRanker/src/datasets/SelFramesDataset.cpp",
             "ImageRanker/ImageRanker/src/ranking_models/BaseClassificationModel.cpp",
             "ImageRanker/ImageRanker/src/ranking_models/MultSumMaxModel.cpp",

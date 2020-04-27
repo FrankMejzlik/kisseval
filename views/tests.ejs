@@ -3,7 +3,7 @@
   
   switch(optionsDict.input_type) { 
     case "enum": html += `
-  <div class="cont__${optionsDict.key} option-cont cell small-12">
+  <div class="cont__${prefix}${optionsDict.key} option-cont cell small-12">
     <label for="${prefix}${optionsDict.key}"
       >${optionsDict.name}
       <select
@@ -17,7 +17,7 @@
     >`; 
     for (let i = 0; i < vals.length; ++i){ if (vals[i].options.length > 0) {
     html += `
-    <div class="${optionsDict.key}__${vals[i].ID} sub-opts">
+    <div class="${prefix}${optionsDict.key}__${vals[i].ID} sub-opts">
       `; for (let j = 0; j < vals[i].options.length; ++j){ const opt =
       vals[i].options[j]; html += generateOptionHtml(opt, idx, prefix +
       optionsDict.key + "_"); } html += `
@@ -284,6 +284,15 @@
         // Enable selected
         $(aa3).attr("disabled", false);
         $(aa4).removeClass("hidden");
+
+        const subtriggers = document.querySelectorAll(aa4 + " .cond-opts-trigger");
+        if (subtriggers && subtriggers.length > 0)
+        {
+          // Trigger change manually
+          subtriggers.forEach((elem) => {
+            elem.dispatchEvent(new Event("change"));
+          });
+        }
       });
     }
 

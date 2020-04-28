@@ -239,6 +239,9 @@ exports.runModelTests = function (req, res) {
   console.log(JSON.stringify(body, null, 4));
 
   const dataPackId = SessionState.getActiveDataPackId(req.session.state);
+  const dataPackType = SessionState.getActiveDataPackType(req.session.state);
+
+  const are_native_queries = dataPackType == "W2VV_based" ? true : false;
 
   let numPoints = 100;
 
@@ -259,6 +262,7 @@ exports.runModelTests = function (req, res) {
       10,
       dataPackId,
       optionsStr,
+      are_native_queries,
       numPoints
     );
 

@@ -78,77 +78,8 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) :
   // Arg2: string
   std::string data_dir = info[1].As<Napi::String>().Utf8Value();
 
-  auto json_data = parse_data_config_file(data_info_fpth);
-
-  // \todo Make this load everything in the file
-  auto is1 = json_data["imagesets"][0];
-  auto dp1 = json_data["data_packs"]["VIRET_based"][0];
-  auto dp2 = json_data["data_packs"]["VIRET_based"][1];
-
-  // Google Vision AI
-  auto dp3 = json_data["data_packs"]["Google_based"][0];
-
-  // V3C1 20k subset
-  std::vector<DatasetDataPackRef> datasets{
-      {is1["ID"].get<std::string>(), is1["description"].get<std::string>(), is1["ID"].get<std::string>(),
-       data_dir + is1["frames_dir"].get<std::string>(), data_dir + is1["ID_to_frame_fpth"].get<std::string>()} };
-
-  std::vector<ViretDataPackRef> VIRET_data_packs{
-    // NasNet
-    {dp1["ID"].get<std::string>(), dp1["description"].get<std::string>(), dp1["model_options"].get<std::string>(),
-     dp1["data"]["target_dataset"].get<std::string>(),
-
-     dp1["vocabulary"]["ID"].get<std::string>(), dp1["vocabulary"]["description"].get<std::string>(),
-     data_dir + dp1["vocabulary"]["keyword_synsets_fpth"].get<std::string>(),
-
-     data_dir + dp1["data"]["presoftmax_scorings_fpth"].get<std::string>(),
-     data_dir + dp1["data"]["softmax_scorings_fpth"].get<std::string>(),
-     data_dir + dp1["data"]["deep_features_fpth"].get<std::string>()},
-     // GoogLeNet
-     {dp2["ID"].get<std::string>(), dp2["description"].get<std::string>(), dp2["model_options"].get<std::string>(),
-      dp2["data"]["target_dataset"].get<std::string>(),
-
-      dp2["vocabulary"]["ID"].get<std::string>(), dp2["vocabulary"]["description"].get<std::string>(),
-      data_dir + dp2["vocabulary"]["keyword_synsets_fpth"].get<std::string>(),
-
-      data_dir + dp2["data"]["presoftmax_scorings_fpth"].get<std::string>(),
-      data_dir + dp2["data"]["softmax_scorings_fpth"].get<std::string>(),
-      data_dir + dp2["data"]["deep_features_fpth"].get<std::string>()},
-  };
-
-  std::vector<GoogleDataPackRef> Google_data_packs{
-      // Google Vision AI
-      {dp3["ID"].get<std::string>(), dp3["description"].get<std::string>(), dp3["model_options"].get<std::string>(),
-       dp3["data"]["target_dataset"].get<std::string>(),
-
-       dp3["vocabulary"]["ID"].get<std::string>(), dp3["vocabulary"]["description"].get<std::string>(),
-       data_dir + dp3["vocabulary"]["keyword_synsets_fpth"].get<std::string>(),
-
-       data_dir + dp3["data"]["presoftmax_scorings_fpth"].get<std::string>()}};
-
-  ImageRanker::Config cfg{ ImageRanker::eMode::cFullAnalytical, datasets, VIRET_data_packs,
-                          Google_data_packs, std::vector<BowDataPackRef>() };
-
-#if LOG_CALLS
-
-  std::cout << "Datasets: " << std::endl;
-
-  for (auto&& ds : datasets)
-  {
-    std::cout << "\t" << ds.ID << ", " << ds.images_dir << std::endl;
-  }
-
-  std::cout << "Viret data packs: " << std::endl;
-  for (auto&& dp : VIRET_data_packs)
-  {
-    std::cout << "\t" << dp.ID << ", " << dp.description << std::endl;
-  }
-
-  std::cout << "Google data packs: " << std::endl;
-
-  std::cout << "W2VV data packs: " << std::endl;
-
-#endif
+  ImageRanker::Config cfg =
+      ImageRanker::parse_data_config_file(ImageRanker::eMode::cFullAnalytical, data_info_fpth, data_dir);
 
   try {
     this->actualClass_ = new ImageRanker(cfg);
@@ -569,7 +500,7 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
   // Process arguments
   int length = info.Length();
 
-  if (length != 5) {
+  if (length != 6) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
 
@@ -586,14 +517,15 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
   }
   std::string data_pack_ID = info[1].As<Napi::String>().Utf8Value();
   std::string model_options = info[2].As<Napi::String>().Utf8Value();
-  size_t resulst_size = size_t(info[3].As<Napi::Number>().Uint32Value());
-  FrameId target_frame_ID = FrameId(info[4].As<Napi::Number>().Uint32Value());
+  bool native_queries = info[3].As<Napi::Boolean>().Value();
+  size_t resulst_size = size_t(info[4].As<Napi::Number>().Uint32Value());
+  FrameId target_frame_ID = FrameId(info[5].As<Napi::Number>().Uint32Value());
 
 
   // Get suggested keywords
   RankingResult rankingResult;
   try {
-    rankingResult = this->actualClass_->rank_frames(user_queries, data_pack_ID, model_options, resulst_size, target_frame_ID);
+    rankingResult = this->actualClass_->rank_frames(user_queries, data_pack_ID, model_options, native_queries, resulst_size, target_frame_ID);
   }
   catch (const std::exception& e)
   {
@@ -667,19 +599,24 @@ Napi::Value ImageRankerWrapper::run_model_test(const Napi::CallbackInfo& info)
   // Process arguments
   int length = info.Length();
 
-  if (length != 4) {
+  if (length != 5) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
 
   eUserQueryOrigin query_origin = eUserQueryOrigin(info[0].As<Napi::Number>().Uint32Value());
   std::string data_pack_ID = info[1].As<Napi::String>().Utf8Value();
   std::string model_options = info[2].As<Napi::String>().Utf8Value();
-  size_t num_points = size_t(info[3].As<Napi::Number>().Uint32Value());
+  bool native_queries = info[3].As<Napi::Boolean>().Value();
+  size_t num_points = size_t(info[4].As<Napi::Number>().Uint32Value());
 
 
   ModelTestResult test_results;
   try {
-    test_results = this->actualClass_->run_model_test(query_origin, data_pack_ID, model_options, num_points);
+    test_results = this->actualClass_->run_model_test(query_origin, data_pack_ID, model_options, native_queries, num_points);
+  }
+  catch (const NotSuportedModelOption& ex)
+  {
+    Napi::Error::New(env, ex.what()).ThrowAsJavaScriptException();
   }
   catch (const std::exception& e)
   {

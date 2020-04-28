@@ -48,7 +48,7 @@ router.get("/", function (req, res, next) {
   viewData.modelOptions = modelOptions[pack_type].options;
 
   console.log("");
-  console.log(JSON.stringify(viewData));
+  console.log(JSON.stringify(viewData, null, 4));
 
   // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);

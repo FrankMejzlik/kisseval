@@ -10,6 +10,7 @@
         "cacheDir": "/cache/",
         "exportDir": "/export/",
         "database": "local_dev",
+        "defaultDataPack": "NasNet2019",
 
         "dataInfoFpth" : "c:\\Users\\devwe\\source\\repos\\ImageRanker\\data_info.json",
         "modelOptsInfoFpth" : "c:\\Users\\devwe\\source\\repos\\ImageRanker\\models_info.json",

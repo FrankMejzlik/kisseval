@@ -31,12 +31,21 @@ exports.checkGlobalSessionState = function (req, viewData) {
       global.loadedDataPacksInfo = global.imageRanker.getLoadedDataPacksInfo();
     }
 
-    // By default, the first data pack is used
+    let ii = 0;
+    for (let pack of global.loadedDataPacksInfo)
+    {
+      if (pack.id == global.gConfig.defaultDataPack)
+        break;
+
+      ++ii;
+    }
+  
+
     sess.state = sessState.construct(
-      global.loadedDataPacksInfo[0].id,
-      global.loadedDataPacksInfo[0].model_options,
-      global.loadedDataPacksInfo[0].description,
-      global.loadedDataPacksInfo[0].target_imageset_ID,
+      global.loadedDataPacksInfo[ii].id,
+      global.loadedDataPacksInfo[ii].model_options,
+      global.loadedDataPacksInfo[ii].description,
+      global.loadedDataPacksInfo[ii].target_imageset_ID,
       1
     );
   }

@@ -166,7 +166,15 @@
         return res.json();
       })
       .then((jsonData) => {
-        handleTestSuccess(parElem, jsonData);
+        if (jsonData.error)
+        {
+          handleTestFail(parElem, jsonData.error);
+        }
+        else 
+        {
+          handleTestSuccess(parElem, jsonData);
+        }
+
       })
       .catch((e) => {
         console.log("Error: " + JSON.stringify(e.message));
@@ -225,12 +233,19 @@
     setTestBlockWorking(parElem);
   }
 
-  function handleTestFail(parElem) {
+  function handleTestFail(parElem, msg) {
     // Remove working
     unsetTestBlockWorking(parElem);
 
     // Report the error
-    pushTestBlockWarning(parElem, "Error running tests!", 10000);
+    if (msg)
+    {
+      pushTestBlockWarning(parElem, msg, 10000);
+    }
+    else 
+    {
+      pushTestBlockWarning(parElem, "Error running tests!", 10000);
+    }
   }
 
   function handleTestSuccess(parElem, chartData) {

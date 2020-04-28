@@ -247,26 +247,36 @@ exports.runModelTests = function (req, res) {
 
   let testResultData = {};
   let testOptions = {};
-  for (const [formId, options] of Object.entries(body)) {
-    // Stringify options
-    let optionsStr = "";
-    for (const [opt_key, opt_val] of Object.entries(options)) {
-      optionsStr += `${String(opt_key)}=${String(opt_val)};`;
+
+  try {
+    for (const [formId, options] of Object.entries(body)) {
+      // Stringify options
+      let optionsStr = "";
+      for (const [opt_key, opt_val] of Object.entries(options)) {
+        optionsStr += `${String(opt_key)}=${String(opt_val)};`;
+      }
+
+      // Add info
+      testOptions[formId] = optionsStr;
+
+      // Run test
+      const result = global.imageRanker.runModelTest(
+        10,
+        dataPackId,
+        optionsStr,
+        are_native_queries,
+        numPoints
+      );
+
+      testResultData[formId] = result;
     }
-
-    // Add info
-    testOptions[formId] = optionsStr;
-
-    // Run test
-    const result = global.imageRanker.runModelTest(
-      10,
-      dataPackId,
-      optionsStr,
-      are_native_queries,
-      numPoints
-    );
-
-    testResultData[formId] = result;
+  }
+  catch (error)
+  {
+    res.jsonp({
+      error: error.message
+    });
+    return;
   }
 
   const now = new Date();

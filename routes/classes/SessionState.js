@@ -1,13 +1,7 @@
 // const RankerState = require("./RankerState");
 
 // eslint-disable-next-line max-len
-exports.construct = function (
-  dataPack,
-  modelOptions,
-  dataPackType,
-  imagesetId,
-  userLevel = 1
-) {
+exports.construct = function (dataPack, modelOptions, dataPackType, imagesetId, userLevel = 1) {
   return {
     _userLevel: userLevel,
     _active_data_pack_ID: dataPack,
@@ -18,10 +12,6 @@ exports.construct = function (
       activeDataPackId: dataPack,
       _fullyNative: false,
       activeModelOptions: modelOptions,
-      queryWords: ["item1", "item2"],
-      query: [123, 456],
-      queryWords2: ["bleach1", "bleach2"],
-      query2: [22123, 2456],
       ui: {
         queryInputUnlocked: false,
         queryInput2Unlocked: false,
@@ -154,8 +144,15 @@ exports.ranker_getState = function (obj) {
   return resState;
 };
 
+exports.ranker_getUserQuery = function (obj, idx) {
+  return {
+    query: obj._ranker.ui.query,
+    wordQuery: obj._ranker.ui.queryWords,
+  };
+};
+
 exports.ranker_getUserQueryStrings = function (obj) {
-  const q1Ids = obj._ranker.query;
+  const q1Ids = obj._ranker.ui.query;
 
   let res = [];
   // \todo Make temporal
@@ -180,7 +177,7 @@ exports.ranker_getData = function (obj) {
   return obj._ranker;
 };
 
-exports.ranker_getCurrentSearchSession = function (obj, newOpts) {
+exports.ranker_getCurrentSearchSession = function (obj) {
   return obj._ranker.searchSession;
 };
 
@@ -202,11 +199,28 @@ exports.ranker_getDataPackId = function (obj) {
   return obj._ranker.activeDataPackId;
 };
 
+exports.ranker_processQueryAction = function (obj, queryIdx, action, kw_ID, word) {
+  if (action == "delete_from_query") {
+    // Find it & remove it
+    for (let i = 0; i < obj._ranker.ui.query.length; ++i) {
+      if (obj._ranker.ui.query[i] == kw_ID && obj._ranker.ui.queryWords[i] == word) {
+        obj._ranker.ui.query.splice(i, 1);
+        obj._ranker.ui.queryWords.splice(i, 1);
+        break;
+      }
+    }
+  } else {
+    obj._ranker.ui.query.push(kw_ID);
+    obj._ranker.ui.queryWords.push(word);
+  }
+};
+
 /**
  * Cancels current search session.
  */
 exports.ranker_goToState_nosess = function (obj) {
   obj._ranker = {
+    _fullyNative: false,
     activeDataPackId: obj._active_data_pack_ID,
     activeModelOptions: obj._ranker.activeModelOptions,
     ui: {
@@ -247,9 +261,7 @@ exports.ranker_goToState_finished = function (obj, found = false) {
 
   obj._ranker.searchSession.running = false;
   obj._ranker.searchSession.endTs = Date.now();
-  obj._ranker.searchSession.duration =
-    (obj._ranker.searchSession.endTs - obj._ranker.searchSession.estartTs) /
-    1000.0;
+  obj._ranker.searchSession.duration = (obj._ranker.searchSession.endTs - obj._ranker.searchSession.estartTs) / 1000.0;
   obj._ranker.searchSession.found = found;
 };
 
@@ -283,41 +295,28 @@ exports.ranker_ui_goToState_finished = function (obj) {
   obj._ranker.ui.queryInput2Unlocked = false;
 };
 
-exports.pushSearchSessionAction = function (
-  obj,
-  query_idx,
-  action,
-  operand,
-  score,
-  time_in_ms
-) {
+exports.pushSearchSessionAction = function (obj, query_idx, action, operand, score, time_in_ms, word) {
   const act = {
     queryIdx: query_idx,
     action: action,
     operand: operand,
     score: score,
     time: time_in_ms,
+    word: word,
   };
 
   obj._ranker.searchSession.actions.push(act);
 };
 
-exports.getSearchSessionActionsForChart = function (
-  obj,
-  query_idx,
-  action,
-  operand,
-  score,
-  time_in_ms
-) {
+exports.getSearchSessionActionsForChart = function (obj) {
   let chartLabels = [];
   let chartXs = [];
   let chartFxs = [];
   const actionsArr = obj._ranker.searchSession.actions;
   for (let a of actionsArr) {
-    chartLabels.push(`${s.action}(${operand})`);
+    chartLabels.push(`${a.action}(${a.word})`);
     chartXs.push(a.time);
-    chartXs.push(a.score);
+    chartFxs.push(a.score);
   }
 
   return {

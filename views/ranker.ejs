@@ -162,7 +162,8 @@
 <!-- EVALUATOR ONLY PANEL: Frame detail window -->
 <!-- ===================================== -->
 
-<% if (state.userLevel  >= 10) { %>
+<%  // \todo change
+if (state.userLevel  >= 0) { %>
     <div class="developer-bottom-analysis-bar grid-container">
 
       <ul class="accordion" id="devAccordion" data-slide-speed="0" data-accordion data-allow-all-closed="true">
@@ -175,7 +176,7 @@
           <div class="accordion-content flexible-developer-only-window" data-tab-content>
             
             <div class="current-session-chart-const small-6 cell">
-              <canvas class="chart-canvas" id="interactiveSearchChart"></canvas> 
+              <canvas class="chart-canvas" id="progressChart"></canvas> 
             </div>
 
           </div>
@@ -284,12 +285,18 @@
         xAxes: [{
           display: true,
           scaleLabel: {
-            display: true,
+            display: false,
             labelString: 'Action index'
+          },
+          ticks: {
+            autoSkip: false,
+            maxRotation: 90,
+            minRotation: 90
           }
+
         }],
         yAxes: [{
-          type: 'logarithmic',
+          type: 'linear',
           display: true,
           ticks: {
             beginAtZero: true,
@@ -320,74 +327,61 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
   {
     return;
   }
-  const returnedDataArray = chartDataArray;
-
-  let datasets = new Array();
-
-  const num = returnedDataArray.length;
+  
+  const num = chartDataArray.length;
   const divPerChanel = (num / 3) + 1;
+  
+  // Labels
+  const labels = chartDataArray[0].labels;
 
-  let labels = new Array();
+  let datasetsArr = [];
+  for (var i = 0; i < chartDataArray.length; ++i) {
+    const chartData = chartDataArray[i];
 
-  for (var i = 0; i < returnedDataArray.length; ++i) 
-  {
-    const returnedData = returnedDataArray[i];
-
-    if (typeof returnedData === "undefined" || returnedData.length <= 0)
-    {
-      continue;
-    }
+    const xs = chartData.xs;
+    const fxs = chartData.fxs;
 
     // Calculate coefs for colour
     const r = (i % 3 == 0 ? 1 : 0) * 255;
     const g = (i % 3 == 1 ? 1 : 0) * 255;
     const b = (i % 3 == 2 ? 1 : 0) * 255;
 
-
     const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
 
-    let data = new Array();
-
-    // Create labels from indices
-    for (var j = 0; j < returnedData.length; ++j)
+    let dataFormed = []
+    for (let ii = 0; ii < xs.length; ++ii)
     {
-      if (i == 0) {
-        labels.push(returnedData[j].index);
-      }
-      
-      data.push(returnedData[j].value);
+      dataFormed.push({
+        x: xs[ii],
+        y: fxs[ii]
+      })
     }
 
-    const label = String(i);
-
-    const chartData = {
-      borderColor,
+    const plotData = {
+      borderColor: borderColor,
       backgroundColor: "rgba(255, 0, 0, 0)",
-      label,
       pointRadius: 0.5,
       pointHoverRadius: 0.5,
       borderWidth: 1.0,
-      data,
+      data: dataFormed,
     }
 
-    datasets.push(chartData);
+    datasetsArr.push(plotData);
   }
 
 
-  var chartData = {
-    labels,
-    datasets
+  const plotData = {
+    labels: labels,
+    datasets: datasetsArr
   }
 
   const chartCanvas = targetCanvas;
-                       
   // Create chart
   var ctx = chartCanvas.getContext('2d');
   var chart = new Chart(ctx, chartSettings);
 
-  // Update data
-  chart.data = chartData;
-  // Update chart
+  // Update the chart
+  chart.data = plotData;
   chart.update();
 }
 
@@ -506,7 +500,7 @@ function submitImage(elem)
         // Draw chart
         let dataArray = new Array();
         dataArray.push(data.chartData);
-        const canvas = document.getElementById("rankerResultBoardChartCanvas");
+        const canvas = document.getElementById(viewData.elemIds.ranker.rankerScoreChart);
 
         document.getElementById("resultInfo").innerHTML = "";
 
@@ -650,8 +644,45 @@ function switchModalImageHtmlContents(id)
 
 
 // xoxo
-function handleActionPush(viewData, chartData) {
-  // Redraw chart
+function handleActionPush(viewData, chartData, queryResult) {
+
+  const frames = queryResult.frames;
+  const targetPos = queryResult.target_position;
+
+  $targetList = $("#" + viewData.elemIds.ranker.imageGrid);
+  $targetList.html("");
+
+  $("#targetImageRankOut").html("<p>Target rank: </p>" + targetPos);
+  
+
+  // Update image grid
+  numImagesToPrint = frames.length;
+  currentImagesToPrintArray = frames;
+
+  currentImageIndex = 0;
+  for (currentImageIndex = 0; currentImageIndex < numImagesToPrint; ++currentImageIndex) 
+  {
+    $targetList.append(
+      '<button class="close-button" data-close aria-label="Close modal" type="button">\
+        <span aria-hidden="true">&times;</span>\
+      </button>\
+      <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + frames[currentImageIndex].frame_ID+ ')"\
+        data-image-id="' + frames[currentImageIndex].frame_ID + '" style="background-image: url(\'/images/' +frames[currentImageIndex].filename + '\')">\
+        <a class="button btn-submit success" onclick="submitImage(this);" title="Submit this image">&#10004;</a>\
+        <a class="just-clicker"  data-open="modalImage"></a>\
+      </li>'
+    );
+  }
+
+  // Draw chart
+  let dataArray = new Array();
+  dataArray.push(chartData);
+  const canvas = document.getElementById(viewData.elemIds.ranker.progressChart);
+  if (canvas)
+  {
+    drawInteractiveSearchChart(dataArray, canvas);
+  }
+
 }
 
 function processAction(queryIdx, action, operand, word)
@@ -659,7 +690,8 @@ function processAction(queryIdx, action, operand, word)
   const reqData = {
     aueryIdx: queryIdx,
     action: action,
-    operand: operand
+    operand: operand,
+    word: word
   };
 
   fetch("/ranker_push_search_action", {
@@ -680,63 +712,18 @@ function processAction(queryIdx, action, operand, word)
         // Update viewData
         viewData.ranker.searchSession = data.searchSession;
         viewData.ranker.state = data.state;
-        
+
         const chartData = data.chartData;
+        const queryResult = data.queryResult;
 
         // Update document
-        handleActionPush(viewData, chartData);
+        handleActionPush(viewData, chartData, queryResult);
 
       })
       .catch((e) => {
         console.log("Error: " + JSON.stringify(e.message));
         showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
       });
-
-  // Create AJAX call to get appropriate data
-  get('/ranker_ajax_process_action?action=' + action + '&operand=' + operand + '&operandWord=' + word)
-    // If response OK
-    .then((data) => {
-
-      data = JSON.paata = JSON.parse(data);
-
-      $targetList = $("#resultImagesList");
-      $targetList.html("");
-
-      if (typeof data.relevantImagesArray.targetImageRank !== "undefined")
-      {
-        $("#targetImageRankOut").html("<p>Target rank: </p>" + data.relevantImagesArray.targetImageRank);
-      }
-      
-      numImagesToPrint = data.relevantImagesArray.images.length;
-      currentImagesToPrintArray = data.relevantImagesArray.images;
-
-      currentImageIndex = 0;
-      for (currentImageIndex = 0; currentImageIndex < numImagesPerBatch; ++currentImageIndex) 
-      {
-        $targetList.append(
-          '<button class="close-button" data-close aria-label="Close modal" type="button">\
-            <span aria-hidden="true">&times;</span>\
-          </button>\
-          <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
-            data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
-            <a class="button btn-submit success" onclick="submitImage(this);" title="Submit this image">&#10004;</a>\
-            <a class="just-clicker"  data-open="modalImage"></a>\
-          </li>'
-        );
-      }
-
-      // Draw chart
-      let dataArray = new Array();
-      dataArray.push(data.chartData);
-      const canvas = document.getElementById("interactiveSearchChart");
-
-      drawInteractiveSearchChart(dataArray, canvas);
-
-    })
-    // If error occured
-    .catch((err) => {
-        // Do stuff on error...
-    });
 }
 
 function discardSession() {
@@ -794,7 +781,7 @@ function setupScoreBoard(viewData) {
     
     <div class="result-actions-chart cell large-6">
       <h2>Rank progress:</h2>
-      <canvas id="rankerResultBoardChartCanvas"></canvas>
+      <canvas id="${viewData.elemIds.ranker.rankerScoreChart}"></canvas>
     </div>
 
     <div class="result-actions-info cell large-6">  
@@ -814,7 +801,7 @@ function addSelectedKeyword(elem, ID, word)
   let html = "";
   html += `
       <li class="slected-keyword-checkbox">
-        <input type="checkbox" name="keywordWord" value="${ID}" checked="">                
+        <input type="checkbox" name="keywordWord" value="${word}" checked="">                
         <input type="checkbox" name="keyword" value="${ID}" checked="">                
         <span>${word}</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 0);">&#10006</a>
       </li>`;
@@ -832,7 +819,7 @@ function setupSelectedKeywords(viewData) {
   const keywordIds = viewData.ranker.ui.query;
   const wordStrings = viewData.ranker.ui.queryWords;
   for (let i = 0; i < keywordIds.length; ++i) {
-    addSelectedKeyword(elem, keywordIds[i], vwordStrings[i]);
+    addSelectedKeyword(elem, keywordIds[i], wordStrings[i]);
   }
 }
 

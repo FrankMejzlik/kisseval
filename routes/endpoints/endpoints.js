@@ -12,21 +12,11 @@ function writePrefixCache(kwDataType) {
   prefixCache = [];
 
   const today = new Date();
-  const todayString =
-    String(today.getDate()) +
-    "-" +
-    String(today.getMonth()) +
-    "-" +
-    String(today.getFullYear());
+  const todayString = String(today.getDate()) + "-" + String(today.getMonth()) + "-" + String(today.getFullYear());
 
   const filepath = path.join(
     global.rootDir,
-    global.gConfig.outputDir +
-      "/autocomplete/" +
-      todayString +
-      "." +
-      kwDataType +
-      ".log"
+    global.gConfig.outputDir + "/autocomplete/" + todayString + "." + kwDataType + ".log"
   );
 
   const file = fs.createWriteStream(filepath, { flags: "a" });
@@ -48,21 +38,11 @@ exports.setActiveDataPack = function (req, res) {
   for (const pack of global.loadedDataPacksInfo) {
     if (pack.id == newDataPackId) {
       // Set new state
-      SessionState.setActieDataPack(
-        sess.state,
-        pack.id,
-        pack.model_options,
-        pack.description
-      );
+      SessionState.setActieDataPack(sess.state, pack.id, pack.model_options, pack.description);
 
       global.logger.log(
         "debug",
-        "<" +
-          req.session.id +
-          "> \n" +
-          "Active data pack changed to  '" +
-          newDataPackId +
-          "'"
+        "<" + req.session.id + "> \n" + "Active data pack changed to  '" + newDataPackId + "'"
       );
       res.jsonp(true);
       return;
@@ -71,12 +51,7 @@ exports.setActiveDataPack = function (req, res) {
 
   global.logger.log(
     "debug",
-    "<" +
-      req.session.id +
-      "> \n" +
-      "Active data pack change failed. Pack '" +
-      newDataPackId +
-      "' not found."
+    "<" + req.session.id + "> \n" + "Active data pack change failed. Pack '" + newDataPackId + "' not found."
   );
 
   res.jsonp(false);
@@ -85,13 +60,19 @@ exports.setActiveDataPack = function (req, res) {
 exports.getAutocompleteResults = function (req, res) {
   const sess = req.session;
 
+  let isRanker = false;
+  if (typeof req.query.isRanker !== "undefined" && req.query.isRanker == "true") {
+    isRanker = true;
+  }
   const prefix = req.query.queryValue;
 
   // Get active settings from the current session
   const activeDataPackId = SessionState.getActiveDataPackId(sess.state);
 
-  // \todo Do not use default
-  const modelOptions = SessionState.getActiveDataPackModelOptions(sess.state);
+  let modelOptions = SessionState.getActiveDataPackModelOptions(sess.state);
+  if (isRanker) {
+    modelOptions = SessionState.ranker_getActiveModelOptions(sess.state);
+  }
 
   const withExImgs = SessionState.getAnnotWithExampleImages(sess.state);
   const numResults = SessionState.getAnnotNumResults(sess.state);
@@ -166,9 +147,7 @@ exports.submitAnnotatorQuery = function (req, res) {
   const sessionId = sess.id;
   const frameSequence = SessionState.getAnnotImageSquence(sess.state);
   const activeDataPackId = SessionState.getActiveDataPackId(sess.state);
-  const activeModelOptions = SessionState.getActiveDataPackModelOptions(
-    sess.state
-  );
+  const activeModelOptions = SessionState.getActiveDataPackModelOptions(sess.state);
 
   let keywordIds = req.body.keyword;
   // Make sure it's an array
@@ -265,13 +244,7 @@ exports.runModelTests = function (req, res) {
       testOptions[formId] = optionsStr;
 
       // Run test
-      const result = global.imageRanker.runModelTest(
-        10,
-        dataPackId,
-        optionsStr,
-        are_native_queries,
-        numPoints
-      );
+      const result = global.imageRanker.runModelTest(10, dataPackId, optionsStr, are_native_queries, numPoints);
 
       testResultData[formId] = result;
     }
@@ -326,12 +299,7 @@ exports.runModelTests = function (req, res) {
 
   const dataPackName = SessionState.getActiveDataPackId(req.session.state);
 
-  const dir = path.join(
-    global.rootDir,
-    "/public/",
-    global.gConfig.exportDir,
-    "/"
-  );
+  const dir = path.join(global.rootDir, "/public/", global.gConfig.exportDir, "/");
   const hrefDir = global.gConfig.exportDir + "/";
   const filename1 = unixTs + "_" + dataPackName + "_test_info.json";
   const filename2 = unixTs + "_" + dataPackName + "_test_result.csv";
@@ -364,10 +332,7 @@ exports.ExportFile = function (req, res) {
   const sess = req.session;
   global.logger.log("debug", "<" + sess.id + ">: => ExportFile()");
 
-  global.logger.log(
-    "debug",
-    "newAction: " + JSON.stringify(req.query, undefined, 4)
-  );
+  global.logger.log("debug", "newAction: " + JSON.stringify(req.query, undefined, 4));
 
   const native = req.body.native;
 
@@ -416,29 +381,13 @@ exports.ExportFile = function (req, res) {
         console.log("The solution is: ", results[0].solution);
 
         filename =
-          filename +
-          "." +
-          String(kwScDataType.keywordsDataType) +
-          "." +
-          String(kwScDataType.scoringDataType) +
-          ".txt";
+          filename + "." + String(kwScDataType.keywordsDataType) + "." + String(kwScDataType.scoringDataType) + ".txt";
         global.logger.log("debug", "<" + sess.id + ">: => b");
-        const outputFilepath = path.join(
-          global.rootDir,
-          "/public/",
-          global.gConfig.exportDir,
-          filename
-        );
+        const outputFilepath = path.join(global.rootDir, "/public/", global.gConfig.exportDir, filename);
 
         let strToWrite = "";
         for (let i = 0; i < results.length; ++i) {
-          strToWrite +=
-            results[i].image_id +
-            "," +
-            results[i].manually_validated +
-            ',"' +
-            results[i].query +
-            '"\n';
+          strToWrite += results[i].image_id + "," + results[i].manually_validated + ',"' + results[i].query + '"\n';
         }
 
         fs.writeFile(outputFilepath, strToWrite, function (err) {
@@ -456,13 +405,9 @@ exports.ExportFile = function (req, res) {
         global.logger.log("debug", "<" + sess.id + ">: => c");
 
         // Save to app context
-        global.exportedFiles["id" + iii]["id" + jjj][kkk] =
-          global.gConfig.exportDir + filename;
+        global.exportedFiles["id" + iii]["id" + jjj][kkk] = global.gConfig.exportDir + filename;
 
-        global.logger.log(
-          "debug",
-          "<" + sess.id + ">: Exported file '" + outputFilepath + "'"
-        );
+        global.logger.log("debug", "<" + sess.id + ">: Exported file '" + outputFilepath + "'");
 
         global.logger.log("debug", "<" + sess.id + ">: <= ExportFile()");
         res.jsonp(responseData);
@@ -470,36 +415,14 @@ exports.ExportFile = function (req, res) {
     );
   } else {
     filename =
-      filename +
-      "." +
-      String(kwScDataType.keywordsDataType) +
-      "." +
-      String(kwScDataType.scoringDataType) +
-      ".txt";
+      filename + "." + String(kwScDataType.keywordsDataType) + "." + String(kwScDataType.scoringDataType) + ".txt";
     global.logger.log("debug", "<" + sess.id + ">: => b");
-    const outputFilepath = path.join(
-      global.rootDir,
-      "/public/",
-      global.gConfig.exportDir,
-      filename
-    );
+    const outputFilepath = path.join(global.rootDir, "/public/", global.gConfig.exportDir, filename);
 
     global.logger.log("debug", "<" + sess.id + ">: Exporting file...");
-    global.logger.log(
-      "debug",
-      "<" +
-        sess.id +
-        ">: kwScDataType = " +
-        JSON.stringify(kwScDataType, undefined, 4)
-    );
-    global.logger.log(
-      "debug",
-      "<" + sess.id + ">: fileTypeId = " + String(fileTypeId)
-    );
-    global.logger.log(
-      "debug",
-      "<" + sess.id + ">: outputFilepath = " + String(outputFilepath)
-    );
+    global.logger.log("debug", "<" + sess.id + ">: kwScDataType = " + JSON.stringify(kwScDataType, undefined, 4));
+    global.logger.log("debug", "<" + sess.id + ">: fileTypeId = " + String(fileTypeId));
+    global.logger.log("debug", "<" + sess.id + ">: outputFilepath = " + String(outputFilepath));
 
     const responseData = {
       result: false,
@@ -509,21 +432,11 @@ exports.ExportFile = function (req, res) {
     try {
       // ======================================================
       // ======================================================
-      global.imageRanker.exportDataFile(
-        kwScDataType,
-        fileTypeId,
-        outputFilepath,
-        native
-      );
+      global.imageRanker.exportDataFile(kwScDataType, fileTypeId, outputFilepath, native);
       // ======================================================
       // ======================================================
     } catch (err) {
-      global.logger.log(
-        "error",
-        "<" +
-          sess.id +
-          ">: Exporting data file failed! (imageRanker.exportDataFile())"
-      );
+      global.logger.log("error", "<" + sess.id + ">: Exporting data file failed! (imageRanker.exportDataFile())");
 
       res.jsonp(responseData);
       return;
@@ -538,13 +451,9 @@ exports.ExportFile = function (req, res) {
     global.logger.log("debug", "<" + sess.id + ">: => c");
 
     // Save to app context
-    global.exportedFiles["id" + iii]["id" + jjj][kkk] =
-      global.gConfig.exportDir + filename;
+    global.exportedFiles["id" + iii]["id" + jjj][kkk] = global.gConfig.exportDir + filename;
 
-    global.logger.log(
-      "debug",
-      "<" + sess.id + ">: Exported file '" + outputFilepath + "'"
-    );
+    global.logger.log("debug", "<" + sess.id + ">: Exported file '" + outputFilepath + "'");
 
     global.logger.log("debug", "<" + sess.id + ">: <= ExportFile()");
     res.jsonp(responseData);

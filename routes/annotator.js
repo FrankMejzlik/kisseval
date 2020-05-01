@@ -26,19 +26,12 @@ function processReq(req, viewData) {
     const activeImgSet = SessionState.getActieImageset(sess.state);
     const len = SessionState.getRandFrameSeqLength(sess.state);
 
-    const framesSequence = global.imageRanker.getRandomFrameSequence(
-      activeImgSet,
-      len
-    );
+    const framesSequence = global.imageRanker.getRandomFrameSequence(activeImgSet, len);
     SessionState.setAnnotImageSquence(sess.state, framesSequence);
 
     global.logger.log(
       "debug",
-      "<" +
-        req.session.id +
-        "> \n" +
-        "Serving image sequence: " +
-        JSON.stringify(framesSequence)
+      "<" + req.session.id + "> \n" + "Serving image sequence: " + JSON.stringify(framesSequence)
     );
   }
 }

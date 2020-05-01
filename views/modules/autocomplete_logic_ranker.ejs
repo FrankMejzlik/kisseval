@@ -60,7 +60,7 @@
         a.setAttribute("class", "autocomplete-items");
 
         // Create AJAX call to get appropriate data
-        get('/get_autocomplete_results?queryValue=' + val)
+        get('/get_autocomplete_results?isRanker=true&queryValue=' + val)
           // If response OK
           .then((data) => {
 

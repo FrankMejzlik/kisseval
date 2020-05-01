@@ -34,9 +34,7 @@ exports.parseModelSettingsFromForm = function (sess, formBbody) {
     }
     // Transformation parameter
     if (typeof formBbody.aggregationParameter !== "undefined") {
-      settings.transformation.parameter = Number(
-        formBbody.aggregationParameter
-      );
+      settings.transformation.parameter = Number(formBbody.aggregationParameter);
     }
   }
 
@@ -49,26 +47,18 @@ exports.parseModelSettingsFromForm = function (sess, formBbody) {
 
     // Boolean specific
     if (typeof formBbody.boolean_trueTreshold !== "undefined") {
-      settings.aggregationModel.boolean.trueTreshold = Number(
-        formBbody.boolean_trueTreshold
-      );
+      settings.aggregationModel.boolean.trueTreshold = Number(formBbody.boolean_trueTreshold);
     }
     if (typeof formBbody.boolean_inBucketRanking !== "undefined") {
-      settings.aggregationModel.boolean.inBucketRanking = Number(
-        formBbody.boolean_inBucketRanking
-      );
+      settings.aggregationModel.boolean.inBucketRanking = Number(formBbody.boolean_inBucketRanking);
     }
 
     // Viret specific
     if (typeof formBbody.viret_trueTreshold !== "undefined") {
-      settings.aggregationModel.viret.trueTreshold = Number(
-        formBbody.viret_trueTreshold
-      );
+      settings.aggregationModel.viret.trueTreshold = Number(formBbody.viret_trueTreshold);
     }
     if (typeof formBbody.viret_queryOperations !== "undefined") {
-      settings.aggregationModel.viret.queryOperations = Number(
-        formBbody.viret_queryOperations
-      );
+      settings.aggregationModel.viret.queryOperations = Number(formBbody.viret_queryOperations);
     }
   }
 
@@ -82,9 +72,7 @@ exports.parseModelSettingsFromForm = function (sess, formBbody) {
   // Simulated user
   {
     if (typeof formBbody.simulatedUser_exponent !== "undefined") {
-      settings.simulatedUser.exponent = Number(
-        formBbody.simulatedUser_exponent
-      );
+      settings.simulatedUser.exponent = Number(formBbody.simulatedUser_exponent);
     }
   }
 
@@ -122,14 +110,10 @@ exports.convertSettingsObjectToNativeFormat = function (settings) {
           result.rankingModelSettings.push(String(settings.keywordFrequency));
 
           // 1 ->
-          result.rankingModelSettings.push(
-            String(settings.aggregationModel.boolean.trueTreshold)
-          );
+          result.rankingModelSettings.push(String(settings.aggregationModel.boolean.trueTreshold));
 
           // 2 =>
-          result.rankingModelSettings.push(
-            String(settings.aggregationModel.boolean.inBucketRanking)
-          );
+          result.rankingModelSettings.push(String(settings.aggregationModel.boolean.inBucketRanking));
         }
         break;
 
@@ -139,14 +123,10 @@ exports.convertSettingsObjectToNativeFormat = function (settings) {
           result.rankingModelSettings.push(String(settings.keywordFrequency));
 
           // 0 =>
-          result.rankingModelSettings.push(
-            String(settings.aggregationModel.viret.trueTreshold)
-          );
+          result.rankingModelSettings.push(String(settings.aggregationModel.viret.trueTreshold));
 
           // 1 =>
-          result.rankingModelSettings.push(
-            String(settings.aggregationModel.viret.queryOperations)
-          );
+          result.rankingModelSettings.push(String(settings.aggregationModel.viret.queryOperations));
         }
         break;
 
@@ -218,11 +198,7 @@ exports.resolveUserLevel = function (req, viewData) {
   return;
 };
 
-exports.generateImageRankerConstructorArgs = function (
-  inputImageSetIds,
-  inputKeywordDataIds,
-  inputScoringDataIds
-) {
+exports.generateImageRankerConstructorArgs = function (inputImageSetIds, inputKeywordDataIds, inputScoringDataIds) {
   const params = [];
 
   for (let isId = 0; isId < inputImageSetIds.length; ++isId) {
@@ -233,108 +209,62 @@ exports.generateImageRankerConstructorArgs = function (
     const paramsC = [];
 
     // Path to images
-    params.push(
-      path.join(global.rootDir, global.gConfig.imageSets[isId].imagesDir)
-    );
+    params.push(path.join(global.rootDir, global.gConfig.imageSets[isId].imagesDir));
 
     // Get data dir path
-    const isDir = path.join(
-      global.rootDir,
-      global.gConfig.imageSets[isId].dataDir
-    );
+    const isDir = path.join(global.rootDir, global.gConfig.imageSets[isId].dataDir);
 
     for (let kwId = 0; kwId < inputKeywordDataIds.length; ++kwId) {
-      const kwDir = path.join(
-        isDir,
-        global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataDir
-      );
+      const kwDir = path.join(isDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataDir);
 
       paramsAA.push({
-        keywordsDataType:
-          global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
-        filepath: path.join(
-          kwDir,
-          global.gConfig.imageSets[isId].keywordDataTypes[kwId]
-            .keywordDataFilename
-        ),
+        keywordsDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+        filepath: path.join(kwDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordDataFilename),
       });
 
-      if (
-        global.gConfig.imageSets[isId].keywordDataTypes[kwId]
-          .wordToVecFilename != ""
-      ) {
+      if (global.gConfig.imageSets[isId].keywordDataTypes[kwId].wordToVecFilename != "") {
         paramsAAw2v.push({
-          keywordsDataType:
-            global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
-          filepath: path.join(
-            kwDir,
-            global.gConfig.imageSets[isId].keywordDataTypes[kwId]
-              .wordToVecFilename
-          ),
+          keywordsDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+          filepath: path.join(kwDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].wordToVecFilename),
         });
       } else {
         paramsAAw2v.push({
-          keywordsDataType:
-            global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+          keywordsDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
           filepath: "",
         });
       }
 
       for (let scId = 0; scId < inputScoringDataIds.length; ++scId) {
-        const scDir = path.join(
-          kwDir,
-          global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-            .dataDir
-        );
+        const scDir = path.join(kwDir, global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].dataDir);
 
         paramsA.push({
-          keywordsDataType:
-            global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
-          scoringDataType:
-            global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-              .scoringDataType,
+          keywordsDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+          scoringDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].scoringDataType,
           filepath: path.join(
             scDir,
-            global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-              .scoringDataFilename
+            global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].scoringDataFilename
           ),
         });
 
-        const b =
-          global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-            .softmaxScoringDataFilename;
+        const b = global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].softmaxScoringDataFilename;
         if (b != "") {
           paramsB.push({
-            keywordsDataType:
-              global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
-            scoringDataType:
-              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
-                scId
-              ].scoringDataType,
+            keywordsDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+            scoringDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].scoringDataType,
             filepath: path.join(
               scDir,
-              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
-                scId
-              ].softmaxScoringDataFilename
+              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].softmaxScoringDataFilename
             ),
           });
         }
-        const c =
-          global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId]
-            .deepFeaturesFilename;
+        const c = global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].deepFeaturesFilename;
         if (c != "") {
           paramsC.push({
-            keywordsDataType:
-              global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
-            scoringDataType:
-              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
-                scId
-              ].scoringDataType,
+            keywordsDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].keywordType,
+            scoringDataType: global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].scoringDataType,
             filepath: path.join(
               scDir,
-              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[
-                scId
-              ].deepFeaturesFilename
+              global.gConfig.imageSets[isId].keywordDataTypes[kwId].dataSets[scId].deepFeaturesFilename
             ),
           });
         }
@@ -347,8 +277,7 @@ exports.generateImageRankerConstructorArgs = function (
       global.rootDir,
       global.gConfig.imageSets[isId].dataDir,
       global.gConfig.imageSets[isId].keywordDataTypes[0].dataDir,
-      global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
-        .dataSets[inputKeywordDataIds[0]].dataDir
+      global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]].dataSets[inputKeywordDataIds[0]].dataDir
     );
 
     params.push(paramsAA);
@@ -358,14 +287,14 @@ exports.generateImageRankerConstructorArgs = function (
     params.push(
       path.join(
         aaa,
-        global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
-          .dataSets[inputKeywordDataIds[0]].imageIdToFilename
+        global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]].dataSets[inputKeywordDataIds[0]]
+          .imageIdToFilename
       )
     );
     params.push(
       Number(
-        global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]]
-          .dataSets[inputKeywordDataIds[0]].idOffset
+        global.gConfig.imageSets[isId].keywordDataTypes[inputKeywordDataIds[0]].dataSets[inputKeywordDataIds[0]]
+          .idOffset
       )
     );
     params.push(Number(global.gConfig.appMode));

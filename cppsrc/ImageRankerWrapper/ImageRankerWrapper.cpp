@@ -521,11 +521,8 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
   size_t resulst_size = size_t(info[4].As<Napi::Number>().Uint32Value());
   FrameId target_frame_ID = FrameId(info[5].As<Napi::Number>().Uint32Value());
 
-
-  std::cout << " DFSFDSF " << native_queries << std::endl;
-
   // Get suggested keywords
-  RankingResult rankingResult;
+  RankingResultWithFilenames rankingResult;
   try {
     rankingResult = this->actualClass_->rank_frames(user_queries, data_pack_ID, model_options, resulst_size, native_queries, target_frame_ID);
   }
@@ -566,7 +563,7 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
 
     // Iterate through all results
     size_t i = 0ULL;
-    for (auto&& frame_ID : rankingResult.m_frames)
+    for (auto&& [frame_ID, filename] : rankingResult.m_frames)
     {
       // Temp array structure
       napi_value single_result_dict;
@@ -578,6 +575,15 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
         napi_create_string_utf8(env, "frame_ID", NAPI_AUTO_LENGTH, &key);
         napi_value value;
         napi_create_uint32(env, uint32_t(frame_ID), &value);
+
+        napi_set_property(env, single_result_dict, key, value);
+      }
+      // filename
+      {
+        napi_value key;
+        napi_create_string_utf8(env, "filename", NAPI_AUTO_LENGTH, &key);
+        napi_value value;
+        napi_create_string_utf8(env, filename.c_str(), NAPI_AUTO_LENGTH, &value);
 
         napi_set_property(env, single_result_dict, key, value);
       }

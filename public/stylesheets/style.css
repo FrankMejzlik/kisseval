@@ -257,7 +257,8 @@ body {
 }
 
 .current-session-chart-const canvas {
-  max-width: 400px;
+  /*! width: 800px !important; */
+  /*! height: 400px !important; */
 }
 
 #mainGlobalMessageCont {
@@ -327,6 +328,9 @@ body {
 
 #currModelInfo {
   
+  font-size: 12px;
+  line-height: 1.0;
+  margin: 0;
 }
 
 .image-grid-section {
@@ -1452,7 +1456,7 @@ input[type=submit] {
 
 .autocomplete-items .example-images-list li {
   display: inline-block;
-  /* width: 100px; */
+  width: 100px;
   height: 100%;
   /* position: relative; */
   vertical-align: top;
@@ -1714,6 +1718,16 @@ margin-bottom: 30px;
   font-size: 14px;
 }
 
+#getRandomImageCont {
+  width: 60%;
+}
+
+#getRandomImageCont .button {
+  width: 45%;
+  font-size: 14px;
+    padding: 5px;
+}
+
 .image-preview {
   position: relative;
   text-align: center;
@@ -1778,16 +1792,25 @@ text-align: center;
 
 #targetImagesCont {
   list-style: none;
+  max-height: 200px;
 }
 
 #targetImagesCont li {
   position: absolute;
 }
 
+#targetImagesCont li img {
+  /*! position: absolute; */
+  width: auto;
+
+height: 100%;
+}
+
 #targetImagesCont li:nth-child(1) {
-  width: 60%;
+  width: auto;
   left:0;
   top: 0;
+  height: 100%;
 }
 
 #targetImagesCont li:nth-child(2) {

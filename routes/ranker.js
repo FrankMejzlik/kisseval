@@ -37,15 +37,14 @@ router.get("/", function (req, res, next) {
 
   // Main request cycle
   preProcessReq(req, viewData);
+  const uiState0 = SessionState.ranker_getCurrentUiState(sess.state);
   processReq(req, viewData);
   postProcessReq(req, viewData);
 
   const searchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   const uiState = SessionState.ranker_getCurrentUiState(sess.state);
 
-  let formatedModelOptions = SessionState.ranker_getActiveModelOptions(
-    sess.state
-  );
+  let formatedModelOptions = SessionState.ranker_getActiveModelOptions(sess.state);
   const regexp = /;/gi;
   formatedModelOptions = formatedModelOptions.replace(regexp, "<br />");
 
@@ -63,10 +62,7 @@ router.get("/", function (req, res, next) {
 
   viewData.ranker.state = SessionState.ranker_getState(sess.state);
 
-  global.logger.log(
-    "debug",
-    "<" + sess.id + ">: viewData:" + JSON.stringify(viewData, null, 4)
-  );
+  global.logger.log("debug", "<" + sess.id + ">: viewData:" + JSON.stringify(viewData, null, 4));
 
   // Add also model options
   const pack_type = SessionState.getActiveDataPackType(req.session.state);

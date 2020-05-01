@@ -20,19 +20,13 @@ exports.setModelOptions = function (req, res) {
     break;
   }
 
-  global.logger.log(
-    "debug",
-    "<" + sess.id + ">: \t Changing model options to: '" + optionsStr + "'"
-  );
+  global.logger.log("debug", "<" + sess.id + ">: \t Changing model options to: '" + optionsStr + "'");
 
   SessionState.ranker_setActiveModelOptions(sess.state, optionsStr);
 
   global.logger.log(
     "debug",
-    "<" +
-      sess.id +
-      ">: \t activeOptions = " +
-      SessionState.ranker_getActiveModelOptions(req.session.state)
+    "<" + sess.id + ">: \t activeOptions = " + SessionState.ranker_getActiveModelOptions(req.session.state)
   );
 
   res.st;
@@ -49,20 +43,20 @@ exports.pushSearchAction = function (req, res) {
 
   const action = body.action;
   const operand = body.operand;
-  const rank = body.rank;
+  const word = body.word;
 
   const searchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
-  const time_in_ms = searchSess.startTs - Date.now();
+  const time_in_ms = Date.now() - searchSess.startTs;
 
-  // Store this action
-  SessionState.pushSearchSessionAction(
-    sess.state,
-    0,
-    action,
-    Number(operand),
-    Number(rank),
-    Number(time_in_ms)
-  );
+  const oldQueries = SessionState.ranker_getUserQuery(sess.state, 0);
+
+  global.logger.log("debug", "PRE: \n" + JSON.stringify(oldQueries, null, 4));
+
+  // Project action to queries
+  SessionState.ranker_processQueryAction(sess.state, 0, action, operand, word);
+  const newQueries = SessionState.ranker_getUserQuery(sess.state, 0);
+
+  global.logger.log("debug", "POST: \n" + JSON.stringify(newQueries, null, 4));
 
   // +++++++++++++++++++++++++++++++++++++++++++++
   // Get updated search results
@@ -73,9 +67,7 @@ exports.pushSearchAction = function (req, res) {
   const isNativeQuery = SessionState.ranker_getFullyNative(sess.state);
   const resultSize = global.gConfig.ranker.resultSizeLimit;
 
-  const currSearchSessBefore = SessionState.ranker_getCurrentSearchSession(
-    sess.state
-  );
+  const currSearchSessBefore = SessionState.ranker_getCurrentSearchSession(sess.state);
   const targetFrame = currSearchSessBefore.targetFramesIds[0];
 
   const queryResult = global.imageRanker.rankFrames(
@@ -89,12 +81,13 @@ exports.pushSearchAction = function (req, res) {
 
   // +++++++++++++++++++++++++++++++++++++++++++++
 
+  // Store this action
+  const rank = queryResult.target_position;
+  SessionState.pushSearchSessionAction(sess.state, 0, action, Number(operand), Number(rank), Number(time_in_ms), word);
+
   // Construct chart data
   const chartData = SessionState.getSearchSessionActionsForChart(sess.state);
-  const currSearchSess = SessionState.ranker_getCurrentSearchSession(
-    sess.state,
-    targetFramesIds
-  );
+  const currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   const ssState = SessionState.ranker_getState(sess.state);
 
   global.logger.log("debug", "<" + sess.id + ">: Added new action...");
@@ -102,15 +95,19 @@ exports.pushSearchAction = function (req, res) {
     "debug",
     "<" +
       sess.id +
-      ">: \t newAction: " +
+      ">:" +
       "action: " +
       action +
+      "\n" +
       "operand: " +
       operand +
+      "\n" +
       "rank: " +
       rank +
+      "\n" +
       "time: " +
-      time
+      time_in_ms +
+      "\n"
   );
 
   global.logger.log("debug", "<" + sess.id + ">: <= pushSearchAction()");
@@ -133,32 +130,17 @@ exports.startSearchSession = function (req, res) {
 
   let targetFramesIds = body.targetFramesIds;
   if (targetFramesIds.length == 0) {
-    targetFramesIds = global.imageRanker.getRandomFrameSequence(
-      activeImgSet,
-      1
-    );
+    targetFramesIds = global.imageRanker.getRandomFrameSequence(activeImgSet, 1);
   }
 
   // Write the session
   SessionState.ranker_goToState_running(sess.state, targetFramesIds);
 
-  const currSearchSess = SessionState.ranker_getCurrentSearchSession(
-    sess.state,
-    targetFramesIds
-  );
+  const currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state, targetFramesIds);
   const ssState = SessionState.ranker_getState(sess.state);
 
-  global.logger.log(
-    "debug",
-    "<" +
-      sess.id +
-      ">: currentSearchSession:" +
-      JSON.stringify(currSearchSess, null, 4)
-  );
-  global.logger.log(
-    "debug",
-    "<" + sess.id + ">: currentSearchSession STATE:" + ssState
-  );
+  global.logger.log("debug", "<" + sess.id + ">: currentSearchSession:" + JSON.stringify(currSearchSess, null, 4));
+  global.logger.log("debug", "<" + sess.id + ">: currentSearchSession STATE:" + ssState);
 
   global.logger.log("debug", "<" + sess.id + ">: <= startSearchSession()");
   res.status(200).jsonp({

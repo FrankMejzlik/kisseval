@@ -35,7 +35,9 @@
                 "selectedKeywords1": "selectedKeywords1",
                 "targetFrameId": "targetImageId",
                 "targetFrameButtons": "getRandomImageCont",
-                "queryInput": "queryInput"
+                "queryInput": "queryInput",
+                "progressChart": "progressChart",
+                "rankerScoreChart": "rankerScoreChart"
             }
         }
     },

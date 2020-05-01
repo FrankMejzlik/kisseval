@@ -149,16 +149,22 @@ exports.startSearchSession = function (req, res) {
   });
 };
 
-exports.cancelSearchSession = function (req, res) {
+exports.discardSearchSession = function (req, res) {
   const sess = req.session;
-  global.logger.log("debug", "=> cancelSearchSession()");
+  global.logger.log("debug", "=> discardSearchSession()");
 
   const body = req.body;
 
-  SessionState.ranker_ui_goToState_nosess(sess.state);
+  SessionState.ranker_goToState_nosess(sess.state);
 
-  global.logger.log("debug", "<" + sess.id + ">: <= cancelSearchSession()");
-  res.status(200).jsonp(true);
+  let currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
+  let ssState = SessionState.ranker_getState(sess.state);
+
+  global.logger.log("debug", "<" + sess.id + ">: <= discardSearchSession()");
+  res.status(200).jsonp({
+    searchSession: currSearchSess,
+    state: ssState,
+  });
 };
 
 exports.submitFrame = function (req, res) {
@@ -166,12 +172,45 @@ exports.submitFrame = function (req, res) {
   global.logger.log("debug", "<" + sess.id + ">: => submitFrame()");
 
   const body = req.body;
+  const submittedFrameId = body.frameId;
 
-  // Store this action
-  //SessionState.pushSearchSessionAction(sess.state, 0, action, Number(operand), Number(rank), Number(time_in_ms));
+  let currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
+  let ssState = SessionState.ranker_getState(sess.state);
+
+  // Check giveup
+  if (submittedFrameId == null) {
+    // Give up
+    SessionState.ranker_goToState_finished(sess.state, false);
+  }
+  // Check if correct
+  else if (submittedFrameId == currSearchSess.targetFramesIds[0].frameId) {
+    // Finish session
+    SessionState.ranker_goToState_finished(sess.state, true);
+  } else {
+    // Incorrect submit
+    res.status(200).jsonp({
+      searchSession: currSearchSess,
+      state: ssState,
+    });
+    return;
+  }
+
+  // ========================================
+  // Submit using native call
+  // global.imageRanker.submitSearchSession();
+  // ========================================
+
+  currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
+  ssState = SessionState.ranker_getState(sess.state);
+
+  const chartData = SessionState.getSearchSessionActionsForChart(sess.state);
 
   global.logger.log("debug", "<" + sess.id + ">: <= submitFrame()");
-  res.status(200).jsonp(false);
+  res.status(200).jsonp({
+    searchSession: currSearchSess,
+    state: ssState,
+    chartData: chartData,
+  });
 };
 
 // ==============================================

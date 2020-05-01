@@ -136,7 +136,7 @@ app.post("/set_ranker_model_options", rankerEndpoints.setModelOptions);
 
 app.post("/ranker_push_search_action", rankerEndpoints.pushSearchAction);
 app.post("/ranker_start_search_session", rankerEndpoints.startSearchSession);
-app.post("/ranker_cancel_search_session", rankerEndpoints.cancelSearchSession);
+app.post("/ranker_discard_search_session", rankerEndpoints.discardSearchSession);
 app.post("/ranker_submit_frame", rankerEndpoints.submitFrame);
 
 

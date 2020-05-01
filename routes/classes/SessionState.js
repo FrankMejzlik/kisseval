@@ -261,7 +261,7 @@ exports.ranker_goToState_finished = function (obj, found = false) {
 
   obj._ranker.searchSession.running = false;
   obj._ranker.searchSession.endTs = Date.now();
-  obj._ranker.searchSession.duration = (obj._ranker.searchSession.endTs - obj._ranker.searchSession.estartTs) / 1000.0;
+  obj._ranker.searchSession.duration = (obj._ranker.searchSession.endTs - obj._ranker.searchSession.startTs) / 1000.0;
   obj._ranker.searchSession.found = found;
 };
 

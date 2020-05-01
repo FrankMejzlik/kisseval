@@ -391,11 +391,24 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 
 <script>
 
+  /**
+   * View data sent from the back-end.
+   */ 
   const viewData = { 
     ranker: <%- JSON.stringify(ranker, null, 4); %>,
     elemIds: <%- JSON.stringify(elemIds, null, 4); %>
   };
 
+  let currentPrinter;
+  let currentImagesToPrintArray;
+  let currentImageIndex;
+  let numImagesToPrint;
+  const numImagesPerBatch = 300;
+  const batchPrintTimeout = 2000;
+  const labelsContainer = document.getElementById("modalImageTab1");
+  const pureHyerpnymsContainer = document.getElementById("modalImageTab2");
+  const imageIdCont = document.getElementById("modalImageId");
+  const succFramesCont = document.getElementById("sucFramesCont");
 
   function startSearchSession(elem, targetFramesIds = [])
   {
@@ -410,142 +423,29 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
       },
       body: JSON.stringify(reqData),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        // Handle error
-        if (data.error)
-        {
-          throw Error(data.error.message);
-        }
-
-        // Update viewData
-        viewData.ranker.searchSession = data.searchSession;
-        viewData.ranker.state = data.state;
-
-        // Update document
-        putDocumentToState(viewData);
-
-      })
-      .catch((e) => {
-        console.log("Error: " + JSON.stringify(e.message));
-        showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
-      });
-  }
-
-
-
-function showGlobalMessage(messagePrimary, messageSecondary, time)
-{
-  $mainGlobalMessageCont = $("#mainGlobalMessageCont");
-  $primary = $($mainGlobalMessageCont.children(".primary")[0]);
-  $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
-
-  $mainGlobalMessageCont.show();
-  $primary.html(messagePrimary);
-  $secondary.html(messageSecondary);
-
-  setTimeout(() => {
-    clearGlobalMesssage();
-  }, time);
-}
-
-function clearGlobalMesssage()
-{
-  $mainGlobalMessageCont = $("#mainGlobalMessageCont");
-  $primary = $($mainGlobalMessageCont.children(".primary")[0]);
-  $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
-
-
-  $primary.html("");
-  $secondary.html("");
-  $mainGlobalMessageCont.hide();
-}
-
-
-function submitImage(elem)
-{
-  let imageId;
-  if (typeof elem === "undefined")
-  {
-    imageId = -1;
-  }
-  else 
-  {
-    imageId = $(elem).parent().data("image-id");
-  }
-
-  // Create AJAX call to get appropriate data
-  get('/ranker_ajax_submit_image?imageId=' + imageId)
-    // If response OK
+    .then((res) => res.json())
     .then((data) => {
-
-      data = JSON.parse(data);
-
-      // If was give up call
-      if (data.giveUp || data.correct)
+      // Handle error
+      if (data.error)
       {
-        
-
-        if (data.correct)
-        {
-          console.log("Showing correct submit image data.");
-
-          showGlobalMessage("Correct.", "Great job", 3000);
-        }
-        else 
-        {
-          console.log("Showing give up results");
-        }
-        
-        // Draw chart
-        let dataArray = new Array();
-        dataArray.push(data.chartData);
-        const canvas = document.getElementById(viewData.elemIds.ranker.rankerScoreChart);
-
-        document.getElementById("resultInfo").innerHTML = "";
-
-        // Print info into result html
-        if (data && data.relevantImagesArray && data.relevantImagesArray.targetImageRank)
-        {
-          document.getElementById("resultInfo").innerHTML += "<h3>Final image rank: <span>" + data.relevantImagesArray.targetImageRank +"</span></h3>";
-        }
-        document.getElementById("resultInfo").innerHTML += "<h5>Time: <span>" + data.sessionDuration  + " s</span></h5>";
-
-        drawInteractiveSearchChart(dataArray, canvas);
-
-        putDocumentToState_finished();
-
-      } 
-      // Wrong image submit
-      else 
-      {
-        console.log("Showing invalid submit image data.");
-
-        showGlobalMessage("Incorrect submit", "Sorry, this is not the correct image, please try again.", 3000);
+        throw Error(data.error.message);
       }
 
+      // Update viewData
+      viewData.ranker.searchSession = data.searchSession;
+      viewData.ranker.state = data.state;
+
+      // Update document
+      putDocumentToState(viewData);
+
     })
-    // If error occured
-    .catch((err) => {
-        // Do stuff on error...
+    .catch((e) => {
+      console.log("Error: " + JSON.stringify(e.message));
+      showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
     });
-}
+  }
 
-let currentPrinter;
-let currentImagesToPrintArray;
-let currentImageIndex;
-let numImagesToPrint;
-const numImagesPerBatch = 300;
-const batchPrintTimeout = 2000;
-
-
-
-const labelsContainer = document.getElementById("modalImageTab1");
-const pureHyerpnymsContainer = document.getElementById("modalImageTab2");
-const imageIdCont = document.getElementById("modalImageId");
-const succFramesCont = document.getElementById("sucFramesCont");
-
-function switchModalImageHtmlContents(id) 
+  function switchModalImageHtmlContents(id) 
 {
   $.ajax('/ranker_ajax_get_image_keywords_for_interactive_search?imageId=' + id)
     .done(function(data)
@@ -634,16 +534,109 @@ function switchModalImageHtmlContents(id)
       pureHyerpnymsContainer.innerHTML = html;
     }
   )
-          // If error occured
-          .catch((err) => 
-          {
-            console.log("/ranker_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
-            alert("/ranker_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
-          });
+  // If error occured
+  .catch((err) => 
+  {
+    console.log("/ranker_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
+    alert("/ranker_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
+  });
+}
+
+// xoxo
+function submitImage(elem)
+{
+  // By default no frame ID -> This means DISCARD
+  let imageId = null;
+  if (typeof elem !== "undefined")
+  {
+    // This means submit
+    imageId = $(elem).parent().parent().data("image-id");
+  }
+
+  // Request input data
+  const reqData = {
+    frameId: imageId
+  };
+
+  // Make the request
+  fetch("/ranker_submit_frame", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reqData),
+  })
+  .then((res) => res.json())
+  .then((data) => {
+    // Handle error
+    if (data.error)
+    {
+      throw Error(data.error.message);
+    }
+
+    // Update viewData
+    viewData.ranker.searchSession = data.searchSession;
+    viewData.ranker.state = data.state;
+    const chartData = data.chartData;
+
+    // If was correct => we went "finished"
+    if (viewData.ranker.state == "finished")
+    {
+      if (viewData.ranker.searchSession.found)
+      {
+        handleCorrectSubmit(viewData, chartData);
+      } else {
+        handleGiveUp(viewData, chartData);
+      }
+      
+    } else {
+      handleIncorrectSubmit(viewData);
+    }
+  })
+  .catch((e) => {
+    console.log("Error: " + JSON.stringify(e.message));
+    showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
+  });
+}
+
+function handleGiveUp(viewData, chartData) {
+  // Update document
+  putDocumentToState(viewData);
+  
+  // Draw chart
+  const dataArray = [chartData];
+  const canvas = document.getElementById(viewData.elemIds.ranker.rankerScoreChart);
+  drawInteractiveSearchChart(dataArray, canvas);
+
+  console.log("Showing correct submit image data.");
+  showGlobalMessage("You gave up...", "Don't worry and try again.", 5000);
+}
+
+function handleCorrectSubmit(viewData, chartData) {
+  // Update document
+  putDocumentToState(viewData);
+  
+  // Draw chart
+  const dataArray = [chartData];
+  const canvas = document.getElementById(viewData.elemIds.ranker.rankerScoreChart);
+  drawInteractiveSearchChart(dataArray, canvas);
+
+  console.log("Showing correct submit image data.");
+  showGlobalMessage("Correct.", "Great job", 5000);
 }
 
 
-// xoxo
+function handleDiscardSession(viewData) {
+  // Update document
+  putDocumentToState(viewData);
+
+  showGlobalMessage("Session discarded.", "It won't be logged.", 5000);
+}
+
+function handleIncorrectSubmit(viewData) {
+  showGlobalMessage("Incorrect submit", "Sorry, this is not the correct image, please try again.", 5000);
+}
+
 function handleActionPush(viewData, chartData, queryResult) {
 
   const frames = queryResult.frames;
@@ -668,8 +661,7 @@ function handleActionPush(viewData, chartData, queryResult) {
       </button>\
       <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + frames[currentImageIndex].frame_ID+ ')"\
         data-image-id="' + frames[currentImageIndex].frame_ID + '" style="background-image: url(\'/images/' +frames[currentImageIndex].filename + '\')">\
-        <a class="button btn-submit success" onclick="submitImage(this);" title="Submit this image">&#10004;</a>\
-        <a class="just-clicker"  data-open="modalImage"></a>\
+        <div class="just-clicker"  data-open="modalImage"><a class="button btn-submit success" onclick="submitImage(this);event.cancelBubble=true;" title="Submit this image">&#10004;</a></div>\
       </li>'
     );
   }
@@ -701,33 +693,62 @@ function processAction(queryIdx, action, operand, word)
       },
       body: JSON.stringify(reqData),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        // Handle error
-        if (data.error)
-        {
-          throw Error(data.error.message);
-        }
+    .then((res) => res.json())
+    .then((data) => {
+      // Handle error
+      if (data.error)
+      {
+        throw Error(data.error.message);
+      }
 
-        // Update viewData
-        viewData.ranker.searchSession = data.searchSession;
-        viewData.ranker.state = data.state;
+      // Update viewData
+      viewData.ranker.searchSession = data.searchSession;
+      viewData.ranker.state = data.state;
 
-        const chartData = data.chartData;
-        const queryResult = data.queryResult;
+      const chartData = data.chartData;
+      const queryResult = data.queryResult;
 
-        // Update document
-        handleActionPush(viewData, chartData, queryResult);
+      // Update document
+      handleActionPush(viewData, chartData, queryResult);
 
-      })
-      .catch((e) => {
-        console.log("Error: " + JSON.stringify(e.message));
-        showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
-      });
+    })
+    .catch((e) => {
+      console.log("Error: " + JSON.stringify(e.message));
+      showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
+    });
 }
 
 function discardSession() {
 
+  // Request input data
+  const reqData = {};
+
+  // Make the request
+  fetch("/ranker_discard_search_session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reqData),
+  })
+  .then((res) => res.json())
+  .then((data) => {
+    // Handle error
+    if (data.error)
+    {
+      throw Error(data.error.message);
+    }
+
+    viewData.ranker.searchSession = data.searchSession;
+    viewData.ranker.state = data.state;
+
+    handleDiscardSession(viewData);
+  
+  })
+  .catch((e) => {
+    console.log("Error: " + JSON.stringify(e.message));
+    showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
+  });
 }
 
 function setupTargetFrameButtons(viewData)
@@ -747,7 +768,7 @@ function setupTargetFrameButtons(viewData)
 
 function setupImageGrid(viewData)
 {
-  const elem = document.getElementById(viewData.elemIds.ranker.scoreboard);
+  const elem = document.getElementById(viewData.elemIds.ranker.imageGrid);
 
   elem.innerHTML = "";
 }
@@ -760,6 +781,7 @@ function setupTargetFrames(viewData) {
     viewData.elemIds.ranker.targetFrameId
   );
   
+  elemIdInput.innerHTML = "";
   if (viewData.ranker.state == "running") {
     const targetIds =  viewData.ranker.searchSession.targetFramesIds;
     for (let i = 0; i < targetIds.length; ++i) {
@@ -774,6 +796,25 @@ function setupTargetFrames(viewData) {
 function setupScoreBoard(viewData) {
   const elem = document.getElementById(viewData.elemIds.ranker.scoreboard);
 
+  let actions = [];
+  let foundClass = "not-found";
+  let foundText = "Nenalezeno...";
+  let finalRank = "null";
+  let duration = "null";
+  if (viewData.ranker.searchSession)
+  {
+    actions = viewData.ranker.searchSession.actions;
+    if (actions.length > 0)
+      finalRank = actions[actions.length - 1].score;
+
+    duration = viewData.ranker.searchSession.duration;
+      
+    if (viewData.ranker.searchSession.found){
+      foundClass = "found";
+      foundText = "Nalezeno!";
+    }
+  }
+  
   elem.innerHTML = `
     <div class="result-actions-board-title cell large-12">
       <h1>Search session results</h1>
@@ -786,7 +827,11 @@ function setupScoreBoard(viewData) {
 
     <div class="result-actions-info cell large-6">  
       <h2>Other info</h2>
-      <div id="resultInfo"> </div>
+      <div id="resultInfo"> 
+        <h2 class="${foundClass}">${foundText}</h2>
+        <h3>Final image rank: <span>${finalRank}</span></h3>
+        <h5>Time: <span>${duration}s</span></h5>
+      </div>
     </div>`;
 
   if (viewData.ranker.state == "finished") {
@@ -813,6 +858,7 @@ function setupSelectedKeywords(viewData) {
   const elem = document.getElementById(
     viewData.elemIds.ranker.selectedKeywords1
   );
+  elem.innerHTML = "";
   let html = "";
 
   // Append all selected keywords
@@ -862,6 +908,32 @@ function putDocumentToState(viewData) {
   }
 }
 
+function showGlobalMessage(messagePrimary, messageSecondary, time)
+{
+  $mainGlobalMessageCont = $("#mainGlobalMessageCont");
+  $primary = $($mainGlobalMessageCont.children(".primary")[0]);
+  $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
+
+  $mainGlobalMessageCont.show();
+  $primary.html(messagePrimary);
+  $secondary.html(messageSecondary);
+
+  setTimeout(() => {
+    clearGlobalMesssage();
+  }, time);
+}
+
+function clearGlobalMesssage()
+{
+  $mainGlobalMessageCont = $("#mainGlobalMessageCont");
+  $primary = $($mainGlobalMessageCont.children(".primary")[0]);
+  $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
+
+
+  $primary.html("");
+  $secondary.html("");
+  $mainGlobalMessageCont.hide();
+}
 
 </script>
 

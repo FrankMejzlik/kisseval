@@ -1,227 +1,196 @@
-<!-- Autocomplete AJAX script -->
+
 <script>
-  function boldString(str, find)
-  {
-    const re = new RegExp(find, 'gi');
-    return str.replace(re, '<strong>' + find + '</strong>');
-  }
+  function autocomplete(inp, selectedContainer, query_idx) {
 
+    var currentFocus;
+    let lastTimeoutHandle;
 
-  function autocomplete(inp, selectedContainer, queryNr) {
-
-  var currentFocus;
-  let lastTimeoutHandle;
-
-  // Execute a function when someone writes in the text field
-  inp.addEventListener("input", function(e) {
-    clearTimeout(lastTimeoutHandle);
-    lastTimeoutHandle = setTimeout(getNearKeywords, 300);
-  });
-  /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "autocomplete-list");
-      if (x) x = x.getElementsByTagName("div");
-      if (e.keyCode == 40) {
-        /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
-        currentFocus++;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 38) { //up
-        /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
-        currentFocus--;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        e.preventDefault();
-        if (currentFocus > -1) {
-          /*and simulate a click on the "active" item:*/
-          if (x) x[currentFocus].click();
-        }
-      }
-  });
-  function getNearKeywords(e) {
-    var a, b, i;
-
-      // Get current value in input
-      const val = inp.value;
-
-      // Close any already open lists of autocompleted values
-      closeAllLists();
-
-      // If empty input
-      if (!val) 
-      { 
-        // Do nothing
-        return false;
-      }
-      // Set current focus to nothing
-      currentFocus = -1;
-
-      // Create a <div> element that will contain the items (values)
-      a = document.createElement("dev");
-      // Set it's attributes
-      a.setAttribute("id", this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
-
-      // Create AJAX call to get appropriate data
-      get('/annotator_ajax_get_near_keywords_with_examples?queryValue=' + val)
-        // If response OK
-        .then((data) => {
-
-          data = JSON.parse(data);
-
-          // Append the DIV element as a child of the autocomplete container
-          inp.parentNode.appendChild(a);
-
-          // For each item in the returned array
-          for (i = 0; i < data.length; i++) 
-          {
-            // Create a DIV element for each element
-            b = document.createElement("div");
-
-            // Make the matching letters bold
-            //b.innerHTML = "<strong>" + data[i].substr(0, val.length) + "</strong>";
-            //b.innerHTML += data[i].substr(val.length);
-
-            const wordTitle = boldString(data[i][1], val);
-            const wordDesc = boldString(data[i][2], val);
-
-            const exampleImagesFilenamesArr = data[i][3];
-
-            b.innerHTML += "\
-              <span class=\"keyword-title\">" + wordTitle + "</span><small>" + wordDesc + "</small>\
-              <small class='wordnet-id'>" + data[i][0] + "</small>";
-
-           let str = "<ul class=\"example-images-list\">";
-            
-            for (let ii = 0; ii < exampleImagesFilenamesArr.length; ++ii)
-            {
-              str += "<li><img src='../images/" + exampleImagesFilenamesArr[ii] + "' /></li>";    
-            }
-
-            str += "</ul>";
-
-            b.innerHTML += str;
-
-            // Insert a input field that will hold the current array item's value
-            b.innerHTML += "<input type='hidden' name='keyword' value='" + data[i][1] + "'>";
-            b.innerHTML += "<input type='hidden' name='wordnetId' value='" + data[i][0] + "'>";
-
-            // Execute a function when someone clicks on the item value (DIV element)
-            b.addEventListener("click", function(e) 
-            {
-              // Clear input field
-              inp.value = "";
-              
-              // Increment counter
-              selectedCounter.val = selectedCounter.val + 1;
-
-              let selVal = '';
-              let selValWord = '';
-
-
-              for (var i = 0; i < this.childNodes.length; i++) {
-                if (this.childNodes[i].className == "wordnet-id") {
-                  selVal = this.childNodes[i].innerHTML;
-                  continue;
-                }        
-
-                if (this.childNodes[i].className == "keyword-title") {
-                  selValWord = this.childNodes[i].innerHTML;
-                  continue;
-                }     
-              }
-              selValWord = selValWord.replace(/(<([^>]+)>)/ig,"");
-
-
-
-              // Call action
-              processAction((10 * queryNr) + 1, selVal, selValWord);
-
-
-              chechkboxCont = document.createElement("li");
-              chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
-
-              if (queryNr == 1)
-              {
-                chechkboxCont.innerHTML += "<input type='checkbox' name='keyword2' value='" + selVal + "' checked>\
-                <input type='checkbox' name='keywordWord2' value='" + selValWord + "' checked>\
-                <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this, " + queryNr + ");'>&#10006</a>"
-              }
-              else
-              {
-                chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + selVal + "' checked>\
-                <input type='checkbox' name='keywordWord' value='" + selValWord + "' checked>\
-                <span>" + selValWord + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this, " + queryNr + ");'>&#10006</a>"
-              }
-              
-
-              selectedContainer.appendChild(chechkboxCont);
-
-              
-
-
-              // Close the list of autocompleted values,(or any other open lists of autocompleted values)
-              closeAllLists();
-            });
-
-            a.appendChild(b);
-
-          }
-        })
-        // If error occured
-        .catch((err) => {
-            // Do stuff on error...
-        });
-  
-  }
-  function addActive(x) {
-    /*a function to classify an item as "active":*/
-    if (!x) return false;
-    /*start by removing the "active" class on all items:*/
-    removeActive(x);
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-    /*add class "autocomplete-active":*/
-    x[currentFocus].classList.add("autocomplete-active");
-  }
-  function removeActive(x) {
-    /*a function to remove the "active" class from all autocomplete items:*/
-    for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("autocomplete-active");
-    }
-  }
-  function closeAllLists(elmnt) {
-    /*close all autocomplete lists in the document,
-    except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
-
-    const length = x.length;
-    $('.autocomplete-items').remove();
+    inp.addEventListener("input", function(e) {
+      clearTimeout(lastTimeoutHandle);
+      lastTimeoutHandle = setTimeout(getNearKeywords, 300);
+    });
     
+    inp.addEventListener("keydown", function(e) {
+        var x = document.getElementById(this.id + "autocomplete-list");
+        if (x) x = x.getElementsByTagName("div");
+        if (e.keyCode == 40) {
+          /*If the arrow DOWN key is pressed,
+          increase the currentFocus variable:*/
+          currentFocus++;
+          /*and and make the current item more visible:*/
+          addActive(x);
+        } else if (e.keyCode == 38) { //up
+          /*If the arrow UP key is pressed,
+          decrease the currentFocus variable:*/
+          currentFocus--;
+          /*and and make the current item more visible:*/
+          addActive(x);
+        } else if (e.keyCode == 13) {
+          /*If the ENTER key is pressed, prevent the form from being submitted,*/
+          e.preventDefault();
+          if (currentFocus > -1) {
+            /*and simulate a click on the "active" item:*/
+            if (x) x[currentFocus].click();
+          }
+        }
+    });
+
+    function getNearKeywords(e) {
+      var a, b, i;
+
+        // Get current value in input
+        const val = inp.value;
+
+        // Close any already open lists of autocompleted values
+        closeAllLists();
+
+        // If empty input
+        if (!val) 
+        { 
+          // Do nothing
+          return false;
+        }
+        // Set current focus to nothing
+        currentFocus = -1;
+
+        // Create a <div> element that will contain the items (values)
+        a = document.createElement("dev");
+        // Set it's attributes
+        a.setAttribute("id", this.id + "autocomplete-list");
+        a.setAttribute("class", "autocomplete-items");
+
+        // Create AJAX call to get appropriate data
+        get('/get_autocomplete_results?queryValue=' + val)
+          // If response OK
+          .then((data) => {
+
+            data = JSON.parse(data);
+
+            // Append the DIV element as a child of the autocomplete container
+            inp.parentNode.appendChild(a);
+
+            // For each item in the returned array
+            for (i = 0; i < data.length; i++) 
+            {
+              // Create a DIV element for each element
+              b = document.createElement("div");
+
+              // Make the matching letters bold
+              //b.innerHTML = "<strong>" + data[i].substr(0, val.length) + "</strong>";
+              //b.innerHTML += data[i].substr(val.length);
+
+              const wordTitle = boldString(data[i].wordString, val);
+              const wordDesc = boldString(data[i].description, val);
+              const exampleImagesFilenamesArr = data[i].exampleFrames;
+
+              b.innerHTML += "\
+                <span class=\"keyword-title\">" + wordTitle + "</span><small>" + wordDesc + "</small>\
+                <small class='wordnet-id'>" + data[i].id + "</small>";
+
+            let str = "<ul class=\"example-images-list\">";
+              
+              for (let ii = 0; ii < exampleImagesFilenamesArr.length; ++ii)
+              {
+                str += "<li><img src='../images/" + exampleImagesFilenamesArr[ii] + "' /></li>";    
+              }
+
+              str += "</ul>";
+
+              b.innerHTML += str;
+
+              // Insert a input field that will hold the current array item's value
+              b.innerHTML += "<input type='hidden' name='keyword' value='" + data[i].wordString + "'>";
+              b.innerHTML += "<input type='hidden' name='wordnetId' value='" + data[i].id + "'>";
+
+              // Execute a function when someone clicks on the item value (DIV element)
+              b.addEventListener("click", function(e) 
+              {
+                // Clear input field
+                inp.value = "";
+                
+                let selVal = '';
+                let selValWord = '';
+
+
+                for (var i = 0; i < this.childNodes.length; i++) {
+                  if (this.childNodes[i].className == "wordnet-id") {
+                    selVal = this.childNodes[i].innerHTML;
+                    continue;
+                  }        
+
+                  if (this.childNodes[i].className == "keyword-title") {
+                    selValWord = this.childNodes[i].innerHTML;
+                    continue;
+                  }     
+                }
+                selValWord = selValWord.replace(/(<([^>]+)>)/ig,"");
+
+                // Call action
+                processAction(query_idx, "add_from_autocomplete", selVal, selValWord);
+
+                const elem = document.getElementById(
+                  viewData.elemIds.ranker.selectedKeywords1
+                );
+                addSelectedKeyword(elem, selVal, selValWord);
+
+                // Close the list of autocompleted values,(or any other open lists of autocompleted values)
+                closeAllLists();
+              });
+
+              a.appendChild(b);
+
+            }
+          })
+          // If error occured
+          .catch((err) => {
+              // Do stuff on error...
+          });
+    
+    }
+
+    function addActive(x) {
+      /*a function to classify an item as "active":*/
+      if (!x) return false;
+      /*start by removing the "active" class on all items:*/
+      removeActive(x);
+      if (currentFocus >= x.length) currentFocus = 0;
+      if (currentFocus < 0) currentFocus = (x.length - 1);
+      /*add class "autocomplete-active":*/
+      x[currentFocus].classList.add("autocomplete-active");
+    }
+
+    function removeActive(x) {
+      /*a function to remove the "active" class from all autocomplete items:*/
+      for (var i = 0; i < x.length; i++) {
+        x[i].classList.remove("autocomplete-active");
+      }
+    }
+
+    function closeAllLists(elmnt) {
+      /*close all autocomplete lists in the document,
+      except the one passed as an argument:*/
+      var x = document.getElementsByClassName("autocomplete-items");
+
+      const length = x.length;
+      $('.autocomplete-items').remove();
+      
+    }
+
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
   }
-  /*execute a function when someone clicks in the document:*/
-  document.addEventListener("click", function (e) {
-      closeAllLists(e.target);
-  });
-}
 
 // Call autocomplete on desired input field
 autocomplete(document.getElementById("queryInput"), document.getElementById("selectedKeywordsList"), 0);
-autocomplete(document.getElementById("queryInput2"), document.getElementById("selectedKeywordsList2"), 1);
 
-
-
-function removeKeyword(e, t, queryNr) 
+function removeKeyword(e, t, queryIdx) 
 {
   let operand;
   let operandWord;
 
   // If query2 command
-  if (queryNr == 1)
+  if (queryIdx == 1)
   {
     operand = $(t).parent().children("input[name='keyword2']").val();
     operandWord = $(t).parent().children("input[name='keywordWord2']").val();
@@ -235,7 +204,7 @@ function removeKeyword(e, t, queryNr)
   $(t).parent().remove();
 
   // Call action
-  processAction((10 * queryNr) + 0, operand, operandWord);
+  processAction(queryIdx, "delete_from_query", operand, operandWord);
 
 }
 </script>

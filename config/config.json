@@ -20,11 +20,24 @@
             "autocompleteWithExamples": true,
             "numSuggestions": 20
         },
-        "rankerSettings": {},
+        "ranker": {
+            "resultSizeLimit": 200
+        },
         "dataCentreSettings": {},
         "json_indentation": 4,
         "gameLength": 5,
-        "tutorialLength": 0
+        "tutorialLength": 0,
+        "elemIds": {
+            "ranker": {
+                "scoreboard": "rankerScoreboard",
+                "targetImagesList": "targetImagesCont",
+                "imageGrid": "rankerImageGrid",
+                "selectedKeywords1": "selectedKeywords1",
+                "targetFrameId": "targetImageId",
+                "targetFrameButtons": "getRandomImageCont",
+                "queryInput": "queryInput"
+            }
+        }
     },
     "staging": {
         "config_id": "staging",

@@ -89,6 +89,10 @@ exports.getAutocompleteResults = function (req, res) {
 
   // Get active settings from the current session
   const activeDataPackId = SessionState.getActiveDataPackId(sess.state);
+
+  // \todo Do not use default
+  const modelOptions = SessionState.getActiveDataPackModelOptions(sess.state);
+
   const withExImgs = SessionState.getAnnotWithExampleImages(sess.state);
   const numResults = SessionState.getAnnotNumResults(sess.state);
 
@@ -112,7 +116,8 @@ exports.getAutocompleteResults = function (req, res) {
     activeDataPackId,
     prefix,
     numResults,
-    withExImgs
+    withExImgs,
+    modelOptions
   );
 
   global.logger.log(
@@ -270,11 +275,9 @@ exports.runModelTests = function (req, res) {
 
       testResultData[formId] = result;
     }
-  }
-  catch (error)
-  {
+  } catch (error) {
     res.jsonp({
-      error: error.message
+      error: error.message,
     });
     return;
   }

@@ -1,0 +1,71 @@
+<% function generateOptionHtml(optionsDict, idx, prefix = "") { let html = `
+    <form data-id="${idx}" class="test-form">`; 
+      
+      switch(optionsDict.input_type) { 
+        case "enum": html += `
+      <div class="cont__${prefix}${optionsDict.key} option-cont cell small-12">
+        <label for="${prefix}${optionsDict.key}"
+          >${optionsDict.name}
+          <select
+            class="cond-opts-trigger"
+            data-id="${prefix}${optionsDict.key}"
+            name="${prefix}${optionsDict.key}"
+            >`; const vals = optionsDict.values; for (let i = 0; i < vals.length;
+            ++i){ html += `<option value="${vals[i].ID}">${vals[i].name}</option>
+            `; } html += `</select
+          > </label
+        >`; 
+        for (let i = 0; i < vals.length; ++i){ if (vals[i].options.length > 0) {
+        html += `
+        <div class="${prefix}${optionsDict.key}__${vals[i].ID} sub-opts">
+          `; for (let j = 0; j < vals[i].options.length; ++j){ const opt =
+          vals[i].options[j]; html += generateOptionHtml(opt, idx, prefix +
+          optionsDict.key + "_"); } html += `
+        </div>
+        `; } } html += `
+      </div>
+      `; 
+      break; 
+      
+      case "float": 
+        return `
+          <div class="option-cont cell small-12">
+            <label for="${optionsDict.key}">${optionsDict.name}
+              <input
+                name="${prefix}${optionsDict.key}"
+                class=""
+                data-id="${prefix}${optionsDict.key}"
+                type="number"
+                min="${optionsDict.min}"
+                max="${optionsDict.max}"
+                step="${optionsDict.step}"
+                value="${optionsDict.default}"
+              />
+            </label>
+          </div>`; 
+      break; 
+    
+      case "int": 
+        return `
+          <div class="option-cont cell small-12">
+            <label for="${optionsDict.key}">${optionsDict.name}
+              <input
+                name="${prefix}${optionsDict.key}"
+                class=""
+                data-id="${prefix}${optionsDict.key}"
+                type="number"
+                min="${optionsDict.min}"
+                max="${optionsDict.max}"
+                step="${optionsDict.step}"
+                value="${optionsDict.default}"
+              />
+            </label>
+          </div>`; 
+      break; 
+    
+      } 
+        html += `
+        </form>
+        `; 
+      return html; 
+} %>

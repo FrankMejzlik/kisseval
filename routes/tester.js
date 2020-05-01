@@ -47,8 +47,7 @@ router.get("/", function (req, res, next) {
   const pack_type = SessionState.getActiveDataPackType(req.session.state);
   viewData.modelOptions = modelOptions[pack_type].options;
 
-  console.log("");
-  console.log(JSON.stringify(viewData, null, 4));
+  //console.log(JSON.stringify(viewData, null, 4));
 
   // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);

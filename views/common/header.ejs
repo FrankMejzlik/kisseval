@@ -28,18 +28,9 @@
       <span aria-hidden="true">&times;</span>
     </button>
 
-    <% // If OC Ranker Settins should be filled in
-    if (typeof ocRankerSettingsLeft_ranker != "undefined") 
-    { %>
-
-    <%- include ../modules/oc_ranker_settings_left.ejs %>
-
-    <% } 
-    // If Annotator settins should be displayed
-    else if (typeof ocRankerSettingsLeft_annotator != "undefined") 
-    {
-      
-    } %>
+    <% if (currentPage == "ranker") { %>
+      <%- include ../modules/ranker_model_options_sidebar.ejs %>
+    <% } %>
 
   </div>
 

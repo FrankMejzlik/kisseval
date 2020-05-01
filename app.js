@@ -30,6 +30,7 @@ const routerExporter = require("./routes/exporter");
 const routerNotFound = require("./routes/404");
 
 const endpoints = require("./routes/endpoints/endpoints");
+const rankerEndpoints = require("./routes/endpoints/ranker_endpoints");
 
 global.dbConnectionsPool = mysql.createPool({
   host: global.gConfig.db.host,
@@ -130,6 +131,16 @@ app.post("/switch_to_eval_mode", endpoints.switchToEvaluatorMode);
 app.post("/switch_to_public_mode", endpoints.switchToPublicMode);
 app.post("/annotator_submit_query", endpoints.submitAnnotatorQuery);
 app.post("/run_model_tests", endpoints.runModelTests);
+
+app.post("/set_ranker_model_options", rankerEndpoints.setModelOptions);
+
+app.post("/ranker_push_search_action", rankerEndpoints.pushSearchAction);
+app.post("/ranker_start_search_session", rankerEndpoints.startSearchSession);
+app.post("/ranker_cancel_search_session", rankerEndpoints.cancelSearchSession);
+app.post("/ranker_submit_frame", rankerEndpoints.submitFrame);
+
+
+
 
 app.use("/404", routerNotFound);
 

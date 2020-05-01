@@ -4,7 +4,9 @@ const express = require("express");
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
+const SessionState = require("./classes/SessionState");
 const stateCheck = require("./common/state_checkers");
+const modelOptions = require(global.gConfig.modelOptsInfoFpth);
 
 /** Specific route settings. */
 const routeSettings = {
@@ -31,13 +33,44 @@ router.get("/", function (req, res, next) {
 
   global.logger.log("debug", "Route: " + routeSettings.slug);
 
+  const sess = req.session;
+
   // Main request cycle
   preProcessReq(req, viewData);
   processReq(req, viewData);
   postProcessReq(req, viewData);
 
-  console.log("");
-  console.log(JSON.stringify(viewData));
+  const searchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
+  const uiState = SessionState.ranker_getCurrentUiState(sess.state);
+
+  let formatedModelOptions = SessionState.ranker_getActiveModelOptions(
+    sess.state
+  );
+  const regexp = /;/gi;
+  formatedModelOptions = formatedModelOptions.replace(regexp, "<br />");
+
+  // RANKER: Options
+  viewData.ranker.options = {
+    activeDataPackId: SessionState.getActiveDataPackId(sess.state),
+    activeModelOptions: formatedModelOptions,
+  };
+
+  // RANKER: Search session
+  viewData.ranker.searchSession = searchSess;
+
+  // RANKER: UI state
+  viewData.ranker.ui = uiState;
+
+  viewData.ranker.state = SessionState.ranker_getState(sess.state);
+
+  global.logger.log(
+    "debug",
+    "<" + sess.id + ">: viewData:" + JSON.stringify(viewData, null, 4)
+  );
+
+  // Add also model options
+  const pack_type = SessionState.getActiveDataPackType(req.session.state);
+  viewData.modelOptions = modelOptions[pack_type].options;
 
   // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);

@@ -14,8 +14,24 @@ exports.construct = function (
     _active_data_pack_type: dataPackType,
     _active_model_options: modelOptions,
     _imageset_ID: imagesetId,
-    // This is PH for the `RankerState` instance
-    _rankerState: null,
+    _ranker: {
+      activeDataPackId: dataPack,
+      _fullyNative: false,
+      activeModelOptions: modelOptions,
+      queryWords: ["item1", "item2"],
+      query: [123, 456],
+      queryWords2: ["bleach1", "bleach2"],
+      query2: [22123, 2456],
+      ui: {
+        queryInputUnlocked: false,
+        queryInput2Unlocked: false,
+        queryWords: [],
+        query: [],
+        queryWords2: [],
+        query2: [],
+      },
+      searchSession: null,
+    },
     _annotator: {
       // If true then input will accept any string, otherwise just the one
       // combined with words from vocabulary
@@ -31,7 +47,18 @@ exports.construct = function (
 exports.setActieDataPack = function (obj, dataPackId, modelOpts, packType) {
   obj._active_data_pack_ID = dataPackId;
   obj._active_data_pack_type = packType;
-  obj._active_model_options = modelOpts;
+  obj._ranker.activeDataPackId = modelOpts;
+
+  obj._active_model_options = dataPackId;
+
+  // If native pack
+  if (packType == "W2VV_based") {
+    obj._annotator._fullyNative = true;
+    obj._ranker._fullyNative = true;
+  } else {
+    obj._annotator._fullyNative = false;
+    obj._ranker._fullyNative = false;
+  }
 };
 exports.getActiveDataPackId = function (obj) {
   return obj._active_data_pack_ID;
@@ -97,4 +124,205 @@ exports.setAnnotFullyNative = function (obj, newValue) {
 };
 exports.getAnnotFullyNative = function (obj) {
   return obj._annotator._fullyNative;
+};
+
+/*************************************
+ * Ranker
+ **************************************/
+
+exports.ranker_getState = function (obj) {
+  /* UI can be in 3 states only:
+      "nosess":   
+          No session is running and previous one was canceled (if there was some previous)
+      
+      "running": 
+          Search session in progress - chart showing, timer running
+
+      "finished": 
+          Search session is finished - results showing
+    */
+
+  const ssess = obj._ranker.searchSession;
+
+  let resState = "nosess";
+
+  if (ssess) {
+    if (ssess.running) resState = "running";
+    else resState = "finished";
+  }
+
+  return resState;
+};
+
+exports.ranker_getUserQueryStrings = function (obj) {
+  const q1Ids = obj._ranker.query;
+
+  let res = [];
+  // \todo Make temporal
+  let queryStr = "&";
+  for (let kwId of q1Ids) {
+    queryStr += "-" + kwId + "+";
+  }
+  res.push(queryStr);
+
+  return res;
+};
+
+exports.ranker_setFullyNative = function (obj, newValue) {
+  obj._ranker._fullyNative = newValue;
+};
+
+exports.ranker_getFullyNative = function (obj) {
+  return obj._ranker._fullyNative;
+};
+
+exports.ranker_getData = function (obj) {
+  return obj._ranker;
+};
+
+exports.ranker_getCurrentSearchSession = function (obj, newOpts) {
+  return obj._ranker.searchSession;
+};
+
+exports.ranker_getCurrentUiState = function (obj, newOpts) {
+  return obj._ranker.ui;
+};
+
+exports.ranker_setActiveModelOptions = function (obj, newOpts) {
+  obj._ranker.activeModelOptions = newOpts;
+
+  this.ranker_goToState_nosess(obj);
+};
+
+exports.ranker_getActiveModelOptions = function (obj) {
+  return obj._ranker.activeModelOptions;
+};
+
+exports.ranker_getDataPackId = function (obj) {
+  return obj._ranker.activeDataPackId;
+};
+
+/**
+ * Cancels current search session.
+ */
+exports.ranker_goToState_nosess = function (obj) {
+  obj._ranker = {
+    activeDataPackId: obj._active_data_pack_ID,
+    activeModelOptions: obj._ranker.activeModelOptions,
+    ui: {
+      queryInputUnlocked: false,
+      queryInput2Unlocked: false,
+      queryWords: [],
+      query: [],
+      queryWords2: [],
+      query2: [],
+    },
+    searchSession: null,
+  };
+};
+
+/**
+ * Start new search session
+ */
+exports.ranker_goToState_running = function (obj, targetFramesIds) {
+  this.ranker_ui_goToState_running(obj);
+
+  // Search session dict
+  obj._ranker.searchSession = {
+    targetFramesIds: targetFramesIds,
+    running: true,
+    startTs: Date.now(),
+    endTs: null,
+    duration: null,
+    found: null,
+    actions: [],
+  };
+};
+
+/**
+ * Search session is finished (Found or Given up)
+ */
+exports.ranker_goToState_finished = function (obj, found = false) {
+  this.ranker_ui_goToState_finished(obj);
+
+  obj._ranker.searchSession.running = false;
+  obj._ranker.searchSession.endTs = Date.now();
+  obj._ranker.searchSession.duration =
+    (obj._ranker.searchSession.endTs - obj._ranker.searchSession.estartTs) /
+    1000.0;
+  obj._ranker.searchSession.found = found;
+};
+
+exports.ranker_ui_goToState_nosess = function (obj) {
+  obj._ranker.ui.queryWords = [];
+  obj._ranker.ui.query = [];
+  obj._ranker.ui.queryWords2 = [];
+  obj._ranker.ui.query2 = [];
+
+  obj._ranker.ui.queryInputUnlocked = true;
+  obj._ranker.ui.queryInput2Unlocked = true;
+};
+
+exports.ranker_ui_goToState_running = function (obj) {
+  obj._ranker.ui.queryWords = [];
+  obj._ranker.ui.query = [];
+  obj._ranker.ui.queryWords2 = [];
+  obj._ranker.ui.query2 = [];
+
+  obj._ranker.ui.queryInputUnlocked = true;
+  obj._ranker.ui.queryInput2Unlocked = true;
+};
+
+exports.ranker_ui_goToState_finished = function (obj) {
+  obj._ranker.ui.queryWords = [];
+  obj._ranker.ui.query = [];
+  obj._ranker.ui.queryWords2 = [];
+  obj._ranker.ui.query2 = [];
+
+  obj._ranker.ui.queryInputUnlocked = false;
+  obj._ranker.ui.queryInput2Unlocked = false;
+};
+
+exports.pushSearchSessionAction = function (
+  obj,
+  query_idx,
+  action,
+  operand,
+  score,
+  time_in_ms
+) {
+  const act = {
+    queryIdx: query_idx,
+    action: action,
+    operand: operand,
+    score: score,
+    time: time_in_ms,
+  };
+
+  obj._ranker.searchSession.actions.push(act);
+};
+
+exports.getSearchSessionActionsForChart = function (
+  obj,
+  query_idx,
+  action,
+  operand,
+  score,
+  time_in_ms
+) {
+  let chartLabels = [];
+  let chartXs = [];
+  let chartFxs = [];
+  const actionsArr = obj._ranker.searchSession.actions;
+  for (let a of actionsArr) {
+    chartLabels.push(`${s.action}(${operand})`);
+    chartXs.push(a.time);
+    chartXs.push(a.score);
+  }
+
+  return {
+    labels: chartLabels,
+    xs: chartXs,
+    fxs: chartFxs,
+  };
 };

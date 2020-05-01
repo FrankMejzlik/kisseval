@@ -198,7 +198,7 @@ Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInf
   // Process arguments
   int length = info.Length();
 
-  if (length != 4) {
+  if (length != 5) {
     Napi::TypeError::New(env, "Wrong number of parameters").ThrowAsJavaScriptException();
   }
 
@@ -206,12 +206,12 @@ Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInf
   std::string prefix = info[1].As<Napi::String>().Utf8Value();
   size_t numResults = info[2].As<Napi::Number>().Uint32Value();
   bool withExampleImages = info[3].As<Napi::Boolean>().Value();
-
+  std::string model_options = info[4].As<Napi::String>().Utf8Value();
 
   // Get suggested keywords
   AutocompleteInputResult keywordData;
   try {
-    keywordData = this->actualClass_->get_autocomplete_results(data_pack_ID, prefix, numResults, withExampleImages);
+    keywordData = this->actualClass_->get_autocomplete_results(data_pack_ID, prefix, numResults, withExampleImages, model_options);
   }
   catch (const std::exception& e)
   {
@@ -522,10 +522,12 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
   FrameId target_frame_ID = FrameId(info[5].As<Napi::Number>().Uint32Value());
 
 
+  std::cout << " DFSFDSF " << native_queries << std::endl;
+
   // Get suggested keywords
   RankingResult rankingResult;
   try {
-    rankingResult = this->actualClass_->rank_frames(user_queries, data_pack_ID, model_options, native_queries, resulst_size, target_frame_ID);
+    rankingResult = this->actualClass_->rank_frames(user_queries, data_pack_ID, model_options, resulst_size, native_queries, target_frame_ID);
   }
   catch (const std::exception& e)
   {

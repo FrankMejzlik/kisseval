@@ -1,0 +1,229 @@
+<% function generateOptionHtml(optionsDict, idx, prefix = "") { let html = `
+    <form data-id="${idx}" class="test-form">`; 
+      
+      switch(optionsDict.input_type) { 
+        case "enum": html += `
+      <div class="cont__${prefix}${optionsDict.key} option-cont cell small-12">
+        <label for="${prefix}${optionsDict.key}"
+          >${optionsDict.name}
+          <select
+            class="cond-opts-trigger"
+            data-id="${prefix}${optionsDict.key}"
+            name="${prefix}${optionsDict.key}"
+            >`; const vals = optionsDict.values; for (let i = 0; i < vals.length;
+            ++i){ html += `<option value="${vals[i].ID}">${vals[i].name}</option>
+            `; } html += `</select
+          > </label
+        >`; 
+        for (let i = 0; i < vals.length; ++i){ if (vals[i].options.length > 0) {
+        html += `
+        <div class="${prefix}${optionsDict.key}__${vals[i].ID} sub-opts">
+          `; for (let j = 0; j < vals[i].options.length; ++j){ const opt =
+          vals[i].options[j]; html += generateOptionHtml(opt, idx, prefix +
+          optionsDict.key + "_"); } html += `
+        </div>
+        `; } } html += `
+      </div>
+      `; 
+      break; 
+      
+      case "float": 
+        return `
+          <div class="option-cont cell small-12">
+            <label for="${optionsDict.key}">${optionsDict.name}
+              <input
+                name="${prefix}${optionsDict.key}"
+                class=""
+                data-id="${prefix}${optionsDict.key}"
+                type="number"
+                min="${optionsDict.min}"
+                max="${optionsDict.max}"
+                step="${optionsDict.step}"
+                value="${optionsDict.default}"
+              />
+            </label>
+          </div>`; 
+      break; 
+    
+      case "int": 
+        return `
+          <div class="option-cont cell small-12">
+            <label for="${optionsDict.key}">${optionsDict.name}
+              <input
+                name="${prefix}${optionsDict.key}"
+                class=""
+                data-id="${prefix}${optionsDict.key}"
+                type="number"
+                min="${optionsDict.min}"
+                max="${optionsDict.max}"
+                step="${optionsDict.step}"
+                value="${optionsDict.default}"
+              />
+            </label>
+          </div>`; 
+      break; 
+    
+      } 
+        html += `
+        </form>
+        `; 
+      return html; 
+    } %>
+
+
+<div class="test-block" id="testBlock0">
+  <div class="notify-bar">
+    <div class="msg-box warning">Actual selected options in this form are always default. They do not reflect actual options in use. For those please check 'Actual model options' string.</div>
+
+    <div class="msg-box callout alert hidden"></div>
+    <div class="msg-box callout primary hidden"></div>
+    <div class="msg-box callout success hidden"></div>
+    <div class="msg-box callout warning working-label hidden">Working...</div>
+  </div>
+
+<div id="modelOptionsSidebar">
+
+  
+</div>
+
+<div class="submit-cont small-12">
+  <a class="button submit" onclick="saveSettings(this)">Save options</a>
+</div>
+</div>
+
+<script>
+    
+    function saveSettings(subBtnElem) {
+    console.log("=> saveSettings(elem)");
+
+    // Get parent block element
+    const parElem = subBtnElem.closest(".test-block");
+
+    const testBlockId = parElem.dataset.id;
+    console.log("testBlockId = " + testBlockId);
+
+    // Get all test forms
+    const testForms = document.querySelectorAll(
+      "#" + parElem.id + " .test-form"
+    );
+
+    // Data we'll send into the request
+    reqData = {};
+    for (let form of testForms) {
+      const fId = form.dataset.id;
+      let fData = new FormData(form);
+
+      if (typeof reqData[fId] === "undefined") {
+        reqData[fId] = {};
+      }
+
+      for (var [key, value] of fData.entries()) {
+        reqData[fId][key] = value;
+      }
+    }
+
+    console.log("req_data = " + JSON.stringify(reqData, null, 4));
+
+    url = "/set_ranker_model_options";
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reqData),
+    })
+      .then((res) => {
+        if (!res.ok)
+          throw Error("Changing options failed!");
+        else 
+          location.reload();
+      })
+      .then((jsonData) => {
+
+      })
+      .catch((e) => {
+        console.log("Error: " + JSON.stringify(e.message));
+        handleOptionsFail(parElem, "Changing options failed!");
+      });
+
+    console.log("<= saveSettings(elem)");
+  }
+
+  function handleOptionsFail(parElem, msg) {
+      pushTestBlockWarning(parElem, msg, 10000);
+  }
+  function pushTestBlockWarning(blockElem, msg, duration) {
+    const msgElem = document.querySelectorAll(
+      "#" + blockElem.id + " .msg-box.alert"
+    )[0];
+    msgElem.classList.add("visible");
+    msgElem.innerHTML = msg;
+
+    setTimeout(() => {
+      msgElem.classList.remove("visible");
+    }, duration);
+  }
+
+function generateTestForm(index, parent) {
+    const html = `
+      <li id="formId_${index}">
+        <h3>Test form ${index}</h3>
+          <div data-id="${index}" class="">
+            
+          <% for (let i = 0; i < modelOptions.length; ++i) { %>
+            <%- generateOptionHtml(modelOptions[i], "${index}") %>
+          <% } %>
+
+        </div>
+      </li>`;
+
+    parent.insertAdjacentHTML("beforeend", html);
+
+    const formId = "formId_" + index;
+    const triggers = document.querySelectorAll(
+      "#" + formId + " .cond-opts-trigger"
+    );
+
+    for (let elem of triggers) {
+      elem.addEventListener("change", (event) => {
+        const elem = event.target;
+        let value = elem.options[elem.selectedIndex].value;
+        const key = elem.dataset.id;
+
+        const ids = key + "__" + value;
+
+        // Disable all
+        const aa = "#" + formId + " .cont__" + key + " .sub-opts * ";
+        const aa2 = "#" + formId + " .cont__" + key + " .sub-opts";
+        $(aa).attr("disabled", true);
+        $(aa2).addClass("hidden");
+
+        const aa3 = "#" + formId + " ." + ids + " * ";
+        const aa4 = "#" + formId + " ." + ids;
+        // Enable selected
+        $(aa3).attr("disabled", false);
+        $(aa4).removeClass("hidden");
+
+        const subtriggers = document.querySelectorAll(aa4 + " .cond-opts-trigger");
+        if (subtriggers && subtriggers.length > 0)
+        {
+          // Trigger change manually
+          subtriggers.forEach((elem) => {
+            elem.dispatchEvent(new Event("change"));
+          });
+        }
+      });
+    }
+
+    // Trigger change manually
+    triggers.forEach((elem) => {
+      elem.dispatchEvent(new Event("change"));
+    });
+  }
+
+
+  const testFormCont = document.getElementById("modelOptionsSidebar");
+  generateTestForm(0, testFormCont);
+
+</script>

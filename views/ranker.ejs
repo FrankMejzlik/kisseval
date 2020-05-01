@@ -1,6 +1,9 @@
 <!-- Include header -->
 <%- include common/header.ejs %>
 
+<!-- ===================================== -->
+<!-- NOTIFICATION SECTION: Messages & warnings -->
+<!-- ===================================== -->
 <section class="global-messages-section grid-container">
   <div class="grid-x grid-x align-center">
     <div class="callout" id="mainGlobalMessageCont">
@@ -13,177 +16,78 @@
 <section class="ranker-grid-section grid-container">
   <div class="grid-x grid-x align-center">
 
-    
-
+<!-- ===================================== -->
+<!-- Left sidebar: Target & query input -->
+<!-- ===================================== -->
 <div class="ranker-left-sidebar large-3 cell">
 
   <form autocomplete="off" class="autocomplete-form" action="/image_finder/" method="POST">
 
+    <!-- ---------------------------------- -->
     <!-- Settings bar -->
+    <!-- ---------------------------------- -->
     <section class="settings-bar-section grid-container">
       <div class="grid-x grid-padding-x align-left">  
 
-        <!-- Image settings -->
+        <!-- Active options bar -->
+        <div class="misc-info-bar small-12 cell">
+          <p>Data pack ID: <%= ranker.options.activeDataPackId %></p>
+          <p id="currModelInfo"><strong>Model options:</strong> <%- ranker.options.activeModelOptions %></p>
+        </div>
+
+        <!-- Image settings BUTTON -->
         <div class="get-random-image-cont small-4 cell">
             <button type="button" class="button icon-settings open-left-oc" data-toggle="offCanvasLeftSplit1"><img src="/images/generic/icon_settings.svg"></button>
         </div>
 
-        <div class="target-image-rank-cont small-4 cell">
+        <!-- Admin info bar -->
+        <div class="target-image-rank-cont small-8 cell">
           <span id="targetImageRankOut"></span>
-        </div>
-
-        <div class="misc-info-bar small-4 cell">
-          <span id="currModelInfo"><%= ranker.settings.modelName ? "Current model: " + ranker.settings.modelName : "" %></span>
-        </div>
-        
+        </div>        
 
       </div>
     </section>
 
+    <!-- ---------------------------------- -->
     <!-- Image preview -->
+    <!-- ---------------------------------- -->
     <section class="image-preview-section grid-container">
       <div class="grid-x grid-padding-x align-left">  
 
         <!-- Image settings -->
-        <div class="get-random-image-cont small-4 cell" id="getRandomImageCont">
-
-          <% // If search session is running
-          if (typeof ranker.searchSession !== "undefined"){
-          if (typeof ranker.searchSession.targetImages[0].imageId !== "undefined" && ranker.searchSession.targetImages[0].imageId !== null) 
-          { %>
-
-            <a class="button alert" onclick="submitImage();">Give up!</a>
-
-          <% }}
-          // If outside of search session
-          else
-          { %>
-
-            <a class="button" onclick="getRandomImageToPreview(this);">Random image</a>
-
-          <% } %>
-
+        <div class="get-random-image-cont small-4 cell" id="<%= elemIds.ranker.targetFrameButtons %>"></div>
+        
+        <!-- Target frames' IDs -->
+        <div class="target-image-id-cont small-4 cell">
+          <label class="target-image-id-label">Target image ID:
+            <input type="text" id="<%= elemIds.ranker.targetFrameId %>" name="<%= elemIds.ranker.targetFrameId %>" value="" />
+          </label>
         </div>
         
-        <div class="target-image-id-cont small-4 cell">
-          
-          <label class="target-image-id-label">Target image ID:
-            <input type="number" id="targetImageId" tabindex="1" name="targetImageId" default="0" value="<%= ranker.searchSession && ranker.searchSession.targetImages[0].imageId ? ranker.searchSession.targetImages[0].imageId : '' %>" />
-          </label>
-
-        </div>
-        <div class="get-selected-image-to-preview small-4 cell" id="getSelectedImageToPrevies">
-
-          <% // If search session is running
-          if (typeof ranker.searchSession !== "undefined" && typeof ranker.searchSession.targetImages[0].imageId !== "undefined" && ranker.searchSession.targetImages[0].imageId !== null) 
-          { %>
-
-            
-
-          <% }
-          // If outside of search session
-          else
-          { %>
-
-            <a class="button" onclick="getSelectedImageToPreview(this);" title="Sets target image to provided ID">Show image</a>
-
-          <% } %>
-
-          
-        </div>
-
         <!-- Image preview canvas -->
-        <ul class="image-preview small-12 cell" id="targetImagesCont">
-          <li><img src="/images/<%= ranker.searchSession && ranker.searchSession.targetImages[0] ? ranker.searchSession.targetImages[0].filename : "generic/bg_neural.jpg" %>" /></li>
-          <li><img src="/images/<%= ranker.searchSession && ranker.searchSession.targetImages[1] ? ranker.searchSession.targetImages[1].filename : "generic/bg_neural.jpg" %>" /></li>
+        <ul class="image-preview small-12 cell" id="<%= elemIds.ranker.targetImagesList %>">
           
         </ul>
-
       </div>
     </section>
 
 
-    <!-- Autocomplete section -->
+    <!-- ---------------------------------- -->
+    <!-- Query inputs -->
+    <!-- ---------------------------------- -->
     <section class="autocomplete-section ranker-single grid-container">
       <div class="grid-x grid-padding-x align-left"> 
 
-        <!-- Query 1 -->
+        <!-- Query #1 -->
         <div class="autocomplete-input-cont small-12 cell">
-          <!-- Autocomplete text input -->
-          <input <%= ui.ranker.queryInputUnlocked ? "" : "disabled" %> type="text" id="queryInput" tabindex="1" name="query">
-          <input type='hidden' id="selectedCounter" name='selectedCounter' value='0'>
-          
-          <ul class="selected-keywords-list" id="selectedKeywordsList">
-        
-            <% if (typeof ranker.query !== 'undefined') {
-                if (ranker.query instanceof Array) 
-                {
-                  for (var i = 0; i < ranker.query.length; ++i) {
-                  %>
-              
-
-                <li class="slected-keyword-checkbox">
-                  <input type="checkbox" name="keywordWord" value="<%= ranker.queryWords[i] %>" checked="">                
-                  <input type="checkbox" name="keyword" value="<%= ranker.query[i] %>" checked="">                
-                  <span><%= ranker.queryWords[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 0);">&#10006</a>
-                </li>
-
-              <%    }
-              } else { %>
-
-                <li class="slected-keyword-checkbox">
-                <input type="checkbox" name="keywordWord" value="<%= ranker.queryWords %>" checked="">          
-                <input type="checkbox" name="keyword" value="<%= ranker.query %>" checked="">       
-                <span><%= ranker.queryWords %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 0);">&#10006</a>
-              </li>
-
-                <%
-              }
-              } %>
-
-          </ul>
-          
-        </div>
-
-        <!-- Query 2 -->
-        <div class="autocomplete-input-cont second small-12 cell">
 
           <!-- Autocomplete text input -->
-          <input <%= ui.ranker.queryInput2Unlocked ? "" : "disabled" %> type="text" id="queryInput2" tabindex="1" name="query2">
-          <input type='hidden' id="selectedCounter2" name='selectedCounter2' value='0'>
+          <input type="text" id="<%= elemIds.ranker.queryInput %>" tabindex="1" name="query">
           
-          <ul class="selected-keywords-list" id="selectedKeywordsList2">
-        
-            <% if (typeof ranker.query2 !== 'undefined') {
-                if (ranker.query2 instanceof Array) 
-                {
-                  for (var i = 0; i < ranker.query2.length; ++i) {
-                  %>
-              
-
-                <li class="slected-keyword-checkbox">
-                  <input type="checkbox" name="keywordWord2" value="<%= ranker.queryWords2[i] %>" checked="">                
-                  <input type="checkbox" name="keyword2" value="<%= ranker.query2[i] %>" checked="">                
-                  <span><%= ranker.queryWords2[i] %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 1);">&#10006</a>
-                </li>
-
-              <%    }
-              } else { %>
-
-                <li class="slected-keyword-checkbox">
-                <input type="checkbox" name="keywordWord2" value="<%= ranker.queryWords2 %>" checked="">          
-                <input type="checkbox" name="keyword2" value="<%= ranker.query2 %>" checked="">       
-                <span><%= ranker.queryWords2 %></span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 1);">&#10006</a>
-              </li>
-
-                <%
-              }
-              } %>
-
-          </ul>
+          <!-- List of currently selected keywords -->
+          <ul class="selected-keywords-list" id="<%= elemIds.ranker.selectedKeywords1 %>"></ul>
           
         </div>
-
       </div>
 
     </form>
@@ -191,37 +95,32 @@
 
   </div>
 
-<!-- Images grid -->
+<!-- ===================================== -->
+<!-- MAIN BODY: Image grid & results -->
+<!-- ===================================== -->
 <div class="ranker-right-sidebar image-grid-section image-browser-main-tiles large-9 cell grid-container">
   
-  <div class="ranker-result-board grid-x grid-x align-center align-center" id="rankerResultBoard">
-    <div class="result-actions-board-title cell large-12">
-      <h1>Search session results</h1>
-    </div>
-    <div class="result-actions-chart cell large-6">
-      <h2>Rank progress in time</h2>
-      <canvas id="rankerResultBoardChartCanvas"></canvas>
-    </div>
-
-    <div class="result-actions-info cell large-6">  
-      <h2>Other info</h2>
-      <div id="resultInfo">
-      </div>
-      
-    </div>
-
+  <!-- ---------------------------------- -->
+  <!-- Search session results -->
+  <!-- ---------------------------------- -->
+  <div class="ranker-result-board grid-x grid-x align-center align-center" id="<%= elemIds.ranker.scoreboard %>">
+    
+    
 
   </div>
 
-  <ul id="resultImagesList" class="grid-x grid-x align-center align-middle">
-
-  </ul>
+  <!-- ---------------------------------- -->
+  <!-- Image grid -->
+  <!-- ---------------------------------- -->
+  <ul id="<%= elemIds.ranker.imageGrid %>" class="grid-x grid-x align-center align-middle"></ul>
 
 </div>
 
 
 
-<!-- Single image modal window -->
+<!-- ===================================== -->
+<!-- GLOBAL MODAL WINDOW: Frame detail window -->
+<!-- ===================================== -->
 <div class="full reveal" id="modalImage" data-reveal data-src="999" data-overlay="false">
   
   <button class="close-button" data-close aria-label="Close modal" type="button">
@@ -243,7 +142,7 @@
 
   <!-- Tabs navigation -->
   <ul class="tabs" data-tabs id="modalImageTabs">
-    <li class="tabs-title is-active"><a data-tabs-target="modalImageTab1" href="#modalImageTab1" aria-selected="true">Labels</a></li>
+    <li class="tabs-title is-active"><a data-tabs-target="modalImageTab1" href="#modalImageTab1" aria-selected="true">Concepts</a></li>
     <li class="tabs-title"><a data-tabs-target="modalImageTab2" href="#modalImageTab2">Pure hypernyms</a></li>
   </ul>
   <div class="tabs-content" data-tabs-content="modalImageTabs">
@@ -258,10 +157,12 @@
 </div>
 
 
-<% if (typeof userLevel != 'undefined') 
-{
-  if (userLevel >= 5) 
-  { %>
+
+<!-- ===================================== -->
+<!-- EVALUATOR ONLY PANEL: Frame detail window -->
+<!-- ===================================== -->
+
+<% if (state.userLevel  >= 10) { %>
     <div class="developer-bottom-analysis-bar grid-container">
 
       <ul class="accordion" id="devAccordion" data-slide-speed="0" data-accordion data-allow-all-closed="true">
@@ -337,19 +238,18 @@
         }
       });
     </script>
-  <% }
-} %>
+<% } %>
 
 
-<!-- Include autocomplete module -->
-<%- include modules/autocomplete_logic_ranker.ejs %>
 
   </div>
 </section>
 
 </body>
 
-<!-- Chart plotting -->
+
+
+<!-- Client-side JS CHART PLOTTING functions -->
 <script src="/javascripts/Chart.bundle.js"></script>
 <script>
   const chartSettings = {
@@ -496,389 +396,163 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 
 
 <script>
-  function clearImageGrid()
+
+  const viewData = { 
+    ranker: <%- JSON.stringify(ranker, null, 4); %>,
+    elemIds: <%- JSON.stringify(elemIds, null, 4); %>
+  };
+
+
+  function startSearchSession(elem, targetFramesIds = [])
   {
-    $targetList = $("#resultImagesList");
-    $targetList.html("");
-
-    $selectedKeywordsList = $("#selectedKeywordsList");
-    $selectedKeywordsList.html("");
-
-    $selectedKeywordsList2 = $("#selectedKeywordsList2");
-    $selectedKeywordsList2.html("");
-  }
-
-  function clearTargetImage()
-  {
-    $("#targetImage").attr("src", "/images/generic/bg_neural.jpg");
-    $("#targetImageId").val(0);
-
-    let ul = document.getElementById("targetImagesCont");
-
-    // Remove all current child nodes
-    while (ul.firstChild) 
-    {
-      ul.removeChild(ul.firstChild);
+    const reqData = {
+      targetFramesIds: targetFramesIds
     }
 
-    // Append default image
-    let li = document.createElement("li");
-    let img = document.createElement("img");
-    img.setAttribute("src", "/images/generic/bg_neural.jpg");
-    img.setAttribute("class", "seq-img-0");
-    li.appendChild(img);
-
-    ul.appendChild(li);
-  }
-
-  function getRandomImageToPreview(elem)
-  {
-    // Clear old grid
-    clearImageGrid();
-
-    // Create AJAX call to get appropriate data
-    get('/ranker_ajax_get_random_image_and_start_search_session')
-      // If response OK
-      .then((data) => 
-      {
-        data = JSON.parse(data);
-
-        // Get parent <ul> element for image previews
-        let ul = document.getElementById("targetImagesCont");
-
-        // Remove all current child nodes
-        while (ul.firstChild) 
+    fetch("/ranker_start_search_session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reqData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // Handle error
+        if (data.error)
         {
-          ul.removeChild(ul.firstChild);
+          throw Error(data.error.message);
         }
 
-        // Iterate over all fetched images from video sequence
-        for (let i = 0; i < data.length; ++i)
-        {
-          let li = document.createElement("li");
-          let img = document.createElement("img");
-          img.setAttribute("src", "/images/" + data[i].imageFilename);
-          img.setAttribute("class", "seq-img-" + i);
-          li.appendChild(img);
+        // Update viewData
+        viewData.ranker.searchSession = data.searchSession;
+        viewData.ranker.state = data.state;
 
-          ul.appendChild(li);
-        }  
-
-        // Fill in just first image ID
-        $("#targetImageId").val(data[0].imageId);
-
-        // Set query input to enabled state
-        $("#queryInput").prop('disabled', false);
-
-        let viewData = new Object();
-        viewData.modelName = data.modelName;
-
-        // Edit HTML layout
-        putDocumentToPostStartState(viewData);
+        // Update document
+        putDocumentToState(viewData);
 
       })
-      // If error occured
-      .catch((err) => 
+      .catch((e) => {
+        console.log("Error: " + JSON.stringify(e.message));
+        showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
+      });
+  }
+
+
+
+function showGlobalMessage(messagePrimary, messageSecondary, time)
+{
+  $mainGlobalMessageCont = $("#mainGlobalMessageCont");
+  $primary = $($mainGlobalMessageCont.children(".primary")[0]);
+  $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
+
+  $mainGlobalMessageCont.show();
+  $primary.html(messagePrimary);
+  $secondary.html(messageSecondary);
+
+  setTimeout(() => {
+    clearGlobalMesssage();
+  }, time);
+}
+
+function clearGlobalMesssage()
+{
+  $mainGlobalMessageCont = $("#mainGlobalMessageCont");
+  $primary = $($mainGlobalMessageCont.children(".primary")[0]);
+  $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
+
+
+  $primary.html("");
+  $secondary.html("");
+  $mainGlobalMessageCont.hide();
+}
+
+
+function submitImage(elem)
+{
+  let imageId;
+  if (typeof elem === "undefined")
+  {
+    imageId = -1;
+  }
+  else 
+  {
+    imageId = $(elem).parent().data("image-id");
+  }
+
+  // Create AJAX call to get appropriate data
+  get('/ranker_ajax_submit_image?imageId=' + imageId)
+    // If response OK
+    .then((data) => {
+
+      data = JSON.parse(data);
+
+      // If was give up call
+      if (data.giveUp || data.correct)
       {
-          // Do stuff on error...
-      });
-  }
+        
 
-  function getSelectedImageToPreview(elem)
-  {
-    const targetId = $("#targetImageId").val();
-
-    // Clear old grid
-    clearImageGrid();
-
-    // Create AJAX call to get appropriate data
-    get('/ranker_ajax_get_selected_image_and_start_search_session?imageId=' + targetId)
-      // If response OK
-      .then((data) => {
-
-        data = JSON.parse(data);
-
-        $("#targetImageId").val(data.imageId);
-        $("#targetImage").attr("src", "/images/" + data.imageFilename);
-        $("#queryInput").prop('disabled', false);
-
-        let viewData = new Object();
-        viewData.modelName = data.modelName;
-
-
-        // Edit HTML layout
-        putDocumentToPostStartState(viewData);
-
-      })
-      // If error occured
-      .catch((err) => {
-          // Do stuff on error...
-      });
-  }
-
-  function showGlobalMessage(messagePrimary, messageSecondary, time)
-  {
-    $mainGlobalMessageCont = $("#mainGlobalMessageCont");
-    $primary = $($mainGlobalMessageCont.children(".primary")[0]);
-    $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
-
-    $mainGlobalMessageCont.show();
-    $primary.html(messagePrimary);
-    $secondary.html(messageSecondary);
-
-    setTimeout(() => {
-      clearGlobalMesssage();
-    }, time);
-  }
-
-  function clearGlobalMesssage()
-  {
-    $mainGlobalMessageCont = $("#mainGlobalMessageCont");
-    $primary = $($mainGlobalMessageCont.children(".primary")[0]);
-    $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
-
-
-    $primary.html("");
-    $secondary.html("");
-    $mainGlobalMessageCont.hide();
-  }
-
-
-function putDocumentToPostStartState(viewData)
-{
-  document.getElementById("rankerResultBoard").classList.remove("active");
-  document.getElementById("queryInput").disabled = false;
-  document.getElementById("queryInput2").disabled = false;
-
-  document.getElementById("currModelInfo").innerHTML = "Current model: " + viewData.modelName;
-  
-  document.getElementById("getRandomImageCont").innerHTML = '<a class="button alert" onclick="submitImage();">Give up!</a>';
-
-  document.getElementById("getSelectedImageToPrevies").innerHTML = '';  
-}
-
-
-function putDocumentToPostSubmitState()
-{
-  // Crear target image
-  clearTargetImage();
-
-  // Clear old grid
-  clearImageGrid();
-
-  document.getElementById("queryInput").disabled = true;
-  document.getElementById("queryInput2").disabled = true;
-
-  document.getElementById("getRandomImageCont").innerHTML = '<a class="button" onclick="getRandomImageToPreview(this);">Random image</a>';
-  document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);" title="Sets target image to provided ID">Show image</a>';  
-
-  document.getElementById("rankerResultBoard").classList.add("active");
-}
-
-function putDocumentToPreStartState()
-{
-  document.getElementById("getRandomImageCont").innerHTML = '<a class="button" onclick="getRandomImageToPreview(this);">Random image</a>';
-  document.getElementById("getSelectedImageToPrevies").innerHTML = '<a class="button" onclick="getSelectedImageToPreview(this);" title="Sets target image to provided ID">Show image</a>'; 
-  
-
-  document.getElementById("rankerResultBoard").classList.remove("active");
-}
-
-
-  function submitImage(elem)
-  {
-    let imageId;
-    if (typeof elem === "undefined")
-    {
-      imageId = -1;
-    }
-    else 
-    {
-      imageId = $(elem).parent().data("image-id");
-    }
-
-    // Create AJAX call to get appropriate data
-    get('/ranker_ajax_submit_image?imageId=' + imageId)
-      // If response OK
-      .then((data) => {
-
-        data = JSON.parse(data);
-
-        // If was give up call
-        if (data.giveUp || data.correct)
+        if (data.correct)
         {
-          
+          console.log("Showing correct submit image data.");
 
-          if (data.correct)
-          {
-            console.log("Showing correct submit image data.");
-
-            showGlobalMessage("Correct.", "Great job", 3000);
-          }
-          else 
-          {
-            console.log("Showing give up results");
-          }
-          
-          // Draw chart
-          let dataArray = new Array();
-          dataArray.push(data.chartData);
-          const canvas = document.getElementById("rankerResultBoardChartCanvas");
-
-          document.getElementById("resultInfo").innerHTML = "";
-
-          // Print info into result html
-          if (data && data.relevantImagesArray && data.relevantImagesArray.targetImageRank)
-          {
-            document.getElementById("resultInfo").innerHTML += "<h3>Final image rank: <span>" + data.relevantImagesArray.targetImageRank +"</span></h3>";
-          }
-          document.getElementById("resultInfo").innerHTML += "<h5>Time: <span>" + data.sessionDuration  + " s</span></h5>";
-
-          drawInteractiveSearchChart(dataArray, canvas);
-
-          putDocumentToPostSubmitState();
-
-        } 
-        // Wrong image submit
+          showGlobalMessage("Correct.", "Great job", 3000);
+        }
         else 
         {
-          console.log("Showing invalid submit image data.");
-
-          showGlobalMessage("Incorrect submit", "Sorry, this is not the correct image, please try again.", 3000);
-        }
-
-
-        
-
-        //currentPrinter = setInterval(printImagesFromTo, batchPrintTimeout);
-
-      })
-      // If error occured
-      .catch((err) => {
-          // Do stuff on error...
-      });
-  }
-
-  let currentPrinter;
-  let currentImagesToPrintArray;
-  let currentImageIndex;
-  let numImagesToPrint;
-  const numImagesPerBatch = 300;
-  const batchPrintTimeout = 2000;
-
-  function printImagesFromTo()
-  {
-    $targetList = $("#resultImagesList");
-
-    for (var i = 0; i < numImagesPerBatch && currentImageIndex < numImagesToPrint; ++currentImageIndex) 
-    {
-      $targetList.append(
-        '<li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' +currentImagesToPrintArray[currentImageIndex].imageId + ')"\
-        data-open="modalImage" data-image-id="' + currentImagesToPrintArray[currentImageIndex].imageId + '" style="background-image: url(\'/images/' + currentImagesToPrintArray[currentImageIndex].filename + '\')">\
-          <a class="button btn-submit success" onclick="" title="Submit this image">&#10004;</a>\
-        </li>'
-      );
-
-      ++i;
-    }
-  }
-
-  function processAction(action, operand, word)
-  {
-    // Stop printer if running
-    clearInterval(currentPrinter);
-    currentImagesToPrintArray = undefined;
-
-    // Create AJAX call to get appropriate data
-    get('/ranker_ajax_process_action?action=' + action + '&operand=' + operand + '&operandWord=' + word)
-      // If response OK
-      .then((data) => {
-
-        data = JSON.paata = JSON.parse(data);
-
-        $targetList = $("#resultImagesList");
-        $targetList.html("");
-
-        if (typeof data.relevantImagesArray.targetImageRank !== "undefined")
-        {
-          $("#targetImageRankOut").html("<p>Target rank: </p>" + data.relevantImagesArray.targetImageRank);
+          console.log("Showing give up results");
         }
         
-        numImagesToPrint = data.relevantImagesArray.images.length;
-        currentImagesToPrintArray = data.relevantImagesArray.images;
-
-        currentImageIndex = 0;
-        for (currentImageIndex = 0; currentImageIndex < numImagesPerBatch; ++currentImageIndex) 
-        {
-          $targetList.append(
-            '<button class="close-button" data-close aria-label="Close modal" type="button">\
-              <span aria-hidden="true">&times;</span>\
-            </button>\
-            <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
-              data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
-              <a class="button btn-submit success" onclick="submitImage(this);" title="Submit this image">&#10004;</a>\
-              <a class="just-clicker"  data-open="modalImage"></a>\
-            </li>'
-          );
-        }
-
         // Draw chart
         let dataArray = new Array();
         dataArray.push(data.chartData);
-        const canvas = document.getElementById("interactiveSearchChart");
+        const canvas = document.getElementById("rankerResultBoardChartCanvas");
+
+        document.getElementById("resultInfo").innerHTML = "";
+
+        // Print info into result html
+        if (data && data.relevantImagesArray && data.relevantImagesArray.targetImageRank)
+        {
+          document.getElementById("resultInfo").innerHTML += "<h3>Final image rank: <span>" + data.relevantImagesArray.targetImageRank +"</span></h3>";
+        }
+        document.getElementById("resultInfo").innerHTML += "<h5>Time: <span>" + data.sessionDuration  + " s</span></h5>";
 
         drawInteractiveSearchChart(dataArray, canvas);
 
-        //currentPrinter = setInterval(printImagesFromTo, batchPrintTimeout);
+        putDocumentToState_finished();
 
-      })
-      // If error occured
-      .catch((err) => {
-          // Do stuff on error...
-      });
-  }
+      } 
+      // Wrong image submit
+      else 
+      {
+        console.log("Showing invalid submit image data.");
 
+        showGlobalMessage("Incorrect submit", "Sorry, this is not the correct image, please try again.", 3000);
+      }
 
-function addKeyword(keywordId, word, source) 
-{
-  let keywordSource = 1;
-  // If source is detail window
-  if (source == 2)
-  {
-    keywordSource = 2;
-  }
-
-  // xoxo
-  processAction(keywordSource, keywordId, word);
-
-  const selectedContainer = document.getElementById("selectedKeywordsList");
-
-  chechkboxCont = document.createElement("li");
-  chechkboxCont.setAttribute("class", 'slected-keyword-checkbox');
-
-  chechkboxCont.innerHTML += "<input type='checkbox' name='keyword' value='" + keywordId + "' checked>\
-    <input type='checkbox' name='keywordWord' value='" + word + "' checked>\
-    <span>" + word + "</span> <a class='remove-keyword button alert' onclick='removeKeyword(event, this, 0);'>&#10006</a>"
-
-  selectedContainer.appendChild(chechkboxCont);
-
+    })
+    // If error occured
+    .catch((err) => {
+        // Do stuff on error...
+    });
 }
 
-
-
+let currentPrinter;
+let currentImagesToPrintArray;
+let currentImageIndex;
+let numImagesToPrint;
+const numImagesPerBatch = 300;
+const batchPrintTimeout = 2000;
 
 
 
 const labelsContainer = document.getElementById("modalImageTab1");
-  const pureHyerpnymsContainer = document.getElementById("modalImageTab2");
-  const imageIdCont = document.getElementById("modalImageId");
-  const succFramesCont = document.getElementById("sucFramesCont");
+const pureHyerpnymsContainer = document.getElementById("modalImageTab2");
+const imageIdCont = document.getElementById("modalImageId");
+const succFramesCont = document.getElementById("sucFramesCont");
 
 function switchModalImageHtmlContents(id) 
 {
-  
-
-
   $.ajax('/ranker_ajax_get_image_keywords_for_interactive_search?imageId=' + id)
     .done(function(data)
     {
@@ -974,7 +648,247 @@ function switchModalImageHtmlContents(id)
           });
 }
 
+
+// xoxo
+function handleActionPush(viewData, chartData) {
+  // Redraw chart
+}
+
+function processAction(queryIdx, action, operand, word)
+{
+  const reqData = {
+    aueryIdx: queryIdx,
+    action: action,
+    operand: operand
+  };
+
+  fetch("/ranker_push_search_action", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reqData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // Handle error
+        if (data.error)
+        {
+          throw Error(data.error.message);
+        }
+
+        // Update viewData
+        viewData.ranker.searchSession = data.searchSession;
+        viewData.ranker.state = data.state;
+        
+        const chartData = data.chartData;
+
+        // Update document
+        handleActionPush(viewData, chartData);
+
+      })
+      .catch((e) => {
+        console.log("Error: " + JSON.stringify(e.message));
+        showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
+      });
+
+  // Create AJAX call to get appropriate data
+  get('/ranker_ajax_process_action?action=' + action + '&operand=' + operand + '&operandWord=' + word)
+    // If response OK
+    .then((data) => {
+
+      data = JSON.paata = JSON.parse(data);
+
+      $targetList = $("#resultImagesList");
+      $targetList.html("");
+
+      if (typeof data.relevantImagesArray.targetImageRank !== "undefined")
+      {
+        $("#targetImageRankOut").html("<p>Target rank: </p>" + data.relevantImagesArray.targetImageRank);
+      }
+      
+      numImagesToPrint = data.relevantImagesArray.images.length;
+      currentImagesToPrintArray = data.relevantImagesArray.images;
+
+      currentImageIndex = 0;
+      for (currentImageIndex = 0; currentImageIndex < numImagesPerBatch; ++currentImageIndex) 
+      {
+        $targetList.append(
+          '<button class="close-button" data-close aria-label="Close modal" type="button">\
+            <span aria-hidden="true">&times;</span>\
+          </button>\
+          <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + currentImagesToPrintArray[currentImageIndex].imageId+ ')"\
+            data-image-id="' + data.relevantImagesArray.images[currentImageIndex].imageId + '" style="background-image: url(\'/images/' + data.relevantImagesArray.images[currentImageIndex].filename + '\')">\
+            <a class="button btn-submit success" onclick="submitImage(this);" title="Submit this image">&#10004;</a>\
+            <a class="just-clicker"  data-open="modalImage"></a>\
+          </li>'
+        );
+      }
+
+      // Draw chart
+      let dataArray = new Array();
+      dataArray.push(data.chartData);
+      const canvas = document.getElementById("interactiveSearchChart");
+
+      drawInteractiveSearchChart(dataArray, canvas);
+
+    })
+    // If error occured
+    .catch((err) => {
+        // Do stuff on error...
+    });
+}
+
+function discardSession() {
+
+}
+
+function setupTargetFrameButtons(viewData)
+{
+  const elem = document.getElementById(viewData.elemIds.ranker.targetFrameButtons);
+
+  if (viewData.ranker.state == "running") {
+    elem.innerHTML = 
+      `<a class="button" onclick="submitImage();">Give up!</a>
+      <a class="button alert" onclick="discardSession();">!! DISCARD SESSION !!</a>`;
+  } else {
+    elem.innerHTML = 
+      `<a class="button" onclick="startSearchSession(this);">Random image</a>`;
+  }
+
+}
+
+function setupImageGrid(viewData)
+{
+  const elem = document.getElementById(viewData.elemIds.ranker.scoreboard);
+
+  elem.innerHTML = "";
+}
+
+function setupTargetFrames(viewData) {
+  const elem = document.getElementById(
+    viewData.elemIds.ranker.targetImagesList
+  );
+  const elemIdInput = document.getElementById(
+    viewData.elemIds.ranker.targetFrameId
+  );
+  
+  if (viewData.ranker.state == "running") {
+    const targetIds =  viewData.ranker.searchSession.targetFramesIds;
+    for (let i = 0; i < targetIds.length; ++i) {
+      elem.innerHTML = `<li><img src="/images/${targetIds[i].filename}" /></li>`;
+      elemIdInput.value = `${elemIdInput.value}${targetIds[i].frameId},`;
+    }
+  } else {
+    elem.innerHTML = `<li><img src="/images/generic/bg_neural.jpg" /></li>`;
+  }
+}
+
+function setupScoreBoard(viewData) {
+  const elem = document.getElementById(viewData.elemIds.ranker.scoreboard);
+
+  elem.innerHTML = `
+    <div class="result-actions-board-title cell large-12">
+      <h1>Search session results</h1>
+    </div>
+    
+    <div class="result-actions-chart cell large-6">
+      <h2>Rank progress:</h2>
+      <canvas id="rankerResultBoardChartCanvas"></canvas>
+    </div>
+
+    <div class="result-actions-info cell large-6">  
+      <h2>Other info</h2>
+      <div id="resultInfo"> </div>
+    </div>`;
+
+  if (viewData.ranker.state == "finished") {
+    elem.classList.add("active");
+  } else {
+    elem.classList.remove("active");
+  }
+}
+
+function addSelectedKeyword(elem, ID, word)
+{
+  let html = "";
+  html += `
+      <li class="slected-keyword-checkbox">
+        <input type="checkbox" name="keywordWord" value="${ID}" checked="">                
+        <input type="checkbox" name="keyword" value="${ID}" checked="">                
+        <span>${word}</span> <a class="remove-keyword button alert" onclick="removeKeyword(event, this, 0);">&#10006</a>
+      </li>`;
+
+  elem.innerHTML = elem.innerHTML + html;
+}
+
+function setupSelectedKeywords(viewData) {
+  const elem = document.getElementById(
+    viewData.elemIds.ranker.selectedKeywords1
+  );
+  let html = "";
+
+  // Append all selected keywords
+  const keywordIds = viewData.ranker.ui.query;
+  const wordStrings = viewData.ranker.ui.queryWords;
+  for (let i = 0; i < keywordIds.length; ++i) {
+    addSelectedKeyword(elem, keywordIds[i], vwordStrings[i]);
+  }
+}
+
+/**
+ * This function modifies current page HTML according to state data.
+ */
+
+function putDocumentToState(viewData) {
+  // Get ranker state
+  const rankerState = viewData.ranker.state;
+
+  // -----------------------------
+  // Manage scoreboard
+  setupScoreBoard(viewData);
+
+  // -----------------------------
+  // Manage image grid
+  setupImageGrid(viewData);
+
+  // -----------------------------
+  // Change buttons
+  setupTargetFrameButtons(viewData);
+
+  // -----------------------------
+  // Setup target frames
+  setupTargetFrames(viewData);
+
+  // -----------------------------
+  // Setup selected keywords
+  setupSelectedKeywords(viewData);
+
+  // -----------------------------
+  // Setup query inputs
+  if (rankerState == "running") {
+    document.getElementById(
+      viewData.elemIds.ranker.queryInput
+    ).disabled = false;
+  } else {
+    document.getElementById(viewData.elemIds.ranker.queryInput).disabled = true;
+  }
+}
+
+
 </script>
+
+<!-- Client-side JS RANKER functions -->
+<%- include modules/autocomplete_logic_ranker.ejs %>
 
 <!-- Include footer -->
 <%- include common/footer.ejs %>
+
+<script>
+
+/** Put document into correct state */
+onDocumentReady(function() {
+  putDocumentToState(viewData);
+});
+
+</script>

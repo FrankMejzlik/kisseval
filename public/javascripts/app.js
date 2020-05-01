@@ -1,6 +1,16 @@
 $(document).foundation()
 
 
+function onDocumentReady(fn) {
+  // see if DOM is already available
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+      // call on next available tick
+      setTimeout(fn, 1);
+  } else {
+      document.addEventListener("DOMContentLoaded", fn);
+  }
+}  
+
 function get(url) {
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
@@ -23,3 +33,7 @@ function post(url, data) {
   });
 } 
 
+function boldString(str, find) {
+  const re = new RegExp(find, 'gi');
+  return str.replace(re, '<strong>' + find + '</strong>');
+}

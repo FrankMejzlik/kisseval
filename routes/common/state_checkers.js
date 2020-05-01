@@ -32,14 +32,11 @@ exports.checkGlobalSessionState = function (req, viewData) {
     }
 
     let ii = 0;
-    for (let pack of global.loadedDataPacksInfo)
-    {
-      if (pack.id == global.gConfig.defaultDataPack)
-        break;
+    for (let pack of global.loadedDataPacksInfo) {
+      if (pack.id == global.gConfig.defaultDataPack) break;
 
       ++ii;
     }
-  
 
     sess.state = sessState.construct(
       global.loadedDataPacksInfo[ii].id,
@@ -55,6 +52,15 @@ exports.checkGlobalSessionState = function (req, viewData) {
 exports.checkGlobalViewState = function (req, viewData) {
   const sess = req.session;
 
+  // DOM IDs for dynamic elements
+  viewData.elemIds = global.gConfig.elemIds;
+
+  // Viwe helper functions
+  viewData.helpers = {};
+
+  viewData.ranker = {};
+
+  // Initialize viewData
   viewData.state = {
     userLevel: sessState.getUserLevel(sess.state),
     loadedDataPacks: global.loadedDataPacksInfo,

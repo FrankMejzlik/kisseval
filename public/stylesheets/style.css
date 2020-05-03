@@ -762,12 +762,14 @@ li.probs-list-item .ranking {display: none;}
 .dev-sign p {
   margin:0;
   position: absolute;
-  left: 22px;
-  top: 64px;
-  font-size: 12px;
+  left: 116px;
+  top: 1px;
+  font-size: 18px;
   background: red;
   color: #fff;
   padding: 0px 10px;
+  z-index: 20;
+  font-weight: 600;
 }
 
 .dev-login {
@@ -1301,6 +1303,8 @@ background-position: center center;
 
 .top-bar ul.submenu {
   background-color: #97d6d5;
+  z-index: 2;
+  position: absolute;
 }
 
 .top-bar ul.submenu a {
@@ -1322,19 +1326,41 @@ background-position: center center;
   position: relative;
 }
 .global-header-settings-bar{
-  text-align: right;
+  text-align: left;
   position: absolute;
   width: 20%;
   right: 0;
   display: inline-block;
-  z-index: 2;
+  z-index: 1;
   background-color: #0a0a0a66;
 }
 
+.global-header-settings-bar h2 {
+  color: #fff;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 0;
+}
+
+.global-header-settings-bar select {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 1.7rem;
+  font-size: 14px;
+  width: 80%;
+  margin-right: 1rem;
+}
+.global-header-settings-bar label {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.global-header-settings-bar label .button {
+  padding: 0.4rem 1rem;
+}
+
 .global-header-settings-bar form{
-  text-align: center;
-  align-items: center;
-  justify-content: center;
+
 }
 
 .menu .menu-text .title {
@@ -2082,7 +2108,14 @@ list-style: none;
   position: relative;
 }
 
+.menu-item.raligned 
+{
+  margin-left: auto;
+}
 
+a.hinted {
+  pointer-events: none;
+}
 .test-forms-list > li {
   margin-bottom: 2rem;
 }

@@ -89,6 +89,7 @@ exports.pushSearchAction = function (req, res) {
   const chartData = SessionState.getSearchSessionActionsForChart(sess.state);
   const currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   const ssState = SessionState.ranker_getState(sess.state);
+  const rankerUi = SessionState.ranker_getCurrentUiState(sess.state);
 
   global.logger.log("debug", "<" + sess.id + ">: Added new action...");
   global.logger.log(
@@ -114,6 +115,7 @@ exports.pushSearchAction = function (req, res) {
 
   res.status(200).jsonp({
     searchSession: currSearchSess,
+    ui: rankerUi,
     state: ssState,
     chartData: chartData,
     queryResult: queryResult,
@@ -138,7 +140,8 @@ exports.startSearchSession = function (req, res) {
 
   const currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state, targetFramesIds);
   const ssState = SessionState.ranker_getState(sess.state);
-
+  const rankerUi = SessionState.ranker_getCurrentUiState(sess.state);
+  
   global.logger.log("debug", "<" + sess.id + ">: currentSearchSession:" + JSON.stringify(currSearchSess, null, 4));
   global.logger.log("debug", "<" + sess.id + ">: currentSearchSession STATE:" + ssState);
 
@@ -146,6 +149,7 @@ exports.startSearchSession = function (req, res) {
   res.status(200).jsonp({
     searchSession: currSearchSess,
     state: ssState,
+    ui: rankerUi
   });
 };
 
@@ -159,11 +163,14 @@ exports.discardSearchSession = function (req, res) {
 
   let currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   let ssState = SessionState.ranker_getState(sess.state);
+  const rankerUi = SessionState.ranker_getCurrentUiState(sess.state);
+  
 
   global.logger.log("debug", "<" + sess.id + ">: <= discardSearchSession()");
   res.status(200).jsonp({
     searchSession: currSearchSess,
     state: ssState,
+    ui: rankerUi
   });
 };
 
@@ -176,6 +183,10 @@ exports.submitFrame = function (req, res) {
 
   let currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   let ssState = SessionState.ranker_getState(sess.state);
+  const dataPackId = SessionState.ranker_getDataPackId(sess.state);
+  const modelOptions = SessionState.ranker_getActiveModelOptions(sess.state);
+  const userLevel = SessionState.getUserLevel(sess.state);
+  const withExampleImages = true;
 
   // Check giveup
   if (submittedFrameId == null) {
@@ -195,13 +206,25 @@ exports.submitFrame = function (req, res) {
     return;
   }
 
-  // ========================================
-  // Submit using native call
-  // global.imageRanker.submitSearchSession();
-  // ========================================
-
   currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   ssState = SessionState.ranker_getState(sess.state);
+
+  const targetId = currSearchSess.targetFramesIds[0].frameId;
+
+  // ========================================
+  // Submit using native call
+  global.imageRanker.submitSearchSession(
+    dataPackId,
+    modelOptions,
+    userLevel,
+    withExampleImages,
+    currSearchSess.found,
+    targetId,
+    currSearchSess.duration,
+    req.session.id,
+    currSearchSess.actions
+  );
+  // ========================================
 
   const chartData = SessionState.getSearchSessionActionsForChart(sess.state);
 
@@ -213,43 +236,26 @@ exports.submitFrame = function (req, res) {
   });
 };
 
-// ==============================================
-// vv Not refactored vv
-// ==============================================
+exports.getFrameDetailData = function (req, res) {
+  const sess = req.session;
+  global.logger.log("debug", "<" + sess.id + ">: => startSearchSession()");
 
-// var eActions = {
-//   removeKeyword: 0,
-//   addKeyword: 1,
-// };
+  const frameId = Number(req.query.frameId);
+  const dataPackId = SessionState.ranker_getDataPackId(sess.state);
+  const modelOptions = SessionState.ranker_getActiveModelOptions(sess.state);
+  const withExampleFrames = true;
+  const accumulated = false;
 
-// exports.startSearchSession = function (sess, targetImages) {
-//   global.logger.log("debug", "<" + sess.id + ">: => startSearchSession()");
+  // -------------------------------
+  // Native call
+  const frameData = global.imageRanker.getFrameDetailData(
+    frameId,
+    dataPackId,
+    modelOptions,
+    withExampleFrames,
+    accumulated
+  );
+  // -------------------------------
 
-//   // Initialize session counter if needed
-//   if (typeof sess.ranker.searchSessionCounter == "undefined") {
-//     sess.ranker.searchSessionCounter = 0;
-//   }
-
-//   // Start new
-//   sess.ranker.searchSession = new Object();
-//   // Git it unique ID
-//   sess.ranker.searchSession.id = sess.ranker.searchSessionCounter;
-
-//   sess.ranker.searchSession.targetImages = targetImages;
-
-//   sess.ranker.searchSession.actionsArray = new Array();
-
-//   var date = new Date();
-//   var timestamp = date.getTime();
-//   sess.ranker.searchSession.startTimestamp = timestamp;
-
-//   // Increment counter
-//   ++sess.ranker.searchSessionCounter;
-
-//   global.logger.log("debug", "<" + sess.id + ">: Started search session... ");
-//   global.logger.log(
-//     "debug",
-//     "<" + sess.id + ">: \t searchSessionIndex = " + sess.ranker.searchSession.id
-//   );
-//   global.logger.log("debug", "<" + sess.id + ">: <= startSearchSession()");
-// };
+  res.status(200).jsonp(frameData);
+};

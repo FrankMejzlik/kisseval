@@ -46,7 +46,7 @@
   </div>
 
   <div class="dev-login-modal reveal text-center" id="exampleModal2" data-reveal>
-    <h1>Evaluator password</h1>
+    <h1>EVAL password</h1>
 
     <form class="dev-login-form" action="/switch_to_eval_mode" method="POST">
       <div class="grid-container">
@@ -89,8 +89,9 @@
             <a href="/ranker">Ranker</a>
           </li>
 
-          <li class="menu-item ">
-            <a href="">More</a>
+          <% if (state.userLevel >= 10) { %>
+          <li class="menu-item  raligned">
+            <a href="">Eval tools</a>
             <ul class="menu vertical">
               <li><a href="/tester">Model tester</a></li>
               <li><a href="/data_centre">Data centre</a></li>
@@ -98,7 +99,12 @@
               <li><a href="/statistics">Statistics</a></li>
             </ul>
           </li>
+          <% } else { %>
+          <li class="menu-item raligned">
+            <a class="hinted"><strong>EVAL</strong> tools (EVAL MODE required &#8594;)</a>
+          </li>
 
+          <% }  %>
 
         </ul>
       </div>
@@ -109,7 +115,7 @@
         <ul class="dropdown menu" data-dropdown-menu>
           <% if (state.userLevel < 10) { %>
           <li class="menu-item">
-            <button class="button login-dev" data-open="exampleModal2">Switch to evaluator mode</button>
+            <button class="button login-dev" data-open="exampleModal2">Switch to EVAL MODE</button>
           </li>
           <% } else { %>
           <li class="menu-item">
@@ -122,22 +128,23 @@
 
         <% if (state.userLevel >= 10) { %>
         <div class="dev-sign">
-          <p>EVALUATOR SESSION</p>
+          <p>EVAL MODE</p>
         </div>
         <% } %>
 
       </div>
     </div>
 
-    <div class="global-header-settings-bar">
+    <div class="global-header-settings-bar grid-x grid-padding-x">
 
       <div id="globalHeaderSettingsBarMessageBox" class="callout success">
 
       </div>
-
-      <a onclick="togglekwscform()" class="button">Active data pack</a>
-      <div class="change-active-data-pack-cont" id="kWsCdataTypeForm" style="display: none;">
-        <%- include ../forms/change_active_data_pack_form.ejs %>
+      <div class="cell small-12">
+        <h2>Active data pack:</h2>
+        <div class="change-active-data-pack-cont" id="kWsCdataTypeForm" style="display: block;">
+          <%- include ../forms/change_active_data_pack_form.ejs %>
+        </div>
       </div>
 
       <script>

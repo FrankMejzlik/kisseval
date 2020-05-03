@@ -125,6 +125,7 @@ app.use("/exporter", routerExporter);
 
 // Request endpoints
 app.get("/get_autocomplete_results", endpoints.getAutocompleteResults);
+app.get("/get_frame_detail_data", rankerEndpoints.getFrameDetailData);
 
 app.post("/set_active_data_pack", endpoints.setActiveDataPack);
 app.post("/switch_to_eval_mode", endpoints.switchToEvaluatorMode);

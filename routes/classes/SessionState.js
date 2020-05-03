@@ -37,7 +37,8 @@ exports.construct = function (dataPack, modelOptions, dataPackType, imagesetId, 
 exports.setActieDataPack = function (obj, dataPackId, modelOpts, packType) {
   obj._active_data_pack_ID = dataPackId;
   obj._active_data_pack_type = packType;
-  obj._ranker.activeDataPackId = modelOpts;
+  obj._ranker.activeDataPackId = dataPackId;
+  obj._ranker.activeModelOptions = modelOpts;
 
   obj._active_model_options = dataPackId;
 
@@ -261,7 +262,7 @@ exports.ranker_goToState_finished = function (obj, found = false) {
 
   obj._ranker.searchSession.running = false;
   obj._ranker.searchSession.endTs = Date.now();
-  obj._ranker.searchSession.duration = (obj._ranker.searchSession.endTs - obj._ranker.searchSession.startTs) / 1000.0;
+  obj._ranker.searchSession.duration = (obj._ranker.searchSession.endTs - obj._ranker.searchSession.startTs) ;
   obj._ranker.searchSession.found = found;
 };
 
@@ -299,7 +300,7 @@ exports.pushSearchSessionAction = function (obj, query_idx, action, operand, sco
   const act = {
     queryIdx: query_idx,
     action: action,
-    operand: operand,
+    operand: String(operand),
     score: score,
     time: time_in_ms,
     word: word,

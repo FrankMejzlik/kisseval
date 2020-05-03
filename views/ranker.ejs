@@ -41,9 +41,11 @@
         </div>
 
         <!-- Admin info bar -->
+        <% if (state.userLevel >= 10) { %>
         <div class="target-image-rank-cont small-8 cell">
           <span id="targetImageRankOut"></span>
-        </div>        
+        </div>       
+        <% } %> 
 
       </div>
     </section>
@@ -121,7 +123,7 @@
 <!-- ===================================== -->
 <!-- GLOBAL MODAL WINDOW: Frame detail window -->
 <!-- ===================================== -->
-<div class="full reveal" id="modalImage" data-reveal data-src="999" data-overlay="false">
+<div class="full reveal grid-x" id="modalImage" data-reveal data-src="999" data-overlay="false">
   
   <button class="close-button" data-close aria-label="Close modal" type="button">
     <span aria-hidden="true">&times;</span>
@@ -133,6 +135,9 @@
 
   <div class="modal-header cell large-12">
     <h3>Image ID:<span id="modalImageId"></span></h3>
+  </div>
+  <div class="image-detail-preview cell small-3">
+    <img src="" id="detailImageImg" />
   </div>
   <div>
     <ul id="sucFramesCont">
@@ -163,7 +168,7 @@
 <!-- ===================================== -->
 
 <%  // \todo change
-if (state.userLevel  >= 0) { %>
+if (state.userLevel  >= 10) { %>
     <div class="developer-bottom-analysis-bar grid-container">
 
       <ul class="accordion" id="devAccordion" data-slide-speed="0" data-accordion data-allow-all-closed="true">
@@ -408,6 +413,7 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
   const labelsContainer = document.getElementById("modalImageTab1");
   const pureHyerpnymsContainer = document.getElementById("modalImageTab2");
   const imageIdCont = document.getElementById("modalImageId");
+  const detailImageCont = document.getElementById("detailImageImg");
   const succFramesCont = document.getElementById("sucFramesCont");
 
   function startSearchSession(elem, targetFramesIds = [])
@@ -434,6 +440,7 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
       // Update viewData
       viewData.ranker.searchSession = data.searchSession;
       viewData.ranker.state = data.state;
+      viewData.ranker.ui = data.ui;
 
       // Update document
       putDocumentToState(viewData);
@@ -445,31 +452,30 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
     });
   }
 
-  function switchModalImageHtmlContents(id) 
+  function switchModalImageHtmlContents(id, thisFilename) 
 {
-  $.ajax('/ranker_ajax_get_image_keywords_for_interactive_search?imageId=' + id)
-    .done(function(data)
+  // Make the request
+  fetch("/get_frame_detail_data?frameId=" + id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
+  .then((res) => res.json())
+  .then((data) => {
+    // Handle error
+    if (data.error)
     {
-      const hypernymsArray = data.hypernymsArray;
-      const nonHypernymsArray = data.nonHypernymsArray;
-      const shotFrames = data.shotFrames;
+      throw Error(data.error.message);
+    }
+
+    const hypernymsArray = data.topClassesPureHypernyms;
+      const nonHypernymsArray = data.topClasses;
 
       // Fill in image ID
-      imageIdCont.innerHTML = data.imageId;
+      imageIdCont.innerHTML = data.frameId;
+      detailImageCont.src = thisFilename;
 
-      // 
-      // Fill in succ frames
-      //
-      let succFramesHtml = "";
-      for (var i = 0; i < shotFrames.length; ++i) 
-      {
-        succFramesHtml += "<li class='shot-frame-praview'>";
-        succFramesHtml += "<img src='../images/" + shotFrames[i].frameFilename + "' />";
-        succFramesHtml += "<small>" + shotFrames[i].frameId + "</small>";
-        succFramesHtml += "</li>";
-      }
-      
-      succFramesCont.innerHTML = succFramesHtml;
 
 
       /*
@@ -478,10 +484,12 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 
       let labelsItemsHtml = "<ol class='labels-list non-hypernyms-list'>";
 
-      for (var i = 0; i < nonHypernymsArray.length; ++i) 
-      {
-        labelsItemsHtml += "<li class='probs-list-item '>";
-        labelsItemsHtml += "<a class='keyword' onclick='addKeyword(" + nonHypernymsArray[i].wordnetId + ", \"" + nonHypernymsArray[i].word + "\", 2)'>" + nonHypernymsArray[i].word +  "<span class='ranking'>" + nonHypernymsArray[i].ranking + "</span></a>";
+
+        for (var i = 0; i < nonHypernymsArray.length; ++i) 
+        {
+          let onclickStr = "addSelKw(" + nonHypernymsArray[i].kewywordId + ", \"" + nonHypernymsArray[i].word + "\");processAction(0, \"add_from_detail\", " + nonHypernymsArray[i].kewywordId + ", \"" + nonHypernymsArray[i].word + "\");";
+        labelsItemsHtml += "<li class='probs-list-item'>";
+        labelsItemsHtml += "<a class='keyword' onclick='" + onclickStr + "'>" + nonHypernymsArray[i].word +  "</a>";
         
         let str = "<ul class='example-images'>";
         
@@ -510,8 +518,9 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
 
       for (var i = 0; i < hypernymsArray.length; ++i) 
       {
+        let onclickStr = "processAction(0, \"add_from_detail\", " + nonHypernymsArray[i].kewywordId + ", \"" + nonHypernymsArray[i].word + "\");";
         html += "<li class='probs-list-item '>";
-          html += "<a class='keyword' onclick='addKeyword(" + hypernymsArray[i].wordnetId + ", \"" + hypernymsArray[i].word + "\", 2)'>" + hypernymsArray[i].word + "<span class='ranking'>" + hypernymsArray[i].ranking + "</span></a>";
+          html += "<a class='keyword' onclick='" + onclickStr + "'>" + hypernymsArray[i].ranking + "</span></a>";
             
           let str = "<ul class='example-images'>";
           
@@ -532,13 +541,10 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
       
       // Push HTML inside
       pureHyerpnymsContainer.innerHTML = html;
-    }
-  )
-  // If error occured
-  .catch((err) => 
-  {
-    console.log("/ranker_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
-    alert("/ranker_ajax_get_image_keywords_for_interactive_search AJAX call failed!");
+  })
+  .catch((e) => {
+    console.log("Error: " + JSON.stringify(e.message));
+    showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
   });
 }
 
@@ -645,8 +651,11 @@ function handleActionPush(viewData, chartData, queryResult) {
   $targetList = $("#" + viewData.elemIds.ranker.imageGrid);
   $targetList.html("");
 
-  $("#targetImageRankOut").html("<p>Target rank: </p>" + targetPos);
-  
+  // Fill in image ID
+  targetRankElem = document.getElementById("targetImageRankOut");
+  if (targetRankElem) {
+    targetRankElem.innerHTML = "<p>Target rank: </p>" + targetPos;
+  }
 
   // Update image grid
   numImagesToPrint = frames.length;
@@ -659,7 +668,7 @@ function handleActionPush(viewData, chartData, queryResult) {
       '<button class="close-button" data-close aria-label="Close modal" type="button">\
         <span aria-hidden="true">&times;</span>\
       </button>\
-      <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + frames[currentImageIndex].frame_ID+ ')"\
+      <li class="rel-img-item small-6 medium-4 large-2 cell" onclick="switchModalImageHtmlContents(' + frames[currentImageIndex].frame_ID + ', \'/images/' +frames[currentImageIndex].filename + '\')"\
         data-image-id="' + frames[currentImageIndex].frame_ID + '" style="background-image: url(\'/images/' +frames[currentImageIndex].filename + '\')">\
         <div class="just-clicker"  data-open="modalImage"><a class="button btn-submit success" onclick="submitImage(this);event.cancelBubble=true;" title="Submit this image">&#10004;</a></div>\
       </li>'
@@ -675,6 +684,8 @@ function handleActionPush(viewData, chartData, queryResult) {
     drawInteractiveSearchChart(dataArray, canvas);
   }
 
+  // Make sure that selected kewords are at the correct state
+  setupSelectedKeywords(viewData);
 }
 
 function processAction(queryIdx, action, operand, word)
@@ -704,6 +715,7 @@ function processAction(queryIdx, action, operand, word)
       // Update viewData
       viewData.ranker.searchSession = data.searchSession;
       viewData.ranker.state = data.state;
+      viewData.ranker.ui = data.ui;
 
       const chartData = data.chartData;
       const queryResult = data.queryResult;
@@ -781,7 +793,7 @@ function setupTargetFrames(viewData) {
     viewData.elemIds.ranker.targetFrameId
   );
   
-  elemIdInput.innerHTML = "";
+  elemIdInput.value = "";
   if (viewData.ranker.state == "running") {
     const targetIds =  viewData.ranker.searchSession.targetFramesIds;
     for (let i = 0; i < targetIds.length; ++i) {
@@ -815,6 +827,9 @@ function setupScoreBoard(viewData) {
     }
   }
   
+  // to seconds
+  duration /= 1000;
+
   elem.innerHTML = `
     <div class="result-actions-board-title cell large-12">
       <h1>Search session results</h1>
@@ -852,6 +867,13 @@ function addSelectedKeyword(elem, ID, word)
       </li>`;
 
   elem.innerHTML = elem.innerHTML + html;
+}
+
+function addSelKw(id, word) {
+  const elem = document.getElementById(
+    viewData.elemIds.ranker.selectedKeywords1
+  );
+  addSelectedKeyword(elem, id, word);
 }
 
 function setupSelectedKeywords(viewData) {

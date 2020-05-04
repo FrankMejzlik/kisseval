@@ -144,6 +144,7 @@ app.post("/ranker_submit_frame", rankerEndpoints.submitFrame);
 
 // Data endpoints
 app.post("/get_search_sessions_rank_progress_chart_data", dataEndpoints.getSearchSessionsRankProgressChartData);
+app.post("/get_label_histogram_data", dataEndpoints.getLabelHistogramData);
 
 
 

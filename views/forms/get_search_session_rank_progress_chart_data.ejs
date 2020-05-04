@@ -1,16 +1,18 @@
 
-<form id="formGetSearchSessionsRankProgressChartData" class="grid-x grid-padding-x">
-    <div class="row">
-        <div class="pre-gen-buttons-cont cell small-12">
-            <label class="">
-                Source data pack:
-                <select id="dataPackId" name="dataPackId">
-                    <option value="NasNet2019">NasNet2019</option>
-                </select>
-            </label>
+
+
+<form id="formGetSearchSessionsRankProgressChartData" class="">
+    <div class="row grid-x grid-padding-x">
+        <div class="pre-gen-buttons-cont cell small-12 medium-6">
+
+            <% if (state.activeDataPackId != "NasNet2019") { %>
+                <div class="not-data-warning">
+                    <p>We don't have enough data collected for this data pack, please use "NasNet2019".</p>
+                </div>  
+            <% } %>
             <a class="button" onclick="getSearchSessionsRankProgressChartData(this);">Generate</a>
         </div>
-        <div class="chart-cont-general cell small-12" style="position: relative; height:400px; width:600px">
+        <div class="chart-cont-general cell small-12" style="position: relative;  width:600px">
             <canvas id="searchSessionsRankProgressChartCanvas"></canvas>
         </div>
 

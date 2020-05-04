@@ -1,0 +1,90 @@
+
+<form id="histLabelsForm" class="">
+
+    <% if (state.activeDataPackType == "W2VV_based") { %>
+    <div class="row grid-x grid-padding-x">
+        <div class="hist-label-form cell small-12 medium-6"> 
+            <div class="not-data-warning">
+                <p>Label usage histograms are not yet available for W2VV based data packs.</p>
+            </div>  
+        </div> 
+    </div>
+    <% } else { %>
+
+    <div class="row grid-x grid-padding-x">
+        <div class="hist-label-form cell small-12 medium-6">    
+            <div class="noaccum pre-gen-buttons-cont cell small-12">
+                <label class="">
+                    Not accumulated label scores:
+                </label>
+                <a class="button" onclick="getLabelHistogram(this, false);">Generate</a>
+            </div>
+            <div class="chart-cont-general cell medium-6">
+                <canvas class="hist-canvas"></canvas>
+            </div>
+
+            <div class="post-gen-buttons-cont small-12">
+
+            </div>
+        </div>
+        <div class="hist-label-form cell small-12 medium-6">
+            <div class="accum pre-gen-buttons-cont cell small-12 medium-6">
+                <label class="">
+                    Accumulated label scores:
+                </label>
+                <a class="button" onclick="getLabelHistogram(this, true);">Generate</a>
+            </div>
+            <div class="chart-cont-general cell medium-6">
+                <canvas class="hist-canvas"></canvas>
+            </div>
+
+            <div class="post-gen-buttons-cont small-12">
+
+            </div>
+        </div>
+    </div>
+    <% } %>
+</form>
+
+<script>
+    function getLabelHistogram(btnElem, accumulated = false) {
+        
+        // Get the form
+        const formElem = btnElem.closest(".hist-label-form");
+        const chartCanvasElem = formElem.querySelector(".hist-canvas");
+
+        const postButtonsContElem = formElem.querySelector(".post-gen-buttons-cont");   
+        const data = {accumulated: accumulated}
+
+        fetch("/get_label_histogram_data", {
+            method: "POST",
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.error)
+            {
+                throw Error(data.error.message);
+            }
+            // Plot the quantile chart
+            plotLabelHistogram(data.chartData, chartCanvasElem);
+
+            // Add data button
+            postButtonsContElem.innerHTML = `
+            <a target="_blank"  class="button success" href="${data.filename0}"> JSON data</a>
+            <a target="_blank"  class="button success" href="${data.filename1}"> CSV data</a>
+            `;
+
+        })
+        .catch((e) => {
+        console.log("Error: " + JSON.stringify(e.message));
+        showGlobalMessage("Getting search session chart data failed.", "", 5000, "e");
+        });
+
+    };
+
+
+</script>

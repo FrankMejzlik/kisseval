@@ -89,6 +89,11 @@ body {
   /* overflow: hidden; */
 }
 
+.not-data-warning p {
+  font-size: 22px;
+  color: #d91400;
+}
+
 .hidden {
   display: none ;
 }
@@ -109,6 +114,7 @@ body {
   font-size: 34px;
   font-weight: 600;
   position: relative;
+  margin-bottom: 1rem;
 }
 
 .page-title-section h1:after {

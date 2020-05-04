@@ -466,20 +466,22 @@ Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackIn
 
   // Process arguments
   int length = info.Length();
-  if (length != 3)
+  if (length != 5)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetImageKeywordsForInteractiveSearch)").ThrowAsJavaScriptException();
   }
 
   std::string data_pack_ID = info[0].As<Napi::String>().Utf8Value();
   std::string model_options = info[1].As<Napi::String>().Utf8Value();
-  size_t max_user_level = info[2].As<Napi::Number>().Uint32Value();
+  size_t num_points = info[2].As<Napi::Number>().Uint32Value();
+  bool accumulated = info[3].As<Napi::Boolean>().Value();
+  size_t max_user_level = info[4].As<Napi::Number>().Uint32Value();
 
   // Call native method
-  HistogramChartData<size_t, size_t> chart_data{};
+  HistogramChartData<size_t, float> chart_data{};
   try
   {
-    chart_data = this->actualClass_->get_histogram_used_labels(data_pack_ID, model_options, max_user_level);
+    chart_data = this->actualClass_->get_histogram_used_labels(data_pack_ID, model_options,num_points, accumulated, max_user_level);
   }
   catch (const std::exception& e)
   {
@@ -529,7 +531,7 @@ Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackIn
       for (auto&& p_kw : chart_data.fx)
       {
         napi_value value;
-        napi_create_uint32(env, uint32_t(p_kw), &value);
+        napi_create_double(env, p_kw, &value);
 
         napi_set_element(env, arr, i, value);
 

@@ -329,3 +329,95 @@ function plotQuantileLineChart(chartData, targetCanvas)
   chart.data = plotData;
   chart.update();
 }
+
+const chartSettingsLabelHistogram = {
+  // The type of chart we want to create
+  type: 'line',
+  animation: {
+      duration: 0
+  },
+  data: {},
+  options: {
+  responsive: true,
+  title: {
+    display: false,
+    text: 'Test 1'
+  },
+  tooltips: {
+    mode: 'index',
+    intersect: false,
+  },
+  hover: {
+    mode: 'nearest',
+    intersect: true
+  },
+  scales: {
+    xAxes: [{
+      //type: 'logarithmic',
+      display: true,
+      ticks: {
+        beginAtZero: true,
+        min: 0,
+        // \todo make dynamic
+        //max: 20000,
+        callback: function(value, index, values) {
+            return value;
+        }
+      },
+      scaleLabel: {
+        display: true,
+        labelString: 'Index of the action'
+      }
+    }],
+    yAxes: [{
+      
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'Target frame rank'
+      }
+    }]
+  }
+}
+}
+
+function plotLabelHistogram(histData, canvasElem)
+{
+  var ctx = canvasElem.getContext('2d');
+  var dataValues = histData.fx;
+  var dataLabels = histData.x;
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: dataLabels,
+      datasets: [{
+        label: 'Group A',
+        display: false,
+        data: dataValues,
+        backgroundColor: 'rgba(20, 252, 255, 1)',
+      }]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          display: false,
+          barPercentage: 1.3,
+          ticks: {
+              //max: 3,
+          }
+      }, {
+          display: true,
+          ticks: {
+              autoSkip: false,
+              //max: 4,
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            beginAtZero:true
+          }
+        }]
+      }
+    }
+  });
+}

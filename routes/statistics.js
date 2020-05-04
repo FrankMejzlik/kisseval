@@ -5,6 +5,7 @@ const express = require("express");
 const router = express.Router();
 
 const stateCheck = require("./common/state_checkers");
+const SessionState = require("./classes/SessionState");
 
 /** Specific route settings. */
 const routeSettings = {
@@ -27,6 +28,7 @@ function postProcessReq(req, viewData) {
  * GET request handler
  */
 router.get("/", function (req, res, next) {
+  const sess = req.session;
   const viewData = stateCheck.initRequest(req);
 
   global.logger.log("debug", "Route: " + routeSettings.slug);
@@ -36,8 +38,10 @@ router.get("/", function (req, res, next) {
   processReq(req, viewData);
   postProcessReq(req, viewData);
 
+  const dataPackId = SessionState.ranker_getDataPackId(sess.state);
+
   console.log("");
-  console.log(JSON.stringify(viewData));
+  console.log(JSON.stringify(viewData, null, 4));
 
   // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);

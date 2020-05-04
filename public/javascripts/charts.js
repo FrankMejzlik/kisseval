@@ -68,6 +68,58 @@ const chartSettings = {
   }
 }
 
+
+const chartSettingsQuantileChart = {
+  // The type of chart we want to create
+  type: 'line',
+  animation: {
+      duration: 0
+  },
+  data: {},
+  options: {
+  responsive: true,
+  title: {
+    display: false,
+    text: 'Test 1'
+  },
+  tooltips: {
+    mode: 'index',
+    intersect: false,
+  },
+  hover: {
+    mode: 'nearest',
+    intersect: true
+  },
+  scales: {
+    xAxes: [{
+      //type: 'logarithmic',
+      display: true,
+      ticks: {
+        beginAtZero: true,
+        min: 0,
+        // \todo make dynamic
+        //max: 20000,
+        callback: function(value, index, values) {
+            return value;
+        }
+      },
+      scaleLabel: {
+        display: true,
+        labelString: 'Index of the action'
+      }
+    }],
+    yAxes: [{
+      
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'Target frame rank'
+      }
+    }]
+  }
+}
+}
+
 function plotTestChart(chartElem, returnedDataArray)
 {
   console.log("Plotting the cahrt...");
@@ -129,55 +181,139 @@ function plotTestChart(chartElem, returnedDataArray)
   chart.update();
 }
 
-function plotQuantileLineChart(chartDataArray, targetCanvas)
+function plotQuantileLineChart(chartData, targetCanvas)
 {
+  /* chartData = {
+    x: [],
+    y_min: [],
+    y_q1: [],
+    y_q2: [],
+    y_q3: [],
+    y_max: [] } */
 
-  if (typeof chartDataArray === "undefined" || chartDataArray.length <= 0)
-  {
-    return;
-  }
-  
-  const num = chartDataArray.length;
-  const divPerChanel = (num / 3) + 1;
-  
   // Labels
-  const labels = chartDataArray[0].labels;
+  const labels = chartData.x;
 
   let datasetsArr = [];
-  for (var i = 0; i < chartDataArray.length; ++i) {
-    const chartData = chartDataArray[i];
+  // y_min & y_max
+  {
+    const xs = labels;
+    const fxs0 = chartData.y_min;;
+    const fxs1 = chartData.y_max;;
 
-    const xs = chartData.xs;
-    const fxs = chartData.fxs;
-
-    // Calculate coefs for colour
-    const r = (i % 3 == 0 ? 1 : 0) * 255;
-    const g = (i % 3 == 1 ? 1 : 0) * 255;
-    const b = (i % 3 == 2 ? 1 : 0) * 255;
-
-    const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
-
-    let dataFormed = []
-    for (let ii = 0; ii < xs.length; ++ii)
-    {
-      dataFormed.push({
+    let dataFormed0 = []
+    let dataFormed1 = []
+    for (let ii = 0; ii < xs.length; ++ii) {
+      dataFormed0.push({
         x: xs[ii],
-        y: fxs[ii]
-      })
+        y: fxs0[ii]
+      });
+      dataFormed1.push({
+        x: xs[ii],
+        y: fxs1[ii]
+      });
     }
-
-    const plotData = {
-      borderColor: borderColor,
+    
+    const lineColour = "rgba(100, 100, 100, 1)";
+    const plotData0 = {
+      lineTension: 0,
+      borderColor: lineColour,
+      borderDash: [10,5],
+      borderWidth: 1.0,
+      label: "Min",
       backgroundColor: "rgba(255, 0, 0, 0)",
       pointRadius: 0.5,
       pointHoverRadius: 0.5,
+      data: dataFormed0
+    }
+    const plotData1 = {
+      label: "Max",
+      lineTension: 0,
+      borderDash: [10,5],
+      borderColor: lineColour,
       borderWidth: 1.0,
-      data: dataFormed,
+      backgroundColor: "rgba(255, 0, 0, 0)",
+      pointRadius: 0.5,
+      pointHoverRadius: 0.5,
+      data: dataFormed1
+    }
+
+    datasetsArr.push(plotData0);
+    datasetsArr.push(plotData1);
+  }
+
+  // y_q1 & y_q3
+  {
+    const xs = labels;
+    const fxs0 = chartData.y_q1;
+    const fxs1 = chartData.y_q3;
+
+    let dataFormed0 = []
+    let dataFormed1 = []
+    for (let ii = 0; ii < xs.length; ++ii) {
+      dataFormed0.push({
+        x: xs[ii],
+        y: fxs0[ii]
+      });
+      dataFormed1.push({
+        x: xs[ii],
+        y: fxs1[ii]
+      });
+    }
+    
+    const lineColour = "rgba(255, 140, 10, 1)";
+    const plotData0 = {
+      label: "Q1",
+      lineTension: 0,
+      borderColor: lineColour,
+      borderWidth: 2.0,
+      backgroundColor: "rgba(255, 0, 0, 0)",
+      pointRadius: 0.5,
+      pointHoverRadius: 0.5,
+      data: dataFormed0
+    }
+    const plotData1 = {
+      label: "Q3",
+      lineTension: 0,
+      borderColor: lineColour,
+      borderWidth: 1.0,
+      backgroundColor: "rgba(255, 0, 0, 0)",
+      pointRadius: 0.5,
+      pointHoverRadius: 0.5,
+      data: dataFormed1
+    }
+
+    datasetsArr.push(plotData0);
+    datasetsArr.push(plotData1);
+  }
+
+  // y_q2
+  {
+    const xs = labels;
+    const fxs0 = chartData.y_q2;
+
+    let dataFormed0 = []
+    for (let ii = 0; ii < xs.length; ++ii) {
+      dataFormed0.push({
+        x: xs[ii],
+        y: fxs0[ii]
+      });
+    }
+    
+    const lineColour = "rgba(255, 0, 0, 1)";
+    const plotData = {
+      label: "Q2",
+      lineTension: 0,
+      borderColor: lineColour,
+      borderWidth: 3.0,
+      backgroundColor: "rgba(255, 0, 0, 0)",
+      pointRadius: 0.5,
+      pointHoverRadius: 0.5,
+      data: dataFormed0
     }
 
     datasetsArr.push(plotData);
   }
-
 
   const plotData = {
     labels: labels,
@@ -187,7 +323,7 @@ function plotQuantileLineChart(chartDataArray, targetCanvas)
   const chartCanvas = targetCanvas;
   // Create chart
   var ctx = chartCanvas.getContext('2d');
-  var chart = new Chart(ctx, chartSettings);
+  var chart = new Chart(ctx, chartSettingsQuantileChart);
 
   // Update the chart
   chart.data = plotData;

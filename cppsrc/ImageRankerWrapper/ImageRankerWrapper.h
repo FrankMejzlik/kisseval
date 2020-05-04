@@ -28,4 +28,7 @@ private:
   Napi::Value submit_search_session(const Napi::CallbackInfo& info);
   Napi::Value get_frame_detail_data(const Napi::CallbackInfo& info);
 
+  Napi::Value get_search_sessions_rank_progress_chart_data(const Napi::CallbackInfo& info);
+  Napi::Value get_histogram_used_labels(const Napi::CallbackInfo& info);
+
 };

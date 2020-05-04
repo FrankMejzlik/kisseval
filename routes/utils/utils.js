@@ -1,3 +1,40 @@
+exports.getCsvChartData = function (dict) {
+  const ents = Object.entries(dict);
+  const len = Object.entries(dict).length;
+  const numVals = Object.entries(dict)[0][1].length;
+
+  csvString = "";
+  // Header
+  {
+    let i = 0;
+    for (const [key, testResults] of Object.entries(dict)) {
+      csvString += key;
+
+      if (i < len - 1) {
+        csvString += ",\t\t";
+      }
+      ++i;
+    }
+  }
+  csvString += "\n";
+
+  // Data
+  {
+    for (let i = 0; i < numVals; ++i) {
+      let j = 0;
+      for (const [key, testResults] of Object.entries(dict)) {
+        csvString += testResults[i];
+        if (j < len - 1) {
+          csvString += ",\t\t";
+        }
+        ++j;
+      }
+      csvString += "\n";
+    }
+  }
+  return csvString;
+};
+
 exports.setAnnotatorShowExamples = function (sess, newState) {
   sess.annotatorSettings.autocompleteWithExamples = newState;
 };

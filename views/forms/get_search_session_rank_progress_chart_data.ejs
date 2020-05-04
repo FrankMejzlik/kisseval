@@ -1,20 +1,22 @@
+
 <form id="formGetSearchSessionsRankProgressChartData" class="grid-x grid-padding-x">
+    <div class="row">
+        <div class="pre-gen-buttons-cont cell small-12">
+            <label class="">
+                Source data pack:
+                <select id="dataPackId" name="dataPackId">
+                    <option value="NasNet2019">NasNet2019</option>
+                </select>
+            </label>
+            <a class="button" onclick="getSearchSessionsRankProgressChartData(this);">Generate</a>
+        </div>
+        <div class="chart-cont-general cell small-12" style="position: relative; height:400px; width:600px">
+            <canvas id="searchSessionsRankProgressChartCanvas"></canvas>
+        </div>
 
-    <div class="pre-gen-buttons-cont cell small-12">
-        <label class="">
-            Source data pack:
-            <select id="dataPackId" name="dataPackId">
-                <option value="NasNet2019">NasNet2019</option>
-            </select>
-        </label>
-        <a class="button" onclick="getSearchSessionsRankProgressChartData(this);">Generate</a>
-    </div>
-    <div class="chart-cont-general cell small-12">
-        <canvas id="searchSessionsRankProgressChartCanvas"></canvas>
-    </div>
+        <div class="post-gen-buttons-cont small-12">
 
-    <div class="post-gen-buttons-cont small-12">
-
+        </div>
     </div>
 </form>
 
@@ -24,6 +26,8 @@
         // Get the form
         const formElem = btnElem.closest("#formGetSearchSessionsRankProgressChartData");
         const chartCanvasElem = document.getElementById("searchSessionsRankProgressChartCanvas");
+
+        const postButtonsContElem = formElem.querySelector(".post-gen-buttons-cont");
 
         const formData = new FormData(formElem);
         const data = {}
@@ -44,7 +48,15 @@
             {
                 throw Error(data.error.message);
             }
-            plotQuantileLineChart(data, chartCanvasElem);
+            // Plot the quantile chart
+            plotQuantileLineChart(data.chartData, chartCanvasElem);
+
+            // Add data button
+            postButtonsContElem.innerHTML = `
+            <a target="_blank"  class="button success" href="${data.filename0}"> JSON data</a>
+            <a target="_blank"  class="button success" href="${data.filename1}"> CSV data</a>
+            `;
+
         })
         .catch((e) => {
         console.log("Error: " + JSON.stringify(e.message));

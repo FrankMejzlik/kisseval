@@ -5,6 +5,8 @@
 
 #include <stdexcept>
 
+using namespace image_ranker;
+
 Napi::FunctionReference ImageRankerWrapper::constructor;
 
 Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports)
@@ -20,35 +22,11 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports)
     InstanceMethod("rankFrames", &ImageRankerWrapper::rank_frames),
     InstanceMethod("runModelTest", &ImageRankerWrapper::run_model_test),
 
-
     InstanceMethod("submitSearchSession", &ImageRankerWrapper::submit_search_session), 
-    InstanceMethod("getFrameDetailData", &ImageRankerWrapper::get_frame_detail_data)
+    InstanceMethod("getFrameDetailData", &ImageRankerWrapper::get_frame_detail_data),
 
-    // InstanceMethod("GetRandomImageSequence", &ImageRankerWrapper::GetRandomImageSequence),
-
-    // InstanceMethod("GetCouplingImage", &ImageRankerWrapper::GetCouplingImage),
-    // InstanceMethod("Initialize", &ImageRankerWrapper::Initialize),
-    // InstanceMethod("GetGeneralStatistics", &ImageRankerWrapper::GetGeneralStatistics),
-    // InstanceMethod("ExportDataFile", &ImageRankerWrapper::ExportDataFile),
-    // InstanceMethod("RunGridTest", &ImageRankerWrapper::RunGridTest),
-    // InstanceMethod("RunGridTest", &ImageRankerWrapper::RunGridTest),
-    // InstanceMethod("GetNearKeywords", &ImageRankerWrapper::GetNearKeywords),
-    // InstanceMethod("GetRandomImage", &ImageRankerWrapper::GetRandomImage),
-    // InstanceMethod("GetCouplingImageNative", &ImageRankerWrapper::GetCouplingImageNative),    
-    // InstanceMethod("SubmitUserQueriesWithResults", &ImageRankerWrapper::SubmitUserQueriesWithResults),
-    // InstanceMethod("SubmitUserDataNativeQueries", &ImageRankerWrapper::SubmitUserDataNativeQueries),
-    // InstanceMethod("GetRelevantImagesPlainQuery", &ImageRankerWrapper::GetRelevantImagesPlainQuery),
-    // InstanceMethod("TrecvidGetRelevantShots", &ImageRankerWrapper::TrecvidGetRelevantShots),
-    // InstanceMethod("GetImageDataById", &ImageRankerWrapper::GetImageDataById),
-    // InstanceMethod("GetKeywordDataById", &ImageRankerWrapper::GetKeywordDataById),
-    // InstanceMethod("GetKeywordByVectorIndex", &ImageRankerWrapper::GetKeywordByVectorIndex),
-    // InstanceMethod("RunModelTest", &ImageRankerWrapper::RunModelTest),
-    // InstanceMethod("GetStatisticsUserKeywordAccuracy", &ImageRankerWrapper::GetStatisticsUserKeywordAccuracy),
-    // InstanceMethod("GetRelevantImagesWithSuggestedPlainQuery", &ImageRankerWrapper::GetRelevantImagesWithSuggestedPlainQuery),
-
-
-
-
+    InstanceMethod("getSearchSessionsRnkProgressCharData", &ImageRankerWrapper::get_search_sessions_rank_progress_chart_data), 
+    InstanceMethod("getHistogramUsedLabels", &ImageRankerWrapper::get_histogram_used_labels)
     });
 
   constructor = Napi::Persistent(func);
@@ -296,6 +274,270 @@ Napi::Value ImageRankerWrapper::get_frame_detail_data(const Napi::CallbackInfo& 
     }
 
     napi_set_property(env, result, key, kws_arr);
+  }
+
+  return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 3)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetImageKeywordsForInteractiveSearch)").ThrowAsJavaScriptException();
+  }
+
+  std::string data_pack_ID = info[0].As<Napi::String>().Utf8Value();
+  std::string model_options = info[1].As<Napi::String>().Utf8Value();
+  size_t max_user_level = info[2].As<Napi::Number>().Uint32Value();
+
+  // Call native method
+  QuantileLineChartData<size_t, float> chart_data{};
+  try
+  {
+    chart_data = this->actualClass_->get_search_sessions_rank_progress_chart_data(data_pack_ID, model_options, max_user_level);
+  }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // Set "x"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "x", NAPI_AUTO_LENGTH, &key);
+
+    // Create array
+    napi_value arr;
+    napi_create_array(env, &arr);
+    {
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.x)
+      {
+        napi_value value;
+        napi_create_uint32(env, uint32_t(p_kw), &value);
+
+        napi_set_element(env, arr, i, value);
+
+        ++i;
+      }
+    }
+
+    napi_set_property(env, result, key, arr);
+  }
+
+  // Set "y_min"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "y_min", NAPI_AUTO_LENGTH, &key);
+
+    // Create array
+    napi_value arr;
+    napi_create_array(env, &arr);
+    {
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.y_min)
+      {
+        napi_value value;
+        napi_create_double(env, uint32_t(p_kw), &value);
+
+        napi_set_element(env, arr, i, value);
+
+        ++i;
+      }
+    }
+
+    napi_set_property(env, result, key, arr);
+  }
+
+  // Set "y_q1"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "y_q1", NAPI_AUTO_LENGTH, &key);
+
+    // Create array
+    napi_value arr;
+    napi_create_array(env, &arr);
+    {
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.y_q1)
+      {
+        napi_value value;
+        napi_create_double(env, uint32_t(p_kw), &value);
+
+        napi_set_element(env, arr, i, value);
+
+        ++i;
+      }
+    }
+
+    napi_set_property(env, result, key, arr);
+  }
+
+  // Set "y_q2"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "y_q2", NAPI_AUTO_LENGTH, &key);
+
+    // Create array
+    napi_value arr;
+    napi_create_array(env, &arr);
+    {
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.y_q2)
+      {
+        napi_value value;
+        napi_create_double(env, uint32_t(p_kw), &value);
+
+        napi_set_element(env, arr, i, value);
+
+        ++i;
+      }
+    }
+
+    napi_set_property(env, result, key, arr);
+  }
+
+  // Set "y_q3"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "y_q3", NAPI_AUTO_LENGTH, &key);
+
+    // Create array
+    napi_value arr;
+    napi_create_array(env, &arr);
+    {
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.y_q3)
+      {
+        napi_value value;
+        napi_create_double(env, uint32_t(p_kw), &value);
+
+        napi_set_element(env, arr, i, value);
+
+        ++i;
+      }
+    }
+
+    napi_set_property(env, result, key, arr);
+  }
+
+  // Set "y_max"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "y_max", NAPI_AUTO_LENGTH, &key);
+
+    // Create array
+    napi_value arr;
+    napi_create_array(env, &arr);
+    {
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.y_max)
+      {
+        napi_value value;
+        napi_create_double(env, uint32_t(p_kw), &value);
+
+        napi_set_element(env, arr, i, value);
+
+        ++i;
+      }
+    }
+
+    napi_set_property(env, result, key, arr);
+  }
+
+  return Napi::Object(env, result);
+}
+
+Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackInfo& info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  // Process arguments
+  int length = info.Length();
+  if (length != 3)
+  {
+    Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetImageKeywordsForInteractiveSearch)").ThrowAsJavaScriptException();
+  }
+
+  std::string data_pack_ID = info[0].As<Napi::String>().Utf8Value();
+  std::string model_options = info[1].As<Napi::String>().Utf8Value();
+  size_t max_user_level = info[2].As<Napi::Number>().Uint32Value();
+
+  // Call native method
+  HistogramChartData<size_t, size_t> chart_data{};
+  try
+  {
+    chart_data = this->actualClass_->get_histogram_used_labels(data_pack_ID, model_options, max_user_level);
+  }
+  catch (const std::exception& e)
+  {
+    Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
+  }
+
+
+
+  // Construct NAPI return object 
+  napi_value result;
+  napi_create_object(env, &result);
+
+  // Set "x"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "x", NAPI_AUTO_LENGTH, &key);
+
+    // Create array
+    napi_value arr;
+    napi_create_array(env, &arr);
+    {
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.x)
+      {
+        napi_value value;
+        napi_create_uint32(env, uint32_t(p_kw), &value);
+
+        napi_set_element(env, arr, i, value);
+
+        ++i;
+      }
+    }
+
+    napi_set_property(env, result, key, arr);
+  }
+
+  // Set "fx"
+  {
+    napi_value key;
+    napi_create_string_utf8(env, "fx", NAPI_AUTO_LENGTH, &key);
+
+    // Create array
+    napi_value arr;
+    napi_create_array(env, &arr);
+    {
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.fx)
+      {
+        napi_value value;
+        napi_create_uint32(env, uint32_t(p_kw), &value);
+
+        napi_set_element(env, arr, i, value);
+
+        ++i;
+      }
+    }
+
+    napi_set_property(env, result, key, arr);
   }
 
   return Napi::Object(env, result);
@@ -829,7 +1071,7 @@ Napi::Value ImageRankerWrapper::run_model_test(const Napi::CallbackInfo& info)
   try {
     test_results = this->actualClass_->run_model_test(query_origin, data_pack_ID, model_options, native_queries, num_points);
   }
-  catch (const NotSuportedModelOption& ex)
+  catch (const NotSuportedModelOptionExcept& ex)
   {
     Napi::Error::New(env, ex.what()).ThrowAsJavaScriptException();
   }

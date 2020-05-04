@@ -1,18 +1,6 @@
 <!-- Include header -->
 <%- include common/header.ejs %>
 
-<!-- ===================================== -->
-<!-- NOTIFICATION SECTION: Messages & warnings -->
-<!-- ===================================== -->
-<section class="global-messages-section grid-container">
-  <div class="grid-x grid-x align-center">
-    <div class="callout" id="mainGlobalMessageCont">
-      <h5 class="primary"></h5>
-      <p class="secondary"></p>
-    </div>
-  </div>
-</section>
-
 <section class="ranker-grid-section grid-container">
   <div class="grid-x grid-x align-center">
 
@@ -448,7 +436,7 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
     })
     .catch((e) => {
       console.log("Error: " + JSON.stringify(e.message));
-      showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
+      showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000, "e");
     });
   }
 
@@ -544,7 +532,7 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
   })
   .catch((e) => {
     console.log("Error: " + JSON.stringify(e.message));
-    showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
+    showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000, "e");
   });
 }
 
@@ -601,7 +589,7 @@ function submitImage(elem)
   })
   .catch((e) => {
     console.log("Error: " + JSON.stringify(e.message));
-    showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000);
+    showGlobalMessage("Send action failed!", "Sorry, error happened while processing it.", 5000, "e");
   });
 }
 
@@ -628,7 +616,7 @@ function handleCorrectSubmit(viewData, chartData) {
   drawInteractiveSearchChart(dataArray, canvas);
 
   console.log("Showing correct submit image data.");
-  showGlobalMessage("Correct.", "Great job", 5000);
+  showGlobalMessage("Correct.", "Great job", 5000, "s");
 }
 
 
@@ -640,7 +628,7 @@ function handleDiscardSession(viewData) {
 }
 
 function handleIncorrectSubmit(viewData) {
-  showGlobalMessage("Incorrect submit", "Sorry, this is not the correct image, please try again.", 5000);
+  showGlobalMessage("Incorrect submit", "Sorry, this is not the correct image, please try again.", 5000, "w");
 }
 
 function handleActionPush(viewData, chartData, queryResult) {
@@ -930,32 +918,6 @@ function putDocumentToState(viewData) {
   }
 }
 
-function showGlobalMessage(messagePrimary, messageSecondary, time)
-{
-  $mainGlobalMessageCont = $("#mainGlobalMessageCont");
-  $primary = $($mainGlobalMessageCont.children(".primary")[0]);
-  $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
-
-  $mainGlobalMessageCont.show();
-  $primary.html(messagePrimary);
-  $secondary.html(messageSecondary);
-
-  setTimeout(() => {
-    clearGlobalMesssage();
-  }, time);
-}
-
-function clearGlobalMesssage()
-{
-  $mainGlobalMessageCont = $("#mainGlobalMessageCont");
-  $primary = $($mainGlobalMessageCont.children(".primary")[0]);
-  $secondary = $($mainGlobalMessageCont.children(".secondary")[0]);
-
-
-  $primary.html("");
-  $secondary.html("");
-  $mainGlobalMessageCont.hide();
-}
 
 </script>
 

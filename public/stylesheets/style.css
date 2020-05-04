@@ -1646,7 +1646,7 @@ input[type=submit] {
 }
 
 .callout.warning {
-  background-color: #97D6D5;
+  background-color: #F9A840;
   position: absolute;
   width: 90%;
   left: 50%;
@@ -1654,7 +1654,7 @@ input[type=submit] {
 }
 
 .callout.alert {
-  background-color: #eeb121;
+  background-color: #ff5656;
 }
 
 

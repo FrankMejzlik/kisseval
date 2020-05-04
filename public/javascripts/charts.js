@@ -128,3 +128,68 @@ function plotTestChart(chartElem, returnedDataArray)
   chart.data = chartData;
   chart.update();
 }
+
+function plotQuantileLineChart(chartDataArray, targetCanvas)
+{
+
+  if (typeof chartDataArray === "undefined" || chartDataArray.length <= 0)
+  {
+    return;
+  }
+  
+  const num = chartDataArray.length;
+  const divPerChanel = (num / 3) + 1;
+  
+  // Labels
+  const labels = chartDataArray[0].labels;
+
+  let datasetsArr = [];
+  for (var i = 0; i < chartDataArray.length; ++i) {
+    const chartData = chartDataArray[i];
+
+    const xs = chartData.xs;
+    const fxs = chartData.fxs;
+
+    // Calculate coefs for colour
+    const r = (i % 3 == 0 ? 1 : 0) * 255;
+    const g = (i % 3 == 1 ? 1 : 0) * 255;
+    const b = (i % 3 == 2 ? 1 : 0) * 255;
+
+    const borderColor = "rgba(" + r + ", " + g + ", " + b + ", 1)";
+
+    let dataFormed = []
+    for (let ii = 0; ii < xs.length; ++ii)
+    {
+      dataFormed.push({
+        x: xs[ii],
+        y: fxs[ii]
+      })
+    }
+
+    const plotData = {
+      borderColor: borderColor,
+      backgroundColor: "rgba(255, 0, 0, 0)",
+      pointRadius: 0.5,
+      pointHoverRadius: 0.5,
+      borderWidth: 1.0,
+      data: dataFormed,
+    }
+
+    datasetsArr.push(plotData);
+  }
+
+
+  const plotData = {
+    labels: labels,
+    datasets: datasetsArr
+  }
+
+  const chartCanvas = targetCanvas;
+  // Create chart
+  var ctx = chartCanvas.getContext('2d');
+  var chart = new Chart(ctx, chartSettings);
+
+  // Update the chart
+  chart.data = plotData;
+  chart.update();
+}

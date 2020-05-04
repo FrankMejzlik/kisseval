@@ -31,6 +31,7 @@ const routerNotFound = require("./routes/404");
 
 const endpoints = require("./routes/endpoints/endpoints");
 const rankerEndpoints = require("./routes/endpoints/ranker_endpoints");
+const dataEndpoints = require("./routes/endpoints/data_endpoints");
 
 global.dbConnectionsPool = mysql.createPool({
   host: global.gConfig.db.host,
@@ -125,7 +126,6 @@ app.use("/exporter", routerExporter);
 
 // Request endpoints
 app.get("/get_autocomplete_results", endpoints.getAutocompleteResults);
-app.get("/get_frame_detail_data", rankerEndpoints.getFrameDetailData);
 
 app.post("/set_active_data_pack", endpoints.setActiveDataPack);
 app.post("/switch_to_eval_mode", endpoints.switchToEvaluatorMode);
@@ -133,13 +133,17 @@ app.post("/switch_to_public_mode", endpoints.switchToPublicMode);
 app.post("/annotator_submit_query", endpoints.submitAnnotatorQuery);
 app.post("/run_model_tests", endpoints.runModelTests);
 
-app.post("/set_ranker_model_options", rankerEndpoints.setModelOptions);
+// Ranker endpoints
+app.get("/get_frame_detail_data", rankerEndpoints.getFrameDetailData);
 
+app.post("/set_ranker_model_options", rankerEndpoints.setModelOptions);
 app.post("/ranker_push_search_action", rankerEndpoints.pushSearchAction);
 app.post("/ranker_start_search_session", rankerEndpoints.startSearchSession);
 app.post("/ranker_discard_search_session", rankerEndpoints.discardSearchSession);
 app.post("/ranker_submit_frame", rankerEndpoints.submitFrame);
 
+// Data endpoints
+app.post("/get_search_sessions_rank_progress_chart_data", dataEndpoints.getSearchSessionsRankProgressChartData);
 
 
 

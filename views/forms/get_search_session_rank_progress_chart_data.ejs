@@ -3,7 +3,7 @@
 
 <form id="formGetSearchSessionsRankProgressChartData" class="">
     <div class="row grid-x grid-padding-x">
-        <div class="pre-gen-buttons-cont cell small-12 medium-6">
+        <div class="pre-gen-buttons-cont cell small-12">
 
             <% if (state.activeDataPackId != "NasNet2019") { %>
                 <div class="not-data-warning">
@@ -12,11 +12,17 @@
             <% } %>
             <a class="button" onclick="getSearchSessionsRankProgressChartData(this);">Generate</a>
         </div>
-        <div class="chart-cont-general cell small-12" style="position: relative;  width:600px">
+        <div class="chart-cont-general cell small-12 medium-6">
+            <h3>Aggregated median/Q1/Q3 of target rank frame based on number of actions</h3>
             <canvas id="searchSessionsRankProgressChartCanvas"></canvas>
+            
+        </div>
+        <div class="chart-cont-general cell small-12 medium-6">
+            <h3>Median of the target frame based on number of actions for given session length</h3>
+            <canvas id="searchSessionsRankProgressMultiChartCanvas"></canvas>
         </div>
 
-        <div class="post-gen-buttons-cont small-12">
+        <div class="post-gen-buttons-cont small-12 grid-x">
 
         </div>
     </div>
@@ -28,6 +34,7 @@
         // Get the form
         const formElem = btnElem.closest("#formGetSearchSessionsRankProgressChartData");
         const chartCanvasElem = document.getElementById("searchSessionsRankProgressChartCanvas");
+        const multichartCanvasElem = document.getElementById("searchSessionsRankProgressMultiChartCanvas");
 
         const postButtonsContElem = formElem.querySelector(".post-gen-buttons-cont");
 
@@ -40,7 +47,7 @@
         fetch("/get_search_sessions_rank_progress_chart_data", {
             method: "POST",
             headers: {
-            'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
         })
@@ -51,18 +58,26 @@
                 throw Error(data.error.message);
             }
             // Plot the quantile chart
-            plotQuantileLineChart(data.chartData, chartCanvasElem);
+            plotQuantileLineChart(data.chartData.aggregate_quantile_chart, chartCanvasElem);
+            
+            // Plot multichart of medians
+            plotMedianMultiLineChart(data.chartData.median_multichart, multichartCanvasElem);
 
             // Add data button
             postButtonsContElem.innerHTML = `
-            <a target="_blank"  class="button success" href="${data.filename0}"> JSON data</a>
-            <a target="_blank"  class="button success" href="${data.filename1}"> CSV data</a>
-            `;
+            <div class="cell small-12 medium-6 ">
+                <a target="_blank"  class="button success" href="${data.filename0}"> JSON data</a>
+                <a target="_blank"  class="button success" href="${data.filename1}"> CSV data</a>
+            </div>
+            <div class="cell small-12 medium-6">
+                <a target="_blank"  class="button success" href="${data.filename10}"> JSON data</a>
+                <a target="_blank"  class="button success" href="${data.filename11}"> CSV data</a>
+            </div>`;
 
         })
         .catch((e) => {
-        console.log("Error: " + JSON.stringify(e.message));
-        showGlobalMessage("Getting search session chart data failed.", "", 5000, "e");
+            console.log("Error: " + JSON.stringify(e.message));
+            showGlobalMessage("Getting search session chart data failed.", "", 5000, "e");
         });
 
     };

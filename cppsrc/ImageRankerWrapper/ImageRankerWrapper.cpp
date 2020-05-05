@@ -286,7 +286,7 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
 
   // Process arguments
   int length = info.Length();
-  if (length != 3)
+  if (length != 5)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetImageKeywordsForInteractiveSearch)").ThrowAsJavaScriptException();
   }
@@ -294,167 +294,264 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
   std::string data_pack_ID = info[0].As<Napi::String>().Utf8Value();
   std::string model_options = info[1].As<Napi::String>().Utf8Value();
   size_t max_user_level = info[2].As<Napi::Number>().Uint32Value();
+  size_t min_samples = info[3].As<Napi::Number>().Uint32Value();
+  bool normalize = info[4].As<Napi::Boolean>().Value();
 
   // Call native method
-  QuantileLineChartData<size_t, float> chart_data{};
+  SearchSessRankChartData chart_data{};
   try
   {
-    chart_data = this->actualClass_->get_search_sessions_rank_progress_chart_data(data_pack_ID, model_options, max_user_level);
+    chart_data = this->actualClass_->get_search_sessions_rank_progress_chart_data(data_pack_ID, model_options, max_user_level, min_samples, normalize);
   }
   catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
 
-
-
-  // Construct NAPI return object 
   napi_value result;
   napi_create_object(env, &result);
 
-  // Set "x"
+  // "median_multichart"
   {
-    napi_value key;
-    napi_create_string_utf8(env, "x", NAPI_AUTO_LENGTH, &key);
+    
+    napi_value top_key;
+    napi_create_string_utf8(env, "median_multichart", NAPI_AUTO_LENGTH, &top_key);
 
-    // Create array
-    napi_value arr;
-    napi_create_array(env, &arr);
+    napi_value top_dict;
+    napi_create_object(env, &top_dict);
+
+    // "x"
     {
-      size_t i{ 0_z };
-      for (auto&& p_kw : chart_data.x)
+      napi_value subtop_key;
+      napi_create_string_utf8(env, "x", NAPI_AUTO_LENGTH, &subtop_key);
+
+      napi_value subtop_val;
+      napi_create_array(env, &subtop_val);
       {
-        napi_value value;
-        napi_create_uint32(env, uint32_t(p_kw), &value);
+        size_t i{ 0_z };
+        for (auto&& vec : chart_data.median_multichart.x)
+        {
+          napi_value bott_arr;
+          napi_create_array(env, &bott_arr);
 
-        napi_set_element(env, arr, i, value);
+          // Fill in medians
+          {
+            size_t ii{ 0_z };
+            for (auto&& x : vec)
+            {
+              napi_value napix;
+              napi_create_uint32(env, x, &napix);
 
-        ++i;
+              napi_set_element(env, bott_arr, ii, napix);
+              ++ii;
+            }
+          }
+
+          napi_set_element(env, subtop_val, i, bott_arr);
+
+          ++i;
+        }
       }
+
+
+      napi_set_property(env, top_dict, subtop_key, subtop_val);
     }
 
-    napi_set_property(env, result, key, arr);
-  }
-
-  // Set "y_min"
-  {
-    napi_value key;
-    napi_create_string_utf8(env, "y_min", NAPI_AUTO_LENGTH, &key);
-
-    // Create array
-    napi_value arr;
-    napi_create_array(env, &arr);
+    // "medians"
     {
-      size_t i{ 0_z };
-      for (auto&& p_kw : chart_data.y_min)
+      napi_value subtop_key;
+      napi_create_string_utf8(env, "fx", NAPI_AUTO_LENGTH, &subtop_key);
+
+      napi_value subtop_val;
+      napi_create_array(env, &subtop_val);
       {
-        napi_value value;
-        napi_create_double(env, uint32_t(p_kw), &value);
+        size_t i{ 0_z };
+        for (auto&& vec : chart_data.median_multichart.medians)
+        {
+          napi_value bott_arr;
+          napi_create_array(env, &bott_arr);
 
-        napi_set_element(env, arr, i, value);
+          // Fill in medians
+          {
+            size_t ii{ 0_z };
+            for (auto&& x : vec)
+            {
+              napi_value napix;
+              napi_create_double(env, float(x), &napix);
 
-        ++i;
+              napi_set_element(env, bott_arr, ii, napix);
+              ++ii;
+            }
+          }
+
+          napi_set_element(env, subtop_val, i, bott_arr);
+
+          ++i;
+        }
       }
+
+
+      napi_set_property(env, top_dict, subtop_key, subtop_val);
     }
 
-    napi_set_property(env, result, key, arr);
+    napi_set_property(env, result, top_key, top_dict);
   }
 
-  // Set "y_q1"
+  // "aggregate_quantile_chart"
   {
-    napi_value key;
-    napi_create_string_utf8(env, "y_q1", NAPI_AUTO_LENGTH, &key);
+    napi_value top_key;
+    napi_create_string_utf8(env, "aggregate_quantile_chart", NAPI_AUTO_LENGTH, &top_key);
+    
 
-    // Create array
-    napi_value arr;
-    napi_create_array(env, &arr);
+    // Construct NAPI return object 
+    napi_value result_aggregated;
+    napi_create_object(env, &result_aggregated);
+
+    // Set "x"
     {
-      size_t i{ 0_z };
-      for (auto&& p_kw : chart_data.y_q1)
+      napi_value key;
+      napi_create_string_utf8(env, "x", NAPI_AUTO_LENGTH, &key);
+
+      // Create array
+      napi_value arr;
+      napi_create_array(env, &arr);
       {
-        napi_value value;
-        napi_create_double(env, uint32_t(p_kw), &value);
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.x)
+        {
+          napi_value value;
+          napi_create_uint32(env, uint32_t(p_kw), &value);
 
-        napi_set_element(env, arr, i, value);
+          napi_set_element(env, arr, i, value);
 
-        ++i;
+          ++i;
+        }
       }
+
+      napi_set_property(env, result_aggregated, key, arr);
     }
 
-    napi_set_property(env, result, key, arr);
-  }
-
-  // Set "y_q2"
-  {
-    napi_value key;
-    napi_create_string_utf8(env, "y_q2", NAPI_AUTO_LENGTH, &key);
-
-    // Create array
-    napi_value arr;
-    napi_create_array(env, &arr);
+    // Set "y_min"
     {
-      size_t i{ 0_z };
-      for (auto&& p_kw : chart_data.y_q2)
+      napi_value key;
+      napi_create_string_utf8(env, "y_min", NAPI_AUTO_LENGTH, &key);
+
+      // Create array
+      napi_value arr;
+      napi_create_array(env, &arr);
       {
-        napi_value value;
-        napi_create_double(env, uint32_t(p_kw), &value);
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_min)
+        {
+          napi_value value;
+          napi_create_double(env, p_kw, &value);
 
-        napi_set_element(env, arr, i, value);
+          napi_set_element(env, arr, i, value);
 
-        ++i;
+          ++i;
+        }
       }
+
+      napi_set_property(env, result_aggregated, key, arr);
     }
 
-    napi_set_property(env, result, key, arr);
-  }
-
-  // Set "y_q3"
-  {
-    napi_value key;
-    napi_create_string_utf8(env, "y_q3", NAPI_AUTO_LENGTH, &key);
-
-    // Create array
-    napi_value arr;
-    napi_create_array(env, &arr);
+    // Set "y_q1"
     {
-      size_t i{ 0_z };
-      for (auto&& p_kw : chart_data.y_q3)
+      napi_value key;
+      napi_create_string_utf8(env, "y_q1", NAPI_AUTO_LENGTH, &key);
+
+      // Create array
+      napi_value arr;
+      napi_create_array(env, &arr);
       {
-        napi_value value;
-        napi_create_double(env, uint32_t(p_kw), &value);
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_q1)
+        {
+          napi_value value;
+          napi_create_double(env, p_kw, &value);
 
-        napi_set_element(env, arr, i, value);
+          napi_set_element(env, arr, i, value);
 
-        ++i;
+          ++i;
+        }
       }
-    }
 
-    napi_set_property(env, result, key, arr);
-  }
+        napi_set_property(env, result_aggregated, key, arr);
+      }
 
-  // Set "y_max"
-  {
-    napi_value key;
-    napi_create_string_utf8(env, "y_max", NAPI_AUTO_LENGTH, &key);
-
-    // Create array
-    napi_value arr;
-    napi_create_array(env, &arr);
-    {
-      size_t i{ 0_z };
-      for (auto&& p_kw : chart_data.y_max)
+      // Set "y_q2"
       {
-        napi_value value;
-        napi_create_double(env, uint32_t(p_kw), &value);
+        napi_value key;
+        napi_create_string_utf8(env, "y_q2", NAPI_AUTO_LENGTH, &key);
 
-        napi_set_element(env, arr, i, value);
+        // Create array
+        napi_value arr;
+        napi_create_array(env, &arr);
+        {
+          size_t i{ 0_z };
+          for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_q2)
+          {
+            napi_value value;
+            napi_create_double(env, p_kw, &value);
 
-        ++i;
+            napi_set_element(env, arr, i, value);
+
+            ++i;
+          }
+        }
+
+        napi_set_property(env, result_aggregated, key, arr);
       }
-    }
 
-    napi_set_property(env, result, key, arr);
-  }
+      // Set "y_q3"
+      {
+        napi_value key;
+        napi_create_string_utf8(env, "y_q3", NAPI_AUTO_LENGTH, &key);
+
+        // Create array
+        napi_value arr;
+        napi_create_array(env, &arr);
+        {
+          size_t i{ 0_z };
+          for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_q3)
+          {
+            napi_value value;
+            napi_create_double(env, p_kw, &value);
+
+            napi_set_element(env, arr, i, value);
+
+            ++i;
+          }
+        }
+
+        napi_set_property(env, result_aggregated, key, arr);
+      }
+
+      // Set "y_max"
+      {
+        napi_value key;
+        napi_create_string_utf8(env, "y_max", NAPI_AUTO_LENGTH, &key);
+
+        // Create array
+        napi_value arr;
+        napi_create_array(env, &arr);
+        {
+          size_t i{ 0_z };
+          for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_max)
+          {
+            napi_value value;
+            napi_create_double(env, p_kw, &value);
+
+            napi_set_element(env, arr, i, value);
+
+            ++i;
+          }
+        }
+
+        napi_set_property(env, result_aggregated, key, arr);
+      }
+      napi_set_property(env, result, top_key, result_aggregated);
+    }
 
   return Napi::Object(env, result);
 }

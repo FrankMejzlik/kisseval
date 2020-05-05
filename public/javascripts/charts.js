@@ -109,7 +109,64 @@ const chartSettingsQuantileChart = {
       }
     }],
     yAxes: [{
-      
+      ticks: {
+          autoSkip: false,
+          max: 5000,
+      },
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'Target frame rank'
+      }
+    }]
+  }
+}
+}
+
+const chartSettingsMedianMultiChart = {
+  // The type of chart we want to create
+  type: 'line',
+  animation: {
+      duration: 0
+  },
+  data: {},
+  options: {
+  responsive: true,
+  title: {
+    display: false,
+    text: 'Target frame rank based on number of actions and session length'
+  },
+  tooltips: {
+    mode: 'index',
+    intersect: false,
+  },
+  hover: {
+    mode: 'nearest',
+    intersect: true
+  },
+  scales: {
+    xAxes: [{
+      //type: 'logarithmic',
+      display: true,
+      ticks: {
+        beginAtZero: true,
+        min: 0,
+        // \todo make dynamic
+        //max: 20000,
+        callback: function(value, index, values) {
+            return value;
+        }
+      },
+      scaleLabel: {
+        display: true,
+        labelString: 'Action number'
+      }
+    }],
+    yAxes: [{
+      ticks: {
+          autoSkip: false,
+          max: 2000,
+      },
       display: true,
       scaleLabel: {
         display: true,
@@ -178,6 +235,63 @@ function plotTestChart(chartElem, returnedDataArray)
 
   // Update data
   chart.data = chartData;
+  chart.update();
+}
+
+function plotMedianMultiLineChart(chartData, targetCanvas)
+{
+  /* chartData = {
+    x: [[]],
+    fx: [[]] } */
+
+  // Labels
+  let  labels = chartData.x[0];
+
+  let datasetsArr = [];
+    
+  // median line charts
+  for (let i = 0; i < chartData.x.length; ++i)
+  {
+    const xs = chartData.x[i];
+    labels = xs;
+    const fxs0 = chartData.fx[i];
+
+    let dataFormed0 = []
+    for (let ii = 0; ii < xs.length; ++ii) {
+      dataFormed0.push({
+        x: xs[ii],
+        y: fxs0[ii]
+      });
+    }
+    
+    const sessLen = xs.length;
+    const lineColour = distinctColours[i % distinctColours.length];
+    const plotData = {
+      label: `Length ${sessLen}`,
+      lineTension: 0,
+      borderColor: lineColour,
+      borderWidth: 3.0,
+      backgroundColor: "rgba(255, 0, 0, 0)",
+      pointRadius: 0.5,
+      pointHoverRadius: 0.5,
+      data: dataFormed0
+    }
+
+    datasetsArr.push(plotData);
+  }
+
+  const plotData = {
+    labels: labels,
+    datasets: datasetsArr
+  }
+
+  const chartCanvas = targetCanvas;
+  // Create chart
+  var ctx = chartCanvas.getContext('2d');
+  var chart = new Chart(ctx, chartSettingsMedianMultiChart);
+
+  // Update the chart
+  chart.data = plotData;
   chart.update();
 }
 
@@ -366,7 +480,7 @@ const chartSettingsLabelHistogram = {
       },
       scaleLabel: {
         display: true,
-        labelString: 'Index of the action'
+        labelString: 'Action number'
       }
     }],
     yAxes: [{
@@ -391,30 +505,24 @@ function plotLabelHistogram(histData, canvasElem)
     data: {
       labels: dataLabels,
       datasets: [{
-        label: 'Group A',
+        label: '',
         display: false,
         data: dataValues,
-        backgroundColor: 'rgba(20, 252, 255, 1)',
+        backgroundColor: 'rgba(255, 252, 155, 1)',
       }]
     },
     options: {
       scales: {
         xAxes: [{
-          display: false,
-          barPercentage: 1.3,
-          ticks: {
-              //max: 3,
-          }
-      }, {
           display: true,
           ticks: {
-              autoSkip: false,
-              //max: 4,
+              //max: 3,
           }
         }],
         yAxes: [{
           ticks: {
-            beginAtZero:true
+            beginAtZero:true,
+            max: 0.05
           }
         }]
       }

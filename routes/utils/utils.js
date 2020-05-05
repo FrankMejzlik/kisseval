@@ -35,6 +35,59 @@ exports.getCsvChartData = function (dict) {
   return csvString;
 };
 
+/**
+ * Takes JS dict variable and creates pretty formatted string representing the data in the CSV format.
+ *
+ *  INPUT FORMAT:
+ *    dict = {
+ *      x:  [
+ *        [1,2],
+ *        [1,2,3]
+ *      ],
+ *      fx: [
+ *        [0.01, 0.04],
+ *        [1.1, 0.14, 102.3]
+ *      ]
+ *    }
+ *
+ * OUTPUT CSV FORMAT:
+ *    x,     len_2,   len_3
+ *    1,     0.01,    1.1
+ *    2,     0.04,    0.14
+ *    3,     ,        102.3
+ */
+exports.getCsvMultiLineChartData = function (dict) {
+  const numSeries = dict.fx.length;
+  const yss = dict.fx;
+  const xs = dict.x[dict.x.length - 1];
+
+  let maxSessLen = 0;
+  // Header
+  csvString = "x";
+  {
+    for (let i = 0; i < numSeries; ++i) {
+      const ys = yss[i];
+      csvString += ", \t\t" + "length_" + String(ys.length);
+
+      maxSessLen = Math.max(maxSessLen, ys.length);
+    }
+  }
+  csvString += "\n";
+
+  // Data
+  for (let i = 0; i < maxSessLen; ++i) {
+    // Add X
+    csvString += xs[i];
+
+    for (let j = 0; j < numSeries; ++j) {
+      const y = typeof yss[j][i] !== "undefined" ? yss[j][i] : "";
+      csvString += ",\t\t" + y;
+    }
+    csvString += "\n";
+  }
+  return csvString;
+};
+
 exports.setAnnotatorShowExamples = function (sess, newState) {
   sess.annotatorSettings.autocompleteWithExamples = newState;
 };

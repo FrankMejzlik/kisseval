@@ -40,7 +40,7 @@ exports.setActieDataPack = function (obj, dataPackId, modelOpts, packType) {
   obj._ranker.activeDataPackId = dataPackId;
   obj._ranker.activeModelOptions = modelOpts;
 
-  obj._active_model_options = dataPackId;
+  obj._active_model_options = modelOpts;
 
   // If native pack
   if (packType == "W2VV_based") {

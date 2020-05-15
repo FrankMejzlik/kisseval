@@ -227,7 +227,7 @@ exports.runModelTests = function (req, res) {
 
   const are_native_queries = dataPackType == "W2VV_based" ? true : false;
 
-  let numPoints = 100;
+  let numPoints = global.gConfig.numPointsInTestResults;
 
   let testResultData = {};
   let testOptions = {};

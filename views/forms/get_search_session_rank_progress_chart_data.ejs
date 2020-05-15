@@ -61,7 +61,10 @@
             plotQuantileLineChart(data.chartData.aggregate_quantile_chart, chartCanvasElem);
             
             // Plot multichart of medians
-            plotMedianMultiLineChart(data.chartData.median_multichart, multichartCanvasElem);
+            if (!plotMedianMultiLineChart(data.chartData.median_multichart, multichartCanvasElem))
+            {
+                showGlobalMessage("No data for this options.", "Try different settings.", 5000, "w");
+            }
 
             // Add data button
             postButtonsContElem.innerHTML = `

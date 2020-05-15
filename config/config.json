@@ -12,9 +12,11 @@
         "database": "local_dev",
         "defaultDataPack": "NasNet2019",
 
-        "dataInfoFpth" : "c:\\Users\\devwe\\source\\repos\\ImageRanker\\data_info.json",
-        "modelOptsInfoFpth" : "c:\\Users\\devwe\\source\\repos\\ImageRanker\\models_info.json",
-        "dataDir" : "c:\\Users\\devwe\\data\\",
+        "dataInfoFpth" : "c:\\Users\\frank\\source\\repos\\ImageRanker\\data_info.json",
+        "modelOptsInfoFpth" : "c:\\Users\\frank\\source\\repos\\ImageRanker\\models_info.json",
+        "dataDir" : "c:\\Users\\frank\\data\\",
+
+        "numPointsInTestResults": 100,
 
         "annotatorSettings": {
             "autocompleteWithExamples": true,

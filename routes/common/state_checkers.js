@@ -32,10 +32,20 @@ exports.checkGlobalSessionState = function (req, viewData) {
     }
 
     let ii = 0;
+    let found = false;
     for (let pack of global.loadedDataPacksInfo) {
-      if (pack.id == global.gConfig.defaultDataPack) break;
+      if (pack.id == global.gConfig.defaultDataPack) 
+      {
+        found = true;
+        break;
+      }
 
       ++ii;
+    }
+
+    if (!found)
+    {
+      ii = 0;
     }
 
     sess.state = sessState.construct(

@@ -244,6 +244,11 @@ function plotMedianMultiLineChart(chartData, targetCanvas)
     x: [[]],
     fx: [[]] } */
 
+  if (chartData.x.length == 0)
+  {
+    return false;
+  }
+
   // Labels
   let  labels = chartData.x[0];
 
@@ -293,6 +298,8 @@ function plotMedianMultiLineChart(chartData, targetCanvas)
   // Update the chart
   chart.data = plotData;
   chart.update();
+
+  return false;
 }
 
 function plotQuantileLineChart(chartData, targetCanvas)

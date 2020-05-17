@@ -111,8 +111,9 @@ Napi::Value ImageRankerWrapper::submit_search_session(const Napi::CallbackInfo& 
     std::string operand_readable = dict.Get("word").As<Napi::String>().Utf8Value();
     size_t final_rank = dict.Get("score").As<Napi::Number>().Uint32Value();
     size_t time = dict.Get("time").As<Napi::Number>().Uint32Value();
+    bool is_initial = dict.Get("isInitial").As<Napi::Boolean>().Value();
 
-    actions.emplace_back( InteractiveSearchAction{ query_idx, action, operand, operand_readable, final_rank, time });
+    actions.emplace_back( InteractiveSearchAction{ query_idx, action, operand, operand_readable, final_rank, time, is_initial });
   }
   
   // Call native method

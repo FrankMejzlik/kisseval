@@ -74,6 +74,10 @@
           <!-- Autocomplete text input -->
           <input type="text" id="<%= elemIds.ranker.queryInput %>" tabindex="1" name="query">
           
+          <div id="<%= elemIds.ranker.notInitBtn %>">
+            
+          </div>
+
           <!-- List of currently selected keywords -->
           <ul class="selected-keywords-list" id="<%= elemIds.ranker.selectedKeywords1 %>"></ul>
           
@@ -245,7 +249,7 @@ if (state.userLevel  >= 10) { %>
 
 <!-- Client-side JS CHART PLOTTING functions -->
 <script>
-  const chartSettings = {
+  const chartSettingss = {
     // The type of chart we want to create
     type: 'line',
 
@@ -370,7 +374,7 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
   const chartCanvas = targetCanvas;
   // Create chart
   var ctx = chartCanvas.getContext('2d');
-  var chart = new Chart(ctx, chartSettings);
+  var chart = new Chart(ctx, chartSettingss);
 
   // Update the chart
   chart.data = plotData;
@@ -619,6 +623,30 @@ function handleCorrectSubmit(viewData, chartData) {
 }
 
 
+function setNotInit() {
+  fetch("/ranker_set_not_initial", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      // Handle error
+      if (data.error)
+      {
+        throw Error(data.error.message);
+      }
+      processActionPlain();
+
+    })
+    .catch((e) => {
+      console.log("Error: " + JSON.stringify(e.message));
+      showGlobalMessage("Switching to rerank phase failed!", e.message, 10000);
+    });
+}
+
 function handleDiscardSession(viewData) {
   // Update document
   putDocumentToState(viewData);
@@ -632,8 +660,8 @@ function handleIncorrectSubmit(viewData) {
 
 function handleActionPush(viewData, chartData, queryResult) {
 
-  const frames = queryResult.frames;
-  const targetPos = queryResult.target_position;
+  const frames = queryResult ? queryResult.frames : [];
+  const targetPos = queryResult ? queryResult.target_position : "";
 
   $targetList = $("#" + viewData.elemIds.ranker.imageGrid);
   $targetList.html("");
@@ -675,14 +703,27 @@ function handleActionPush(viewData, chartData, queryResult) {
   setupSelectedKeywords(viewData);
 }
 
+function processActionPlain(){
+  processAction(null, null, null, null);
+}
+
 function processAction(queryIdx, action, operand, word)
 {
-  const reqData = {
-    aueryIdx: queryIdx,
-    action: action,
-    operand: operand,
-    word: word
+  let reqData = {
+    queryIdx: null,
+    action: null,
+    operand: null,
+    word: null
   };
+  if (queryIdx != null)
+  {
+    reqData = {
+      queryIdx: queryIdx,
+      action: action,
+      operand: operand,
+      word: word
+    };
+  }
 
   fetch("/ranker_push_search_action", {
       method: "POST",
@@ -709,6 +750,10 @@ function processAction(queryIdx, action, operand, word)
 
       // Update document
       handleActionPush(viewData, chartData, queryResult);
+
+      if (!data.searchSession.isInitial){
+        setupTargetFrameButtons(viewData);
+      }
 
     })
     .catch((e) => {
@@ -740,6 +785,7 @@ function discardSession() {
 
     viewData.ranker.searchSession = data.searchSession;
     viewData.ranker.state = data.state;
+    viewData.ranker.ui = data.ui;
 
     handleDiscardSession(viewData);
   
@@ -753,14 +799,23 @@ function discardSession() {
 function setupTargetFrameButtons(viewData)
 {
   const elem = document.getElementById(viewData.elemIds.ranker.targetFrameButtons);
+  const setNotInitElem = document.getElementById(viewData.elemIds.ranker.notInitBtn);
 
   if (viewData.ranker.state == "running") {
+
+    if (viewData.ranker.searchSession.isInitial){
+      setNotInitElem.innerHTML = `<a class="button success" onclick="setNotInit();">Search</a>`
+    } else {
+      setNotInitElem.innerHTML = ``
+    }
+
     elem.innerHTML = 
       `<a class="button" onclick="submitImage();">Give up!</a>
       <a class="button alert" onclick="discardSession();">!! DISCARD SESSION !!</a>`;
   } else {
     elem.innerHTML = 
       `<a class="button" onclick="startSearchSession(this);">Random image</a>`;
+      setNotInitElem.innerHTML = ``
   }
 
 }

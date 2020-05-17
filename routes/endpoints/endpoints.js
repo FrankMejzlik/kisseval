@@ -246,6 +246,11 @@ exports.runModelTests = function (req, res) {
       // Run test
       const result = global.imageRanker.runModelTest(10, dataPackId, optionsStr, are_native_queries, numPoints);
 
+      for (let i = 0; i < result.fx.length; ++i)
+      {
+        result.fx[i] = result.fx[i] / 100;
+      }
+
       testResultData[formId] = result;
     }
   } catch (error) {

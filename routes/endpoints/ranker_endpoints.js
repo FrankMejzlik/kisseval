@@ -35,15 +35,18 @@ exports.setModelOptions = function (req, res) {
   res.status(200).jsonp(true);
 };
 
+exports.setNotInitial = function (req, res) {
+  const sess = req.session;
+
+  SessionState.ranker_setIsInitial(sess.state, false);
+
+  res.status(200).jsonp({});
+}
+
 exports.pushSearchAction = function (req, res) {
   const sess = req.session;
   global.logger.log("debug", "<" + sess.id + ">: => pushSearchAction()");
 
-  const body = req.body;
-
-  const action = body.action;
-  const operand = body.operand;
-  const word = body.word;
 
   const searchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   const time_in_ms = Date.now() - searchSess.startTs;
@@ -52,8 +55,21 @@ exports.pushSearchAction = function (req, res) {
 
   global.logger.log("debug", "PRE: \n" + JSON.stringify(oldQueries, null, 4));
 
-  // Project action to queries
-  SessionState.ranker_processQueryAction(sess.state, 0, action, operand, word);
+  
+  const body = req.body;
+
+  let action = null;
+  let operand = null;
+  let word = null;
+
+  if (body.action) {
+    action = body.action;
+    operand = body.operand;
+    word = body.word;
+
+    // Project action to queries    
+    SessionState.ranker_processQueryAction(sess.state, 0, action, operand, word);
+  }
   const newQueries = SessionState.ranker_getUserQuery(sess.state, 0);
 
   global.logger.log("debug", "POST: \n" + JSON.stringify(newQueries, null, 4));
@@ -70,7 +86,7 @@ exports.pushSearchAction = function (req, res) {
   const currSearchSessBefore = SessionState.ranker_getCurrentSearchSession(sess.state);
   const targetFrame = currSearchSessBefore.targetFramesIds[0];
 
-  const queryResult = global.imageRanker.rankFrames(
+  let queryResult = global.imageRanker.rankFrames(
     userQuery,
     dataPackId,
     modelOptions,
@@ -82,8 +98,10 @@ exports.pushSearchAction = function (req, res) {
   // +++++++++++++++++++++++++++++++++++++++++++++
 
   // Store this action
-  const rank = queryResult.target_position;
-  SessionState.pushSearchSessionAction(sess.state, 0, action, Number(operand), Number(rank), Number(time_in_ms), word);
+  if (body.action) {
+    const rank = queryResult.target_position;
+    SessionState.pushSearchSessionAction(sess.state, 0, action, Number(operand), Number(rank), Number(time_in_ms), word);
+  }
 
   // Construct chart data
   const chartData = SessionState.getSearchSessionActionsForChart(sess.state);
@@ -92,26 +110,14 @@ exports.pushSearchAction = function (req, res) {
   const rankerUi = SessionState.ranker_getCurrentUiState(sess.state);
 
   global.logger.log("debug", "<" + sess.id + ">: Added new action...");
-  global.logger.log(
-    "debug",
-    "<" +
-      sess.id +
-      ">:" +
-      "action: " +
-      action +
-      "\n" +
-      "operand: " +
-      operand +
-      "\n" +
-      "rank: " +
-      rank +
-      "\n" +
-      "time: " +
-      time_in_ms +
-      "\n"
-  );
 
   global.logger.log("debug", "<" + sess.id + ">: <= pushSearchAction()");
+
+  const isInitial = SessionState.ranker_getIsInitial(sess.state, true);
+  if (isInitial)
+  {
+    queryResult = null;
+  }
 
   res.status(200).jsonp({
     searchSession: currSearchSess,

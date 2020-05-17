@@ -141,6 +141,7 @@ app.post("/ranker_push_search_action", rankerEndpoints.pushSearchAction);
 app.post("/ranker_start_search_session", rankerEndpoints.startSearchSession);
 app.post("/ranker_discard_search_session", rankerEndpoints.discardSearchSession);
 app.post("/ranker_submit_frame", rankerEndpoints.submitFrame);
+app.post("/ranker_set_not_initial", rankerEndpoints.setNotInitial);
 
 // Data endpoints
 app.post("/get_search_sessions_rank_progress_chart_data", dataEndpoints.getSearchSessionsRankProgressChartData);

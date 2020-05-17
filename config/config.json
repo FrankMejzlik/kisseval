@@ -16,7 +16,7 @@
         "modelOptsInfoFpth" : "c:\\Users\\frank\\source\\repos\\ImageRanker\\models_info.json",
         "dataDir" : "c:\\Users\\frank\\data\\",
 
-        "numPointsInTestResults": 100,
+        "numPointsInTestResults": 500,
 
         "annotatorSettings": {
             "autocompleteWithExamples": true,
@@ -39,7 +39,8 @@
                 "targetFrameButtons": "getRandomImageCont",
                 "queryInput": "queryInput",
                 "progressChart": "progressChart",
-                "rankerScoreChart": "rankerScoreChart"
+                "rankerScoreChart": "rankerScoreChart",
+                "notInitBtn": "notInitBtn"
             }
         }
     },

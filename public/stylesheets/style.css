@@ -286,6 +286,7 @@ body {
   
   position: relative;
   
+  list-style: none;
 }
 
 .main-image-query .main-image img {
@@ -2114,11 +2115,29 @@ list-style: none;
   position: relative;
 }
 
+.submit-cont .button {
+  background: #5bae44;
+}
+
 .menu-item.raligned 
 {
   margin-left: auto;
 }
 
+.test-result-bar>li .button:nth-child(2n)
+{
+  background: #ff7904;
+  margin-left: 1rem;
+}
+
+.test-result-bar>li .button:nth-child(2n + 1)
+{
+  background: #00a46e;
+}
+.test-block {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
 a.hinted {
   pointer-events: none;
 }
@@ -2135,4 +2154,8 @@ a.hinted {
 
 .test-block {
   position: relative;
+}
+
+.model-tests-section ul {
+  list-style: none;
 }

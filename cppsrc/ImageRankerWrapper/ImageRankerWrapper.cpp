@@ -822,7 +822,7 @@ Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInf
         for (auto&& nat_filename : keyword->m_exampleImageFilenames)
         {
           napi_value filename;
-          napi_create_string_utf8(env, nat_filename.data(), NAPI_AUTO_LENGTH, &filename);
+          napi_create_string_utf8(env, (data_pack_ID + "/" + nat_filename).data(), NAPI_AUTO_LENGTH, &filename);
 
           napi_set_element(env, value, ii, filename);
           ++ii;
@@ -847,13 +847,14 @@ Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackIn
 
   // Process arguments
   int length = info.Length();
-  if (length != 2)
+  if (length != 3)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetRandomImage)").ThrowAsJavaScriptException();
   }
 
   std::string imageset_ID = info[0].As<Napi::String>().Utf8Value();
-  size_t seqLength = info[1].As<Napi::Number>().Uint32Value();
+  std::string data_pack_ID = info[1].As<Napi::String>().Utf8Value();
+  size_t seqLength = info[2].As<Napi::Number>().Uint32Value();
 
   // Call native method
   std::vector<const SelFrame*> frames_sequence;
@@ -889,7 +890,7 @@ Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackIn
       napi_value filenameKey;
       napi_create_string_utf8(env, "filename", 8, &filenameKey);
       napi_value filename;
-      napi_create_string_utf8(env, image->m_filename.data(), image->m_filename.size(), &filename);
+      napi_create_string_utf8(env, (data_pack_ID + "/" + image->m_filename).data(), NAPI_AUTO_LENGTH, &filename);
 
       napi_set_property(env, result, filenameKey, filename);
     }
@@ -1007,7 +1008,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
       napi_value key;
       napi_create_string_utf8(env, "imageFilename", NAPI_AUTO_LENGTH, &key);
       napi_value value;
-      napi_create_string_utf8(env, g_res.frame_filename.data(), NAPI_AUTO_LENGTH, &value);
+      napi_create_string_utf8(env, (data_pack_ID + "/" + g_res.frame_filename).data(), NAPI_AUTO_LENGTH, &value);
 
       napi_set_property(env, game_result, key, value);
     }
@@ -1132,7 +1133,7 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
         napi_value key;
         napi_create_string_utf8(env, "filename", NAPI_AUTO_LENGTH, &key);
         napi_value value;
-        napi_create_string_utf8(env, filename.c_str(), NAPI_AUTO_LENGTH, &value);
+        napi_create_string_utf8(env, (data_pack_ID + "/" + filename).c_str(), NAPI_AUTO_LENGTH, &value);
 
         napi_set_property(env, single_result_dict, key, value);
       }

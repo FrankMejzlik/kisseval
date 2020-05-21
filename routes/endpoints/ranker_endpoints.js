@@ -135,10 +135,11 @@ exports.startSearchSession = function (req, res) {
   const body = req.body;
 
   const activeImgSet = SessionState.getActieImageset(sess.state);
+  const activeDataPack = SessionState.getActiveDataPackId(sess.state);
 
   let targetFramesIds = body.targetFramesIds;
   if (targetFramesIds.length == 0) {
-    targetFramesIds = global.imageRanker.getRandomFrameSequence(activeImgSet, 1);
+    targetFramesIds = global.imageRanker.getRandomFrameSequence(activeImgSet, activeDataPack, 1);
   }
 
   // Write the session

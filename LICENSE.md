@@ -1,11 +1,7 @@
-# TODO
--# Place Collector to public hosting
-    -# Protect access with password or something?
--# Validation of user input query
-    -# Detect ORs without propper parentheses
--# Connect both parts with some DB - MariaDB?
+Copyright 2020 Frantisek Mejzlik <frankmejzlik@gmail.com>
 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-bg image (CC0 Public Domain) : https://www.maxpixel.net/Neural-Network-Neural-Network-Science-Neuron-1487112
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-pictogram survey (https://pixabay.com/nl/service/license/) : https://pixabay.com/nl/vectors/enqu%C3%AAte-icon-enqu%C3%AAte-pictogram-2316468/
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

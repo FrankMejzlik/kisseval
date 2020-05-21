@@ -24,9 +24,10 @@ function processReq(req, viewData) {
   const framesSequence = SessionState.getAnnotImageSquence(sess.state);
   if (framesSequence == null) {
     const activeImgSet = SessionState.getActieImageset(sess.state);
+    const activeDataPack = SessionState.getActiveDataPackId(sess.state);
     const len = SessionState.getRandFrameSeqLength(sess.state);
 
-    const framesSequence = global.imageRanker.getRandomFrameSequence(activeImgSet, len);
+    const framesSequence = global.imageRanker.getRandomFrameSequence(activeImgSet,activeDataPack, len);
     SessionState.setAnnotImageSquence(sess.state, framesSequence);
 
     global.logger.log(

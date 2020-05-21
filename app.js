@@ -9,8 +9,6 @@ const cookieParser = require("cookie-parser");
 // const FileStore = require("session-file-store")(session);
 // const logger = require("morgan");
 
-const mysql = require("mysql");
-
 // Load global config
 const config = require("./config/config");
 config.initConfig();
@@ -32,14 +30,6 @@ const routerNotFound = require("./routes/404");
 const endpoints = require("./routes/endpoints/endpoints");
 const rankerEndpoints = require("./routes/endpoints/ranker_endpoints");
 const dataEndpoints = require("./routes/endpoints/data_endpoints");
-
-global.dbConnectionsPool = mysql.createPool({
-  host: global.gConfig.db.host,
-  port: global.gConfig.db.port,
-  user: global.gConfig.db.user,
-  password: global.gConfig.db.password,
-  database: global.gConfig.db.dbName,
-});
 
 const winston = require("winston");
 global.logger = winston.createLogger({

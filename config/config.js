@@ -20,9 +20,6 @@ exports.initConfig = function() {
   const finalConfig = moduleLodaSh.merge(defaultConfig, environmentConfig);
   const cred = require("./credentials.json");
 
-  // Load correct DB credentials
-  finalConfig.db = cred.db[finalConfig.database];
-
   // Login & auth credentials
   finalConfig.devPass = cred.devPass;
   finalConfig.authUsername = cred.authUsername;

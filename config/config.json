@@ -1,14 +1,13 @@
 {
     "development": {
-        "config_id": "development",
-        "log_all": true,
         "app_name": "KISSEval",
         "app_subname": "Keyword Interactive Search System Evaluator",
         "app_desc": "Keyword Interactive Search System Evaluator",
         "node_port": 8080,
-        "outputDir": "/output/",
-        "cacheDir": "/cache/",
-        "exportDir": "/export/",
+        "logsDir": "logs/",
+        "outputDir": "output/",
+        "cacheDir": "cache/",
+        "exportDir": "export/",
         "database": "local_dev",
         "defaultDataPack": "NasNet2019",
 
@@ -45,12 +44,9 @@
         }
     },
     "staging": {
-        "config_id": "staging",
         "node_port": 8080
     },
     "production": {
-        "config_id": "production",
-        "node_port": 8080,
-        "log_all": false
+        "node_port": 8080
     }
 }

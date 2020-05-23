@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include <napi.h>
 #include "ImageRanker.h"
 

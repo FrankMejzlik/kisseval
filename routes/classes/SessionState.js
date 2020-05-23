@@ -264,7 +264,7 @@ exports.ranker_goToState_finished = function (obj, found = false) {
   obj._ranker.searchSession.isInitial = true;
   obj._ranker.searchSession.running = false;
   obj._ranker.searchSession.endTs = Date.now();
-  obj._ranker.searchSession.duration = (obj._ranker.searchSession.endTs - obj._ranker.searchSession.startTs) ;
+  obj._ranker.searchSession.duration = obj._ranker.searchSession.endTs - obj._ranker.searchSession.startTs;
   obj._ranker.searchSession.found = found;
 };
 
@@ -300,11 +300,11 @@ exports.ranker_ui_goToState_finished = function (obj) {
 
 exports.ranker_setIsInitial = function (obj, isInitial) {
   obj._ranker.searchSession.isInitial = isInitial;
-}
+};
 
 exports.ranker_getIsInitial = function (obj) {
   return obj._ranker.searchSession.isInitial;
-}
+};
 
 exports.pushSearchSessionAction = function (obj, query_idx, action, operand, score, time_in_ms, word) {
   const act = {
@@ -314,7 +314,7 @@ exports.pushSearchSessionAction = function (obj, query_idx, action, operand, sco
     score: score,
     time: time_in_ms,
     word: word,
-    isInitial: obj._ranker.searchSession.isInitial
+    isInitial: obj._ranker.searchSession.isInitial,
   };
 
   obj._ranker.searchSession.actions.push(act);

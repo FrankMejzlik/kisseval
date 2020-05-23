@@ -14,25 +14,37 @@
   <div class="grid-x grid-padding-x">
   <div class="intro-left cell large-4">
     <h2>Query annotator</h2>
-    <p>Users are to describe randomly selected image as good as possible with provided keywords</p>
+    <p>Users are to describe randomly selected image as good as possible with available keywords.</p>
     <a href="/annotator" class="button minor">Query annotator</a>
   </div>
   <div class="intro-middle cell large-4">
     <h2>Ranker</h2>
-    <p>Goal is to find target image with keyword query and iterative query refining with keyword suggestions</p>
+    <p>Goal is to find target image using keywords and iterative query reformulations in the interactive search tool.</p>
     <a href="/ranker" class="button major">Ranker</a>
   </div>
   <div class="intro-right cell large-4">
-    <h2>Statistics</h2>
-    <p>Some important statistics based od collected data that are might be interesting for your future work</p>
-    <a href="/statistics" class="button minor">Statistics</a>
+    <h2>Evaluator mode</h2>
+    <p>More features are available after switching to evaluator mode. Evaluator password is required.</p>
+    
+    <% if (state.userLevel < 10) { %>
+    
+      <button class="button login-dev" data-open="exampleModal2">Switch to EVAL MODE</button>
+    
+    <% } else { %>
+    
+      <form class="dev-login-form" action="/switch_to_public_mode" method="POST">
+        <input type="submit" class="button success" value="Switch to public mode">
+      </form>
+    
+    <% }  %>
+
   </div>
 </section>
 <section class="contact-block grid-container text-center">
   <div class="grid-x grid-padding-x">
 
     <div class="contact-us large-12 cell">
-      <p>If you have any questions, feel free to <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#102;&#114;&#97;&#110;&#116;&#105;&#115;&#101;&#107;&#46;&#109;&#101;&#106;&#122;&#108;&#105;&#107;&#64;&#109;&#97;&#116;&#102;&#121;&#122;&#46;&#99;&#122;">contact us</a>.</p>
+      <p>In case of any problems or questions, please <A HREF="&#109;&#97;&#105;&#108;&#116;&#111;&#58;%66%72%61%6E%6B%6D%65%6A%7A%6C%69%6B%40%67%6D%61%69%6C%2E%63%6F%6D">email me</A>.</p>
     </div>
 
   </div>

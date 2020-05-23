@@ -6,8 +6,8 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-// const FileStore = require("session-file-store")(session);
-// const logger = require("morgan");
+const morgan = require("morgan");
+const fs = require("fs");
 
 // Load global config
 const config = require("./config/config");
@@ -31,27 +31,55 @@ const endpoints = require("./routes/endpoints/endpoints");
 const rankerEndpoints = require("./routes/endpoints/ranker_endpoints");
 const dataEndpoints = require("./routes/endpoints/data_endpoints");
 
-const winston = require("winston");
-global.logger = winston.createLogger({
-  level: "debug",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf((info) => {
-      return `${info.timestamp} ${info.level}: ${info.message}`;
-    })
-  ),
-  transports: [new winston.transports.Console()],
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, printf } = format;
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} ${level}: ${message}`;
 });
+
+global.logger = createLogger({
+  level: 'debug',
+  format: combine(
+    timestamp(),
+    myFormat
+  ),
+  defaultMeta: { service: 'user-service' },
+  transports: [
+    //
+    // - Write all logs with level `error` and below to `error.log`
+    // - Write all logs with level `info` and below to `combined.log`
+    //
+    new transports.Stream({ stream: fs.createWriteStream(global.gConfig.logsDir + 'error.log', {flags: 'a'}), level: 'error' }),
+    new transports.Stream({ stream: fs.createWriteStream(global.gConfig.logsDir + 'combined.log', {flags: 'a'}) }),
+  ],
+});
+
+//
+// If we're not in production then log to the `console` with the format:
+// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
+//
+if (process.env.NODE_ENV !== 'production') {
+  global.logger.add(new transports.Console({
+    format: combine(
+      timestamp(),
+      myFormat
+    ),
+  }));
+}
+
 // Instantiate app
 const app = express();
+
+app.use(morgan('common', {
+  stream: fs.createWriteStream(__dirname + "/" + global.gConfig.logsDir + '/requests.log', {flags: 'a'})
+}));
+app.use(morgan('dev'));
 
 // Setup views path
 app.set("views", path.join(__dirname, "views"));
 
 // Setup it's engine
 app.set("view engine", "ejs");
-
-// app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

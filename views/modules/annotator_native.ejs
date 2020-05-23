@@ -1,37 +1,14 @@
-<section class="main-image-query grid-container">
-  <div class="grid-x grid-padding-x align-center">
-    <div class="progerss-bar small-12 cell">
-    
-    </div>
-    
-    <div class="progerss-bar small-12 cell"style="text-align: left;">
-      <hr/>
-      <h3>Describe the image using just <strong>one English sentence</strong>.</h3>
-      <p>Examples:</p>
-      <ul>
-        <li>A tall man wearing a black jacket walking in snow in the middle of a dense forest.</li>
-        <li>A view with a huge foresty hill on the left, distant land view on the right and clear blue sky at the top.</li>
-      </ul>
-    </div>
-    <div class="main-image small-12 cell">
-      <img src="<%= "../images/"  %><%= nativeImage.filename %>" />
-    </div>
 
-    
+<form autocomplete="off" class="autocomplete-form" action="/annotator_submit_query" method="POST">
 
-    <div class="autocomplete-keywords-container small-12 cell">
-    
-      <form autocomplete="off" class="autocomplete-form" action="/annotator_submit_query" method="POST">
-
-        <div class="main-query-input-wrapper control-wrapper">
-    
-            <input type="text" id="queryInput" tabindex="1" name="query">
-    
-        </div>
-        <input type="submit" class="button success" id="sendQuery" value="Send query">
-      </form>
-
-    </div>
+  <div class="selected-keyword-container">
 
   </div>
-</section>
+
+  <div class="main-query-input-wrapper control-wrapper">
+
+      <input type="text" id="queryInput" tabindex="1" name="query">
+
+  </div>
+  <input type="submit" class="button success" id="sendQuery" value="Send query">
+</form>

@@ -34,8 +34,7 @@ exports.checkGlobalSessionState = function (req, viewData) {
     let ii = 0;
     let found = false;
     for (let pack of global.loadedDataPacksInfo) {
-      if (pack.id == global.gConfig.defaultDataPack) 
-      {
+      if (pack.id == global.gConfig.defaultDataPack) {
         found = true;
         break;
       }
@@ -43,8 +42,7 @@ exports.checkGlobalSessionState = function (req, viewData) {
       ++ii;
     }
 
-    if (!found)
-    {
+    if (!found) {
       ii = 0;
     }
 

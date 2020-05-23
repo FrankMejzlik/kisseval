@@ -1829,7 +1829,7 @@ text-align: center;
 }
 
 #targetImagesCont li {
-  position: absolute;
+  /*! position: absolute; */
 }
 
 #targetImagesCont li img {

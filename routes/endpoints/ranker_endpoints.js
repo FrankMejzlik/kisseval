@@ -41,12 +41,11 @@ exports.setNotInitial = function (req, res) {
   SessionState.ranker_setIsInitial(sess.state, false);
 
   res.status(200).jsonp({});
-}
+};
 
 exports.pushSearchAction = function (req, res) {
   const sess = req.session;
   global.logger.log("debug", "<" + sess.id + ">: => pushSearchAction()");
-
 
   const searchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   const time_in_ms = Date.now() - searchSess.startTs;
@@ -55,7 +54,6 @@ exports.pushSearchAction = function (req, res) {
 
   global.logger.log("debug", "PRE: \n" + JSON.stringify(oldQueries, null, 4));
 
-  
   const body = req.body;
 
   let action = null;
@@ -67,7 +65,7 @@ exports.pushSearchAction = function (req, res) {
     operand = body.operand;
     word = body.word;
 
-    // Project action to queries    
+    // Project action to queries
     SessionState.ranker_processQueryAction(sess.state, 0, action, operand, word);
   }
   const newQueries = SessionState.ranker_getUserQuery(sess.state, 0);
@@ -79,8 +77,12 @@ exports.pushSearchAction = function (req, res) {
 
   const userQuery = SessionState.ranker_getUserQueryStrings(sess.state);
   const dataPackId = SessionState.ranker_getDataPackId(sess.state);
+  const imagesetId = SessionState.getActieImageset(sess.state);
   const modelOptions = SessionState.ranker_getActiveModelOptions(sess.state);
-  const isNativeQuery = SessionState.ranker_getFullyNative(sess.state);
+  //const isNativeQuery = SessionState.ranker_getFullyNative(sess.state);
+
+  // Not yet supported in ranker
+  const isNativeQuery = false;
   const resultSize = global.gConfig.ranker.resultSizeLimit;
 
   const currSearchSessBefore = SessionState.ranker_getCurrentSearchSession(sess.state);
@@ -89,6 +91,7 @@ exports.pushSearchAction = function (req, res) {
   let queryResult = global.imageRanker.rankFrames(
     userQuery,
     dataPackId,
+    imagesetId,
     modelOptions,
     isNativeQuery,
     resultSize,
@@ -100,7 +103,15 @@ exports.pushSearchAction = function (req, res) {
   // Store this action
   if (body.action) {
     const rank = queryResult.target_position;
-    SessionState.pushSearchSessionAction(sess.state, 0, action, Number(operand), Number(rank), Number(time_in_ms), word);
+    SessionState.pushSearchSessionAction(
+      sess.state,
+      0,
+      action,
+      Number(operand),
+      Number(rank),
+      Number(time_in_ms),
+      word
+    );
   }
 
   // Construct chart data
@@ -114,8 +125,7 @@ exports.pushSearchAction = function (req, res) {
   global.logger.log("debug", "<" + sess.id + ">: <= pushSearchAction()");
 
   const isInitial = SessionState.ranker_getIsInitial(sess.state, true);
-  if (isInitial)
-  {
+  if (isInitial) {
     queryResult = null;
   }
 
@@ -148,7 +158,7 @@ exports.startSearchSession = function (req, res) {
   const currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state, targetFramesIds);
   const ssState = SessionState.ranker_getState(sess.state);
   const rankerUi = SessionState.ranker_getCurrentUiState(sess.state);
-  
+
   global.logger.log("debug", "<" + sess.id + ">: currentSearchSession:" + JSON.stringify(currSearchSess, null, 4));
   global.logger.log("debug", "<" + sess.id + ">: currentSearchSession STATE:" + ssState);
 
@@ -156,7 +166,7 @@ exports.startSearchSession = function (req, res) {
   res.status(200).jsonp({
     searchSession: currSearchSess,
     state: ssState,
-    ui: rankerUi
+    ui: rankerUi,
   });
 };
 
@@ -171,13 +181,12 @@ exports.discardSearchSession = function (req, res) {
   let currSearchSess = SessionState.ranker_getCurrentSearchSession(sess.state);
   let ssState = SessionState.ranker_getState(sess.state);
   const rankerUi = SessionState.ranker_getCurrentUiState(sess.state);
-  
 
   global.logger.log("debug", "<" + sess.id + ">: <= discardSearchSession()");
   res.status(200).jsonp({
     searchSession: currSearchSess,
     state: ssState,
-    ui: rankerUi
+    ui: rankerUi,
   });
 };
 
@@ -248,7 +257,8 @@ exports.getFrameDetailData = function (req, res) {
   global.logger.log("debug", "<" + sess.id + ">: => startSearchSession()");
 
   const frameId = Number(req.query.frameId);
-  const dataPackId = SessionState.ranker_getDataPackId(sess.state);
+  const imagesetId = SessionState.ranker_getDataPackId(sess.state);
+  const dataPackId = SessionState.getActieImageset(sess.state);
   const modelOptions = SessionState.ranker_getActiveModelOptions(sess.state);
   const withExampleFrames = true;
   const accumulated = false;
@@ -258,6 +268,7 @@ exports.getFrameDetailData = function (req, res) {
   const frameData = global.imageRanker.getFrameDetailData(
     frameId,
     dataPackId,
+    imagesetId,
     modelOptions,
     withExampleFrames,
     accumulated

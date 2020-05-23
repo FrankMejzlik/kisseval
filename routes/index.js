@@ -1,7 +1,7 @@
 "use strict";
 
 const express = require("express");
-// eslint-disable-next-line new-cap
+
 const router = express.Router();
 
 const stateCheck = require("./common/state_checkers");
@@ -29,15 +29,14 @@ function postProcessReq(req, viewData) {
 router.get("/", function (req, res, next) {
   const viewData = stateCheck.initRequest(req);
 
-  global.logger.log("debug", "Route: " + routeSettings.slug);
+  global.logger.log("debug", `<${req.session.id}> ROUTER = : " + ${routeSettings.slug}`);
 
   // Main request cycle
   preProcessReq(req, viewData);
   processReq(req, viewData);
   postProcessReq(req, viewData);
 
-  console.log("");
-  console.log(JSON.stringify(viewData));
+  global.logger.log("silly", `<${req.session.id}>viewData = ${JSON.stringify(viewData, null, 4)}`);
 
   // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);

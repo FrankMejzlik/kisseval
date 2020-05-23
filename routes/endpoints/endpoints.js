@@ -4,30 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SessionState = require("../classes/SessionState");
-
-let prefixCache = [];
-
-function writePrefixCache(kwDataType) {
-  const origArr = prefixCache;
-  prefixCache = [];
-
-  const today = new Date();
-  const todayString = String(today.getDate()) + "-" + String(today.getMonth()) + "-" + String(today.getFullYear());
-
-  const filepath = path.join(
-    global.rootDir,
-    global.gConfig.outputDir + "/autocomplete/" + todayString + "." + kwDataType + ".log"
-  );
-
-  const file = fs.createWriteStream(filepath, { flags: "a" });
-  file.on("error", function (err) {
-    return;
-  });
-  origArr.forEach(function (v) {
-    file.write(v + "\n");
-  });
-  file.end();
-}
+const rankerEndpoints = require("./ranker_endpoints");
 
 exports.setActiveDataPack = function (req, res) {
   const sess = req.session;
@@ -54,6 +31,8 @@ exports.setActiveDataPack = function (req, res) {
     "<" + req.session.id + "> \n" + "Active data pack change failed. Pack '" + newDataPackId + "' not found."
   );
 
+  rankerEndpoints.discardSearchSession(req, res);
+
   res.jsonp(false);
 };
 
@@ -68,6 +47,7 @@ exports.getAutocompleteResults = function (req, res) {
 
   // Get active settings from the current session
   const activeDataPackId = SessionState.getActiveDataPackId(sess.state);
+  const activeImagesetId = SessionState.getActieImageset(sess.state);
 
   let modelOptions = SessionState.getActiveDataPackModelOptions(sess.state);
   if (isRanker) {
@@ -95,6 +75,7 @@ exports.getAutocompleteResults = function (req, res) {
 
   const nearKeywords = global.imageRanker.getAutocompleteResults(
     activeDataPackId,
+    activeImagesetId,
     prefix,
     numResults,
     withExImgs,
@@ -112,11 +93,6 @@ exports.getAutocompleteResults = function (req, res) {
       "\n\t nearKeywords[0] = " +
       (nearKeywords.length > 0 ? JSON.stringify(nearKeywords[0]) : null)
   );
-
-  prefixCache.push("<" + String(sess.id) + ">:" + prefix);
-  if (prefixCache.length > 100) {
-    writePrefixCache(kwDataType);
-  }
 
   // Send response
   res.jsonp(nearKeywords);
@@ -149,45 +125,49 @@ exports.submitAnnotatorQuery = function (req, res) {
   const activeDataPackId = SessionState.getActiveDataPackId(sess.state);
   const activeModelOptions = SessionState.getActiveDataPackModelOptions(sess.state);
 
-  let keywordIds = req.body.keyword;
-  // Make sure it's an array
-  if (!Array.isArray(keywordIds)) {
-    keywordIds = [keywordIds];
-  }
-
-  let queryStrings = req.body.keywordWord;
-
-  // Make sure it's an array
-  if (!Array.isArray(queryStrings)) {
-    queryStrings = [queryStrings];
-  }
-
   const fullyNative = SessionState.getAnnotFullyNative(sess.state);
   const withExampleImages = SessionState.getAnnotWithExampleImages(sess.state);
 
   // \todo User level is to be dynamic if made public
   const userLevel = 10;
 
-  // Encode queries propperly (only for non-fully native queries)
   let encodedQuery = "";
   let readableQuery = "";
-  if (!fullyNative) {
-    // Query with IDs
-    encodedQuery += "&";
-    for (const kwId of keywordIds) {
-      encodedQuery += "-";
-      encodedQuery += kwId;
-      encodedQuery += "+";
+  if (req.body.query) {
+    encodedQuery = req.body.query;
+    readableQuery = req.body.query;
+  } else {
+    let keywordIds = req.body.keyword;
+    // Make sure it's an array
+    if (!Array.isArray(keywordIds)) {
+      keywordIds = [keywordIds];
     }
 
-    // Readable query
-    let i = 0;
-    for (const word of queryStrings) {
-      readableQuery += word;
-      if (i < queryStrings.length - 1) {
-        readableQuery += " && ";
+    let queryStrings = req.body.keywordWord;
+
+    // Make sure it's an array
+    if (!Array.isArray(queryStrings)) {
+      queryStrings = [queryStrings];
+    }
+
+    if (!fullyNative) {
+      // Query with IDs
+      encodedQuery += "&";
+      for (const kwId of keywordIds) {
+        encodedQuery += "-";
+        encodedQuery += kwId;
+        encodedQuery += "+";
       }
-      ++i;
+
+      // Readable query
+      let i = 0;
+      for (const word of queryStrings) {
+        readableQuery += word;
+        if (i < queryStrings.length - 1) {
+          readableQuery += " && ";
+        }
+        ++i;
+      }
     }
   }
 
@@ -246,8 +226,7 @@ exports.runModelTests = function (req, res) {
       // Run test
       const result = global.imageRanker.runModelTest(10, dataPackId, optionsStr, are_native_queries, numPoints);
 
-      for (let i = 0; i < result.fx.length; ++i)
-      {
+      for (let i = 0; i < result.fx.length; ++i) {
         result.fx[i] = result.fx[i] / 100;
       }
 

@@ -3,15 +3,42 @@
 
 <section class="page-header-section">
   <div class="grid-x grid-padding-x align-center grid-container">
-
     <div class="page-header large-12 cell text-center">
       <h1>Tester</h1>
+    </div>
+
+    <div class="good-vals large-4 cell text-center">
+      <h2>Good threshold values:</h2>
+      <h3>NASNet:</h3>
+      <h4>LINEAR:</h4>
+      Boolean threshold ~ 0.000598
+
+      <h4>SOFTMAX:</h4>
+      Boolean threshold ~ 0.000024
+
+      <h3>GoogLeNet:</h3>
+      <h4>LINEAR:</h4>
+      Boolean threshold ~ 0.00065
+
+      <h4>SOFTMAX:</h4>
+      Boolean threshold ~ 0.000024
+
+      <h3>Google Vision AI:</h3>
+      <h4>LINEAR:</h4>
+      Boolean threshold ~ 0.005
+
+      <h4>SOFTMAX:</h4>
+      Boolean threshold ~ 0.0002
+    </div>
+    
+    <div class="large-8 cell text-center">
+      <%- include tests.ejs %>
     </div>
 
   </div>
 </section>
 
-<%- include tests.ejs %>
+
 
 <!-- Include footer -->
 <%- include common/footer.ejs %>

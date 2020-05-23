@@ -13,6 +13,11 @@
   height: 0;
 }
 
+li.tabs-title:nth-child(2)
+{
+  display: none;
+}
+
 /* The slider */
 .slider {
   position: absolute;
@@ -92,6 +97,10 @@ body {
 .not-data-warning p {
   font-size: 22px;
   color: #d91400;
+}
+
+.page-header {
+  padding: 2rem 1rem 2rem 1rem;
 }
 
 .hidden {
@@ -2026,6 +2035,10 @@ list-style: none;
   background-color: #97d6d580;
 }
 
+.test-block > h2 {
+  display: none;
+}
+
 .test-block .medium-3{
   padding-left: 10px;
   padding-right: 10px;
@@ -2122,6 +2135,22 @@ list-style: none;
 .menu-item.raligned 
 {
   margin-left: auto;
+}
+
+.good-vals {
+  text-align:left;
+}
+
+.good-vals h4 {
+  font-size: 18px;
+  margin-bottom: 0;
+  margin-top: 0rem;
+}
+
+.good-vals h3 {
+  font-size: 22px;
+  margin-bottom: 0;
+  margin-top: 1rem;
 }
 
 .test-result-bar>li .button:nth-child(2n)

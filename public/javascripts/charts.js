@@ -2,7 +2,7 @@
  * Chart plots
  */
 // 64 distinct colours
-const numDistinctColours = 64;
+const numDistinctColours2 = 64;
 const distinctColours = [
   "#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941", "#006FA6", "#A30059",
   "#FFDBE5", "#7A4900", "#0000A6", "#63FFAC", "#B79762", "#004D43", "#8FB0FF", "#997D87",
@@ -192,7 +192,7 @@ function plotTestChart(chartElem, returnedDataArray)
     
       const returnedData = returnedDataArray[key];
 
-      const colourIndex = i % numDistinctColours;
+      const colourIndex = i % numDistinctColours2;
       const borderColor = distinctColours[colourIndex];
 
       let data = [];

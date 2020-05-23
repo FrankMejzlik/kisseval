@@ -299,7 +299,7 @@ if (state.userLevel  >= 10) { %>
             autoSkip: true,
             min: 0,
             // \todo make dynamic
-            suggestedMax: 20000,
+            suggestedMax: <%=ranker.numFrames%>,
             // Return an empty string to draw the tick line but hide the tick label
             // Return `null` or `undefined` to hide the tick line entirely
             maxTicksLimit: 10,

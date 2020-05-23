@@ -257,8 +257,8 @@ exports.getFrameDetailData = function (req, res) {
   global.logger.log("debug", "<" + sess.id + ">: => startSearchSession()");
 
   const frameId = Number(req.query.frameId);
-  const imagesetId = SessionState.ranker_getDataPackId(sess.state);
-  const dataPackId = SessionState.getActieImageset(sess.state);
+  const dataPackId = SessionState.ranker_getDataPackId(sess.state);
+  const imagesetId = SessionState.getActieImageset(sess.state);
   const modelOptions = SessionState.ranker_getActiveModelOptions(sess.state);
   const withExampleFrames = true;
   const accumulated = false;

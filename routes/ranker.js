@@ -66,7 +66,12 @@ router.get("/", function (req, res, next) {
 
   // Add also model options
   const pack_type = SessionState.getActiveDataPackType(req.session.state);
+  const pack_ID = SessionState.getActiveDataPackId(req.session.state);
+  const pack = SessionState.getActiveDataPack(pack_ID);
   viewData.modelOptions = modelOptions[pack_type].options;
+  viewData.ranker.numFrames = pack.num_frames;
+
+  
 
   // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);

@@ -21,6 +21,7 @@ exports.setActiveDataPack = function (req, res) {
         "debug",
         "<" + req.session.id + "> \n" + "Active data pack changed to  '" + newDataPackId + "'"
       );
+      rankerEndpoints.discardSearchSession(req, res);
       res.jsonp(true);
       return;
     }
@@ -30,9 +31,7 @@ exports.setActiveDataPack = function (req, res) {
     "debug",
     "<" + req.session.id + "> \n" + "Active data pack change failed. Pack '" + newDataPackId + "' not found."
   );
-
-  rankerEndpoints.discardSearchSession(req, res);
-
+  
   res.jsonp(false);
 };
 

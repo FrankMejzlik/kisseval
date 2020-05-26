@@ -7,6 +7,7 @@ data/*
 .vs/
 output/
 public/images/*
+!public/images/generic/
 !public/images/ITECTiny2019/
 !public/images/thumbs/
 public/images/thumbs/*

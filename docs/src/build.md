@@ -3,6 +3,7 @@
 @section build_prereq Prerequisites
 - [GIT](https://git-scm.com/)
 - [nodeJS](https://nodejs.org/en/) v (v12 or higher)
+- [Python 3](https://www.python.org/download/releases/3.0/)
 - C++ compiler complying with the C++17 standard
     - Tested with [MSVC v141, v142](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and [GCC 8.4](https://gcc.gnu.org/)
 

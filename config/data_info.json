@@ -1,7 +1,7 @@
 {
     "imagesets": [
         {
-            "active": true,
+            "active": false,
             "ID": "V3C1_20k",
             "name": "V3C1_20k",
             "description": "Subset of V31C dataset, every 50th selected frame.",

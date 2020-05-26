@@ -119,7 +119,7 @@ const imageRanker = require(path.join(
   "build/Release/image_ranker.node"
 ));
 
-const dataInfoFpth = path.join(global.rootDir, global.gConfig.modelOptsInfoFpth);
+const dataInfoFpth = path.join(global.rootDir, global.gConfig.dataInfoFpth);
 const dataDir = path.join(global.rootDir, global.gConfig.dataDir);
 
 global.logger.log("debug", "process.env = '" + process.env["NODE_ENV"] + "'");

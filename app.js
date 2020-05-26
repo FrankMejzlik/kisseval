@@ -49,8 +49,8 @@ global.logger = createLogger({
     // - Write all logs with level `error` and below to `error.log`
     // - Write all logs with level `info` and below to `combined.log`
     //
-    new transports.Stream({ stream: fs.createWriteStream(global.gConfig.logsDir + 'error.log', {flags: 'a'}), level: 'error' }),
-    new transports.Stream({ stream: fs.createWriteStream(global.gConfig.logsDir + 'combined.log', {flags: 'a'}) }),
+    new transports.Stream({ stream: fs.createWriteStream(global.gConfig.logsDir + 'error.log', {flags: 'a+'}), level: 'error' }),
+    new transports.Stream({ stream: fs.createWriteStream(global.gConfig.logsDir + 'combined.log', {flags: 'a+'}) }),
   ],
 });
 
@@ -71,7 +71,7 @@ if (process.env.NODE_ENV !== 'production') {
 const app = express();
 
 app.use(morgan('common', {
-  stream: fs.createWriteStream(__dirname + "/" + global.gConfig.logsDir + '/requests.log', {flags: 'a'})
+  stream: fs.createWriteStream(__dirname + "/" + global.gConfig.logsDir + '/requests.log', {flags: 'a+'})
 }));
 app.use(morgan('dev'));
 

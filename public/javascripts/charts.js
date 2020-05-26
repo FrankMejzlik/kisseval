@@ -119,7 +119,7 @@ const chartSettings = {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: "Number of images",
+            labelString: "Percentage of solved queries",
           },
         },
       ],

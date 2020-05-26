@@ -7,19 +7,30 @@
     <div class="page-title small-12 cell text-center">
       <h1>Statistics</h1>
       <h2>for data pack <strong><%= state.activeDataPackId %></h2></strong>
-      <h5>Change them over there &#8594</h5>
+      <h5>Change it over there &#8594</h5>
     </div>
 
   </div>
 </section>
 
 <section class="search-session-progresss-section">
+  <div class="grid-x grid-padding-x align-center grid-container">
+    <div class="page-title small-12 cell text-center">
+      <h2>Search session progress data</h2>
+    </div>
+  </div>
   <%- include ./forms/get_search_session_rank_progress_chart_data.ejs %>
 </section>
-
+<hr/>
 <section class="search-session-progresss-section">
+  <div class="grid-x grid-padding-x align-center grid-container">
+    <div class="page-title small-12 cell text-center">
+      <h2>User top-n label usage histograms</h2>
+    </div>
+  </div>
   <%- include ./forms/get_label_hisograms.ejs %>
 </section>
+
 
 <!-- Include footer -->
 <%- include common/footer.ejs %>

@@ -278,17 +278,16 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
 
   // Process arguments
   int length = info.Length();
-  if (length != 6)
+  if (length != 5)
   {
     Napi::TypeError::New(env, "Wrong number of parameters (ImageRankerWrapper::GetImageKeywordsForInteractiveSearch)").ThrowAsJavaScriptException();
   }
 
   std::string data_pack_ID = info[0].As<Napi::String>().Utf8Value();
-  std::string imageset_ID = info[1].As<Napi::String>().Utf8Value();
-  std::string model_options = info[2].As<Napi::String>().Utf8Value();
-  size_t max_user_level = info[3].As<Napi::Number>().Uint32Value();
-  size_t min_samples = info[4].As<Napi::Number>().Uint32Value();
-  bool normalize = info[5].As<Napi::Boolean>().Value();
+  std::string model_options = info[1].As<Napi::String>().Utf8Value();
+  size_t max_user_level = info[2].As<Napi::Number>().Uint32Value();
+  size_t min_samples = info[3].As<Napi::Number>().Uint32Value();
+  bool normalize = info[4].As<Napi::Boolean>().Value();
 
   // Call native method
   SearchSessRankChartData chart_data{};

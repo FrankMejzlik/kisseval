@@ -31,7 +31,7 @@ exports.setActiveDataPack = function (req, res) {
     "debug",
     "<" + req.session.id + "> \n" + "Active data pack change failed. Pack '" + newDataPackId + "' not found."
   );
-  
+
   res.jsonp(false);
 };
 

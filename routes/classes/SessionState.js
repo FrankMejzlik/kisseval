@@ -34,8 +34,7 @@ exports.construct = function (dataPack, modelOptions, dataPackType, imagesetId, 
   };
 };
 
-exports.getActiveDataPack = function(ID)
-{
+exports.getActiveDataPack = function (ID) {
   let is = null;
 
   for (let pack of global.loadedDataPacksInfo) {
@@ -45,7 +44,7 @@ exports.getActiveDataPack = function(ID)
     }
   }
   return is;
-}
+};
 
 exports.setActieDataPack = function (obj, dataPackId, modelOpts, packType) {
   obj._active_data_pack_ID = dataPackId;

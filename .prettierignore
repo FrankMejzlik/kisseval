@@ -5,6 +5,6 @@ data2
 .vscode
 .vs
 output
-public
+public/images
 public/export
 cppsrc

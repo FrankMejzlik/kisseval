@@ -1673,6 +1673,20 @@ input[type=submit] {
   background-color: #ff5656;
 }
 
+#notInitBtn .button {
+  margin: 0.3rem 0rem;
+  width: 100%;
+  background: #6bbb34;
+  font-size: 20px;
+}
+
+#notInitBtn .button:hover,
+#notInitBtn .button:active{
+  margin: 0.3rem 0rem;
+  width: 100%;
+  background: #72d72e;
+  font-size: 20px;
+}
 
 .what-are-data-for .t1 {
   font-size: 21px;

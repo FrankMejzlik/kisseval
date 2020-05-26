@@ -71,8 +71,6 @@ router.get("/", function (req, res, next) {
   viewData.modelOptions = modelOptions[pack_type].options;
   viewData.ranker.numFrames = pack.num_frames;
 
-  
-
   // Resolve and render dedicated template
   res.render(routeSettings.slug, viewData);
 });

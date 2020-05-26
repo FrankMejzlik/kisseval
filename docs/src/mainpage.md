@@ -6,7 +6,7 @@ KISSEval is a web-based application that allows the user to explore, evaluate an
 KISSEval as a whole consists of this NodeJS server that serves mostly as GUI and the evaluation library ([ImageRanker](https://gitlab.mff.cuni.cz/mejzlikf/imageranker)) written in C++ that is used by nodeJS as a native addon. In addition it also needs some data in specific formats to work with. 
 
 # Online running version
-We also provide an [online running version](http://herkules.ms.mff.cuni.cz:8080) (with 4 data packs) that is available after authentication. For authentication credentials, please use credentials found inside the README.md file in the official [repository](https://gitlab.mff.cuni.cz/mejzlikf/imagerankerapp). If you don't have access to the MFF GitLab, please email me at <devfrankmejzlik@gmail.com>.
+We also provide an [online running version](http://herkules.ms.mff.cuni.cz:8080) (with 4 data packs) that is available after authentication. For authentication credentials, please use credentials found inside the README.md file in the official [repository](https://gitlab.mff.cuni.cz/mejzlikf/imagerankerapp). If you don't have access to the MFF GitLab, please email me at <frankmejzlik@gmail.com>.
 
 # Getting started & building
 Please see \ref getting_started and \ref build pages.
@@ -22,7 +22,7 @@ Please see \ref getting_started and \ref build pages.
 
 
 # License
-Copyright 2020 Frantisek Mejzlik <devfrankmejzlik@gmail.com>
+Copyright 2020 Frantisek Mejzlik <frankmejzlik@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

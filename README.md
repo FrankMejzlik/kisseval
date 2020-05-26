@@ -3,7 +3,7 @@ KISSEval is a web-based application that allows the user to explore, evaluate an
 
 KISSEval as a whole consists of this Node.js server that serves mostly as GUI and the evaluation library ([ImageRanker](https://gitlab.mff.cuni.cz/mejzlikf/imageranker)) written in C++ that is used by Node.js as a native addon. In addition, it also needs some data in specific formats to work with. 
 
-## Online running version
+## Online running version [HERE](http://herkules.ms.mff.cuni.cz:8080)
 The full version with all the data and extracted data packs is available at [http://herkules.ms.mff.cuni.cz:8080](http://herkules.ms.mff.cuni.cz:8080).
 
 ### Access credentials
@@ -23,7 +23,7 @@ Password: **Xe5yHH9NdxLXyELt**
 
 
 ## Build
-Now that you have Node.js and C++ compiler ready alongside with data files correctly set up in the `data_config.json` file it is time to building the application.
+Now that you have Node.js and C++ compiler ready it is time to build the application.
 
 ```
 # Clone (with submodules) from the online repository
@@ -49,3 +49,5 @@ npm run start
 Once the application is initialized you can go to `http://localhost:8080` to start using the app.
 
 Congratulations, now you should have KISSEval running with tiny ITEC dataset in action. 
+
+By defalt access credentials are "admin" for both username and password and password for switching to eval mode is "eval". This can be changed in `./config/credentials.json`.

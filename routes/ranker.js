@@ -1,12 +1,12 @@
 "use strict";
 
 const express = require("express");
-// eslint-disable-next-line new-cap
 const router = express.Router();
+const path = require("path");
 
 const SessionState = require("./classes/SessionState");
 const stateCheck = require("./common/state_checkers");
-const modelOptions = require(global.gConfig.modelOptsInfoFpth);
+const modelOptions = require(path.join(global.rootDir, global.gConfig.modelOptsInfoFpth));
 
 /** Specific route settings. */
 const routeSettings = {

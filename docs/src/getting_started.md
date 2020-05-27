@@ -30,7 +30,7 @@ ImageRankerApp/
 └── views/                          // Client-side EJS templates
 @endcode
 
-@section Future work
+@section fut_work Future work
 - Make it asynchronous with parallel requests to the library (so main thread isn't blocked with every request).
     - Not (yet) needed since usually just very few users are using it at the same time and sequential processing is sufficient.
 - Use propper modern front-end framework like React or Vue.js

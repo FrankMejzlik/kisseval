@@ -10,12 +10,13 @@ exports.setActiveDataPack = function (req, res) {
   const sess = req.session;
 
   const newDataPackId = req.body.dataPackId;
-
+  
   // Find this pack and check if it's loaded
   for (const pack of global.loadedDataPacksInfo) {
     if (pack.id == newDataPackId) {
       // Set new state
       SessionState.setActieDataPack(sess.state, pack.id, pack.model_options, pack.description);
+      SessionState.setActieImageset(sess.state, pack.target_imageset_ID);
 
       global.logger.log(
         "debug",
@@ -23,7 +24,6 @@ exports.setActiveDataPack = function (req, res) {
       );
       rankerEndpoints.discardSearchSession(req, res);
       res.jsonp(true);
-      return;
     }
   }
 

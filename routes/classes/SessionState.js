@@ -178,6 +178,20 @@ exports.ranker_getUserQueryStrings = function (obj) {
   return res;
 };
 
+exports.ranker_getUserQueryStringsNative = function (obj) {
+  const q1 = obj._ranker.ui.queryWords;
+
+  let res = [];
+  // \todo Make temporal
+  let queryStr = "";
+  for (let w of q1) {
+    queryStr +=  w + " ";
+  }
+  res.push(queryStr);
+
+  return res;
+};
+
 exports.ranker_setFullyNative = function (obj, newValue) {
   obj._ranker._fullyNative = newValue;
 };
@@ -233,7 +247,7 @@ exports.ranker_processQueryAction = function (obj, queryIdx, action, kw_ID, word
  */
 exports.ranker_goToState_nosess = function (obj) {
   obj._ranker = {
-    _fullyNative: false,
+    _fullyNative: obj._ranker._fullyNative,
     activeDataPackId: obj._active_data_pack_ID,
     activeModelOptions: obj._ranker.activeModelOptions,
     ui: {

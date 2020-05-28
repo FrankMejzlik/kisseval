@@ -10,7 +10,6 @@
                 "ImageRanker/ImageRanker/src/KeywordsContainer.cpp",
                 "ImageRanker/ImageRanker/src/Database.cpp",
                 "ImageRanker/ImageRanker/src/DataManager.cpp",
-                "ImageRanker/ImageRanker/src/GridTest.cpp",
                 "ImageRanker/ImageRanker/src/FileParser.cpp",
                 "ImageRanker/ImageRanker/src/SimUser.cpp",
                 "ImageRanker/ImageRanker/src/data_packs/VIRET_based/ViretDataPack.cpp",
@@ -36,7 +35,6 @@
                 "ImageRanker/ImageRanker/src/data_packs/",
                 "ImageRanker/ImageRanker/src/transformations/",
                 "ImageRanker/ImageRanker/src/ranking_models/",
-                "ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/include/",
                 "ImageRanker/ImageRanker/external/json",
                 "ImageRanker/ImageRanker/external/sqlite/"
             ],
@@ -68,7 +66,6 @@
                         "architecture": "i386",
                         "link_settings": {
                             "libraries": [
-                                "-lmariadb",
                                 "-L/usr/lib64/"
                             ],
                             "configurations": {
@@ -91,7 +88,6 @@
                     {
                         "link_settings": {
                             "libraries": [
-                                "-lmariadbclient.lib",
                                 "-lWs2_32.lib",
                                 "-lShlwapi.lib"
                             ]
@@ -99,12 +95,16 @@
                         "configurations": {
                             "Debug": {
                                 "msvs_settings": {
-                                    "VCLinkerTool": {
-                                        "AdditionalLibraryDirectories": [
-                                            "../../../cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/lib/"
-                                        ],
+                                    "VCCLCompilerTool": {
                                         "AdditionalOptions": [
                                             "/MP /EHsc"
+                                        ]
+                                    },
+                                    "VCLinkerTool": {
+                                        "AdditionalLibraryDirectories": [
+                                        ],
+                                        "AdditionalOptions": [
+                                            
                                         ]
                                     }
                                 }
@@ -132,7 +132,6 @@
                                         "EnableCOMDATFolding": 2,
                                         "LinkIncremental": 1,
                                         "AdditionalLibraryDirectories": [
-                                            "../../../cppsrc/ImageRankerWrapper/ImageRanker/ImageRanker/external/MariaDB_Connector_C_64-bit/lib/"
                                         ]
                                     }
                                 }

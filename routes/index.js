@@ -29,7 +29,7 @@ function postProcessReq(req, viewData) {
 router.get("/", function (req, res, next) {
   const viewData = stateCheck.initRequest(req);
 
-  global.logger.log("debug", `<${req.session.id}> ROUTER = : " + ${routeSettings.slug}`);
+  global.logger.log("debug", `<${req.session.id}> ROUTER = + '${routeSettings.slug}'`);
 
   // Main request cycle
   preProcessReq(req, viewData);

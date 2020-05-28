@@ -14,16 +14,16 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports)
   Napi::HandleScope scope(env);
 
   Napi::Function func = DefineClass(env, "ImageRankerWrapper", {
-    InstanceMethod("getLoadedDataPacksInfo", &ImageRankerWrapper::get_loaded_data_packs_info), 
-    InstanceMethod("getAutocompleteResults", &ImageRankerWrapper::get_autocomplete_results), 
-    InstanceMethod("getRandomFrameSequence", &ImageRankerWrapper::get_random_frame_sequence), 
-    InstanceMethod("submitAnnotatorUserQueries", &ImageRankerWrapper::submit_annotator_user_queries), 
-    InstanceMethod("rankFrames", &ImageRankerWrapper::rank_frames), 
+    InstanceMethod("getLoadedDataPacksInfo", &ImageRankerWrapper::get_loaded_data_packs_info),
+    InstanceMethod("getAutocompleteResults", &ImageRankerWrapper::get_autocomplete_results),
+    InstanceMethod("getRandomFrameSequence", &ImageRankerWrapper::get_random_frame_sequence),
+    InstanceMethod("submitAnnotatorUserQueries", &ImageRankerWrapper::submit_annotator_user_queries),
+    InstanceMethod("rankFrames", &ImageRankerWrapper::rank_frames),
     InstanceMethod("runModelTest", &ImageRankerWrapper::run_model_test),
-    InstanceMethod("submitSearchSession", &ImageRankerWrapper::submit_search_session), 
-    InstanceMethod("getFrameDetailData", &ImageRankerWrapper::get_frame_detail_data),                                                  
-    InstanceMethod("getSearchSessionsRnkProgressCharData", &ImageRankerWrapper::get_search_sessions_rank_progress_chart_data), 
-    InstanceMethod("getHistogramUsedLabels", &ImageRankerWrapper::get_histogram_used_labels)});
+    InstanceMethod("submitSearchSession", &ImageRankerWrapper::submit_search_session),
+    InstanceMethod("getFrameDetailData", &ImageRankerWrapper::get_frame_detail_data),
+    InstanceMethod("getSearchSessionsRnkProgressCharData", &ImageRankerWrapper::get_search_sessions_rank_progress_chart_data),
+    InstanceMethod("getHistogramUsedLabels", &ImageRankerWrapper::get_histogram_used_labels) });
 
   constructor = Napi::Persistent(func);
   constructor.SuppressDestruct();
@@ -33,7 +33,7 @@ Napi::Object ImageRankerWrapper::Init(Napi::Env env, Napi::Object exports)
   return exports;
 }
 
-ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo &info) : Napi::ObjectWrap<ImageRankerWrapper>(info)
+ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo& info) : Napi::ObjectWrap<ImageRankerWrapper>(info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -55,13 +55,13 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo &info) : Napi::O
   std::string data_dir = info[1].As<Napi::String>().Utf8Value();
 
   ImageRanker::Config cfg =
-      ImageRanker::parse_data_config_file(ImageRanker::eMode::cFullAnalytical, data_info_fpth, data_dir);
+    ImageRanker::parse_data_config_file(ImageRanker::eMode::cFullAnalytical, data_info_fpth, data_dir);
 
   try
   {
     this->actualClass_ = new ImageRanker(cfg);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -69,7 +69,7 @@ ImageRankerWrapper::ImageRankerWrapper(const Napi::CallbackInfo &info) : Napi::O
   LOGI("ImageRanker initialized.");
 }
 
-Napi::Value ImageRankerWrapper::submit_search_session(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::submit_search_session(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -95,7 +95,7 @@ Napi::Value ImageRankerWrapper::submit_search_session(const Napi::CallbackInfo &
   std::vector<InteractiveSearchAction> actions;
 
   Napi::Array actionsArray = info[8].As<Napi::Array>();
-  for (size_t k{0_z}; k < actionsArray.Length(); k++)
+  for (size_t k{ 0_z }; k < actionsArray.Length(); k++)
   {
     Napi::Value val = actionsArray[k];
     Napi::Object dict = val.As<Napi::Object>();
@@ -108,16 +108,16 @@ Napi::Value ImageRankerWrapper::submit_search_session(const Napi::CallbackInfo &
     size_t time = dict.Get("time").As<Napi::Number>().Uint32Value();
     bool is_initial = dict.Get("isInitial").As<Napi::Boolean>().Value();
 
-    actions.emplace_back(InteractiveSearchAction{query_idx, action, operand, operand_readable, final_rank, time, is_initial});
+    actions.emplace_back(InteractiveSearchAction{ query_idx, action, operand, operand_readable, final_rank, time, is_initial });
   }
 
   // Call native method
   try
   {
     this->actualClass_->submit_search_session(
-        data_pack_ID, model_commands, user_level, with_example_images, target_frame_ID, eSearchSessionEndStatus(found), duration, session_ID, actions);
+      data_pack_ID, model_commands, user_level, with_example_images, target_frame_ID, eSearchSessionEndStatus(found), duration, session_ID, actions);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -125,7 +125,7 @@ Napi::Value ImageRankerWrapper::submit_search_session(const Napi::CallbackInfo &
   return Napi::Object();
 }
 
-Napi::Value ImageRankerWrapper::get_frame_detail_data(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::get_frame_detail_data(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -149,9 +149,9 @@ Napi::Value ImageRankerWrapper::get_frame_detail_data(const Napi::CallbackInfo &
   try
   {
     frame_detail_data = this->actualClass_->get_frame_detail_data(
-        frame_ID, data_pack_ID, model_options, with_example_frames, accumulated);
+      frame_ID, data_pack_ID, model_options, with_example_frames, accumulated);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -211,8 +211,8 @@ Napi::Value ImageRankerWrapper::get_frame_detail_data(const Napi::CallbackInfo &
     napi_value kws_arr;
     napi_create_array(env, &kws_arr);
     {
-      size_t i{0_z};
-      for (auto &&p_kw : frame_detail_data.top_keywords)
+      size_t i{ 0_z };
+      for (auto&& p_kw : frame_detail_data.top_keywords)
       {
         napi_value pair;
         napi_create_object(env, &pair);
@@ -232,7 +232,7 @@ Napi::Value ImageRankerWrapper::get_frame_detail_data(const Napi::CallbackInfo &
           napi_value key;
           napi_create_string_utf8(env, "word", NAPI_AUTO_LENGTH, &key);
           napi_value value;
-          napi_create_string_utf8(env, p_kw->m_word.c_str(), NAPI_AUTO_LENGTH, &value);
+          napi_create_string_utf8(env, p_kw->word.c_str(), NAPI_AUTO_LENGTH, &value);
 
           napi_set_property(env, pair, key, value);
         }
@@ -246,8 +246,8 @@ Napi::Value ImageRankerWrapper::get_frame_detail_data(const Napi::CallbackInfo &
           napi_create_array(env, &exampleImagesArr);
 
           {
-            size_t ii{0ULL};
-            for (auto &&filename : p_kw->m_exampleImageFilenames)
+            size_t ii{ 0ULL };
+            for (auto&& filename : p_kw->example_frames_filenames)
             {
               napi_value val;
               napi_create_string_utf8(env, (imageset_ID + "/" + filename).data(), NAPI_AUTO_LENGTH, &val);
@@ -271,7 +271,7 @@ Napi::Value ImageRankerWrapper::get_frame_detail_data(const Napi::CallbackInfo &
   return Napi::Object(env, result);
 }
 
-Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -295,7 +295,7 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
   {
     chart_data = this->actualClass_->get_search_sessions_rank_progress_chart_data(data_pack_ID, model_options, max_user_level, min_samples, normalize);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -320,16 +320,16 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
       napi_value subtop_val;
       napi_create_array(env, &subtop_val);
       {
-        size_t i{0_z};
-        for (auto &&vec : chart_data.median_multichart.x)
+        size_t i{ 0_z };
+        for (auto&& vec : chart_data.median_multichart.x)
         {
           napi_value bott_arr;
           napi_create_array(env, &bott_arr);
 
           // Fill in medians
           {
-            size_t ii{0_z};
-            for (auto &&x : vec)
+            size_t ii{ 0_z };
+            for (auto&& x : vec)
             {
               napi_value napix;
               napi_create_uint32(env, x, &napix);
@@ -356,16 +356,16 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
       napi_value subtop_val;
       napi_create_array(env, &subtop_val);
       {
-        size_t i{0_z};
-        for (auto &&vec : chart_data.median_multichart.medians)
+        size_t i{ 0_z };
+        for (auto&& vec : chart_data.median_multichart.medians)
         {
           napi_value bott_arr;
           napi_create_array(env, &bott_arr);
 
           // Fill in medians
           {
-            size_t ii{0_z};
-            for (auto &&x : vec)
+            size_t ii{ 0_z };
+            for (auto&& x : vec)
             {
               napi_value napix;
               napi_create_double(env, float(x), &napix);
@@ -405,8 +405,8 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
       napi_value arr;
       napi_create_array(env, &arr);
       {
-        size_t i{0_z};
-        for (auto &&p_kw : chart_data.aggregate_quantile_chart.x)
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.x)
         {
           napi_value value;
           napi_create_uint32(env, uint32_t(p_kw), &value);
@@ -429,8 +429,8 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
       napi_value arr;
       napi_create_array(env, &arr);
       {
-        size_t i{0_z};
-        for (auto &&p_kw : chart_data.aggregate_quantile_chart.y_min)
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_min)
         {
           napi_value value;
           napi_create_double(env, p_kw, &value);
@@ -453,8 +453,8 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
       napi_value arr;
       napi_create_array(env, &arr);
       {
-        size_t i{0_z};
-        for (auto &&p_kw : chart_data.aggregate_quantile_chart.y_q1)
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_q1)
         {
           napi_value value;
           napi_create_double(env, p_kw, &value);
@@ -477,8 +477,8 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
       napi_value arr;
       napi_create_array(env, &arr);
       {
-        size_t i{0_z};
-        for (auto &&p_kw : chart_data.aggregate_quantile_chart.y_q2)
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_q2)
         {
           napi_value value;
           napi_create_double(env, p_kw, &value);
@@ -501,8 +501,8 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
       napi_value arr;
       napi_create_array(env, &arr);
       {
-        size_t i{0_z};
-        for (auto &&p_kw : chart_data.aggregate_quantile_chart.y_q3)
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_q3)
         {
           napi_value value;
           napi_create_double(env, p_kw, &value);
@@ -525,8 +525,8 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
       napi_value arr;
       napi_create_array(env, &arr);
       {
-        size_t i{0_z};
-        for (auto &&p_kw : chart_data.aggregate_quantile_chart.y_max)
+        size_t i{ 0_z };
+        for (auto&& p_kw : chart_data.aggregate_quantile_chart.y_max)
         {
           napi_value value;
           napi_create_double(env, p_kw, &value);
@@ -545,7 +545,7 @@ Napi::Value ImageRankerWrapper::get_search_sessions_rank_progress_chart_data(con
   return Napi::Object(env, result);
 }
 
-Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -569,7 +569,7 @@ Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackIn
   {
     chart_data = this->actualClass_->get_histogram_used_labels(data_pack_ID, model_options, num_points, accumulated, max_user_level);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -587,8 +587,8 @@ Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackIn
     napi_value arr;
     napi_create_array(env, &arr);
     {
-      size_t i{0_z};
-      for (auto &&p_kw : chart_data.x)
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.x)
       {
         napi_value value;
         napi_create_uint32(env, uint32_t(p_kw), &value);
@@ -611,8 +611,8 @@ Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackIn
     napi_value arr;
     napi_create_array(env, &arr);
     {
-      size_t i{0_z};
-      for (auto &&p_kw : chart_data.fx)
+      size_t i{ 0_z };
+      for (auto&& p_kw : chart_data.fx)
       {
         napi_value value;
         napi_create_double(env, p_kw, &value);
@@ -629,7 +629,7 @@ Napi::Value ImageRankerWrapper::get_histogram_used_labels(const Napi::CallbackIn
   return Napi::Object(env, result);
 }
 
-Napi::Value ImageRankerWrapper::get_loaded_data_packs_info(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::get_loaded_data_packs_info(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -647,7 +647,7 @@ Napi::Value ImageRankerWrapper::get_loaded_data_packs_info(const Napi::CallbackI
   {
     data_packs_info = this->actualClass_->get_loaded_data_packs_info();
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -656,8 +656,8 @@ Napi::Value ImageRankerWrapper::get_loaded_data_packs_info(const Napi::CallbackI
   napi_value result;
   napi_create_array(env, &result);
 
-  size_t i{0};
-  for (auto &&dp_info : data_packs_info.data_packs_info)
+  size_t i{ 0 };
+  for (auto&& dp_info : data_packs_info.data_packs_info)
   {
     napi_value info;
     napi_create_object(env, &info);
@@ -735,7 +735,7 @@ Napi::Value ImageRankerWrapper::get_loaded_data_packs_info(const Napi::CallbackI
   return Napi::Object(env, result);
 }
 
-Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -761,7 +761,7 @@ Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInf
   {
     keywordData = this->actualClass_->get_autocomplete_results(data_pack_ID, prefix, numResults, withExampleImages, model_options);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -772,7 +772,7 @@ Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInf
 
   size_t i = 0ULL;
   // Iterate through all results
-  for (auto &&keyword : keywordData.top_keywords)
+  for (auto&& keyword : keywordData.top_keywords)
   {
     // Temp array structure
     napi_value single_result_dict;
@@ -793,7 +793,7 @@ Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInf
       napi_value key;
       napi_create_string_utf8(env, "wordString", NAPI_AUTO_LENGTH, &key);
       napi_value value;
-      napi_create_string_utf8(env, keyword->m_word.data(), NAPI_AUTO_LENGTH, &value);
+      napi_create_string_utf8(env, keyword->word.data(), NAPI_AUTO_LENGTH, &value);
 
       napi_set_property(env, single_result_dict, key, value);
     }
@@ -815,10 +815,13 @@ Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInf
       napi_value value;
       napi_create_array(env, &value);
 
+
+
+
       if (withExampleImages)
       {
-        size_t ii{0};
-        for (auto &&nat_filename : keyword->m_exampleImageFilenames)
+        size_t ii{ 0 };
+        for (auto&& nat_filename : keyword->example_frames_filenames)
         {
           napi_value filename;
           napi_create_string_utf8(env, (imageset_ID + "/" + nat_filename).data(), NAPI_AUTO_LENGTH, &filename);
@@ -839,7 +842,7 @@ Napi::Value ImageRankerWrapper::get_autocomplete_results(const Napi::CallbackInf
   return Napi::Object(env, result_arr);
 }
 
-Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -856,12 +859,12 @@ Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackIn
   size_t seqLength = info[2].As<Napi::Number>().Uint32Value();
 
   // Call native method
-  std::vector<const SelFrame *> frames_sequence;
+  std::vector<const SelFrame*> frames_sequence;
   try
   {
     frames_sequence = this->actualClass_->get_random_frame_sequence(imageset_ID, seqLength);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -870,8 +873,8 @@ Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackIn
   napi_value totalResult;
   napi_create_array(env, &totalResult);
 
-  size_t i{0ULL};
-  for (auto &&image : frames_sequence)
+  size_t i{ 0ULL };
+  for (auto&& image : frames_sequence)
   {
     napi_value result;
     napi_create_object(env, &result);
@@ -904,7 +907,7 @@ Napi::Value ImageRankerWrapper::get_random_frame_sequence(const Napi::CallbackIn
   return Napi::Object(env, totalResult);
 }
 
-Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::CallbackInfo& info)
 {
   // Parameters: SessionID, ImageID, string query
   Napi::Env env = info.Env();
@@ -926,7 +929,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
   {
     Napi::Array arr = info[4].As<Napi::Array>();
 
-    for (size_t i{0}; i < arr.Length(); ++i)
+    for (size_t i{ 0 }; i < arr.Length(); ++i)
     {
       Napi::Value val = arr[i];
       auto obj = val.As<Napi::Object>();
@@ -934,7 +937,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
       // Encoded queries
       Napi::Array arr_q = obj.Get("userQueryEncoded").As<Napi::Array>();
       std::vector<std::string> endoed_queries;
-      for (size_t ii{0}; ii < arr_q.Length(); ++ii)
+      for (size_t ii{ 0 }; ii < arr_q.Length(); ++ii)
       {
         Napi::Value v = arr_q[ii];
         endoed_queries.emplace_back(v.As<Napi::String>().Utf8Value());
@@ -942,7 +945,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
 
       Napi::Array arr_r = obj.Get("userQueryReadable").As<Napi::Array>();
       std::vector<std::string> readable_queries;
-      for (size_t ii{0}; ii < arr_r.Length(); ++ii)
+      for (size_t ii{ 0 }; ii < arr_r.Length(); ++ii)
       {
         Napi::Value v = arr_r[ii];
         readable_queries.emplace_back(v.As<Napi::String>().Utf8Value());
@@ -950,7 +953,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
 
       Napi::Array arr_t = obj.Get("targetSequenceIds").As<Napi::Array>();
       std::vector<FrameId> target_sequence;
-      for (size_t ii{0}; ii < arr_t.Length(); ++ii)
+      for (size_t ii{ 0 }; ii < arr_t.Length(); ++ii)
       {
         Napi::Value v = arr_t[ii];
         Napi::Object oo = v.As<Napi::Object>();
@@ -963,7 +966,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
           obj.Get("sessionId").As<Napi::String>().Utf8Value(),
           endoed_queries,
           readable_queries,
-          target_sequence};
+          target_sequence };
 
       user_queries.emplace_back(std::move(query));
     }
@@ -975,7 +978,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
   {
     game_results = this->actualClass_->submit_annotator_user_queries(data_pack_ID, model_options, user_level, withExFrames, user_queries);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -986,7 +989,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
 
   // Process all results
   size_t i = 0ULL;
-  for (auto &&g_res : game_results)
+  for (auto&& g_res : game_results)
   {
     napi_value game_result;
     napi_create_object(env, &game_result);
@@ -1040,7 +1043,7 @@ Napi::Value ImageRankerWrapper::submit_annotator_user_queries(const Napi::Callba
   return Napi::Object(env, res_arr);
 }
 
-Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -1056,7 +1059,7 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo &info)
   std::vector<std::string> user_queries;
   {
     Napi::Array arr = info[0].As<Napi::Array>();
-    for (size_t i{0}; i < arr.Length(); ++i)
+    for (size_t i{ 0 }; i < arr.Length(); ++i)
     {
       Napi::Value val = arr[i];
       std::string single_query = val.As<Napi::String>();
@@ -1076,7 +1079,7 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo &info)
   {
     rankingResult = this->actualClass_->rank_frames(user_queries, data_pack_ID, model_options, resulst_size, native_queries, target_frame_ID);
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -1113,7 +1116,7 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo &info)
 
     // Iterate through all results
     size_t i = 0ULL;
-    for (auto &&[frame_ID, filename] : rankingResult.m_frames)
+    for (auto&& [frame_ID, filename] : rankingResult.m_frames)
     {
       // Temp array structure
       napi_value single_result_dict;
@@ -1149,7 +1152,7 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo &info)
   return Napi::Object(env, result_dict);
 }
 
-Napi::Value ImageRankerWrapper::run_model_test(const Napi::CallbackInfo &info)
+Napi::Value ImageRankerWrapper::run_model_test(const Napi::CallbackInfo& info)
 {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
@@ -1173,11 +1176,11 @@ Napi::Value ImageRankerWrapper::run_model_test(const Napi::CallbackInfo &info)
   {
     test_results = this->actualClass_->run_model_test(query_origin, data_pack_ID, model_options, native_queries, num_points);
   }
-  catch (const NotSuportedModelOptionExcept &ex)
+  catch (const NotSuportedModelOptionExcept& ex)
   {
     Napi::Error::New(env, ex.what()).ThrowAsJavaScriptException();
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     Napi::Error::New(env, e.what()).ThrowAsJavaScriptException();
   }
@@ -1192,8 +1195,8 @@ Napi::Value ImageRankerWrapper::run_model_test(const Napi::CallbackInfo &info)
     napi_value arr_fx;
     napi_create_array(env, &arr_fx);
 
-    size_t i{0};
-    for (auto &&[x, fx] : test_results)
+    size_t i{ 0 };
+    for (auto&& [x, fx] : test_results)
     {
       napi_value napi_x;
       napi_value napi_fx;

@@ -75,14 +75,16 @@ exports.pushSearchAction = function (req, res) {
   // +++++++++++++++++++++++++++++++++++++++++++++
   // Get updated search results
 
-  const userQuery = SessionState.ranker_getUserQueryStrings(sess.state);
+  let userQuery = SessionState.ranker_getUserQueryStrings(sess.state);
   const dataPackId = SessionState.ranker_getDataPackId(sess.state);
   const imagesetId = SessionState.getActieImageset(sess.state);
   const modelOptions = SessionState.ranker_getActiveModelOptions(sess.state);
-  //const isNativeQuery = SessionState.ranker_getFullyNative(sess.state);
+  const isNativeQuery = SessionState.ranker_getFullyNative(sess.state);
 
-  // Not yet supported in ranker
-  const isNativeQuery = false;
+  if (isNativeQuery)
+  {
+    userQuery = SessionState.ranker_getUserQueryStringsNative(sess.state);
+  }
   const resultSize = global.gConfig.ranker.resultSizeLimit;
 
   const currSearchSessBefore = SessionState.ranker_getCurrentSearchSession(sess.state);

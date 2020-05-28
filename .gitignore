@@ -1,6 +1,7 @@
 __local/files
 /node_modules/
 /build
+_data/*
 data/*
 !data/imageset_ITECTiny2019/
 .vscode/

@@ -48,6 +48,8 @@
             "cflags_cc": [
                 "-std=c++17"
             ],
+            'cflags!': [ '-fno-exceptions' ],
+            'cflags_cc!': [ '-fno-exceptions' ],
             "msvs_settings": {
                 "VCCLCompilerTool": {
                     "AdditionalOptions": [

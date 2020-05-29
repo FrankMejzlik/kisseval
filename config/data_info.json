@@ -1,7 +1,7 @@
 {
     "imagesets": [
         {
-            "active": true,
+            "active": false,
             "ID": "V3C1_20k",
             "name": "V3C1_20k",
             "description": "Subset of V31C dataset, every 50th selected frame.",
@@ -111,7 +111,7 @@
         ],
         "W2VV_based": [
             {
-                "active": true,
+                "active": false,
                 "ID": "W2VV_BoW_Dec2019",
                 "name": "W2VV_BoW_Dec2019",
                 "type": "W2VV_based",

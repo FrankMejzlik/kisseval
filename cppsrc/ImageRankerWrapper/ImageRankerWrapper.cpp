@@ -5,6 +5,8 @@
 
 #include <stdexcept>
 
+#include "KeywordsContainer.h"
+
 using namespace image_ranker;
 
 Napi::FunctionReference ImageRankerWrapper::constructor;

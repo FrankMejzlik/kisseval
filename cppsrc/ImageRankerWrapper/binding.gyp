@@ -3,7 +3,6 @@
         {
             "target_name": "image_ranker",
             "sources": [
-                "ImageRanker/ImageRanker/external/sqlite/shell.c",
                 "ImageRanker/ImageRanker/external/sqlite/sqlite3.c",
                 "main.cpp",
                 "ImageRanker/ImageRanker/src/ImageRanker.cpp",

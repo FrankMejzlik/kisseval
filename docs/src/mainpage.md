@@ -3,13 +3,19 @@ ImageRankerApp aka KISSEval {#mainpage}
 
 KISSEval is a web-based application that allows the user to explore, evaluate and test different text-based models with different settings based on provided datasets. It is also used for collecting data from real users through this web UI.
 
-KISSEval as a whole consists of this NodeJS server that serves mostly as GUI and the evaluation library ([ImageRanker](https://gitlab.mff.cuni.cz/mejzlikf/imageranker)) written in C++ that is used by nodeJS as a native addon. In addition it also needs some data in specific formats to work with. 
+KISSEval as a whole consists of this NodeJS server that serves mostly as GUI and the evaluation library ([ImageRanker](https://gitlab.mff.cuni.cz/mejzlikf/imageranker)) written in C++ that is used by nodeJS as a native addon. In addition, it also needs some data in specific formats to work with. 
 
 # Online running version
 We also provide an [online running version](http://herkules.ms.mff.cuni.cz:8080) (with 4 data packs) that is available after authentication. For authentication credentials, please use credentials found inside the README.md file in the official [repository](https://gitlab.mff.cuni.cz/mejzlikf/imagerankerapp). If you don't have access to the MFF GitLab, please email me at <frankmejzlik@gmail.com>.
 
 # Getting started & building
-Please see \ref getting_started and \ref build pages.
+Please see the \ref getting_started and the \ref build pages.
+
+# Putting in custom data
+Please see the \ref data page.
+
+# Extending functionality
+Please see developer documentation inside the `ImageRanker` project and JavaScript source files inside this project to get them to users.
 
 # Remarks
 - It is NOT the final product, but rather prototype we use for our tasks.

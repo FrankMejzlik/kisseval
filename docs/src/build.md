@@ -19,7 +19,7 @@ git clone --recurse-submodules https://gitlab.mff.cuni.cz/mejzlikf/imagerankerap
 
 # OR
 
-# Copy directory `ImageRankerApp` provided in the thesis attachments to desired location
+# Copy directory `ImageRankerApp` provided in the thesis attachments to the desired location
 
 # Enter the directory
 cd ImageRankerApp
@@ -36,7 +36,7 @@ npm run start
 
 Once the application is initialized you can go to `http://localhost:8080` to start using the app.
 
-Congratulations, now you should have KISSEval running with tiny ITEC dataset in action (also with small ammount of data collected inside the database so you can see `Model Tested`). 
+Congratulations, now you should have KISSEval running with tiny ITEC dataset in action (also with small amount of data collected inside the database so you can see `Model Tested`). 
 
 @section prep_data Using custom data packs
-In order to run KISSEval on top of different data packs, you have to prepare than and setup `data_config.json` accordingly. Please follow instructions how to prepare the data on the \ref data page.
+In order to run KISSEval on top of different data packs, you have to prepare them and setup `data_config.json` accordingly. Please follow instructions on how to prepare the data on the \ref data page.

@@ -97,7 +97,7 @@
                                 "msvs_settings": {
                                     "VCCLCompilerTool": {
                                         "AdditionalOptions": [
-                                            "/MP /EHsc"
+                                            "/MP /EHsc /Qspectre"
                                         ]
                                     },
                                     "VCLinkerTool": {
@@ -123,7 +123,7 @@
                                         "RuntimeTypeInfo": "false",
                                         "ExceptionHandling": "0",
                                         "AdditionalOptions": [
-                                            "/MP /EHsc"
+                                            "/MP /EHsc /Qspectre"
                                         ]
                                     },
                                     "VCLinkerTool": {

@@ -46,10 +46,10 @@
                 "HAS_NAPI_HEADERS"
             ],
             "cflags_cc": [
-                "-std=c++17"
+                "-std=c++17","-fno-exceptions","-Wall"
             ],
             'cflags!': [ '-fno-exceptions' ],
-            'cflags_cc!': [ '-fno-exceptions' ],
+            'cflags_cc!': [ '-fno-exceptions'  ],
             "msvs_settings": {
                 "VCCLCompilerTool": {
                     "AdditionalOptions": [

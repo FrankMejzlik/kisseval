@@ -1076,7 +1076,7 @@ Napi::Value ImageRankerWrapper::rank_frames(const Napi::CallbackInfo& info)
   FrameId target_frame_ID = FrameId(info[6].As<Napi::Number>().Uint32Value());
 
   // Get suggested keywords
-  RankingResultWithFilenames rankingResult;
+  RankingResultWithFilenames rankingResult{};
   try
   {
     rankingResult = this->actualClass_->rank_frames(user_queries, data_pack_ID, model_options, resulst_size, native_queries, target_frame_ID);

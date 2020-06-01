@@ -265,16 +265,21 @@ exports.getFrameDetailData = function (req, res) {
   const withExampleFrames = true;
   const accumulated = false;
 
+  let frameData = {};
+
   // -------------------------------
   // Native call
-  const frameData = global.imageRanker.getFrameDetailData(
-    frameId,
-    dataPackId,
-    imagesetId,
-    modelOptions,
-    withExampleFrames,
-    accumulated
-  );
+  try {
+    frameData = global.imageRanker.getFrameDetailData(
+      frameId,
+      dataPackId,
+      imagesetId,
+      modelOptions,
+      withExampleFrames,
+      accumulated
+    );
+  } catch(ex)
+  {  }
   // -------------------------------
 
   res.status(200).jsonp(frameData);

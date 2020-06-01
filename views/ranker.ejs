@@ -469,6 +469,12 @@ function drawInteractiveSearchChart(chartDataArray, targetCanvas)
       throw Error(data.error.message);
     }
 
+    if (typeof data.topClassesPureHypernyms === "undefined")
+    {
+      labelsContainer.innerHTML = "Not supported yet."
+      return;
+    }
+
     const hypernymsArray = data.topClassesPureHypernyms;
       const nonHypernymsArray = data.topClasses;
 

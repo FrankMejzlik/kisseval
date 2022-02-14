@@ -1,19 +1,7 @@
-# ImageRankerApp (KISSEval)
+# KISSEval - Keyword Interactive Search System Evaluator
 KISSEval is a web-based application that allows the user to explore, evaluate and test different text-based models with different settings based on provided datasets. It is also used for collecting data from real users through this web UI.
 
-KISSEval as a whole consists of this Node.js server that serves mostly as GUI and the evaluation library ([ImageRanker](https://gitlab.mff.cuni.cz/mejzlikf/imageranker)) written in C++ that is used by Node.js as a native addon. In addition, it also needs some data in specific formats to work with. 
-
-## Online running version [HERE](http://herkules.ms.mff.cuni.cz:8080)
-The full version with all the data and extracted data packs is available at [http://herkules.ms.mff.cuni.cz:8080](http://herkules.ms.mff.cuni.cz:8080).
-
-### Access credentials
-Username: **mff**
-
-Password: **2nKfmnVWVrQrNExP**
-
-### Evaluator mode
-Password: **Xe5yHH9NdxLXyELt**
-
+KISSEval as a whole consists of this Node.js server that serves mostly as GUI and the evaluation library ([KISSEval Core](https://github.com/FrankMejzlik/kisseval-core)) written in C++ that is used by Node.js as a native addon. In addition, it also needs some data in specific formats to work with. 
 
 ## Prerequisites
 - [GIT](https://git-scm.com/)
@@ -27,20 +15,10 @@ Now that you have Node.js and C++ compiler ready it is time to build the applica
 
 ```
 # Clone (with submodules) from the online repository
-git clone --recurse-submodules https://gitlab.mff.cuni.cz/mejzlikf/imagerankerapp
-
-# OR
-
-# Copy directory `ImageRankerApp` provided in the thesis attachments to desired location
-
-# Enter the directory
-cd ImageRankerApp
+git clone --recurse-submodules https://github.com/FrankMejzlik/kisseval-coreapp && cd kisseval
 
 # Install all dependency packages
 npm install
-
-# Build `ImageRanker` as native C++ addon using the default system C++ compiler
-npm run build
 
 # Start the application
 npm run start

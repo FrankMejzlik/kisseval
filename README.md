@@ -1,6 +1,8 @@
 # KISSEval - Keyword Interactive Search System Evaluator
 > This software was part of my [Bachelor's thesis](https://dspace.cuni.cz/handle/20.500.11956/119427).
 
+> Also it has been used for evaluations for [this publication](https://dl.acm.org/doi/abs/10.1145/3372278.3390726).
+
 KISSEval is a web-based application that allows the user to explore, evaluate and test different text-based models with different settings based on provided datasets. It is also used for collecting data from real users through this web UI.
 
 KISSEval as a whole consists of this Node.js server that serves mostly as GUI and the evaluation library ([KISSEval Core](https://github.com/FrankMejzlik/kisseval-core)) written in C++ that is used by Node.js as a native addon. In addition, it also needs some data in specific formats to work with. 
